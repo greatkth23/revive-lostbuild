@@ -1,0 +1,687 @@
+[
+  {
+    "address": "E4",
+    "formula": "=BI4",
+    "value": 814010.0417682251
+  },
+  {
+    "address": "M4",
+    "formula": "=ROUNDDOWN(SUM(M8:M15)*(1+P8),0)",
+    "value": 347319
+  },
+  {
+    "address": "P4",
+    "formula": "=ROUNDDOWN(((M4*M5/6)^0.5*(1+SUM(P25:P26))+SUM(M25:M27))*(1+SUM(P29:P34)),0)",
+    "value": 109555
+  },
+  {
+    "address": "M5",
+    "formula": "=ROUNDDOWN(SUM(M18:M22)*(1+P18),0)",
+    "value": 103835
+  },
+  {
+    "address": "P8",
+    "formula": "=E35",
+    "value": 0.08
+  },
+  {
+    "address": "M11",
+    "formula": "=E10",
+    "value": 264253
+  },
+  {
+    "address": "M12",
+    "formula": "=E13",
+    "value": 50184
+  },
+  {
+    "address": "M13",
+    "formula": "=E22",
+    "value": 5000
+  },
+  {
+    "address": "M14",
+    "formula": "=J9",
+    "value": 0
+  },
+  {
+    "address": "M18",
+    "formula": "=E11",
+    "value": 103835
+  },
+  {
+    "address": "P18",
+    "formula": "=E17",
+    "value": 0
+  },
+  {
+    "address": "M19",
+    "formula": "=E21",
+    "value": 0
+  },
+  {
+    "address": "M20",
+    "formula": "=E23",
+    "value": 0
+  },
+  {
+    "address": "M21",
+    "formula": "=J10",
+    "value": 0
+  },
+  {
+    "address": "M25",
+    "formula": "=E20",
+    "value": 0
+  },
+  {
+    "address": "P25",
+    "formula": "=E36",
+    "value": 0.068
+  },
+  {
+    "address": "M26",
+    "formula": "=J8",
+    "value": 0
+  },
+  {
+    "address": "P26",
+    "formula": "=E34",
+    "value": 0.015
+  },
+  {
+    "address": "P29",
+    "formula": "=E16",
+    "value": 0
+  },
+  {
+    "address": "P30",
+    "formula": "=J11",
+    "value": 0.0108
+  },
+  {
+    "address": "P31",
+    "formula": "=SUM(V25:W25)",
+    "value": 0.054
+  },
+  {
+    "address": "P32",
+    "formula": "=T28+V28",
+    "value": 0
+  },
+  {
+    "address": "P33",
+    "formula": "=J19",
+    "value": 0.24
+  },
+  {
+    "address": "P34",
+    "formula": "=J26",
+    "value": 0
+  },
+  {
+    "address": "T4",
+    "formula": "=(1+T8+V8)*(1+T9+V9)*(1+T11+V11)*(1+T14+V14)*(1+T15+V15)*(1+T16+V16)*(1+T17+V17)*(1+T21+V21)*(1+T22+V22)",
+    "value": 1.5084175999999998
+  },
+  {
+    "address": "W4",
+    "formula": "=BI4",
+    "value": 814010.0417682251
+  },
+  {
+    "address": "T8",
+    "formula": "=INDEX($R$50:$X$61,MATCH(R8,$R$50:$R$61,0),MATCH(S8,$R$50:$X$50,0))",
+    "value": 0
+  },
+  {
+    "address": "V8",
+    "formula": "=INDEX($R$63:$W$74,MATCH(R8,$R$63:$R$74,0),MATCH(U8,$R$63:$W$63,0))",
+    "value": 0
+  },
+  {
+    "address": "T21",
+    "formula": "=INDEX($R$76:$X$78,MATCH(R21,$R$76:$R$78,0),MATCH(S21,$R$76:$X$76,0))",
+    "value": 0
+  },
+  {
+    "address": "V21",
+    "formula": "=INDEX($R$80:$W$82,MATCH(R21,$R$80:$R$82,0),MATCH(U21,$R$80:$W$80,0))",
+    "value": 0
+  },
+  {
+    "address": "W21",
+    "formula": "=IF(S21=\"-\",0,0.15)",
+    "value": 0
+  },
+  {
+    "address": "T25",
+    "formula": "=INDEX($R$84:$X$85,MATCH(R25,$R$84:$R$85,0),MATCH(S25,$R$84:$X$84,0))",
+    "value": 0.14
+  },
+  {
+    "address": "V25",
+    "formula": "=INDEX($R$87:$W$88,MATCH(R25,$R$87:$R$88,0),MATCH(U25,$R$87:$W$87,0))",
+    "value": 0
+  },
+  {
+    "address": "W25",
+    "formula": "=IF(S25=\"-\",0,0.054)",
+    "value": 0.054
+  },
+  {
+    "address": "T28",
+    "formula": "=INDEX($R$90:$X$91,MATCH(R28,$R$90:$R$91,0),MATCH(S28,$R$90:$X$90,0))",
+    "value": 0
+  },
+  {
+    "address": "V28",
+    "formula": "=INDEX($R$93:$W$94,MATCH(R28,$R$93:$R$94,0),MATCH(U28,$R$93:$W$93,0))",
+    "value": 0
+  },
+  {
+    "address": "T31",
+    "formula": "=INDEX($R$96:$X$97,MATCH(R31,$R$96:$R$97,0),MATCH(S31,$R$96:$X$96,0))",
+    "value": 0.44
+  },
+  {
+    "address": "V31",
+    "formula": "=INDEX($R$99:$W$100,MATCH(R31,$R$99:$R$100,0),MATCH(U31,$R$99:$W$99,0))",
+    "value": 0.075
+  },
+  {
+    "address": "T34",
+    "formula": "=INDEX($R$102:$X$103,MATCH(R34,$R$102:$R$103,0),MATCH(S34,$R$102:$X$102,0))",
+    "value": 0
+  },
+  {
+    "address": "V34",
+    "formula": "=INDEX($R$105:$W$106,MATCH(R34,$R$105:$R$106,0),MATCH(U34,$R$105:$W$105,0))",
+    "value": 0
+  },
+  {
+    "address": "W34",
+    "formula": "=IF(S34=\"-\",0,-0.06)",
+    "value": 0
+  },
+  {
+    "address": "AA4",
+    "formula": "=SUM(AA8:AA19)",
+    "value": 0.650818797
+  },
+  {
+    "address": "AA5",
+    "formula": "=SUM(AA22:AA29)",
+    "value": 2.585
+  },
+  {
+    "address": "Z8",
+    "formula": "=E8",
+    "value": 645
+  },
+  {
+    "address": "AA8",
+    "formula": "=Z8*0.0003578586",
+    "value": 0.230818797
+  },
+  {
+    "address": "AA9",
+    "formula": "=T25",
+    "value": 0.14
+  },
+  {
+    "address": "AA10",
+    "formula": "=T34+V34",
+    "value": 0
+  },
+  {
+    "address": "AA11",
+    "formula": "=AJ31",
+    "value": 0.08
+  },
+  {
+    "address": "AA14",
+    "formula": "=E18",
+    "value": 0
+  },
+  {
+    "address": "AA15",
+    "formula": "=J16",
+    "value": 0
+  },
+  {
+    "address": "AA16",
+    "formula": "=E33",
+    "value": 0
+  },
+  {
+    "address": "AA17",
+    "formula": "=E30",
+    "value": 0
+  },
+  {
+    "address": "AA18",
+    "formula": "=J20",
+    "value": 0
+  },
+  {
+    "address": "AA19",
+    "formula": "=J27",
+    "value": 0
+  },
+  {
+    "address": "AA23",
+    "formula": "=T31+V31",
+    "value": 0.515
+  },
+  {
+    "address": "AA24",
+    "formula": "=W34",
+    "value": 0
+  },
+  {
+    "address": "AA25",
+    "formula": "=E19",
+    "value": 0
+  },
+  {
+    "address": "AA26",
+    "formula": "=J14",
+    "value": 0.07
+  },
+  {
+    "address": "AA27",
+    "formula": "=E27",
+    "value": 0
+  },
+  {
+    "address": "AA29",
+    "formula": "=J21",
+    "value": 0
+  },
+  {
+    "address": "AA32",
+    "formula": "=E32",
+    "value": 0
+  },
+  {
+    "address": "AA33",
+    "formula": "=J22",
+    "value": 0
+  },
+  {
+    "address": "AA34",
+    "formula": "=J28",
+    "value": 0
+  },
+  {
+    "address": "AE4",
+    "formula": "=SUM(AE17:AE22)+1",
+    "value": 1.364164335
+  },
+  {
+    "address": "AE5",
+    "formula": "=SUM(AE8:AE15)+1",
+    "value": 1.364164335
+  },
+  {
+    "address": "AD8",
+    "formula": "=E9",
+    "value": 65
+  },
+  {
+    "address": "AE8",
+    "formula": "=AD8*0.000171759",
+    "value": 0.011164335000000001
+  },
+  {
+    "address": "AE9",
+    "formula": "=IF(S17=\"-\",0,-0.1)",
+    "value": -0.1
+  },
+  {
+    "address": "AE10",
+    "formula": "=AJ39",
+    "value": 0
+  },
+  {
+    "address": "AE12",
+    "formula": "=J33",
+    "value": 0.035
+  },
+  {
+    "address": "AE13",
+    "formula": "=J23",
+    "value": 0.2
+  },
+  {
+    "address": "AE14",
+    "formula": "=J29",
+    "value": 0.128
+  },
+  {
+    "address": "AE15",
+    "formula": "=E28",
+    "value": 0
+  },
+  {
+    "address": "AD17",
+    "formula": "=E9",
+    "value": 65
+  },
+  {
+    "address": "AE17",
+    "formula": "=AD17*0.000171759",
+    "value": 0.011164335000000001
+  },
+  {
+    "address": "AE19",
+    "formula": "=J33",
+    "value": 0.035
+  },
+  {
+    "address": "AE20",
+    "formula": "=J24",
+    "value": 0.1
+  },
+  {
+    "address": "AE21",
+    "formula": "=J30",
+    "value": 0.128
+  },
+  {
+    "address": "AE22",
+    "formula": "=E28",
+    "value": 0
+  },
+  {
+    "address": "AH4",
+    "formula": "=SUM(AJ8:AJ24)+1",
+    "value": 1.44
+  },
+  {
+    "address": "AK4",
+    "formula": "=BI4",
+    "value": 814010.0417682251
+  },
+  {
+    "address": "AJ8",
+    "formula": "=VLOOKUP(AH8,$AH$51:$AL$65,AI8+2,FALSE)",
+    "value": 0
+  },
+  {
+    "address": "AJ23",
+    "formula": "=AI23*0.07",
+    "value": 0.14
+  },
+  {
+    "address": "AJ24",
+    "formula": "=AI24*0.1",
+    "value": 0.1
+  },
+  {
+    "address": "AI26",
+    "formula": "=AI9",
+    "value": 0
+  },
+  {
+    "address": "AJ26",
+    "formula": "=VLOOKUP(AH26,$AH$68:$AK$70,AI26+2,FALSE)",
+    "value": 0
+  },
+  {
+    "address": "AI27",
+    "formula": "=AI12",
+    "value": 0
+  },
+  {
+    "address": "AI28",
+    "formula": "=AI17",
+    "value": 0
+  },
+  {
+    "address": "AI31",
+    "formula": "=AI10",
+    "value": 2
+  },
+  {
+    "address": "AJ31",
+    "formula": "=VLOOKUP(AH31,$AH$73:$AK$75,AI31+2,FALSE)",
+    "value": 0.08
+  },
+  {
+    "address": "AI32",
+    "formula": "=AI14",
+    "value": 0
+  },
+  {
+    "address": "AI36",
+    "formula": "=AI15",
+    "value": 2
+  },
+  {
+    "address": "AJ36",
+    "formula": "=VLOOKUP(AH36,$AH$78:$AK$78,AI36+2,FALSE)",
+    "value": 0.32
+  },
+  {
+    "address": "AI39",
+    "formula": "=AI16",
+    "value": 0
+  },
+  {
+    "address": "AJ39",
+    "formula": "=VLOOKUP(AH39,$AH$81:$AK$81,AI39+2,FALSE)",
+    "value": 0
+  },
+  {
+    "address": "AP8",
+    "formula": "=(AN8*AO8)/SUMPRODUCT($AN$8:$AN$27,$AO$8:$AO$27)",
+    "value": 0.005642083513825118
+  },
+  {
+    "address": "AU8",
+    "formula": "=AP8*(1+IF(AR8>0,$T$10+$V$10,0))*(1+IF(AS8=1,$T$12+$V$12,0))*(1+IF(AT8=1,$T$13+$V$13,0))*(1+IF(AQ8=\"타대\",$T$18+$V$18,0))*(1-0.02*IF($S$31=\"-\",0,1))",
+    "value": 0.005529241843548615
+  },
+  {
+    "address": "AW8",
+    "formula": "=IF($AI$18=0,MIN(AV8+$AA$4,1),MIN(AV8+$AA$4,0.8))",
+    "value": 0.650818797
+  },
+  {
+    "address": "AY8",
+    "formula": "=AX8+$AA$5+IF(AND($AI$15=1,OR(AQ8=\"헤드\",AQ8=\"백\")),$AJ$78,IF(AND($AI$15=2,OR(AQ8=\"헤드\",AQ8=\"백\")),$AK$78,0))",
+    "value": 2.585
+  },
+  {
+    "address": "AZ8",
+    "formula": "=IF(AND($AI$9=1,AR8>0),$AJ$68,IF(AND($AI$9=2,AR8>0),$AK$68,0))+IF(AQ8=\"각성기\",0,IF($AI$12=1,$AJ$69,IF($AI$12=2,$AK$69,0)))+IF(AQ8=\"각성기\",0,IF($AI$17=1,$AJ$70,IF($AI$17=2,$AK$70,0)))+IF(AQ8=\"백\",0,IF($AI$18=1,MIN(MAX(($AA$4+AV8-0.8)*1.2,0),0.425),IF($AI$18=2,MIN(MAX(($AA$4+AV8-0.8)*1.4,0),0.55),0)))+IF($AI$22=1,MIN(0.0025*AR8/10,0.12),IF($AI$22=2,MIN(0.005*AR8/10,0.24),0))",
+    "value": 0
+  },
+  {
+    "address": "BA8",
+    "formula": "=$AH$4+AZ8",
+    "value": 1.44
+  },
+  {
+    "address": "BB8",
+    "formula": "=IF(AQ8=\"헤드\",(1-$BB$30)*AU8*(AW8*AY8*(1+$AA$32)*(1+$AA$33)*(1+$AA$34)+(1-AW8))*BA8+$BB$30*AU8*(AW8*AY8*(1+$AA$32)*(1+$AA$33)*(1+$AA$34)+(1-AW8))*BA8*(1+$W$21)*(1+$BB$32)*(1+$BB$34)*(1+$BB$35),IF(AQ8=\"백\",(1-$BB$31)*AU8*(AW8*AY8*(1+$AA$32)*(1+$AA$33)*(1+$AA$34)+(1-AW8))*(BA8+IF($AI$18=1,MIN(MAX(($AA$4+AV8-0.8)*1.2,0),0.425),IF($AI$18=2,MIN(MAX(($AA$4+AV8-0.8)*1.4,0),0.55),0)))+$BB$31*AU8*(IF($AI$18>0,MIN(AW8+$BB$37,0.8),MIN(AW8+$BB$37,1))*AY8*(1+$AA$32)*(1+$AA$33)*(1+$AA$34)+(1-IF($AI$18>0,MIN(AW8+$BB$37,0.8),MIN(AW8+$BB$37,1))))*(BA8+IF($AI$18=1,MIN(MAX(($AA$4+AV8+$BB$37-0.8)*1.2,0),0.425),IF($AI$18=2,MIN(MAX(($AA$4+AV8+$BB$37-0.8)*1.4,0),0.55),0)))*(1+$W$22)*(1+$BB$33)*(1+$BB$34)*(1+$BB$36),AU8*(AW8*AY8*(1+$AA$32)*(1+$AA$33)*(1+$AA$34)+(1-AW8))*BA8*(1+$BB$38)))",
+    "value": 0.016175403454433912
+  },
+  {
+    "address": "BB9",
+    "formula": "=IF(AQ9=\"헤드\",(1-$BB$30)*AU9*(AW9*AY9*(1+$AA$32)*(1+$AA$33)*(1+$AA$34)+(1-AW9))*BA9+$BB$30*AU9*(AW9*AY9*(1+$AA$32)*(1+$AA$33)*(1+$AA$34)+(1-AW9))*BA9*(1+$W$21)*(1+$BB$32)*(1+$BB$34)*(1+$BB$35),IF(AQ9=\"백\",(1-$BB$31)*AU9*(AW9*AY9*(1+$AA$32)*(1+$AA$33)*(1+$AA$34)+(1-AW9))*(BA9+IF($AI$18=1,MIN(MAX(($AA$4+AV9-0.8)*1.2,0),0.425),IF($AI$18=2,MIN(MAX(($AA$4+AV9-0.8)*1.4,0),0.55),0)))+$BB$31*AU9*(IF($AI$18>0,MIN(AW9+$BB$37,0.8),MIN(AW9+$BB$37,1))*AY9*(1+$AA$32)*(1+$AA$33)*(1+$AA$34)+(1-IF($AI$18>0,MIN(AW9+$BB$37,0.8),MIN(AW9+$BB$37,1))))*(BA9+IF($AI$18=1,MIN(MAX(($AA$4+AV9+$BB$37-0.8)*1.2,0),0.425),IF($AI$18=2,MIN(MAX(($AA$4+AV9+$BB$37-0.8)*1.4,0),0.55),0)))*(1+$W$22)*(1+$BB$33)*(1+$BB$34)*(1+$BB$36),AU9*(AW9*AY9*(1+$AA$32)*(1+$AA$33)*(1+$AA$34)+(1-AW9))*BA9*(1+$BB$38)))",
+    "value": 0.3542114198062526
+  },
+  {
+    "address": "BB30",
+    "formula": "=J35",
+    "value": 0.7
+  },
+  {
+    "address": "BB32",
+    "formula": "=E24",
+    "value": 0
+  },
+  {
+    "address": "BB34",
+    "formula": "=J31",
+    "value": 0.05
+  },
+  {
+    "address": "BB38",
+    "formula": "=E26",
+    "value": 0
+  },
+  {
+    "address": "BF4",
+    "formula": "=SUM(BF8:BF12)+1",
+    "value": 1.3241
+  },
+  {
+    "address": "BF5",
+    "formula": "=(1+BF15)*(1+BF16)*(1+BF17)*(1+BF18)*(1+BF19)*(1+BF20)*(1+BF21)*(1+BF22)*(1+BF23)",
+    "value": 1.0964998553599998
+  },
+  {
+    "address": "BF8",
+    "formula": "=E12",
+    "value": 0.2961
+  },
+  {
+    "address": "BF9",
+    "formula": "=E14",
+    "value": 0
+  },
+  {
+    "address": "BF10",
+    "formula": "=J13",
+    "value": 0
+  },
+  {
+    "address": "BF11",
+    "formula": "=J17",
+    "value": 0
+  },
+  {
+    "address": "BF12",
+    "formula": "=E29",
+    "value": 0.028
+  },
+  {
+    "address": "BF15",
+    "formula": "=E15",
+    "value": 0
+  },
+  {
+    "address": "BF16",
+    "formula": "=J15",
+    "value": 0.0144
+  },
+  {
+    "address": "BF17",
+    "formula": "=J12",
+    "value": 0.024
+  },
+  {
+    "address": "BF19",
+    "formula": "=E26",
+    "value": 0
+  },
+  {
+    "address": "BF20",
+    "formula": "=E31",
+    "value": 0
+  },
+  {
+    "address": "BF22",
+    "formula": "=J25",
+    "value": 0
+  },
+  {
+    "address": "BF23",
+    "formula": "=J32",
+    "value": 0.04
+  },
+  {
+    "address": "BI4",
+    "formula": "=BI8*BI9*BI10*BI11*BI12",
+    "value": 814010.0417682251
+  },
+  {
+    "address": "BI8",
+    "formula": "=P4",
+    "value": 109555
+  },
+  {
+    "address": "BI9",
+    "formula": "=T4",
+    "value": 1.5084175999999998
+  },
+  {
+    "address": "BI10",
+    "formula": "=BB4",
+    "value": 3.3927089457909947
+  },
+  {
+    "address": "BI11",
+    "formula": "=BF4",
+    "value": 1.3241
+  },
+  {
+    "address": "T52",
+    "formula": "=MIN(($AE$4-1),0.4)*0.4",
+    "value": 0.14566573399999996
+  },
+  {
+    "address": "U52",
+    "formula": "=MIN(($AE$4-1),0.4)*0.42",
+    "value": 0.15294902069999994
+  },
+  {
+    "address": "V52",
+    "formula": "=MIN(($AE$4-1),0.4)*0.44",
+    "value": 0.16023230739999997
+  },
+  {
+    "address": "W52",
+    "formula": "=MIN(($AE$4-1),0.4)*0.46",
+    "value": 0.16751559409999997
+  },
+  {
+    "address": "X52",
+    "formula": "=MIN(($AE$4-1),0.4)*0.48",
+    "value": 0.17479888079999994
+  },
+  {
+    "address": "T65",
+    "formula": "=MIN(($AE$4-1),0.4)*0.075",
+    "value": 0.02731232512499999
+  },
+  {
+    "address": "U65",
+    "formula": "=MIN(($AE$4-1),0.4)*0.094",
+    "value": 0.03423144748999999
+  },
+  {
+    "address": "V65",
+    "formula": "=MIN(($AE$4-1),0.4)*0.132",
+    "value": 0.04806969221999999
+  },
+  {
+    "address": "W65",
+    "formula": "=MIN(($AE$4-1),0.4)*0.15",
+    "value": 0.05462465024999998
+  },
+  {
+    "address": "AJ62",
+    "formula": "=MIN((MIN((AE4-1),0.4)+MIN((AE5-1),0.4))*0.05+IF(AND((AE4>1.4),(AE5>1.4)),0.04+(SUM(AE4:AE5)-2.8)*0.1,0),0.12)",
+    "value": 0.03641643349999999
+  },
+  {
+    "address": "AK62",
+    "formula": "=MIN((MIN((AE4-1),0.4)+MIN((AE5-1),0.4))*0.1+IF(AND((AE4>1.4),(AE5>1.4)),0.08+(SUM(AE4:AE5)-2.8)*0.2,0),0.24)",
+    "value": 0.07283286699999998
+  }
+]

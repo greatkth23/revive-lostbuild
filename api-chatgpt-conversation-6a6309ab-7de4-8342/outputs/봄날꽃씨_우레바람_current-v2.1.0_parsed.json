@@ -1,0 +1,3450 @@
+{
+  "schemaVersion": "2.0.0",
+  "calculatorVersion": "2.1.0",
+  "availableRuleVersions": [
+    "example-v1.0.0",
+    "season3-xlsx-v2.0.0",
+    "current-v2.1.0"
+  ],
+  "defaultRuleVersion": "current-v2.1.0",
+  "characterName": "봄날꽃씨",
+  "canonicalSkillName": "우레바람",
+  "aliases": [
+    "우뢰바람"
+  ],
+  "warnings": [
+    "진화 카르마 수치를 파싱하지 못해 예시값 +6.0%를 사용했습니다.",
+    "깨달음 카르마 수치를 파싱하지 못해 예시값 +2.7%를 사용했습니다.",
+    "현재 원정대 레벨은 281이지만 원정대/물약 주스탯은 current-v2.1.0 고정값 +680을 사용했습니다."
+  ],
+  "profile": {
+    "characterName": "봄날꽃씨",
+    "className": "기상술사",
+    "characterLevel": 70,
+    "expeditionLevel": 281,
+    "itemLevel": "1,785.83",
+    "combatPower": "6,311.12",
+    "criticalStat": "773",
+    "swiftnessStat": "1644",
+    "profileAttackPower": "217160",
+    "criticalRateFromStat": "0.2766",
+    "attackSpeedFromSwiftness": "0.2824",
+    "moveSpeedFromSwiftness": "0.2824",
+    "sources": [
+      {
+        "sourceType": "API_FIELD",
+        "path": "profiles.CharacterLevel",
+        "label": "캐릭터 레벨",
+        "value": 70,
+        "raw": "",
+        "applied": true,
+        "note": ""
+      },
+      {
+        "sourceType": "API_FIELD",
+        "path": "profiles.ExpeditionLevel",
+        "label": "원정대 레벨",
+        "value": 281,
+        "raw": "",
+        "applied": true,
+        "note": ""
+      },
+      {
+        "sourceType": "API_FIELD",
+        "path": "profiles.Stats[치명]",
+        "label": "치명",
+        "value": "773",
+        "raw": "치명타 적중률이 27.66% 증가합니다.\n물약 및 원정대 레벨 보상 효과로 32만큼 영구적으로 증가되었습니다.\n카드 도감 누적 효과가 반영된 값으로 전투정보실에서는 별도 수치를 표기하지 않습니다.",
+        "applied": true,
+        "note": ""
+      },
+      {
+        "sourceType": "API_FIELD",
+        "path": "profiles.Stats[신속]",
+        "label": "신속",
+        "value": "1644",
+        "raw": "공격 속도가 28.24% 증가합니다.\n이동 속도가 28.24% 증가합니다.\n스킬 재사용 대기시간이 35.30% 감소합니다.\n물약 및 원정대 레벨 보상 효과로 32만큼 영구적으로 증가되었습니다.\n카드 도감 누적 효과가 반영된 값으로 전투정보실에서는 별도 수치를 표기하지 않습니다.",
+        "applied": true,
+        "note": ""
+      },
+      {
+        "sourceType": "API_FIELD",
+        "path": "profiles.Stats[공격력]",
+        "label": "프로필 공격력(검산용)",
+        "value": "217160",
+        "raw": "",
+        "applied": true,
+        "note": ""
+      }
+    ]
+  },
+  "equipment": {
+    "mainStat": "701492",
+    "baseWeaponAttack": "241367",
+    "weaponAttackFlat": "0",
+    "weaponAttackPercent": "0.06",
+    "attackPowerFlat": "0",
+    "attackPowerPercent": "0.0190",
+    "weaponAdditionalDamage": "0.30",
+    "necklaceAdditionalDamage": "0.026",
+    "otherAdditionalDamage": "0.035",
+    "damageToEnemy": "0.057",
+    "necklaceDamageToEnemy": "0.012",
+    "braceletDamageToEnemy": "0.045",
+    "otherDamageToEnemy": "0",
+    "criticalRate": "0.0310",
+    "criticalDamage": "0.116",
+    "braceletCriticalHitDamage": "0.015",
+    "braceletNonDirectionalDamage": "0",
+    "hasMasterElixir": false,
+    "items": [
+      {
+        "type": "무기",
+        "name": "+25 운명의 전율 우산",
+        "grade": "고대",
+        "tooltipText": "+25 운명의 전율 우산\n고대 우산\n품질\n아이템 레벨 1800 (티어 4)\n장착중\n기상술사 전용\n캐릭터 귀속됨\n|거래 불가\n기본 효과\n무기 공격력 +241367\n추가 효과\n추가 피해 +30.00%\n분해불가, 품질 업그레이드 불가\n[제작] 대도시\n내구도 175 / 175|",
+        "values": {
+          "mainStat": "0",
+          "baseWeaponAttack": "241367",
+          "weaponAttackFlat": "0",
+          "weaponAttackPercent": "0",
+          "attackPowerFlat": "0",
+          "attackPowerPercent": "0",
+          "additionalDamage": "0.30",
+          "damageToEnemy": "0",
+          "criticalRate": "0",
+          "criticalDamage": "0",
+          "criticalHitDamage": "0",
+          "nonDirectionalDamage": "0"
+        }
+      },
+      {
+        "type": "투구",
+        "name": "+22 운명의 전율 머리장식",
+        "grade": "고대",
+        "tooltipText": "+22 운명의 전율 머리장식\n고대 머리 방어구\n품질\n아이템 레벨 1785 (티어 4)\n장착중\n기상술사 전용\n캐릭터 귀속됨\n|거래 불가\n기본 효과\n물리 방어력 +10100\n마법 방어력 +11222\n지능 +129393\n체력 +11906\n추가 효과\n생명 활성력 +1264\n현재 단계 재련 경험치\n아크 패시브 포인트 효과\n진화 +24\n분해불가\n[제작] 대도시\n내구도 66 / 66|",
+        "values": {
+          "mainStat": "129393",
+          "baseWeaponAttack": "0",
+          "weaponAttackFlat": "0",
+          "weaponAttackPercent": "0",
+          "attackPowerFlat": "0",
+          "attackPowerPercent": "0",
+          "additionalDamage": "0",
+          "damageToEnemy": "0",
+          "criticalRate": "0",
+          "criticalDamage": "0",
+          "criticalHitDamage": "0",
+          "nonDirectionalDamage": "0"
+        }
+      },
+      {
+        "type": "상의",
+        "name": "+21 운명의 전율 상의",
+        "grade": "고대",
+        "tooltipText": "+21 운명의 전율 상의\n고대 상의\n품질\n아이템 레벨 1780 (티어 4)\n장착중\n기상술사 전용\n캐릭터 귀속됨\n|거래 불가\n기본 효과\n물리 방어력 +13302\n마법 방어력 +12193\n지능 +100989\n체력 +15658\n추가 효과\n생명 활성력 +1373\n현재 단계 재련 경험치\n아크 패시브 포인트 효과\n진화 +24\n분해불가\n[제작] 대도시\n내구도 84 / 84|",
+        "values": {
+          "mainStat": "100989",
+          "baseWeaponAttack": "0",
+          "weaponAttackFlat": "0",
+          "weaponAttackPercent": "0",
+          "attackPowerFlat": "0",
+          "attackPowerPercent": "0",
+          "additionalDamage": "0",
+          "damageToEnemy": "0",
+          "criticalRate": "0",
+          "criticalDamage": "0",
+          "criticalHitDamage": "0",
+          "nonDirectionalDamage": "0"
+        }
+      },
+      {
+        "type": "하의",
+        "name": "+21 운명의 전율 하의",
+        "grade": "고대",
+        "tooltipText": "+21 운명의 전율 하의\n고대 하의\n품질\n아이템 레벨 1780 (티어 4)\n장착중\n기상술사 전용\n캐릭터 귀속됨\n|거래 불가\n기본 효과\n물리 방어력 +12193\n마법 방어력 +13302\n지능 +109104\n체력 +13309\n추가 효과\n생명 활성력 +1264\n현재 단계 재련 경험치\n아크 패시브 포인트 효과\n진화 +24\n분해불가\n[제작] 대도시\n내구도 76 / 76|",
+        "values": {
+          "mainStat": "109104",
+          "baseWeaponAttack": "0",
+          "weaponAttackFlat": "0",
+          "weaponAttackPercent": "0",
+          "attackPowerFlat": "0",
+          "attackPowerPercent": "0",
+          "additionalDamage": "0",
+          "damageToEnemy": "0",
+          "criticalRate": "0",
+          "criticalDamage": "0",
+          "criticalHitDamage": "0",
+          "nonDirectionalDamage": "0"
+        }
+      },
+      {
+        "type": "장갑",
+        "name": "+22 운명의 전율 장갑",
+        "grade": "고대",
+        "tooltipText": "+22 운명의 전율 장갑\n고대 장갑\n품질\n아이템 레벨 1785 (티어 4)\n장착중\n기상술사 전용\n캐릭터 귀속됨\n|거래 불가\n기본 효과\n물리 방어력 +8978\n마법 방어력 +8978\n지능 +155271\n체력 +7937\n추가 효과\n생명 활성력 +1345\n현재 단계 재련 경험치\n아크 패시브 포인트 효과\n진화 +24\n분해불가\n[제작] 대도시\n내구도 59 / 59|",
+        "values": {
+          "mainStat": "155271",
+          "baseWeaponAttack": "0",
+          "weaponAttackFlat": "0",
+          "weaponAttackPercent": "0",
+          "attackPowerFlat": "0",
+          "attackPowerPercent": "0",
+          "additionalDamage": "0",
+          "damageToEnemy": "0",
+          "criticalRate": "0",
+          "criticalDamage": "0",
+          "criticalHitDamage": "0",
+          "nonDirectionalDamage": "0"
+        }
+      },
+      {
+        "type": "어깨",
+        "name": "+22 운명의 전율 어깨장식",
+        "grade": "고대",
+        "tooltipText": "+22 운명의 전율 어깨장식\n고대 어깨 방어구\n품질\n아이템 레벨 1785 (티어 4)\n장착중\n기상술사 전용\n캐릭터 귀속됨\n|거래 불가\n기본 효과\n물리 방어력 +11222\n마법 방어력 +10100\n지능 +137711\n체력 +10318\n추가 효과\n생명 활성력 +1291\n현재 단계 재련 경험치\n아크 패시브 포인트 효과\n진화 +24\n분해불가\n[제작] 대도시\n내구도 62 / 62|",
+        "values": {
+          "mainStat": "137711",
+          "baseWeaponAttack": "0",
+          "weaponAttackFlat": "0",
+          "weaponAttackPercent": "0",
+          "attackPowerFlat": "0",
+          "attackPowerPercent": "0",
+          "additionalDamage": "0",
+          "damageToEnemy": "0",
+          "criticalRate": "0",
+          "criticalDamage": "0",
+          "criticalHitDamage": "0",
+          "nonDirectionalDamage": "0"
+        }
+      },
+      {
+        "type": "목걸이",
+        "name": "도래한 결전의 목걸이",
+        "grade": "고대",
+        "tooltipText": "도래한 결전의 목걸이\n고대 목걸이\n품질\n아이템 티어 4\n장착중\n거래 제한 아이템 레벨 1680\n캐릭터 귀속됨\n거래 1회 가능\n|거래가능\n기본 효과\n힘 +17750\n민첩 +17750\n지능 +17750\n체력 +3810\n연마 효과\n추가 피해 +2.60%\n적에게 주는 피해 +1.20%\n상태이상 공격 지속시간 +0.20%\n아크 패시브 포인트 효과\n깨달음 +13\n[카제로스 레이드] 1막 : 대지를 부수는 업화의 궤적 - 하드\n[카제로스 레이드] 2막 : 부유하는 악몽의 진혼곡 - 하드\n[카제로스 레이드] 3막 : 칠흑, 폭풍의 밤\n그 외에 획득처가 더 존재합니다.",
+        "values": {
+          "mainStat": "17750",
+          "baseWeaponAttack": "0",
+          "weaponAttackFlat": "0",
+          "weaponAttackPercent": "0",
+          "attackPowerFlat": "0",
+          "attackPowerPercent": "0",
+          "additionalDamage": "0.026",
+          "damageToEnemy": "0.012",
+          "criticalRate": "0",
+          "criticalDamage": "0",
+          "criticalHitDamage": "0",
+          "nonDirectionalDamage": "0"
+        }
+      },
+      {
+        "type": "귀걸이",
+        "name": "도래한 결전의 귀걸이",
+        "grade": "고대",
+        "tooltipText": "도래한 결전의 귀걸이\n고대 귀걸이\n품질\n아이템 티어 4\n장착중\n거래 제한 아이템 레벨 1680\n캐릭터 귀속됨\n거래 2회 가능\n|거래가능\n기본 효과\n힘 +13744\n민첩 +13744\n지능 +13744\n체력 +2914\n연마 효과\n공격력 +0.95%\n최대 마나 +6\n무기 공격력 +3.00%\n아크 패시브 포인트 효과\n깨달음 +12\n[카제로스 레이드] 1막 : 대지를 부수는 업화의 궤적 - 하드\n[카제로스 레이드] 2막 : 부유하는 악몽의 진혼곡 - 하드\n[카제로스 레이드] 3막 : 칠흑, 폭풍의 밤\n그 외에 획득처가 더 존재합니다.",
+        "values": {
+          "mainStat": "13744",
+          "baseWeaponAttack": "0",
+          "weaponAttackFlat": "0",
+          "weaponAttackPercent": "0.03",
+          "attackPowerFlat": "0",
+          "attackPowerPercent": "0.0095",
+          "additionalDamage": "0",
+          "damageToEnemy": "0",
+          "criticalRate": "0",
+          "criticalDamage": "0",
+          "criticalHitDamage": "0",
+          "nonDirectionalDamage": "0"
+        }
+      },
+      {
+        "type": "귀걸이",
+        "name": "도래한 결전의 귀걸이",
+        "grade": "고대",
+        "tooltipText": "도래한 결전의 귀걸이\n고대 귀걸이\n품질\n아이템 티어 4\n장착중\n거래 제한 아이템 레벨 1680\n캐릭터 귀속됨\n거래 2회 가능\n|거래가능\n기본 효과\n힘 +13535\n민첩 +13535\n지능 +13535\n체력 +2742\n연마 효과\n무기 공격력 +3.00%\n공격력 +0.95%\n전투 중 생명력 회복량 +10\n아크 패시브 포인트 효과\n깨달음 +12\n[카제로스 레이드] 1막 : 대지를 부수는 업화의 궤적 - 하드\n[카제로스 레이드] 2막 : 부유하는 악몽의 진혼곡 - 하드\n[카제로스 레이드] 3막 : 칠흑, 폭풍의 밤\n그 외에 획득처가 더 존재합니다.",
+        "values": {
+          "mainStat": "13535",
+          "baseWeaponAttack": "0",
+          "weaponAttackFlat": "0",
+          "weaponAttackPercent": "0.03",
+          "attackPowerFlat": "0",
+          "attackPowerPercent": "0.0095",
+          "additionalDamage": "0",
+          "damageToEnemy": "0",
+          "criticalRate": "0",
+          "criticalDamage": "0",
+          "criticalHitDamage": "0",
+          "nonDirectionalDamage": "0"
+        }
+      },
+      {
+        "type": "반지",
+        "name": "도래한 결전의 반지",
+        "grade": "고대",
+        "tooltipText": "도래한 결전의 반지\n고대 반지\n품질\n아이템 티어 4\n장착중\n거래 제한 아이템 레벨 1680\n캐릭터 귀속됨\n|거래 불가\n기본 효과\n힘 +11446\n민첩 +11446\n지능 +11446\n체력 +2160\n연마 효과\n치명타 적중률 +1.55%\n최대 마나 +6\n치명타 피해 +2.40%\n아크 패시브 포인트 효과\n깨달음 +12\n[카제로스 레이드] 1막 : 대지를 부수는 업화의 궤적 - 하드\n[카제로스 레이드] 2막 : 부유하는 악몽의 진혼곡 - 하드\n[카제로스 레이드] 3막 : 칠흑, 폭풍의 밤\n그 외에 획득처가 더 존재합니다.",
+        "values": {
+          "mainStat": "11446",
+          "baseWeaponAttack": "0",
+          "weaponAttackFlat": "0",
+          "weaponAttackPercent": "0",
+          "attackPowerFlat": "0",
+          "attackPowerPercent": "0",
+          "additionalDamage": "0",
+          "damageToEnemy": "0",
+          "criticalRate": "0.0155",
+          "criticalDamage": "0.024",
+          "criticalHitDamage": "0",
+          "nonDirectionalDamage": "0"
+        }
+      },
+      {
+        "type": "반지",
+        "name": "도래한 결전의 반지",
+        "grade": "고대",
+        "tooltipText": "도래한 결전의 반지\n고대 반지\n품질\n아이템 티어 4\n장착중\n거래 제한 아이템 레벨 1680\n캐릭터 귀속됨\n거래 2회 가능\n|거래가능\n기본 효과\n힘 +12549\n민첩 +12549\n지능 +12549\n체력 +2345\n연마 효과\n최대 마나 +30\n치명타 적중률 +1.55%\n치명타 피해 +2.40%\n아크 패시브 포인트 효과\n깨달음 +12\n[카제로스 레이드] 1막 : 대지를 부수는 업화의 궤적 - 하드\n[카제로스 레이드] 2막 : 부유하는 악몽의 진혼곡 - 하드\n[카제로스 레이드] 3막 : 칠흑, 폭풍의 밤\n그 외에 획득처가 더 존재합니다.",
+        "values": {
+          "mainStat": "12549",
+          "baseWeaponAttack": "0",
+          "weaponAttackFlat": "0",
+          "weaponAttackPercent": "0",
+          "attackPowerFlat": "0",
+          "attackPowerPercent": "0",
+          "additionalDamage": "0",
+          "damageToEnemy": "0",
+          "criticalRate": "0.0155",
+          "criticalDamage": "0.024",
+          "criticalHitDamage": "0",
+          "nonDirectionalDamage": "0"
+        }
+      },
+      {
+        "type": "어빌리티 스톤",
+        "name": "위대한 비상의 돌",
+        "grade": "고대",
+        "tooltipText": "위대한 비상의 돌\n고대 어빌리티 스톤\n아이템 티어 4\n장착중\n거래 제한 아이템 레벨 1640\n캐릭터 귀속됨\n|거래 불가\n기본 효과\n체력 +23481\n세공 단계 보너스\n체력 +3525\n[원한] Lv.2\n[아드레날린] Lv.3\n[이동속도 감소] Lv.0\n[레벨 보너스] 기본 공격력 +1.50%\n무작위 각인 효과\n푸른 기운과 붉은 기운이 희미하게 뒤섞여 신묘한 느낌이 난다. 자세히 보고 싶지만 더 만졌다가는 부서져 버릴 것 같다.\n\n어빌리티 스톤 세공사에게 세공 완료 후 장착 가능합니다.\n판매불가",
+        "values": {
+          "mainStat": "0",
+          "baseWeaponAttack": "0",
+          "weaponAttackFlat": "0",
+          "weaponAttackPercent": "0",
+          "attackPowerFlat": "0",
+          "attackPowerPercent": "0",
+          "additionalDamage": "0",
+          "damageToEnemy": "0",
+          "criticalRate": "0",
+          "criticalDamage": "0",
+          "criticalHitDamage": "0",
+          "nonDirectionalDamage": "0"
+        }
+      },
+      {
+        "type": "팔찌",
+        "name": "찬란한 구원자의 팔찌",
+        "grade": "고대",
+        "tooltipText": "찬란한 구원자의 팔찌\n고대 팔찌\n아이템 티어 4\n장착중\n거래 제한 아이템 레벨 1680\n캐릭터 귀속됨\n|거래 불가\n팔찌 효과\n숙련 +102\n 신속 +107\n추가 피해 +3.50%\n스킬의 재사용 대기 시간이 2% 증가하지만, 적에게 주는 피해가 4.5% 증가한다.\n치명타 피해가 6.8% 증가한다.\n공격이 치명타로 적중 시 적에게 주는 피해가 1.5% 증가한다.\n효과 부여 불가\n아크 패시브 포인트 효과\n도약 +18\n[가디언 토벌] 스콜라키아\n[카제로스 레이드] 1막 : 대지를 부수는 업화의 궤적 - 하드\n[카제로스 레이드] 2막 : 부유하는 악몽의 진혼곡 - 하드\n그 외에 획득처가 더 존재합니다.",
+        "values": {
+          "mainStat": "0",
+          "baseWeaponAttack": "0",
+          "weaponAttackFlat": "0",
+          "weaponAttackPercent": "0",
+          "attackPowerFlat": "0",
+          "attackPowerPercent": "0",
+          "additionalDamage": "0.035",
+          "damageToEnemy": "0.045",
+          "criticalRate": "0",
+          "criticalDamage": "0.068",
+          "criticalHitDamage": "0.015",
+          "nonDirectionalDamage": "0"
+        }
+      },
+      {
+        "type": "나침반",
+        "name": "특제 순은 나침반",
+        "grade": "영웅",
+        "tooltipText": "특제 순은 나침반\n영웅 나침반\n장착중\n원정대 귀속됨\n|거래 불가\n추가 효과\n모든 선박의 최종 내구도 수리 비용 +10.00% 감소\n섬에서 이동 속도 +6.00%\n선박 통상 운항 속도(노트) +2.0\n순도 높은 은으로 만들어진 나침반.\n고급스러운 재료를 사용해 쉽게 망가지지 않는다.\n판매불가, 파괴불가, 분해불가, 품질 업그레이드 불가\n[제작] 외로운 섬 오페르 - 바욤",
+        "values": {
+          "mainStat": "0",
+          "baseWeaponAttack": "0",
+          "weaponAttackFlat": "0",
+          "weaponAttackPercent": "0",
+          "attackPowerFlat": "0",
+          "attackPowerPercent": "0",
+          "additionalDamage": "0",
+          "damageToEnemy": "0",
+          "criticalRate": "0",
+          "criticalDamage": "0",
+          "criticalHitDamage": "0",
+          "nonDirectionalDamage": "0"
+        }
+      },
+      {
+        "type": "부적",
+        "name": "광휘의 별무리 부적",
+        "grade": "유물",
+        "tooltipText": "광휘의 별무리 부적\n유물 부적\n장착중\n원정대 귀속됨\n|거래 불가\n추가 효과\n채집 속도 +4.00%\n내구도 미차감 확률 +6.40%\n모든 생활 전체 등급 재료 획득률 +30.00%\n별의 조각을 이어 만들었다는 부적.\n별의 축복을 받아 강력한 힘을 얻게 된다.\n판매불가, 파괴불가, 분해불가, 품질 업그레이드 불가\n[제작] 대도시 - 연금술사",
+        "values": {
+          "mainStat": "0",
+          "baseWeaponAttack": "0",
+          "weaponAttackFlat": "0",
+          "weaponAttackPercent": "0",
+          "attackPowerFlat": "0",
+          "attackPowerPercent": "0",
+          "additionalDamage": "0",
+          "damageToEnemy": "0",
+          "criticalRate": "0",
+          "criticalDamage": "0",
+          "criticalHitDamage": "0",
+          "nonDirectionalDamage": "0"
+        }
+      },
+      {
+        "type": "보주",
+        "name": "눈부신 비전의 보주",
+        "grade": "유물",
+        "tooltipText": "눈부신 비전의 보주\n유물 보주\n장착중\n캐릭터 귀속됨\n|거래 불가\n특수 효과\n[맥스웰 맥시마]\n 보스 등급 이상 몬스터에게 공격 적중 시, 대상에게 강한 전류를 모이게 합니다. 잠시 후 폭발하며, 4.0m이내에 218,137,392의 고정 피해를 줍니다.\n(재사용 대기시간 20초)\n\n시즌2에 달성한 최대 낙원력에 따라 특수 효과 수치가 변동됩니다.\n시즌2 달성 최대 낙원력 : 33856230\n고대 비전의 에너지가 깃들어있는 보주.\n장착 시 주변에 강력한 전도의 힘을 방출하는 능력을 사용할 수 있다.\n파괴불가, 분해불가\n[낙원] 증명",
+        "values": {
+          "mainStat": "0",
+          "baseWeaponAttack": "0",
+          "weaponAttackFlat": "0",
+          "weaponAttackPercent": "0",
+          "attackPowerFlat": "0",
+          "attackPowerPercent": "0",
+          "additionalDamage": "0",
+          "damageToEnemy": "0",
+          "criticalRate": "0",
+          "criticalDamage": "0",
+          "criticalHitDamage": "0",
+          "nonDirectionalDamage": "0"
+        }
+      }
+    ],
+    "sources": [
+      {
+        "sourceType": "API_TOOLTIP",
+        "path": "equipment[0].Tooltip",
+        "label": "무기 baseWeaponAttack",
+        "value": "241367",
+        "raw": "+25 운명의 전율 우산\n고대 우산\n품질\n아이템 레벨 1800 (티어 4)\n장착중\n기상술사 전용\n캐릭터 귀속됨\n|거래 불가\n기본 효과\n무기 공격력 +241367\n추가 효과\n추가 피해 +30.00%\n분해불가, 품질 업그레이드 불가\n[제작] 대도시\n내구도 175 / 175|",
+        "applied": true,
+        "note": ""
+      },
+      {
+        "sourceType": "API_TOOLTIP",
+        "path": "equipment[0].Tooltip",
+        "label": "무기 additionalDamage",
+        "value": "0.30",
+        "raw": "+25 운명의 전율 우산\n고대 우산\n품질\n아이템 레벨 1800 (티어 4)\n장착중\n기상술사 전용\n캐릭터 귀속됨\n|거래 불가\n기본 효과\n무기 공격력 +241367\n추가 효과\n추가 피해 +30.00%\n분해불가, 품질 업그레이드 불가\n[제작] 대도시\n내구도 175 / 175|",
+        "applied": true,
+        "note": ""
+      },
+      {
+        "sourceType": "API_TOOLTIP",
+        "path": "equipment[1].Tooltip",
+        "label": "투구 mainStat",
+        "value": "129393",
+        "raw": "+22 운명의 전율 머리장식\n고대 머리 방어구\n품질\n아이템 레벨 1785 (티어 4)\n장착중\n기상술사 전용\n캐릭터 귀속됨\n|거래 불가\n기본 효과\n물리 방어력 +10100\n마법 방어력 +11222\n지능 +129393\n체력 +11906\n추가 효과\n생명 활성력 +1264\n현재 단계 재련 경험치\n아크 패시브 포인트 효과\n진화 +24\n분해불가\n[제작] 대도시\n내구도 66 / 66|",
+        "applied": true,
+        "note": ""
+      },
+      {
+        "sourceType": "API_TOOLTIP",
+        "path": "equipment[2].Tooltip",
+        "label": "상의 mainStat",
+        "value": "100989",
+        "raw": "+21 운명의 전율 상의\n고대 상의\n품질\n아이템 레벨 1780 (티어 4)\n장착중\n기상술사 전용\n캐릭터 귀속됨\n|거래 불가\n기본 효과\n물리 방어력 +13302\n마법 방어력 +12193\n지능 +100989\n체력 +15658\n추가 효과\n생명 활성력 +1373\n현재 단계 재련 경험치\n아크 패시브 포인트 효과\n진화 +24\n분해불가\n[제작] 대도시\n내구도 84 / 84|",
+        "applied": true,
+        "note": ""
+      },
+      {
+        "sourceType": "API_TOOLTIP",
+        "path": "equipment[3].Tooltip",
+        "label": "하의 mainStat",
+        "value": "109104",
+        "raw": "+21 운명의 전율 하의\n고대 하의\n품질\n아이템 레벨 1780 (티어 4)\n장착중\n기상술사 전용\n캐릭터 귀속됨\n|거래 불가\n기본 효과\n물리 방어력 +12193\n마법 방어력 +13302\n지능 +109104\n체력 +13309\n추가 효과\n생명 활성력 +1264\n현재 단계 재련 경험치\n아크 패시브 포인트 효과\n진화 +24\n분해불가\n[제작] 대도시\n내구도 76 / 76|",
+        "applied": true,
+        "note": ""
+      },
+      {
+        "sourceType": "API_TOOLTIP",
+        "path": "equipment[4].Tooltip",
+        "label": "장갑 mainStat",
+        "value": "155271",
+        "raw": "+22 운명의 전율 장갑\n고대 장갑\n품질\n아이템 레벨 1785 (티어 4)\n장착중\n기상술사 전용\n캐릭터 귀속됨\n|거래 불가\n기본 효과\n물리 방어력 +8978\n마법 방어력 +8978\n지능 +155271\n체력 +7937\n추가 효과\n생명 활성력 +1345\n현재 단계 재련 경험치\n아크 패시브 포인트 효과\n진화 +24\n분해불가\n[제작] 대도시\n내구도 59 / 59|",
+        "applied": true,
+        "note": ""
+      },
+      {
+        "sourceType": "API_TOOLTIP",
+        "path": "equipment[5].Tooltip",
+        "label": "어깨 mainStat",
+        "value": "137711",
+        "raw": "+22 운명의 전율 어깨장식\n고대 어깨 방어구\n품질\n아이템 레벨 1785 (티어 4)\n장착중\n기상술사 전용\n캐릭터 귀속됨\n|거래 불가\n기본 효과\n물리 방어력 +11222\n마법 방어력 +10100\n지능 +137711\n체력 +10318\n추가 효과\n생명 활성력 +1291\n현재 단계 재련 경험치\n아크 패시브 포인트 효과\n진화 +24\n분해불가\n[제작] 대도시\n내구도 62 / 62|",
+        "applied": true,
+        "note": ""
+      },
+      {
+        "sourceType": "API_TOOLTIP",
+        "path": "equipment[6].Tooltip",
+        "label": "목걸이 mainStat",
+        "value": "17750",
+        "raw": "도래한 결전의 목걸이\n고대 목걸이\n품질\n아이템 티어 4\n장착중\n거래 제한 아이템 레벨 1680\n캐릭터 귀속됨\n거래 1회 가능\n|거래가능\n기본 효과\n힘 +17750\n민첩 +17750\n지능 +17750\n체력 +3810\n연마 효과\n추가 피해 +2.60%\n적에게 주는 피해 +1.20%\n상태이상 공격 지속시간 +0.20%\n아크 패시브 포인트 효과\n깨달음 +13\n[카제로스 레이드] 1막 : 대지를 부수는 업화의 궤적 - 하드\n[카제로스 레이드] 2막 : 부유하는 악몽의 진혼곡 - 하드\n[카제로스 레이드] 3막 : 칠흑, 폭풍의 밤\n그 외에 획득처가 더 존재합니다.",
+        "applied": true,
+        "note": ""
+      },
+      {
+        "sourceType": "API_TOOLTIP",
+        "path": "equipment[6].Tooltip",
+        "label": "목걸이 additionalDamage",
+        "value": "0.026",
+        "raw": "도래한 결전의 목걸이\n고대 목걸이\n품질\n아이템 티어 4\n장착중\n거래 제한 아이템 레벨 1680\n캐릭터 귀속됨\n거래 1회 가능\n|거래가능\n기본 효과\n힘 +17750\n민첩 +17750\n지능 +17750\n체력 +3810\n연마 효과\n추가 피해 +2.60%\n적에게 주는 피해 +1.20%\n상태이상 공격 지속시간 +0.20%\n아크 패시브 포인트 효과\n깨달음 +13\n[카제로스 레이드] 1막 : 대지를 부수는 업화의 궤적 - 하드\n[카제로스 레이드] 2막 : 부유하는 악몽의 진혼곡 - 하드\n[카제로스 레이드] 3막 : 칠흑, 폭풍의 밤\n그 외에 획득처가 더 존재합니다.",
+        "applied": true,
+        "note": ""
+      },
+      {
+        "sourceType": "API_TOOLTIP",
+        "path": "equipment[6].Tooltip",
+        "label": "목걸이 damageToEnemy",
+        "value": "0.012",
+        "raw": "도래한 결전의 목걸이\n고대 목걸이\n품질\n아이템 티어 4\n장착중\n거래 제한 아이템 레벨 1680\n캐릭터 귀속됨\n거래 1회 가능\n|거래가능\n기본 효과\n힘 +17750\n민첩 +17750\n지능 +17750\n체력 +3810\n연마 효과\n추가 피해 +2.60%\n적에게 주는 피해 +1.20%\n상태이상 공격 지속시간 +0.20%\n아크 패시브 포인트 효과\n깨달음 +13\n[카제로스 레이드] 1막 : 대지를 부수는 업화의 궤적 - 하드\n[카제로스 레이드] 2막 : 부유하는 악몽의 진혼곡 - 하드\n[카제로스 레이드] 3막 : 칠흑, 폭풍의 밤\n그 외에 획득처가 더 존재합니다.",
+        "applied": true,
+        "note": ""
+      },
+      {
+        "sourceType": "API_TOOLTIP",
+        "path": "equipment[7].Tooltip",
+        "label": "귀걸이 mainStat",
+        "value": "13744",
+        "raw": "도래한 결전의 귀걸이\n고대 귀걸이\n품질\n아이템 티어 4\n장착중\n거래 제한 아이템 레벨 1680\n캐릭터 귀속됨\n거래 2회 가능\n|거래가능\n기본 효과\n힘 +13744\n민첩 +13744\n지능 +13744\n체력 +2914\n연마 효과\n공격력 +0.95%\n최대 마나 +6\n무기 공격력 +3.00%\n아크 패시브 포인트 효과\n깨달음 +12\n[카제로스 레이드] 1막 : 대지를 부수는 업화의 궤적 - 하드\n[카제로스 레이드] 2막 : 부유하는 악몽의 진혼곡 - 하드\n[카제로스 레이드] 3막 : 칠흑, 폭풍의 밤\n그 외에 획득처가 더 존재합니다.",
+        "applied": true,
+        "note": ""
+      },
+      {
+        "sourceType": "API_TOOLTIP",
+        "path": "equipment[7].Tooltip",
+        "label": "귀걸이 weaponAttackPercent",
+        "value": "0.03",
+        "raw": "도래한 결전의 귀걸이\n고대 귀걸이\n품질\n아이템 티어 4\n장착중\n거래 제한 아이템 레벨 1680\n캐릭터 귀속됨\n거래 2회 가능\n|거래가능\n기본 효과\n힘 +13744\n민첩 +13744\n지능 +13744\n체력 +2914\n연마 효과\n공격력 +0.95%\n최대 마나 +6\n무기 공격력 +3.00%\n아크 패시브 포인트 효과\n깨달음 +12\n[카제로스 레이드] 1막 : 대지를 부수는 업화의 궤적 - 하드\n[카제로스 레이드] 2막 : 부유하는 악몽의 진혼곡 - 하드\n[카제로스 레이드] 3막 : 칠흑, 폭풍의 밤\n그 외에 획득처가 더 존재합니다.",
+        "applied": true,
+        "note": ""
+      },
+      {
+        "sourceType": "API_TOOLTIP",
+        "path": "equipment[7].Tooltip",
+        "label": "귀걸이 attackPowerPercent",
+        "value": "0.0095",
+        "raw": "도래한 결전의 귀걸이\n고대 귀걸이\n품질\n아이템 티어 4\n장착중\n거래 제한 아이템 레벨 1680\n캐릭터 귀속됨\n거래 2회 가능\n|거래가능\n기본 효과\n힘 +13744\n민첩 +13744\n지능 +13744\n체력 +2914\n연마 효과\n공격력 +0.95%\n최대 마나 +6\n무기 공격력 +3.00%\n아크 패시브 포인트 효과\n깨달음 +12\n[카제로스 레이드] 1막 : 대지를 부수는 업화의 궤적 - 하드\n[카제로스 레이드] 2막 : 부유하는 악몽의 진혼곡 - 하드\n[카제로스 레이드] 3막 : 칠흑, 폭풍의 밤\n그 외에 획득처가 더 존재합니다.",
+        "applied": true,
+        "note": ""
+      },
+      {
+        "sourceType": "API_TOOLTIP",
+        "path": "equipment[8].Tooltip",
+        "label": "귀걸이 mainStat",
+        "value": "13535",
+        "raw": "도래한 결전의 귀걸이\n고대 귀걸이\n품질\n아이템 티어 4\n장착중\n거래 제한 아이템 레벨 1680\n캐릭터 귀속됨\n거래 2회 가능\n|거래가능\n기본 효과\n힘 +13535\n민첩 +13535\n지능 +13535\n체력 +2742\n연마 효과\n무기 공격력 +3.00%\n공격력 +0.95%\n전투 중 생명력 회복량 +10\n아크 패시브 포인트 효과\n깨달음 +12\n[카제로스 레이드] 1막 : 대지를 부수는 업화의 궤적 - 하드\n[카제로스 레이드] 2막 : 부유하는 악몽의 진혼곡 - 하드\n[카제로스 레이드] 3막 : 칠흑, 폭풍의 밤\n그 외에 획득처가 더 존재합니다.",
+        "applied": true,
+        "note": ""
+      },
+      {
+        "sourceType": "API_TOOLTIP",
+        "path": "equipment[8].Tooltip",
+        "label": "귀걸이 weaponAttackPercent",
+        "value": "0.03",
+        "raw": "도래한 결전의 귀걸이\n고대 귀걸이\n품질\n아이템 티어 4\n장착중\n거래 제한 아이템 레벨 1680\n캐릭터 귀속됨\n거래 2회 가능\n|거래가능\n기본 효과\n힘 +13535\n민첩 +13535\n지능 +13535\n체력 +2742\n연마 효과\n무기 공격력 +3.00%\n공격력 +0.95%\n전투 중 생명력 회복량 +10\n아크 패시브 포인트 효과\n깨달음 +12\n[카제로스 레이드] 1막 : 대지를 부수는 업화의 궤적 - 하드\n[카제로스 레이드] 2막 : 부유하는 악몽의 진혼곡 - 하드\n[카제로스 레이드] 3막 : 칠흑, 폭풍의 밤\n그 외에 획득처가 더 존재합니다.",
+        "applied": true,
+        "note": ""
+      },
+      {
+        "sourceType": "API_TOOLTIP",
+        "path": "equipment[8].Tooltip",
+        "label": "귀걸이 attackPowerPercent",
+        "value": "0.0095",
+        "raw": "도래한 결전의 귀걸이\n고대 귀걸이\n품질\n아이템 티어 4\n장착중\n거래 제한 아이템 레벨 1680\n캐릭터 귀속됨\n거래 2회 가능\n|거래가능\n기본 효과\n힘 +13535\n민첩 +13535\n지능 +13535\n체력 +2742\n연마 효과\n무기 공격력 +3.00%\n공격력 +0.95%\n전투 중 생명력 회복량 +10\n아크 패시브 포인트 효과\n깨달음 +12\n[카제로스 레이드] 1막 : 대지를 부수는 업화의 궤적 - 하드\n[카제로스 레이드] 2막 : 부유하는 악몽의 진혼곡 - 하드\n[카제로스 레이드] 3막 : 칠흑, 폭풍의 밤\n그 외에 획득처가 더 존재합니다.",
+        "applied": true,
+        "note": ""
+      },
+      {
+        "sourceType": "API_TOOLTIP",
+        "path": "equipment[9].Tooltip",
+        "label": "반지 mainStat",
+        "value": "11446",
+        "raw": "도래한 결전의 반지\n고대 반지\n품질\n아이템 티어 4\n장착중\n거래 제한 아이템 레벨 1680\n캐릭터 귀속됨\n|거래 불가\n기본 효과\n힘 +11446\n민첩 +11446\n지능 +11446\n체력 +2160\n연마 효과\n치명타 적중률 +1.55%\n최대 마나 +6\n치명타 피해 +2.40%\n아크 패시브 포인트 효과\n깨달음 +12\n[카제로스 레이드] 1막 : 대지를 부수는 업화의 궤적 - 하드\n[카제로스 레이드] 2막 : 부유하는 악몽의 진혼곡 - 하드\n[카제로스 레이드] 3막 : 칠흑, 폭풍의 밤\n그 외에 획득처가 더 존재합니다.",
+        "applied": true,
+        "note": ""
+      },
+      {
+        "sourceType": "API_TOOLTIP",
+        "path": "equipment[9].Tooltip",
+        "label": "반지 criticalRate",
+        "value": "0.0155",
+        "raw": "도래한 결전의 반지\n고대 반지\n품질\n아이템 티어 4\n장착중\n거래 제한 아이템 레벨 1680\n캐릭터 귀속됨\n|거래 불가\n기본 효과\n힘 +11446\n민첩 +11446\n지능 +11446\n체력 +2160\n연마 효과\n치명타 적중률 +1.55%\n최대 마나 +6\n치명타 피해 +2.40%\n아크 패시브 포인트 효과\n깨달음 +12\n[카제로스 레이드] 1막 : 대지를 부수는 업화의 궤적 - 하드\n[카제로스 레이드] 2막 : 부유하는 악몽의 진혼곡 - 하드\n[카제로스 레이드] 3막 : 칠흑, 폭풍의 밤\n그 외에 획득처가 더 존재합니다.",
+        "applied": true,
+        "note": ""
+      },
+      {
+        "sourceType": "API_TOOLTIP",
+        "path": "equipment[9].Tooltip",
+        "label": "반지 criticalDamage",
+        "value": "0.024",
+        "raw": "도래한 결전의 반지\n고대 반지\n품질\n아이템 티어 4\n장착중\n거래 제한 아이템 레벨 1680\n캐릭터 귀속됨\n|거래 불가\n기본 효과\n힘 +11446\n민첩 +11446\n지능 +11446\n체력 +2160\n연마 효과\n치명타 적중률 +1.55%\n최대 마나 +6\n치명타 피해 +2.40%\n아크 패시브 포인트 효과\n깨달음 +12\n[카제로스 레이드] 1막 : 대지를 부수는 업화의 궤적 - 하드\n[카제로스 레이드] 2막 : 부유하는 악몽의 진혼곡 - 하드\n[카제로스 레이드] 3막 : 칠흑, 폭풍의 밤\n그 외에 획득처가 더 존재합니다.",
+        "applied": true,
+        "note": ""
+      },
+      {
+        "sourceType": "API_TOOLTIP",
+        "path": "equipment[10].Tooltip",
+        "label": "반지 mainStat",
+        "value": "12549",
+        "raw": "도래한 결전의 반지\n고대 반지\n품질\n아이템 티어 4\n장착중\n거래 제한 아이템 레벨 1680\n캐릭터 귀속됨\n거래 2회 가능\n|거래가능\n기본 효과\n힘 +12549\n민첩 +12549\n지능 +12549\n체력 +2345\n연마 효과\n최대 마나 +30\n치명타 적중률 +1.55%\n치명타 피해 +2.40%\n아크 패시브 포인트 효과\n깨달음 +12\n[카제로스 레이드] 1막 : 대지를 부수는 업화의 궤적 - 하드\n[카제로스 레이드] 2막 : 부유하는 악몽의 진혼곡 - 하드\n[카제로스 레이드] 3막 : 칠흑, 폭풍의 밤\n그 외에 획득처가 더 존재합니다.",
+        "applied": true,
+        "note": ""
+      },
+      {
+        "sourceType": "API_TOOLTIP",
+        "path": "equipment[10].Tooltip",
+        "label": "반지 criticalRate",
+        "value": "0.0155",
+        "raw": "도래한 결전의 반지\n고대 반지\n품질\n아이템 티어 4\n장착중\n거래 제한 아이템 레벨 1680\n캐릭터 귀속됨\n거래 2회 가능\n|거래가능\n기본 효과\n힘 +12549\n민첩 +12549\n지능 +12549\n체력 +2345\n연마 효과\n최대 마나 +30\n치명타 적중률 +1.55%\n치명타 피해 +2.40%\n아크 패시브 포인트 효과\n깨달음 +12\n[카제로스 레이드] 1막 : 대지를 부수는 업화의 궤적 - 하드\n[카제로스 레이드] 2막 : 부유하는 악몽의 진혼곡 - 하드\n[카제로스 레이드] 3막 : 칠흑, 폭풍의 밤\n그 외에 획득처가 더 존재합니다.",
+        "applied": true,
+        "note": ""
+      },
+      {
+        "sourceType": "API_TOOLTIP",
+        "path": "equipment[10].Tooltip",
+        "label": "반지 criticalDamage",
+        "value": "0.024",
+        "raw": "도래한 결전의 반지\n고대 반지\n품질\n아이템 티어 4\n장착중\n거래 제한 아이템 레벨 1680\n캐릭터 귀속됨\n거래 2회 가능\n|거래가능\n기본 효과\n힘 +12549\n민첩 +12549\n지능 +12549\n체력 +2345\n연마 효과\n최대 마나 +30\n치명타 적중률 +1.55%\n치명타 피해 +2.40%\n아크 패시브 포인트 효과\n깨달음 +12\n[카제로스 레이드] 1막 : 대지를 부수는 업화의 궤적 - 하드\n[카제로스 레이드] 2막 : 부유하는 악몽의 진혼곡 - 하드\n[카제로스 레이드] 3막 : 칠흑, 폭풍의 밤\n그 외에 획득처가 더 존재합니다.",
+        "applied": true,
+        "note": ""
+      },
+      {
+        "sourceType": "API_TOOLTIP",
+        "path": "equipment[12].Tooltip",
+        "label": "팔찌 additionalDamage",
+        "value": "0.035",
+        "raw": "찬란한 구원자의 팔찌\n고대 팔찌\n아이템 티어 4\n장착중\n거래 제한 아이템 레벨 1680\n캐릭터 귀속됨\n|거래 불가\n팔찌 효과\n숙련 +102\n 신속 +107\n추가 피해 +3.50%\n스킬의 재사용 대기 시간이 2% 증가하지만, 적에게 주는 피해가 4.5% 증가한다.\n치명타 피해가 6.8% 증가한다.\n공격이 치명타로 적중 시 적에게 주는 피해가 1.5% 증가한다.\n효과 부여 불가\n아크 패시브 포인트 효과\n도약 +18\n[가디언 토벌] 스콜라키아\n[카제로스 레이드] 1막 : 대지를 부수는 업화의 궤적 - 하드\n[카제로스 레이드] 2막 : 부유하는 악몽의 진혼곡 - 하드\n그 외에 획득처가 더 존재합니다.",
+        "applied": true,
+        "note": ""
+      },
+      {
+        "sourceType": "API_TOOLTIP",
+        "path": "equipment[12].Tooltip",
+        "label": "팔찌 damageToEnemy",
+        "value": "0.045",
+        "raw": "찬란한 구원자의 팔찌\n고대 팔찌\n아이템 티어 4\n장착중\n거래 제한 아이템 레벨 1680\n캐릭터 귀속됨\n|거래 불가\n팔찌 효과\n숙련 +102\n 신속 +107\n추가 피해 +3.50%\n스킬의 재사용 대기 시간이 2% 증가하지만, 적에게 주는 피해가 4.5% 증가한다.\n치명타 피해가 6.8% 증가한다.\n공격이 치명타로 적중 시 적에게 주는 피해가 1.5% 증가한다.\n효과 부여 불가\n아크 패시브 포인트 효과\n도약 +18\n[가디언 토벌] 스콜라키아\n[카제로스 레이드] 1막 : 대지를 부수는 업화의 궤적 - 하드\n[카제로스 레이드] 2막 : 부유하는 악몽의 진혼곡 - 하드\n그 외에 획득처가 더 존재합니다.",
+        "applied": true,
+        "note": ""
+      },
+      {
+        "sourceType": "API_TOOLTIP",
+        "path": "equipment[12].Tooltip",
+        "label": "팔찌 criticalDamage",
+        "value": "0.068",
+        "raw": "찬란한 구원자의 팔찌\n고대 팔찌\n아이템 티어 4\n장착중\n거래 제한 아이템 레벨 1680\n캐릭터 귀속됨\n|거래 불가\n팔찌 효과\n숙련 +102\n 신속 +107\n추가 피해 +3.50%\n스킬의 재사용 대기 시간이 2% 증가하지만, 적에게 주는 피해가 4.5% 증가한다.\n치명타 피해가 6.8% 증가한다.\n공격이 치명타로 적중 시 적에게 주는 피해가 1.5% 증가한다.\n효과 부여 불가\n아크 패시브 포인트 효과\n도약 +18\n[가디언 토벌] 스콜라키아\n[카제로스 레이드] 1막 : 대지를 부수는 업화의 궤적 - 하드\n[카제로스 레이드] 2막 : 부유하는 악몽의 진혼곡 - 하드\n그 외에 획득처가 더 존재합니다.",
+        "applied": true,
+        "note": ""
+      },
+      {
+        "sourceType": "API_TOOLTIP",
+        "path": "equipment[12].Tooltip",
+        "label": "팔찌 criticalHitDamage",
+        "value": "0.015",
+        "raw": "찬란한 구원자의 팔찌\n고대 팔찌\n아이템 티어 4\n장착중\n거래 제한 아이템 레벨 1680\n캐릭터 귀속됨\n|거래 불가\n팔찌 효과\n숙련 +102\n 신속 +107\n추가 피해 +3.50%\n스킬의 재사용 대기 시간이 2% 증가하지만, 적에게 주는 피해가 4.5% 증가한다.\n치명타 피해가 6.8% 증가한다.\n공격이 치명타로 적중 시 적에게 주는 피해가 1.5% 증가한다.\n효과 부여 불가\n아크 패시브 포인트 효과\n도약 +18\n[가디언 토벌] 스콜라키아\n[카제로스 레이드] 1막 : 대지를 부수는 업화의 궤적 - 하드\n[카제로스 레이드] 2막 : 부유하는 악몽의 진혼곡 - 하드\n그 외에 획득처가 더 존재합니다.",
+        "applied": true,
+        "note": ""
+      }
+    ],
+    "excluded": []
+  },
+  "avatars": {
+    "mainStatPercent": "0.08",
+    "selected": [
+      {
+        "sourceType": "API_FIELD+EXAMPLE_DB",
+        "path": "avatars[0]",
+        "label": "무기 아바타 아바타 주스탯",
+        "value": "0.02",
+        "raw": "수줍은 영원 우산 (귀속) / 전설 / IsInner=True",
+        "applied": true,
+        "note": "전설 부위당 +2% 예시값"
+      },
+      {
+        "sourceType": "API_FIELD+EXAMPLE_DB",
+        "path": "avatars[1]",
+        "label": "머리 아바타 아바타 주스탯",
+        "value": "0.02",
+        "raw": "수줍은 영원 머리 (귀속) / 전설 / IsInner=True",
+        "applied": true,
+        "note": "전설 부위당 +2% 예시값"
+      },
+      {
+        "sourceType": "API_FIELD+EXAMPLE_DB",
+        "path": "avatars[2]",
+        "label": "상의 아바타 아바타 주스탯",
+        "value": "0.02",
+        "raw": "수줍은 영원 상의 (귀속) / 전설 / IsInner=True",
+        "applied": true,
+        "note": "전설 부위당 +2% 예시값"
+      },
+      {
+        "sourceType": "API_FIELD+EXAMPLE_DB",
+        "path": "avatars[3]",
+        "label": "하의 아바타 아바타 주스탯",
+        "value": "0.02",
+        "raw": "수줍은 영원 하의 (귀속) / 전설 / IsInner=True",
+        "applied": true,
+        "note": "전설 부위당 +2% 예시값"
+      },
+      {
+        "sourceType": "API_FIELD+EXAMPLE_DB",
+        "path": "avatars[4]",
+        "label": "악기 아바타 아바타 주스탯",
+        "value": "0",
+        "raw": "천상의 하프 / 영웅 / IsInner=False",
+        "applied": true,
+        "note": "주스탯 적용 부위가 아니므로 0%"
+      },
+      {
+        "sourceType": "API_FIELD+EXAMPLE_DB",
+        "path": "avatars[5]",
+        "label": "얼굴1 아바타 아바타 주스탯",
+        "value": "0",
+        "raw": "모던 캠퍼스 얼굴1 / 영웅 / IsInner=False",
+        "applied": true,
+        "note": "주스탯 적용 부위가 아니므로 0%"
+      },
+      {
+        "sourceType": "API_FIELD+EXAMPLE_DB",
+        "path": "avatars[6]",
+        "label": "얼굴2 아바타 아바타 주스탯",
+        "value": "0",
+        "raw": "여명의 백린 얼굴2 / 영웅 / IsInner=False",
+        "applied": true,
+        "note": "주스탯 적용 부위가 아니므로 0%"
+      },
+      {
+        "sourceType": "API_FIELD+EXAMPLE_DB",
+        "path": "avatars[10]",
+        "label": "이동 효과 아바타 주스탯",
+        "value": "0",
+        "raw": "첨벙 이동 효과 / 영웅 / IsInner=False",
+        "applied": true,
+        "note": "주스탯 적용 부위가 아니므로 0%"
+      }
+    ],
+    "excluded": [
+      {
+        "sourceType": "API_FIELD",
+        "path": "avatars[7]",
+        "label": "무기 아바타 중복 아바타",
+        "value": 0,
+        "raw": "수호의 잠룡 우산 / IsInner=False",
+        "applied": false,
+        "note": "부위별 효과 아바타 하나만 선택"
+      },
+      {
+        "sourceType": "API_FIELD",
+        "path": "avatars[8]",
+        "label": "상의 아바타 중복 아바타",
+        "value": 0,
+        "raw": "데일리 모던 상의 / IsInner=False",
+        "applied": false,
+        "note": "부위별 효과 아바타 하나만 선택"
+      },
+      {
+        "sourceType": "API_FIELD",
+        "path": "avatars[9]",
+        "label": "하의 아바타 중복 아바타",
+        "value": 0,
+        "raw": "베이직 돌핀 쇼츠 / IsInner=False",
+        "applied": false,
+        "note": "부위별 효과 아바타 하나만 선택"
+      }
+    ]
+  },
+  "engravings": {
+    "entries": {
+      "원한": {
+        "name": "원한",
+        "rawName": "원한",
+        "grade": "유물",
+        "level": 3,
+        "abilityStoneLevel": 2,
+        "description": "보스 및 레이드 몬스터에게 주는 피해가 24.00% 증가하지만, 받는 피해가 20.00% 증가한다.",
+        "parsed": {
+          "generalDamage": "0.24",
+          "raidCaptainCoefficient": "0",
+          "attackSpeed": "0",
+          "attackPowerPercent": "0",
+          "attackPowerPerStack": "0",
+          "maxStacks": 1,
+          "criticalRate": "0"
+        }
+      },
+      "질량 증가": {
+        "name": "질량 증가",
+        "rawName": "질량 증가",
+        "grade": "유물",
+        "level": 4,
+        "abilityStoneLevel": 0,
+        "description": "공격속도가 10.00% 감소하지만, 적에게 주는 피해가 19.00% 증가한다.",
+        "parsed": {
+          "generalDamage": "0.19",
+          "raidCaptainCoefficient": "0",
+          "attackSpeed": "-0.10",
+          "attackPowerPercent": "0",
+          "attackPowerPerStack": "0",
+          "maxStacks": 1,
+          "criticalRate": "0"
+        }
+      },
+      "돌격대장": {
+        "name": "돌격대장",
+        "rawName": "돌격대장",
+        "grade": "유물",
+        "level": 3,
+        "abilityStoneLevel": 0,
+        "description": "이동속도 증가량의 46.00% 만큼 적에게 주는 피해량이 증가한다.",
+        "parsed": {
+          "generalDamage": "0",
+          "raidCaptainCoefficient": "0.46",
+          "attackSpeed": "0",
+          "attackPowerPercent": "0",
+          "attackPowerPerStack": "0",
+          "maxStacks": 1,
+          "criticalRate": "0"
+        }
+      },
+      "타격의 대가": {
+        "name": "타격의 대가",
+        "rawName": "타격의 대가",
+        "grade": "유물",
+        "level": 4,
+        "abilityStoneLevel": 0,
+        "description": "공격 타입이 백 어택 및 헤드 어택에 해당되지 않는 공격의 피해가 17.00% 증가한다. 각성기는 해당 효과가 적용되지 않는다.",
+        "parsed": {
+          "generalDamage": "0",
+          "raidCaptainCoefficient": "0",
+          "attackSpeed": "0",
+          "attackPowerPercent": "0",
+          "attackPowerPerStack": "0",
+          "maxStacks": 1,
+          "criticalRate": "0"
+        }
+      },
+      "아드레날린": {
+        "name": "아드레날린",
+        "rawName": "아드레날린",
+        "grade": "유물",
+        "level": 4,
+        "abilityStoneLevel": 3,
+        "description": "이동기 및 기본공격을 제외한 스킬 사용 후 6초 동안 공격력이 1.73% 증가하며 (최대 6중첩) 해당 효과가 최대 중첩 도달 시 치명타 적중률이 추가로 20.00% 증가한다. 해당 효과는 스킬 취소에 따른 재사용 대기시간 감소가 적용되는 경우, 스킬 종료 후 적용된다.",
+        "parsed": {
+          "generalDamage": "0",
+          "raidCaptainCoefficient": "0",
+          "attackSpeed": "0",
+          "attackPowerPercent": "0.1038",
+          "attackPowerPerStack": "0.0173",
+          "maxStacks": 6,
+          "criticalRate": "0.20"
+        }
+      }
+    },
+    "parsedEffects": {
+      "원한": {
+        "generalDamage": "0.24",
+        "raidCaptainCoefficient": "0",
+        "attackSpeed": "0",
+        "attackPowerPercent": "0",
+        "attackPowerPerStack": "0",
+        "maxStacks": 1,
+        "criticalRate": "0"
+      },
+      "질량 증가": {
+        "generalDamage": "0.19",
+        "raidCaptainCoefficient": "0",
+        "attackSpeed": "-0.10",
+        "attackPowerPercent": "0",
+        "attackPowerPerStack": "0",
+        "maxStacks": 1,
+        "criticalRate": "0"
+      },
+      "돌격대장": {
+        "generalDamage": "0",
+        "raidCaptainCoefficient": "0.46",
+        "attackSpeed": "0",
+        "attackPowerPercent": "0",
+        "attackPowerPerStack": "0",
+        "maxStacks": 1,
+        "criticalRate": "0"
+      },
+      "타격의 대가": {
+        "generalDamage": "0",
+        "raidCaptainCoefficient": "0",
+        "attackSpeed": "0",
+        "attackPowerPercent": "0",
+        "attackPowerPerStack": "0",
+        "maxStacks": 1,
+        "criticalRate": "0"
+      },
+      "아드레날린": {
+        "generalDamage": "0",
+        "raidCaptainCoefficient": "0",
+        "attackSpeed": "0",
+        "attackPowerPercent": "0.1038",
+        "attackPowerPerStack": "0.0173",
+        "maxStacks": 6,
+        "criticalRate": "0.20"
+      }
+    },
+    "names": [
+      "돌격대장",
+      "아드레날린",
+      "원한",
+      "질량 증가",
+      "타격의 대가"
+    ],
+    "stoneLevelTotal": 5,
+    "stoneBaseAttackPercent": "0.015",
+    "sources": [
+      {
+        "sourceType": "API_FIELD",
+        "path": "engravings.entries[0]",
+        "label": "원한",
+        "value": 3,
+        "raw": "보스 및 레이드 몬스터에게 주는 피해가 24.00% 증가하지만, 받는 피해가 20.00% 증가한다.",
+        "applied": true,
+        "note": ""
+      },
+      {
+        "sourceType": "API_FIELD",
+        "path": "engravings.entries[1]",
+        "label": "질량 증가",
+        "value": 4,
+        "raw": "공격속도가 10.00% 감소하지만, 적에게 주는 피해가 19.00% 증가한다.",
+        "applied": true,
+        "note": ""
+      },
+      {
+        "sourceType": "API_FIELD",
+        "path": "engravings.entries[2]",
+        "label": "돌격대장",
+        "value": 3,
+        "raw": "이동속도 증가량의 46.00% 만큼 적에게 주는 피해량이 증가한다.",
+        "applied": true,
+        "note": ""
+      },
+      {
+        "sourceType": "API_FIELD",
+        "path": "engravings.entries[3]",
+        "label": "타격의 대가",
+        "value": 4,
+        "raw": "공격 타입이 백 어택 및 헤드 어택에 해당되지 않는 공격의 피해가 17.00% 증가한다. 각성기는 해당 효과가 적용되지 않는다.",
+        "applied": true,
+        "note": ""
+      },
+      {
+        "sourceType": "API_FIELD",
+        "path": "engravings.entries[4]",
+        "label": "아드레날린",
+        "value": 4,
+        "raw": "이동기 및 기본공격을 제외한 스킬 사용 후 6초 동안 공격력이 1.73% 증가하며 (최대 6중첩) 해당 효과가 최대 중첩 도달 시 치명타 적중률이 추가로 20.00% 증가한다. 해당 효과는 스킬 취소에 따른 재사용 대기시간 감소가 적용되는 경우, 스킬 종료 후 적용된다.",
+        "applied": true,
+        "note": ""
+      },
+      {
+        "sourceType": "API_FIELD+EXAMPLE_DB",
+        "path": "engravings.ArkPassiveEffects[].AbilityStoneLevel",
+        "label": "어빌리티 스톤 기본 공격력",
+        "value": "0.015",
+        "raw": "각인 돌 레벨 합계=5",
+        "applied": true,
+        "note": "예시 임계값 합계 5 이상 → +1.5%"
+      }
+    ]
+  },
+  "cards": {
+    "damagePercent": "0.15",
+    "sources": [
+      {
+        "sourceType": "API_FIELD",
+        "path": "cards.Effects[0].Items[4]",
+        "label": "세상을 구하는 빛 6세트 (18각성합계)",
+        "value": "0.07",
+        "raw": "성속성 피해 +7.00%",
+        "applied": true,
+        "note": ""
+      },
+      {
+        "sourceType": "API_FIELD",
+        "path": "cards.Effects[0].Items[5]",
+        "label": "세상을 구하는 빛 6세트 (24각성합계)",
+        "value": "0.04",
+        "raw": "성속성 피해 +4.00%",
+        "applied": true,
+        "note": ""
+      },
+      {
+        "sourceType": "API_FIELD",
+        "path": "cards.Effects[0].Items[6]",
+        "label": "세상을 구하는 빛 6세트 (30각성합계)",
+        "value": "0.04",
+        "raw": "성속성 피해 +4.00%",
+        "applied": true,
+        "note": ""
+      }
+    ]
+  },
+  "gems": {
+    "baseAttackPercent": "0.102",
+    "gems": [
+      {
+        "slot": 0,
+        "name": "<P ALIGN='CENTER'><FONT COLOR='#FA5D00'>9레벨 광휘의 보석</FONT></P>",
+        "level": 9,
+        "grade": "유물",
+        "baseAttackPercent": "0.01",
+        "tooltipText": "9레벨 광휘의 보석\n유물 보석\n아이템 레벨 1640 (티어 4)\n장착중\n장착, 합성, 조율 가능 아이템 레벨 1640\n거래 제한 아이템 레벨 1640\n캐릭터 귀속됨\n|거래 불가\n보석 레벨 9\n효과\n[기상술사] 몰아치기 재사용 대기시간 22.00% 감소\n\n추가 효과\n기본 공격력 1.00% 증가\n조율된 보석은 보석 프리셋마다 \n원하는 스킬 효과로 변환하여 사용할 수 있습니다.\n\n보석 전문가에게 복원할 수 있으며\n복원 시, 조율 이전의 상태로 되돌립니다.\n분해불가"
+      },
+      {
+        "slot": 1,
+        "name": "<P ALIGN='CENTER'><FONT COLOR='#FA5D00'>9레벨 광휘의 보석</FONT></P>",
+        "level": 9,
+        "grade": "유물",
+        "baseAttackPercent": "0.01",
+        "tooltipText": "9레벨 광휘의 보석\n유물 보석\n아이템 레벨 1640 (티어 4)\n장착중\n장착, 합성, 조율 가능 아이템 레벨 1640\n거래 제한 아이템 레벨 1640\n캐릭터 귀속됨\n|거래 불가\n보석 레벨 9\n효과\n[기상술사] 회오리 걸음 피해 40.00% 증가\n\n추가 효과\n기본 공격력 1.00% 증가\n조율된 보석은 보석 프리셋마다 \n원하는 스킬 효과로 변환하여 사용할 수 있습니다.\n\n보석 전문가에게 복원할 수 있으며\n복원 시, 조율 이전의 상태로 되돌립니다.\n분해불가"
+      },
+      {
+        "slot": 2,
+        "name": "<P ALIGN='CENTER'><FONT COLOR='#FA5D00'>9레벨 광휘의 보석</FONT></P>",
+        "level": 9,
+        "grade": "유물",
+        "baseAttackPercent": "0.01",
+        "tooltipText": "9레벨 광휘의 보석\n유물 보석\n아이템 레벨 1640 (티어 4)\n장착중\n장착, 합성, 조율 가능 아이템 레벨 1640\n거래 제한 아이템 레벨 1640\n캐릭터 귀속됨\n|거래 불가\n보석 레벨 9\n효과\n[기상술사] 칼바람 피해 40.00% 증가\n\n추가 효과\n기본 공격력 1.00% 증가\n조율된 보석은 보석 프리셋마다 \n원하는 스킬 효과로 변환하여 사용할 수 있습니다.\n\n보석 전문가에게 복원할 수 있으며\n복원 시, 조율 이전의 상태로 되돌립니다.\n분해불가"
+      },
+      {
+        "slot": 3,
+        "name": "<P ALIGN='CENTER'><FONT COLOR='#FA5D00'>9레벨 광휘의 보석</FONT></P>",
+        "level": 9,
+        "grade": "유물",
+        "baseAttackPercent": "0.01",
+        "tooltipText": "9레벨 광휘의 보석\n유물 보석\n아이템 레벨 1640 (티어 4)\n장착중\n장착, 합성, 조율 가능 아이템 레벨 1640\n거래 제한 아이템 레벨 1640\n캐릭터 귀속됨\n|거래 불가\n보석 레벨 9\n효과\n[기상술사] 칼바람 재사용 대기시간 22.00% 감소\n\n추가 효과\n기본 공격력 1.00% 증가\n조율된 보석은 보석 프리셋마다 \n원하는 스킬 효과로 변환하여 사용할 수 있습니다.\n\n보석 전문가에게 복원할 수 있으며\n복원 시, 조율 이전의 상태로 되돌립니다.\n분해불가"
+      },
+      {
+        "slot": 4,
+        "name": "<P ALIGN='CENTER'><FONT COLOR='#FA5D00'>9레벨 광휘의 보석</FONT></P>",
+        "level": 9,
+        "grade": "유물",
+        "baseAttackPercent": "0.01",
+        "tooltipText": "9레벨 광휘의 보석\n유물 보석\n아이템 레벨 1640 (티어 4)\n장착중\n장착, 합성, 조율 가능 아이템 레벨 1640\n거래 제한 아이템 레벨 1640\n캐릭터 귀속됨\n|거래 불가\n보석 레벨 9\n효과\n[기상술사] 몰아치기 피해 40.00% 증가\n\n추가 효과\n기본 공격력 1.00% 증가\n조율된 보석은 보석 프리셋마다 \n원하는 스킬 효과로 변환하여 사용할 수 있습니다.\n\n보석 전문가에게 복원할 수 있으며\n복원 시, 조율 이전의 상태로 되돌립니다.\n분해불가"
+      },
+      {
+        "slot": 5,
+        "name": "<P ALIGN='CENTER'><FONT COLOR='#FA5D00'>9레벨 광휘의 보석</FONT></P>",
+        "level": 9,
+        "grade": "유물",
+        "baseAttackPercent": "0.01",
+        "tooltipText": "9레벨 광휘의 보석\n유물 보석\n아이템 레벨 1640 (티어 4)\n장착중\n장착, 합성, 조율 가능 아이템 레벨 1640\n거래 제한 아이템 레벨 1640\n캐릭터 귀속됨\n|거래 불가\n보석 레벨 9\n효과\n[기상술사] 바람송곳 피해 40.00% 증가\n\n추가 효과\n기본 공격력 1.00% 증가\n조율된 보석은 보석 프리셋마다 \n원하는 스킬 효과로 변환하여 사용할 수 있습니다.\n\n보석 전문가에게 복원할 수 있으며\n복원 시, 조율 이전의 상태로 되돌립니다.\n분해불가"
+      },
+      {
+        "slot": 6,
+        "name": "<P ALIGN='CENTER'><FONT COLOR='#FA5D00'>9레벨 광휘의 보석</FONT></P>",
+        "level": 9,
+        "grade": "유물",
+        "baseAttackPercent": "0.01",
+        "tooltipText": "9레벨 광휘의 보석\n유물 보석\n아이템 레벨 1640 (티어 4)\n장착중\n장착, 합성, 조율 가능 아이템 레벨 1640\n거래 제한 아이템 레벨 1640\n캐릭터 귀속됨\n|거래 불가\n보석 레벨 9\n효과\n[기상술사] 회오리 걸음 재사용 대기시간 22.00% 감소\n\n추가 효과\n기본 공격력 1.00% 증가\n조율된 보석은 보석 프리셋마다 \n원하는 스킬 효과로 변환하여 사용할 수 있습니다.\n\n보석 전문가에게 복원할 수 있으며\n복원 시, 조율 이전의 상태로 되돌립니다.\n분해불가"
+      },
+      {
+        "slot": 7,
+        "name": "<P ALIGN='CENTER'><FONT COLOR='#FA5D00'>8레벨 광휘의 보석</FONT></P>",
+        "level": 8,
+        "grade": "유물",
+        "baseAttackPercent": "0.008",
+        "tooltipText": "8레벨 광휘의 보석\n유물 보석\n아이템 레벨 1640 (티어 4)\n장착중\n장착, 합성, 조율 가능 아이템 레벨 1640\n거래 제한 아이템 레벨 1640\n캐릭터 귀속됨\n|거래 불가\n보석 레벨 8\n효과\n[기상술사] 바람송곳 재사용 대기시간 20.00% 감소\n\n추가 효과\n기본 공격력 0.80% 증가\n조율된 보석은 보석 프리셋마다 \n원하는 스킬 효과로 변환하여 사용할 수 있습니다.\n\n보석 전문가에게 복원할 수 있으며\n복원 시, 조율 이전의 상태로 되돌립니다.\n분해불가"
+      },
+      {
+        "slot": 8,
+        "name": "<P ALIGN='CENTER'><FONT COLOR='#FA5D00'>8레벨 광휘의 보석</FONT></P>",
+        "level": 8,
+        "grade": "유물",
+        "baseAttackPercent": "0.008",
+        "tooltipText": "8레벨 광휘의 보석\n유물 보석\n아이템 레벨 1640 (티어 4)\n장착중\n장착, 합성, 조율 가능 아이템 레벨 1640\n거래 제한 아이템 레벨 1640\n캐릭터 귀속됨\n|거래 불가\n보석 레벨 8\n효과\n[기상술사] 싹쓸바람 재사용 대기시간 20.00% 감소\n\n추가 효과\n기본 공격력 0.80% 증가\n조율된 보석은 보석 프리셋마다 \n원하는 스킬 효과로 변환하여 사용할 수 있습니다.\n\n보석 전문가에게 복원할 수 있으며\n복원 시, 조율 이전의 상태로 되돌립니다.\n분해불가"
+      },
+      {
+        "slot": 9,
+        "name": "<P ALIGN='CENTER'><FONT COLOR='#FA5D00'>8레벨 광휘의 보석</FONT></P>",
+        "level": 8,
+        "grade": "유물",
+        "baseAttackPercent": "0.008",
+        "tooltipText": "8레벨 광휘의 보석\n유물 보석\n아이템 레벨 1640 (티어 4)\n장착중\n장착, 합성, 조율 가능 아이템 레벨 1640\n거래 제한 아이템 레벨 1640\n캐릭터 귀속됨\n|거래 불가\n보석 레벨 8\n효과\n[기상술사] 마주바람 피해 36.00% 증가\n\n추가 효과\n기본 공격력 0.80% 증가\n조율된 보석은 보석 프리셋마다 \n원하는 스킬 효과로 변환하여 사용할 수 있습니다.\n\n보석 전문가에게 복원할 수 있으며\n복원 시, 조율 이전의 상태로 되돌립니다.\n분해불가"
+      },
+      {
+        "slot": 10,
+        "name": "<P ALIGN='CENTER'><FONT COLOR='#FA5D00'>8레벨 광휘의 보석</FONT></P>",
+        "level": 8,
+        "grade": "유물",
+        "baseAttackPercent": "0.008",
+        "tooltipText": "8레벨 광휘의 보석\n유물 보석\n아이템 레벨 1640 (티어 4)\n장착중\n장착, 합성, 조율 가능 아이템 레벨 1640\n거래 제한 아이템 레벨 1640\n캐릭터 귀속됨\n|거래 불가\n보석 레벨 8\n효과\n[기상술사] 싹쓸바람 피해 36.00% 증가\n\n추가 효과\n기본 공격력 0.80% 증가\n조율된 보석은 보석 프리셋마다 \n원하는 스킬 효과로 변환하여 사용할 수 있습니다.\n\n보석 전문가에게 복원할 수 있으며\n복원 시, 조율 이전의 상태로 되돌립니다.\n분해불가"
+      }
+    ],
+    "sources": [
+      {
+        "sourceType": "API_TOOLTIP",
+        "path": "gems.Gems[0].Tooltip",
+        "label": "<P ALIGN='CENTER'><FONT COLOR='#FA5D00'>9레벨 광휘의 보석</FONT></P> 기본 공격력",
+        "value": "0.01",
+        "raw": "9레벨 광휘의 보석\n유물 보석\n아이템 레벨 1640 (티어 4)\n장착중\n장착, 합성, 조율 가능 아이템 레벨 1640\n거래 제한 아이템 레벨 1640\n캐릭터 귀속됨\n|거래 불가\n보석 레벨 9\n효과\n[기상술사] 몰아치기 재사용 대기시간 22.00% 감소\n\n추가 효과\n기본 공격력 1.00% 증가\n조율된 보석은 보석 프리셋마다 \n원하는 스킬 효과로 변환하여 사용할 수 있습니다.\n\n보석 전문가에게 복원할 수 있으며\n복원 시, 조율 이전의 상태로 되돌립니다.\n분해불가",
+        "applied": true,
+        "note": ""
+      },
+      {
+        "sourceType": "API_TOOLTIP",
+        "path": "gems.Gems[1].Tooltip",
+        "label": "<P ALIGN='CENTER'><FONT COLOR='#FA5D00'>9레벨 광휘의 보석</FONT></P> 기본 공격력",
+        "value": "0.01",
+        "raw": "9레벨 광휘의 보석\n유물 보석\n아이템 레벨 1640 (티어 4)\n장착중\n장착, 합성, 조율 가능 아이템 레벨 1640\n거래 제한 아이템 레벨 1640\n캐릭터 귀속됨\n|거래 불가\n보석 레벨 9\n효과\n[기상술사] 회오리 걸음 피해 40.00% 증가\n\n추가 효과\n기본 공격력 1.00% 증가\n조율된 보석은 보석 프리셋마다 \n원하는 스킬 효과로 변환하여 사용할 수 있습니다.\n\n보석 전문가에게 복원할 수 있으며\n복원 시, 조율 이전의 상태로 되돌립니다.\n분해불가",
+        "applied": true,
+        "note": ""
+      },
+      {
+        "sourceType": "API_TOOLTIP",
+        "path": "gems.Gems[2].Tooltip",
+        "label": "<P ALIGN='CENTER'><FONT COLOR='#FA5D00'>9레벨 광휘의 보석</FONT></P> 기본 공격력",
+        "value": "0.01",
+        "raw": "9레벨 광휘의 보석\n유물 보석\n아이템 레벨 1640 (티어 4)\n장착중\n장착, 합성, 조율 가능 아이템 레벨 1640\n거래 제한 아이템 레벨 1640\n캐릭터 귀속됨\n|거래 불가\n보석 레벨 9\n효과\n[기상술사] 칼바람 피해 40.00% 증가\n\n추가 효과\n기본 공격력 1.00% 증가\n조율된 보석은 보석 프리셋마다 \n원하는 스킬 효과로 변환하여 사용할 수 있습니다.\n\n보석 전문가에게 복원할 수 있으며\n복원 시, 조율 이전의 상태로 되돌립니다.\n분해불가",
+        "applied": true,
+        "note": ""
+      },
+      {
+        "sourceType": "API_TOOLTIP",
+        "path": "gems.Gems[3].Tooltip",
+        "label": "<P ALIGN='CENTER'><FONT COLOR='#FA5D00'>9레벨 광휘의 보석</FONT></P> 기본 공격력",
+        "value": "0.01",
+        "raw": "9레벨 광휘의 보석\n유물 보석\n아이템 레벨 1640 (티어 4)\n장착중\n장착, 합성, 조율 가능 아이템 레벨 1640\n거래 제한 아이템 레벨 1640\n캐릭터 귀속됨\n|거래 불가\n보석 레벨 9\n효과\n[기상술사] 칼바람 재사용 대기시간 22.00% 감소\n\n추가 효과\n기본 공격력 1.00% 증가\n조율된 보석은 보석 프리셋마다 \n원하는 스킬 효과로 변환하여 사용할 수 있습니다.\n\n보석 전문가에게 복원할 수 있으며\n복원 시, 조율 이전의 상태로 되돌립니다.\n분해불가",
+        "applied": true,
+        "note": ""
+      },
+      {
+        "sourceType": "API_TOOLTIP",
+        "path": "gems.Gems[4].Tooltip",
+        "label": "<P ALIGN='CENTER'><FONT COLOR='#FA5D00'>9레벨 광휘의 보석</FONT></P> 기본 공격력",
+        "value": "0.01",
+        "raw": "9레벨 광휘의 보석\n유물 보석\n아이템 레벨 1640 (티어 4)\n장착중\n장착, 합성, 조율 가능 아이템 레벨 1640\n거래 제한 아이템 레벨 1640\n캐릭터 귀속됨\n|거래 불가\n보석 레벨 9\n효과\n[기상술사] 몰아치기 피해 40.00% 증가\n\n추가 효과\n기본 공격력 1.00% 증가\n조율된 보석은 보석 프리셋마다 \n원하는 스킬 효과로 변환하여 사용할 수 있습니다.\n\n보석 전문가에게 복원할 수 있으며\n복원 시, 조율 이전의 상태로 되돌립니다.\n분해불가",
+        "applied": true,
+        "note": ""
+      },
+      {
+        "sourceType": "API_TOOLTIP",
+        "path": "gems.Gems[5].Tooltip",
+        "label": "<P ALIGN='CENTER'><FONT COLOR='#FA5D00'>9레벨 광휘의 보석</FONT></P> 기본 공격력",
+        "value": "0.01",
+        "raw": "9레벨 광휘의 보석\n유물 보석\n아이템 레벨 1640 (티어 4)\n장착중\n장착, 합성, 조율 가능 아이템 레벨 1640\n거래 제한 아이템 레벨 1640\n캐릭터 귀속됨\n|거래 불가\n보석 레벨 9\n효과\n[기상술사] 바람송곳 피해 40.00% 증가\n\n추가 효과\n기본 공격력 1.00% 증가\n조율된 보석은 보석 프리셋마다 \n원하는 스킬 효과로 변환하여 사용할 수 있습니다.\n\n보석 전문가에게 복원할 수 있으며\n복원 시, 조율 이전의 상태로 되돌립니다.\n분해불가",
+        "applied": true,
+        "note": ""
+      },
+      {
+        "sourceType": "API_TOOLTIP",
+        "path": "gems.Gems[6].Tooltip",
+        "label": "<P ALIGN='CENTER'><FONT COLOR='#FA5D00'>9레벨 광휘의 보석</FONT></P> 기본 공격력",
+        "value": "0.01",
+        "raw": "9레벨 광휘의 보석\n유물 보석\n아이템 레벨 1640 (티어 4)\n장착중\n장착, 합성, 조율 가능 아이템 레벨 1640\n거래 제한 아이템 레벨 1640\n캐릭터 귀속됨\n|거래 불가\n보석 레벨 9\n효과\n[기상술사] 회오리 걸음 재사용 대기시간 22.00% 감소\n\n추가 효과\n기본 공격력 1.00% 증가\n조율된 보석은 보석 프리셋마다 \n원하는 스킬 효과로 변환하여 사용할 수 있습니다.\n\n보석 전문가에게 복원할 수 있으며\n복원 시, 조율 이전의 상태로 되돌립니다.\n분해불가",
+        "applied": true,
+        "note": ""
+      },
+      {
+        "sourceType": "API_TOOLTIP",
+        "path": "gems.Gems[7].Tooltip",
+        "label": "<P ALIGN='CENTER'><FONT COLOR='#FA5D00'>8레벨 광휘의 보석</FONT></P> 기본 공격력",
+        "value": "0.008",
+        "raw": "8레벨 광휘의 보석\n유물 보석\n아이템 레벨 1640 (티어 4)\n장착중\n장착, 합성, 조율 가능 아이템 레벨 1640\n거래 제한 아이템 레벨 1640\n캐릭터 귀속됨\n|거래 불가\n보석 레벨 8\n효과\n[기상술사] 바람송곳 재사용 대기시간 20.00% 감소\n\n추가 효과\n기본 공격력 0.80% 증가\n조율된 보석은 보석 프리셋마다 \n원하는 스킬 효과로 변환하여 사용할 수 있습니다.\n\n보석 전문가에게 복원할 수 있으며\n복원 시, 조율 이전의 상태로 되돌립니다.\n분해불가",
+        "applied": true,
+        "note": ""
+      },
+      {
+        "sourceType": "API_TOOLTIP",
+        "path": "gems.Gems[8].Tooltip",
+        "label": "<P ALIGN='CENTER'><FONT COLOR='#FA5D00'>8레벨 광휘의 보석</FONT></P> 기본 공격력",
+        "value": "0.008",
+        "raw": "8레벨 광휘의 보석\n유물 보석\n아이템 레벨 1640 (티어 4)\n장착중\n장착, 합성, 조율 가능 아이템 레벨 1640\n거래 제한 아이템 레벨 1640\n캐릭터 귀속됨\n|거래 불가\n보석 레벨 8\n효과\n[기상술사] 싹쓸바람 재사용 대기시간 20.00% 감소\n\n추가 효과\n기본 공격력 0.80% 증가\n조율된 보석은 보석 프리셋마다 \n원하는 스킬 효과로 변환하여 사용할 수 있습니다.\n\n보석 전문가에게 복원할 수 있으며\n복원 시, 조율 이전의 상태로 되돌립니다.\n분해불가",
+        "applied": true,
+        "note": ""
+      },
+      {
+        "sourceType": "API_TOOLTIP",
+        "path": "gems.Gems[9].Tooltip",
+        "label": "<P ALIGN='CENTER'><FONT COLOR='#FA5D00'>8레벨 광휘의 보석</FONT></P> 기본 공격력",
+        "value": "0.008",
+        "raw": "8레벨 광휘의 보석\n유물 보석\n아이템 레벨 1640 (티어 4)\n장착중\n장착, 합성, 조율 가능 아이템 레벨 1640\n거래 제한 아이템 레벨 1640\n캐릭터 귀속됨\n|거래 불가\n보석 레벨 8\n효과\n[기상술사] 마주바람 피해 36.00% 증가\n\n추가 효과\n기본 공격력 0.80% 증가\n조율된 보석은 보석 프리셋마다 \n원하는 스킬 효과로 변환하여 사용할 수 있습니다.\n\n보석 전문가에게 복원할 수 있으며\n복원 시, 조율 이전의 상태로 되돌립니다.\n분해불가",
+        "applied": true,
+        "note": ""
+      },
+      {
+        "sourceType": "API_TOOLTIP",
+        "path": "gems.Gems[10].Tooltip",
+        "label": "<P ALIGN='CENTER'><FONT COLOR='#FA5D00'>8레벨 광휘의 보석</FONT></P> 기본 공격력",
+        "value": "0.008",
+        "raw": "8레벨 광휘의 보석\n유물 보석\n아이템 레벨 1640 (티어 4)\n장착중\n장착, 합성, 조율 가능 아이템 레벨 1640\n거래 제한 아이템 레벨 1640\n캐릭터 귀속됨\n|거래 불가\n보석 레벨 8\n효과\n[기상술사] 싹쓸바람 피해 36.00% 증가\n\n추가 효과\n기본 공격력 0.80% 증가\n조율된 보석은 보석 프리셋마다 \n원하는 스킬 효과로 변환하여 사용할 수 있습니다.\n\n보석 전문가에게 복원할 수 있으며\n복원 시, 조율 이전의 상태로 되돌립니다.\n분해불가",
+        "applied": true,
+        "note": ""
+      }
+    ]
+  },
+  "arkPassive": {
+    "effects": {
+      "질풍노도": {
+        "name": "질풍노도",
+        "rawName": "깨달음",
+        "level": 1,
+        "description": "깨달음 1티어 질풍노도 Lv.1\n질풍노도\n아크 패시브 레벨 1\n깨달음\n여우비가 강화되어 우산 스킬로 적용된다. 여우비 상태 진입 시 30.0초 동안 지속되는 '질풍노도' 버프와 4.0초 동안 지속되는 기류 보호막이 생성된다. 대신, 여우비의 범위가 감소하고, 빗방울 게이지 소모량이 50.0% 증가한다. 또한, 적의 공격력 감소 효과가 사라지는 대신, 자신을 제외한 파티원에게 '질풍노도' 버프를 부여하며, 이 버프는 범위를 벗어나면 사라진다.\n\n질풍노도 : 공격 및 이동 속도가 12.0% 증가한다.||",
+        "parsed": {
+          "evolutionDamage": "0",
+          "skillDamage": "0",
+          "criticalRate": "0",
+          "criticalDamage": "0",
+          "criticalHitDamage": "0",
+          "additionalDamage": "0",
+          "attackSpeed": "0.12",
+          "moveSpeed": "0.12"
+        }
+      },
+      "환기": {
+        "name": "환기",
+        "rawName": "깨달음",
+        "level": 3,
+        "description": "깨달음 2티어 환기 Lv.3\n환기\n아크 패시브 레벨 3\n깨달음\n우산 스킬을 사용하고 4초 이내에 우산 스킬을 사용하면 최대 빗방울 게이지의 12.0%를 회복한다.||",
+        "parsed": {
+          "evolutionDamage": "0",
+          "skillDamage": "0",
+          "criticalRate": "0",
+          "criticalDamage": "0",
+          "criticalHitDamage": "0",
+          "additionalDamage": "0",
+          "attackSpeed": "0",
+          "moveSpeed": "0"
+        }
+      },
+      "기민함": {
+        "name": "기민함",
+        "rawName": "깨달음",
+        "level": 3,
+        "description": "깨달음 3티어 기민함 Lv.3\n기민함\n아크 패시브 레벨 3\n깨달음\n기본 공격 속도 증가량 %의 120.0% 만큼 치명타 피해량이 증가하고 기본 이동 속도 증가량 %의 30.0% 만큼 치명타 적중률이 증가한다.||",
+        "parsed": {
+          "evolutionDamage": "0",
+          "skillDamage": "0",
+          "criticalRate": "0.12",
+          "criticalDamage": "0.48",
+          "criticalHitDamage": "0",
+          "additionalDamage": "0",
+          "attackSpeed": "0",
+          "moveSpeed": "0"
+        }
+      },
+      "바람의 길": {
+        "name": "바람의 길",
+        "rawName": "깨달음",
+        "level": 2,
+        "description": "깨달음 4티어 바람의 길 Lv.2\n바람의 길\n아크 패시브 레벨 2\n깨달음\n여우비 사용 시 30.0초간 바람의 길 효과를 획득한다.\n\n바람의 길 : 우산 스킬의 피해량이 2.4% 증가한다.||",
+        "parsed": {
+          "evolutionDamage": "0",
+          "skillDamage": "0.024",
+          "criticalRate": "0",
+          "criticalDamage": "0",
+          "criticalHitDamage": "0",
+          "additionalDamage": "0",
+          "attackSpeed": "0",
+          "moveSpeed": "0"
+        }
+      },
+      "공간 가르기": {
+        "name": "공간 가르기",
+        "rawName": "깨달음",
+        "level": 3,
+        "description": "깨달음 4티어 공간 가르기 Lv.3\n공간 가르기\n아크 패시브 레벨 3\n깨달음\nX키를 눌러 공간 가르기를 사용할 수 있게 되고 기본 및 여우비 상태에서 사용할 수 있다. 공간 가르기가 주는 피해가 200.0% 증가한다.||",
+        "parsed": {
+          "evolutionDamage": "0",
+          "skillDamage": "0",
+          "criticalRate": "0",
+          "criticalDamage": "0",
+          "criticalHitDamage": "0",
+          "additionalDamage": "0",
+          "attackSpeed": "0",
+          "moveSpeed": "0"
+        }
+      },
+      "치명": {
+        "name": "치명",
+        "rawName": "진화",
+        "level": 14,
+        "description": "진화 1티어 치명 Lv.14\n치명\n아크 패시브 레벨 14\n진화\n치명이 700 증가합니다.||",
+        "parsed": {
+          "evolutionDamage": "0",
+          "skillDamage": "0",
+          "criticalRate": "0",
+          "criticalDamage": "0",
+          "criticalHitDamage": "0",
+          "additionalDamage": "0",
+          "attackSpeed": "0",
+          "moveSpeed": "0"
+        }
+      },
+      "신속": {
+        "name": "신속",
+        "rawName": "진화",
+        "level": 26,
+        "description": "진화 1티어 신속 Lv.26\n신속\n아크 패시브 레벨 26\n진화\n신속이 1300 증가합니다.||",
+        "parsed": {
+          "evolutionDamage": "0",
+          "skillDamage": "0",
+          "criticalRate": "0",
+          "criticalDamage": "0",
+          "criticalHitDamage": "0",
+          "additionalDamage": "0",
+          "attackSpeed": "0",
+          "moveSpeed": "0"
+        }
+      },
+      "예리한 감각": {
+        "name": "예리한 감각",
+        "rawName": "진화",
+        "level": 1,
+        "description": "진화 2티어 예리한 감각 Lv.1\n예리한 감각\n아크 패시브 레벨 1\n진화\n치명타 적중률이 4.0% 증가하고, 진화형 피해가 5.0% 증가합니다.||",
+        "parsed": {
+          "evolutionDamage": "0.05",
+          "skillDamage": "0",
+          "criticalRate": "0.04",
+          "criticalDamage": "0",
+          "criticalHitDamage": "0",
+          "additionalDamage": "0",
+          "attackSpeed": "0",
+          "moveSpeed": "0"
+        }
+      },
+      "한계 돌파": {
+        "name": "한계 돌파",
+        "rawName": "진화",
+        "level": 2,
+        "description": "진화 2티어 한계 돌파 Lv.2\n한계 돌파\n아크 패시브 레벨 2\n진화\n진화형 피해가 20.0% 증가합니다.||",
+        "parsed": {
+          "evolutionDamage": "0.2",
+          "skillDamage": "0",
+          "criticalRate": "0",
+          "criticalDamage": "0",
+          "criticalHitDamage": "0",
+          "additionalDamage": "0",
+          "attackSpeed": "0",
+          "moveSpeed": "0"
+        }
+      },
+      "무한한 마력": {
+        "name": "무한한 마력",
+        "rawName": "진화",
+        "level": 1,
+        "description": "진화 3티어 무한한 마력 Lv.1\n무한한 마력\n아크 패시브 레벨 1\n진화\n진화형 피해가 8.0% 증가하고, 마나 스킬의 재사용 대기시간이 7.0% 감소, 마나 소모량이 8.0% 감소합니다.||",
+        "parsed": {
+          "evolutionDamage": "0.08",
+          "skillDamage": "0",
+          "criticalRate": "0",
+          "criticalDamage": "0",
+          "criticalHitDamage": "0",
+          "additionalDamage": "0",
+          "attackSpeed": "0",
+          "moveSpeed": "0"
+        }
+      },
+      "혼신의 강타": {
+        "name": "혼신의 강타",
+        "rawName": "진화",
+        "level": 1,
+        "description": "진화 3티어 혼신의 강타 Lv.1\n혼신의 강타\n아크 패시브 레벨 1\n진화\n치명타 적중률이 12.0% 증가하고, 진화형 피해가 2.0% 증가합니다.||",
+        "parsed": {
+          "evolutionDamage": "0.02",
+          "skillDamage": "0",
+          "criticalRate": "0.12",
+          "criticalDamage": "0",
+          "criticalHitDamage": "0",
+          "additionalDamage": "0",
+          "attackSpeed": "0",
+          "moveSpeed": "0"
+        }
+      },
+      "회심": {
+        "name": "회심",
+        "rawName": "진화",
+        "level": 1,
+        "description": "진화 4티어 회심 Lv.1\n회심\n아크 패시브 레벨 1\n진화\n공격이 치명타로 적중 시 적에게 주는 피해가 12.0% 증가하며, 받는 피해가 4.0% 감소합니다.||",
+        "parsed": {
+          "evolutionDamage": "0",
+          "skillDamage": "0",
+          "criticalRate": "0",
+          "criticalDamage": "0",
+          "criticalHitDamage": "0.12",
+          "additionalDamage": "0",
+          "attackSpeed": "0",
+          "moveSpeed": "0"
+        }
+      },
+      "달인": {
+        "name": "달인",
+        "rawName": "진화",
+        "level": 1,
+        "description": "진화 4티어 달인 Lv.1\n달인\n아크 패시브 레벨 1\n진화\n받는 피해가 4.0% 감소하며, 이동기 및 기상기를 제외한 스킬 사용시 10초간 '달인' 효과를 얻습니다.\n 달인 : 치명타 적중률 +1.4% / 추가 피해 +1.7%, 최대 5중첩||",
+        "parsed": {
+          "evolutionDamage": "0",
+          "skillDamage": "0",
+          "criticalRate": "0.070",
+          "criticalDamage": "0",
+          "criticalHitDamage": "0",
+          "additionalDamage": "0.085",
+          "attackSpeed": "0",
+          "moveSpeed": "0"
+        }
+      },
+      "음속 돌파": {
+        "name": "음속 돌파",
+        "rawName": "진화",
+        "level": 2,
+        "description": "진화 5티어 음속 돌파 Lv.2\n음속 돌파\n아크 패시브 레벨 2\n진화\n공격 적중 시, 공격 속도 및 이동 속도 증가량의 10.0% 만큼 진화형 피해가 증가합니다. 공격 및 이동 속도가 모두 상한을 초과했다면, 진화형 피해가 추가로 8.0% 증가하며, 상한을 초과한 속도 증가량의 30.0%만큼 적중 시 진화형 피해가 증가합니다. 이 노드에 의한 진화형 피해는 최대 24.0%까지 적용됩니다.||",
+        "parsed": {
+          "evolutionDamage": "0",
+          "skillDamage": "0",
+          "criticalRate": "0",
+          "criticalDamage": "0",
+          "criticalHitDamage": "0",
+          "additionalDamage": "0",
+          "attackSpeed": "0",
+          "moveSpeed": "0"
+        }
+      },
+      "풀려난 힘": {
+        "name": "풀려난 힘",
+        "rawName": "도약",
+        "level": 5,
+        "description": "도약 1티어 풀려난 힘 Lv.5\n풀려난 힘\n아크 패시브 레벨 5\n도약\n초각성 스킬이 적에게 주는 피해가 15.0% 증가한다.||",
+        "parsed": {
+          "evolutionDamage": "0",
+          "skillDamage": "0.15",
+          "criticalRate": "0",
+          "criticalDamage": "0",
+          "criticalHitDamage": "0",
+          "additionalDamage": "0",
+          "attackSpeed": "0",
+          "moveSpeed": "0"
+        }
+      },
+      "잠재력 해방": {
+        "name": "잠재력 해방",
+        "rawName": "도약",
+        "level": 4,
+        "description": "도약 1티어 잠재력 해방 Lv.4\n잠재력 해방\n아크 패시브 레벨 4\n도약\n초각성 스킬의 재사용 대기 시간이 8.0% 감소한다.||",
+        "parsed": {
+          "evolutionDamage": "0",
+          "skillDamage": "0",
+          "criticalRate": "0",
+          "criticalDamage": "0",
+          "criticalHitDamage": "0",
+          "additionalDamage": "0",
+          "attackSpeed": "0",
+          "moveSpeed": "0"
+        }
+      },
+      "즉각적인 주문": {
+        "name": "즉각적인 주문",
+        "rawName": "도약",
+        "level": 2,
+        "description": "도약 1티어 즉각적인 주문 Lv.2\n즉각적인 주문\n아크 패시브 레벨 2\n도약\n초각성 스킬의 시전 속도가 8.0% 증가하고, 마나 소모량이 60.0% 감소한다.||",
+        "parsed": {
+          "evolutionDamage": "0",
+          "skillDamage": "0",
+          "criticalRate": "0",
+          "criticalDamage": "0",
+          "criticalHitDamage": "0",
+          "additionalDamage": "0",
+          "attackSpeed": "0",
+          "moveSpeed": "0"
+        }
+      },
+      "단련된 가르기": {
+        "name": "단련된 가르기",
+        "rawName": "도약",
+        "level": 3,
+        "description": "도약 2티어 단련된 가르기 Lv.3\n단련된 가르기\n아크 패시브 레벨 3\n도약\n우레바람이 일반 조작으로 변경되고, 피해량이 75.0% 증가한다.||",
+        "parsed": {
+          "evolutionDamage": "0",
+          "skillDamage": "0.75",
+          "criticalRate": "0",
+          "criticalDamage": "0",
+          "criticalHitDamage": "0",
+          "additionalDamage": "0",
+          "attackSpeed": "0",
+          "moveSpeed": "0"
+        }
+      }
+    },
+    "points": [
+      {
+        "name": "진화",
+        "value": 140,
+        "text": "6랭크 21레벨"
+      },
+      {
+        "name": "깨달음",
+        "value": 101,
+        "text": "6랭크 27레벨"
+      },
+      {
+        "name": "도약",
+        "value": 70,
+        "text": "6랭크 21레벨"
+      }
+    ],
+    "karmaWeaponAttackPercent": "0.027",
+    "karmaEvolutionDamage": "0.06",
+    "evolutionDamageByName": {
+      "예리한 감각": "0.05",
+      "한계 돌파": "0.2",
+      "무한한 마력": "0.08",
+      "혼신의 강타": "0.02"
+    },
+    "skillDamageByName": {
+      "바람의 길": "0.024",
+      "풀려난 힘": "0.15",
+      "단련된 가르기": "0.75"
+    },
+    "criticalRateByName": {
+      "기민함": "0.12",
+      "예리한 감각": "0.04",
+      "혼신의 강타": "0.12",
+      "달인": "0.070"
+    },
+    "criticalDamageByName": {
+      "기민함": "0.48"
+    },
+    "criticalHitDamageByName": {
+      "회심": "0.12"
+    },
+    "additionalDamageByName": {
+      "달인": "0.085"
+    },
+    "speedByName": {
+      "질풍노도": {
+        "attackSpeed": "0.12",
+        "moveSpeed": "0.12"
+      }
+    },
+    "sources": [
+      {
+        "sourceType": "API_FIELD",
+        "path": "arkPassive.Effects[0]",
+        "label": "질풍노도",
+        "value": 1,
+        "raw": "깨달음 1티어 질풍노도 Lv.1\n질풍노도\n아크 패시브 레벨 1\n깨달음\n여우비가 강화되어 우산 스킬로 적용된다. 여우비 상태 진입 시 30.0초 동안 지속되는 '질풍노도' 버프와 4.0초 동안 지속되는 기류 보호막이 생성된다. 대신, 여우비의 범위가 감소하고, 빗방울 게이지 소모량이 50.0% 증가한다. 또한, 적의 공격력 감소 효과가 사라지는 대신, 자신을 제외한 파티원에게 '질풍노도' 버프를 부여하며, 이 버프는 범위를 벗어나면 사라진다.\n\n질풍노도 : 공격 및 이동 속도가 12.0% 증가한다.||",
+        "applied": true,
+        "note": ""
+      },
+      {
+        "sourceType": "API_FIELD",
+        "path": "arkPassive.Effects[1]",
+        "label": "환기",
+        "value": 3,
+        "raw": "깨달음 2티어 환기 Lv.3\n환기\n아크 패시브 레벨 3\n깨달음\n우산 스킬을 사용하고 4초 이내에 우산 스킬을 사용하면 최대 빗방울 게이지의 12.0%를 회복한다.||",
+        "applied": true,
+        "note": ""
+      },
+      {
+        "sourceType": "API_FIELD",
+        "path": "arkPassive.Effects[2]",
+        "label": "기민함",
+        "value": 3,
+        "raw": "깨달음 3티어 기민함 Lv.3\n기민함\n아크 패시브 레벨 3\n깨달음\n기본 공격 속도 증가량 %의 120.0% 만큼 치명타 피해량이 증가하고 기본 이동 속도 증가량 %의 30.0% 만큼 치명타 적중률이 증가한다.||",
+        "applied": true,
+        "note": ""
+      },
+      {
+        "sourceType": "API_FIELD",
+        "path": "arkPassive.Effects[3]",
+        "label": "바람의 길",
+        "value": 2,
+        "raw": "깨달음 4티어 바람의 길 Lv.2\n바람의 길\n아크 패시브 레벨 2\n깨달음\n여우비 사용 시 30.0초간 바람의 길 효과를 획득한다.\n\n바람의 길 : 우산 스킬의 피해량이 2.4% 증가한다.||",
+        "applied": true,
+        "note": ""
+      },
+      {
+        "sourceType": "API_FIELD",
+        "path": "arkPassive.Effects[4]",
+        "label": "공간 가르기",
+        "value": 3,
+        "raw": "깨달음 4티어 공간 가르기 Lv.3\n공간 가르기\n아크 패시브 레벨 3\n깨달음\nX키를 눌러 공간 가르기를 사용할 수 있게 되고 기본 및 여우비 상태에서 사용할 수 있다. 공간 가르기가 주는 피해가 200.0% 증가한다.||",
+        "applied": true,
+        "note": ""
+      },
+      {
+        "sourceType": "API_FIELD",
+        "path": "arkPassive.Effects[5]",
+        "label": "치명",
+        "value": 14,
+        "raw": "진화 1티어 치명 Lv.14\n치명\n아크 패시브 레벨 14\n진화\n치명이 700 증가합니다.||",
+        "applied": true,
+        "note": ""
+      },
+      {
+        "sourceType": "API_FIELD",
+        "path": "arkPassive.Effects[6]",
+        "label": "신속",
+        "value": 26,
+        "raw": "진화 1티어 신속 Lv.26\n신속\n아크 패시브 레벨 26\n진화\n신속이 1300 증가합니다.||",
+        "applied": true,
+        "note": ""
+      },
+      {
+        "sourceType": "API_FIELD",
+        "path": "arkPassive.Effects[7]",
+        "label": "예리한 감각",
+        "value": 1,
+        "raw": "진화 2티어 예리한 감각 Lv.1\n예리한 감각\n아크 패시브 레벨 1\n진화\n치명타 적중률이 4.0% 증가하고, 진화형 피해가 5.0% 증가합니다.||",
+        "applied": true,
+        "note": ""
+      },
+      {
+        "sourceType": "API_FIELD",
+        "path": "arkPassive.Effects[8]",
+        "label": "한계 돌파",
+        "value": 2,
+        "raw": "진화 2티어 한계 돌파 Lv.2\n한계 돌파\n아크 패시브 레벨 2\n진화\n진화형 피해가 20.0% 증가합니다.||",
+        "applied": true,
+        "note": ""
+      },
+      {
+        "sourceType": "API_FIELD",
+        "path": "arkPassive.Effects[9]",
+        "label": "무한한 마력",
+        "value": 1,
+        "raw": "진화 3티어 무한한 마력 Lv.1\n무한한 마력\n아크 패시브 레벨 1\n진화\n진화형 피해가 8.0% 증가하고, 마나 스킬의 재사용 대기시간이 7.0% 감소, 마나 소모량이 8.0% 감소합니다.||",
+        "applied": true,
+        "note": ""
+      },
+      {
+        "sourceType": "API_FIELD",
+        "path": "arkPassive.Effects[10]",
+        "label": "혼신의 강타",
+        "value": 1,
+        "raw": "진화 3티어 혼신의 강타 Lv.1\n혼신의 강타\n아크 패시브 레벨 1\n진화\n치명타 적중률이 12.0% 증가하고, 진화형 피해가 2.0% 증가합니다.||",
+        "applied": true,
+        "note": ""
+      },
+      {
+        "sourceType": "API_FIELD",
+        "path": "arkPassive.Effects[11]",
+        "label": "회심",
+        "value": 1,
+        "raw": "진화 4티어 회심 Lv.1\n회심\n아크 패시브 레벨 1\n진화\n공격이 치명타로 적중 시 적에게 주는 피해가 12.0% 증가하며, 받는 피해가 4.0% 감소합니다.||",
+        "applied": true,
+        "note": ""
+      },
+      {
+        "sourceType": "API_FIELD",
+        "path": "arkPassive.Effects[12]",
+        "label": "달인",
+        "value": 1,
+        "raw": "진화 4티어 달인 Lv.1\n달인\n아크 패시브 레벨 1\n진화\n받는 피해가 4.0% 감소하며, 이동기 및 기상기를 제외한 스킬 사용시 10초간 '달인' 효과를 얻습니다.\n 달인 : 치명타 적중률 +1.4% / 추가 피해 +1.7%, 최대 5중첩||",
+        "applied": true,
+        "note": ""
+      },
+      {
+        "sourceType": "API_FIELD",
+        "path": "arkPassive.Effects[13]",
+        "label": "음속 돌파",
+        "value": 2,
+        "raw": "진화 5티어 음속 돌파 Lv.2\n음속 돌파\n아크 패시브 레벨 2\n진화\n공격 적중 시, 공격 속도 및 이동 속도 증가량의 10.0% 만큼 진화형 피해가 증가합니다. 공격 및 이동 속도가 모두 상한을 초과했다면, 진화형 피해가 추가로 8.0% 증가하며, 상한을 초과한 속도 증가량의 30.0%만큼 적중 시 진화형 피해가 증가합니다. 이 노드에 의한 진화형 피해는 최대 24.0%까지 적용됩니다.||",
+        "applied": true,
+        "note": ""
+      },
+      {
+        "sourceType": "API_FIELD",
+        "path": "arkPassive.Effects[14]",
+        "label": "풀려난 힘",
+        "value": 5,
+        "raw": "도약 1티어 풀려난 힘 Lv.5\n풀려난 힘\n아크 패시브 레벨 5\n도약\n초각성 스킬이 적에게 주는 피해가 15.0% 증가한다.||",
+        "applied": true,
+        "note": ""
+      },
+      {
+        "sourceType": "API_FIELD",
+        "path": "arkPassive.Effects[15]",
+        "label": "잠재력 해방",
+        "value": 4,
+        "raw": "도약 1티어 잠재력 해방 Lv.4\n잠재력 해방\n아크 패시브 레벨 4\n도약\n초각성 스킬의 재사용 대기 시간이 8.0% 감소한다.||",
+        "applied": true,
+        "note": ""
+      },
+      {
+        "sourceType": "API_FIELD",
+        "path": "arkPassive.Effects[16]",
+        "label": "즉각적인 주문",
+        "value": 2,
+        "raw": "도약 1티어 즉각적인 주문 Lv.2\n즉각적인 주문\n아크 패시브 레벨 2\n도약\n초각성 스킬의 시전 속도가 8.0% 증가하고, 마나 소모량이 60.0% 감소한다.||",
+        "applied": true,
+        "note": ""
+      },
+      {
+        "sourceType": "API_FIELD",
+        "path": "arkPassive.Effects[17]",
+        "label": "단련된 가르기",
+        "value": 3,
+        "raw": "도약 2티어 단련된 가르기 Lv.3\n단련된 가르기\n아크 패시브 레벨 3\n도약\n우레바람이 일반 조작으로 변경되고, 피해량이 75.0% 증가한다.||",
+        "applied": true,
+        "note": ""
+      }
+    ]
+  },
+  "combatSkills": {
+    "skillNames": [
+      "펼치기",
+      "내려찍기",
+      "회오리 걸음",
+      "몰아치기",
+      "돌개바람",
+      "바람송곳",
+      "마주바람",
+      "칼바람",
+      "소용돌이",
+      "소나기",
+      "센바람",
+      "짙은 안개",
+      "봄바람",
+      "날아가기",
+      "싹쓸바람",
+      "뙤약볕",
+      "우레바람",
+      "여름 햇살",
+      "풍랑주의보",
+      "아카샤의 너울",
+      "나르가의 칼날",
+      "칸의 영역"
+    ],
+    "selectedTripods": [
+      {
+        "skill": "회오리 걸음",
+        "name": "재빠른 손놀림",
+        "tier": 0
+      },
+      {
+        "skill": "회오리 걸음",
+        "name": "역류",
+        "tier": 1
+      },
+      {
+        "skill": "회오리 걸음",
+        "name": "초고속 회전",
+        "tier": 2
+      },
+      {
+        "skill": "몰아치기",
+        "name": "역류",
+        "tier": 0
+      },
+      {
+        "skill": "몰아치기",
+        "name": "우레",
+        "tier": 1
+      },
+      {
+        "skill": "몰아치기",
+        "name": "공간베기",
+        "tier": 2
+      },
+      {
+        "skill": "돌개바람",
+        "name": "급소 노출",
+        "tier": 0
+      },
+      {
+        "skill": "돌개바람",
+        "name": "약점 포착",
+        "tier": 1
+      },
+      {
+        "skill": "돌개바람",
+        "name": "부메랑 우산",
+        "tier": 2
+      },
+      {
+        "skill": "바람송곳",
+        "name": "역류",
+        "tier": 0
+      },
+      {
+        "skill": "바람송곳",
+        "name": "큰 센바람",
+        "tier": 1
+      },
+      {
+        "skill": "바람송곳",
+        "name": "집중 공격",
+        "tier": 2
+      },
+      {
+        "skill": "마주바람",
+        "name": "빠른 준비",
+        "tier": 0
+      },
+      {
+        "skill": "마주바람",
+        "name": "마주바람 강화",
+        "tier": 1
+      },
+      {
+        "skill": "마주바람",
+        "name": "조화의 의지",
+        "tier": 2
+      },
+      {
+        "skill": "칼바람",
+        "name": "거대 돌풍",
+        "tier": 0
+      },
+      {
+        "skill": "칼바람",
+        "name": "역류",
+        "tier": 1
+      },
+      {
+        "skill": "칼바람",
+        "name": "벼락",
+        "tier": 2
+      },
+      {
+        "skill": "싹쓸바람",
+        "name": "빠른 준비",
+        "tier": 0
+      },
+      {
+        "skill": "싹쓸바람",
+        "name": "소멸",
+        "tier": 1
+      },
+      {
+        "skill": "싹쓸바람",
+        "name": "증기 조절",
+        "tier": 2
+      }
+    ],
+    "hasExposedWeakness": true,
+    "sources": [
+      {
+        "sourceType": "API_FIELD+EXAMPLE_DB",
+        "path": "combatSkills[4].Tripods[2]",
+        "label": "급소 노출",
+        "value": "0.10",
+        "raw": "공격 적중 시 대상이 자신 및 파티원에게 받는 치명타 저항률이 12.0초간 10.0% 감소한다.",
+        "applied": true,
+        "note": "항상 적용 규칙"
+      }
+    ]
+  },
+  "arkGrid": {
+    "attackPowerPercent": "0.0132",
+    "additionalDamagePercent": "0.0392",
+    "bossDamagePercent": "0",
+    "activeGems": [
+      {
+        "path": "arkGrid.Slots[0].Gems[0]",
+        "slotIndex": 0,
+        "gemIndex": 0,
+        "grade": "고대",
+        "isActive": true,
+        "tooltipText": "질서의 젬 : 안정\n고대 아크 그리드 젬\n가공 완료\n|거래 불가\n젬 기본 정보\n젬 타입 : 질서\n젬 포인트 : 19\n젬 효과\n필요 의지력 : 3 (기본 값 8 – 의지력 효율 5)\n질서 포인트 : 4\n[추가 피해] Lv.5\n추가 피해 +0.40%\n[아군 피해 강화] Lv.5\n아군 피해량 강화 효과 +0.26%\n[젬 가공] 아크 그리드 젬\n[젬 융합] 가공 완료 젬",
+        "values": {
+          "attackPowerPercent": "0",
+          "additionalDamagePercent": "0.004",
+          "bossDamagePercent": "0"
+        }
+      },
+      {
+        "path": "arkGrid.Slots[0].Gems[1]",
+        "slotIndex": 0,
+        "gemIndex": 1,
+        "grade": "전설",
+        "isActive": true,
+        "tooltipText": "질서의 젬 : 안정\n전설 아크 그리드 젬\n가공 완료\n|거래 불가\n젬 기본 정보\n젬 타입 : 질서\n젬 포인트 : 14\n젬 효과\n필요 의지력 : 3 (기본 값 8 – 의지력 효율 5)\n질서 포인트 : 5\n[추가 피해] Lv.3\n추가 피해 +0.24%\n[낙인력] Lv.1\n낙인력 +0.16%\n[젬 가공] 아크 그리드 젬\n[젬 융합] 가공 완료 젬",
+        "values": {
+          "attackPowerPercent": "0",
+          "additionalDamagePercent": "0.0024",
+          "bossDamagePercent": "0"
+        }
+      },
+      {
+        "path": "arkGrid.Slots[0].Gems[2]",
+        "slotIndex": 0,
+        "gemIndex": 2,
+        "grade": "고대",
+        "isActive": true,
+        "tooltipText": "질서의 젬 : 견고\n고대 아크 그리드 젬\n가공 완료\n|거래 불가\n젬 기본 정보\n젬 타입 : 질서\n젬 포인트 : 19\n젬 효과\n필요 의지력 : 4 (기본 값 9 – 의지력 효율 5)\n질서 포인트 : 5\n[아군 공격 강화] Lv.4\n아군 공격력 강화 효과 +0.52%\n[공격력] Lv.5\n공격력 +0.18%\n[젬 가공] 아크 그리드 젬\n[젬 융합] 가공 완료 젬",
+        "values": {
+          "attackPowerPercent": "0.0018",
+          "additionalDamagePercent": "0",
+          "bossDamagePercent": "0"
+        }
+      },
+      {
+        "path": "arkGrid.Slots[0].Gems[3]",
+        "slotIndex": 0,
+        "gemIndex": 3,
+        "grade": "전설",
+        "isActive": true,
+        "tooltipText": "질서의 젬 : 견고\n전설 아크 그리드 젬\n가공 완료\n|거래 불가\n젬 기본 정보\n젬 타입 : 질서\n젬 포인트 : 12\n젬 효과\n필요 의지력 : 7 (기본 값 9 – 의지력 효율 2)\n질서 포인트 : 4\n[공격력] Lv.1\n공격력 +0.03%\n[보스 피해] Lv.5\n보스 등급 이상 몬스터에게 주는 피해 +0.41%\n[젬 가공] 아크 그리드 젬\n[젬 융합] 가공 완료 젬",
+        "values": {
+          "attackPowerPercent": "0.0003",
+          "additionalDamagePercent": "0",
+          "bossDamagePercent": "0"
+        }
+      },
+      {
+        "path": "arkGrid.Slots[1].Gems[0]",
+        "slotIndex": 1,
+        "gemIndex": 0,
+        "grade": "전설",
+        "isActive": true,
+        "tooltipText": "질서의 젬 : 안정\n전설 아크 그리드 젬\n가공 완료\n|거래 불가\n젬 기본 정보\n젬 타입 : 질서\n젬 포인트 : 13\n젬 효과\n필요 의지력 : 3 (기본 값 8 – 의지력 효율 5)\n질서 포인트 : 5\n[추가 피해] Lv.2\n추가 피해 +0.16%\n[공격력] Lv.1\n공격력 +0.03%\n[젬 가공] 아크 그리드 젬\n[젬 융합] 가공 완료 젬",
+        "values": {
+          "attackPowerPercent": "0.0003",
+          "additionalDamagePercent": "0.0016",
+          "bossDamagePercent": "0"
+        }
+      },
+      {
+        "path": "arkGrid.Slots[1].Gems[1]",
+        "slotIndex": 1,
+        "gemIndex": 1,
+        "grade": "유물",
+        "isActive": true,
+        "tooltipText": "질서의 젬 : 안정\n유물 아크 그리드 젬\n가공 완료\n|거래 불가\n젬 기본 정보\n젬 타입 : 질서\n젬 포인트 : 16\n젬 효과\n필요 의지력 : 3 (기본 값 8 – 의지력 효율 5)\n질서 포인트 : 5\n[추가 피해] Lv.1\n추가 피해 +0.08%\n[공격력] Lv.5\n공격력 +0.18%\n[젬 가공] 아크 그리드 젬\n[젬 융합] 가공 완료 젬",
+        "values": {
+          "attackPowerPercent": "0.0018",
+          "additionalDamagePercent": "0.0008",
+          "bossDamagePercent": "0"
+        }
+      },
+      {
+        "path": "arkGrid.Slots[1].Gems[2]",
+        "slotIndex": 1,
+        "gemIndex": 2,
+        "grade": "유물",
+        "isActive": true,
+        "tooltipText": "질서의 젬 : 견고\n유물 아크 그리드 젬\n가공 완료\n|거래 불가\n젬 기본 정보\n젬 타입 : 질서\n젬 포인트 : 18\n젬 효과\n필요 의지력 : 4 (기본 값 9 – 의지력 효율 5)\n질서 포인트 : 4\n[보스 피해] Lv.4\n보스 등급 이상 몬스터에게 주는 피해 +0.33%\n[아군 공격 강화] Lv.5\n아군 공격력 강화 효과 +0.65%\n[젬 가공] 아크 그리드 젬\n[젬 융합] 가공 완료 젬",
+        "values": {
+          "attackPowerPercent": "0",
+          "additionalDamagePercent": "0",
+          "bossDamagePercent": "0"
+        }
+      },
+      {
+        "path": "arkGrid.Slots[1].Gems[3]",
+        "slotIndex": 1,
+        "gemIndex": 3,
+        "grade": "유물",
+        "isActive": true,
+        "tooltipText": "질서의 젬 : 불변\n유물 아크 그리드 젬\n가공 완료\n|거래 불가\n젬 기본 정보\n젬 타입 : 질서\n젬 포인트 : 16\n젬 효과\n필요 의지력 : 5 (기본 값 10 – 의지력 효율 5)\n질서 포인트 : 4\n[추가 피해] Lv.3\n추가 피해 +0.24%\n[보스 피해] Lv.4\n보스 등급 이상 몬스터에게 주는 피해 +0.33%\n[젬 가공] 아크 그리드 젬\n[젬 융합] 가공 완료 젬",
+        "values": {
+          "attackPowerPercent": "0",
+          "additionalDamagePercent": "0.0024",
+          "bossDamagePercent": "0"
+        }
+      },
+      {
+        "path": "arkGrid.Slots[2].Gems[0]",
+        "slotIndex": 2,
+        "gemIndex": 0,
+        "grade": "전설",
+        "isActive": true,
+        "tooltipText": "질서의 젬 : 견고\n전설 아크 그리드 젬\n가공 완료\n|거래 불가\n젬 기본 정보\n젬 타입 : 질서\n젬 포인트 : 14\n젬 효과\n필요 의지력 : 4 (기본 값 9 – 의지력 효율 5)\n질서 포인트 : 5\n[아군 피해 강화] Lv.1\n아군 피해량 강화 효과 +0.05%\n[보스 피해] Lv.3\n보스 등급 이상 몬스터에게 주는 피해 +0.25%\n[젬 가공] 아크 그리드 젬\n[젬 융합] 가공 완료 젬",
+        "values": {
+          "attackPowerPercent": "0",
+          "additionalDamagePercent": "0",
+          "bossDamagePercent": "0"
+        }
+      },
+      {
+        "path": "arkGrid.Slots[2].Gems[1]",
+        "slotIndex": 2,
+        "gemIndex": 1,
+        "grade": "전설",
+        "isActive": true,
+        "tooltipText": "질서의 젬 : 안정\n전설 아크 그리드 젬\n가공 완료\n|거래 불가\n젬 기본 정보\n젬 타입 : 질서\n젬 포인트 : 13\n젬 효과\n필요 의지력 : 3 (기본 값 8 – 의지력 효율 5)\n질서 포인트 : 5\n[낙인력] Lv.1\n낙인력 +0.16%\n[공격력] Lv.2\n공격력 +0.07%\n[젬 가공] 아크 그리드 젬\n[젬 융합] 가공 완료 젬",
+        "values": {
+          "attackPowerPercent": "0.0007",
+          "additionalDamagePercent": "0",
+          "bossDamagePercent": "0"
+        }
+      },
+      {
+        "path": "arkGrid.Slots[2].Gems[2]",
+        "slotIndex": 2,
+        "gemIndex": 2,
+        "grade": "유물",
+        "isActive": true,
+        "tooltipText": "질서의 젬 : 견고\n유물 아크 그리드 젬\n가공 완료\n|거래 불가\n젬 기본 정보\n젬 타입 : 질서\n젬 포인트 : 17\n젬 효과\n필요 의지력 : 4 (기본 값 9 – 의지력 효율 5)\n질서 포인트 : 5\n[보스 피해] Lv.2\n보스 등급 이상 몬스터에게 주는 피해 +0.16%\n[아군 피해 강화] Lv.5\n아군 피해량 강화 효과 +0.26%\n[젬 가공] 아크 그리드 젬\n[젬 융합] 가공 완료 젬",
+        "values": {
+          "attackPowerPercent": "0",
+          "additionalDamagePercent": "0",
+          "bossDamagePercent": "0"
+        }
+      },
+      {
+        "path": "arkGrid.Slots[2].Gems[3]",
+        "slotIndex": 2,
+        "gemIndex": 3,
+        "grade": "전설",
+        "isActive": true,
+        "tooltipText": "질서의 젬 : 안정\n전설 아크 그리드 젬\n가공 완료\n|거래 불가\n젬 기본 정보\n젬 타입 : 질서\n젬 포인트 : 14\n젬 효과\n필요 의지력 : 4 (기본 값 8 – 의지력 효율 4)\n질서 포인트 : 5\n[추가 피해] Lv.2\n추가 피해 +0.16%\n[공격력] Lv.3\n공격력 +0.11%\n[젬 가공] 아크 그리드 젬\n[젬 융합] 가공 완료 젬",
+        "values": {
+          "attackPowerPercent": "0.0011",
+          "additionalDamagePercent": "0.0016",
+          "bossDamagePercent": "0"
+        }
+      },
+      {
+        "path": "arkGrid.Slots[3].Gems[0]",
+        "slotIndex": 3,
+        "gemIndex": 0,
+        "grade": "전설",
+        "isActive": true,
+        "tooltipText": "혼돈의 젬 : 침식\n전설 아크 그리드 젬\n가공 완료\n|거래 불가\n젬 기본 정보\n젬 타입 : 혼돈\n젬 포인트 : 14\n젬 효과\n필요 의지력 : 4 (기본 값 8 – 의지력 효율 4)\n혼돈 포인트 : 4\n[추가 피해] Lv.3\n추가 피해 +0.24%\n[공격력] Lv.3\n공격력 +0.11%\n[젬 가공] 아크 그리드 젬\n[젬 융합] 가공 완료 젬",
+        "values": {
+          "attackPowerPercent": "0.0011",
+          "additionalDamagePercent": "0.0024",
+          "bossDamagePercent": "0"
+        }
+      },
+      {
+        "path": "arkGrid.Slots[3].Gems[1]",
+        "slotIndex": 3,
+        "gemIndex": 1,
+        "grade": "고대",
+        "isActive": true,
+        "tooltipText": "혼돈의 젬 : 침식\n고대 아크 그리드 젬\n가공 완료\n|거래 불가\n젬 기본 정보\n젬 타입 : 혼돈\n젬 포인트 : 19\n젬 효과\n필요 의지력 : 3 (기본 값 8 – 의지력 효율 5)\n혼돈 포인트 : 5\n[추가 피해] Lv.5\n추가 피해 +0.40%\n[공격력] Lv.4\n공격력 +0.14%\n[젬 가공] 아크 그리드 젬\n[젬 융합] 가공 완료 젬",
+        "values": {
+          "attackPowerPercent": "0.0014",
+          "additionalDamagePercent": "0.004",
+          "bossDamagePercent": "0"
+        }
+      },
+      {
+        "path": "arkGrid.Slots[3].Gems[2]",
+        "slotIndex": 3,
+        "gemIndex": 2,
+        "grade": "전설",
+        "isActive": true,
+        "tooltipText": "혼돈의 젬 : 침식\n전설 아크 그리드 젬\n가공 완료\n|거래 불가\n젬 기본 정보\n젬 타입 : 혼돈\n젬 포인트 : 14\n젬 효과\n필요 의지력 : 4 (기본 값 8 – 의지력 효율 4)\n혼돈 포인트 : 5\n[공격력] Lv.3\n공격력 +0.11%\n[추가 피해] Lv.2\n추가 피해 +0.16%\n[젬 가공] 아크 그리드 젬\n[젬 융합] 가공 완료 젬",
+        "values": {
+          "attackPowerPercent": "0.0011",
+          "additionalDamagePercent": "0.0016",
+          "bossDamagePercent": "0"
+        }
+      },
+      {
+        "path": "arkGrid.Slots[3].Gems[3]",
+        "slotIndex": 3,
+        "gemIndex": 3,
+        "grade": "유물",
+        "isActive": true,
+        "tooltipText": "혼돈의 젬 : 붕괴\n유물 아크 그리드 젬\n가공 완료\n|거래 불가\n젬 기본 정보\n젬 타입 : 혼돈\n젬 포인트 : 18\n젬 효과\n필요 의지력 : 6 (기본 값 10 – 의지력 효율 4)\n혼돈 포인트 : 5\n[추가 피해] Lv.4\n추가 피해 +0.32%\n[보스 피해] Lv.5\n보스 등급 이상 몬스터에게 주는 피해 +0.41%\n[젬 가공] 아크 그리드 젬\n[젬 융합] 가공 완료 젬",
+        "values": {
+          "attackPowerPercent": "0",
+          "additionalDamagePercent": "0.0032",
+          "bossDamagePercent": "0"
+        }
+      },
+      {
+        "path": "arkGrid.Slots[4].Gems[0]",
+        "slotIndex": 4,
+        "gemIndex": 0,
+        "grade": "전설",
+        "isActive": true,
+        "tooltipText": "혼돈의 젬 : 침식\n전설 아크 그리드 젬\n가공 완료\n|거래 불가\n젬 기본 정보\n젬 타입 : 혼돈\n젬 포인트 : 15\n젬 효과\n필요 의지력 : 3 (기본 값 8 – 의지력 효율 5)\n혼돈 포인트 : 5\n[아군 피해 강화] Lv.1\n아군 피해량 강화 효과 +0.05%\n[추가 피해] Lv.4\n추가 피해 +0.32%\n[젬 가공] 아크 그리드 젬\n[젬 융합] 가공 완료 젬",
+        "values": {
+          "attackPowerPercent": "0",
+          "additionalDamagePercent": "0.0032",
+          "bossDamagePercent": "0"
+        }
+      },
+      {
+        "path": "arkGrid.Slots[4].Gems[1]",
+        "slotIndex": 4,
+        "gemIndex": 1,
+        "grade": "유물",
+        "isActive": true,
+        "tooltipText": "혼돈의 젬 : 왜곡\n유물 아크 그리드 젬\n가공 완료\n|거래 불가\n젬 기본 정보\n젬 타입 : 혼돈\n젬 포인트 : 18\n젬 효과\n필요 의지력 : 4 (기본 값 9 – 의지력 효율 5)\n혼돈 포인트 : 5\n[공격력] Lv.5\n공격력 +0.18%\n[보스 피해] Lv.3\n보스 등급 이상 몬스터에게 주는 피해 +0.25%\n[젬 가공] 아크 그리드 젬\n[젬 융합] 가공 완료 젬",
+        "values": {
+          "attackPowerPercent": "0.0018",
+          "additionalDamagePercent": "0",
+          "bossDamagePercent": "0"
+        }
+      },
+      {
+        "path": "arkGrid.Slots[4].Gems[2]",
+        "slotIndex": 4,
+        "gemIndex": 2,
+        "grade": "전설",
+        "isActive": true,
+        "tooltipText": "혼돈의 젬 : 붕괴\n전설 아크 그리드 젬\n가공 완료\n|거래 불가\n젬 기본 정보\n젬 타입 : 혼돈\n젬 포인트 : 15\n젬 효과\n필요 의지력 : 5 (기본 값 10 – 의지력 효율 5)\n혼돈 포인트 : 5\n[추가 피해] Lv.4\n추가 피해 +0.32%\n[아군 공격 강화] Lv.1\n아군 공격력 강화 효과 +0.13%\n[젬 가공] 아크 그리드 젬\n[젬 융합] 가공 완료 젬",
+        "values": {
+          "attackPowerPercent": "0",
+          "additionalDamagePercent": "0.0032",
+          "bossDamagePercent": "0"
+        }
+      },
+      {
+        "path": "arkGrid.Slots[4].Gems[3]",
+        "slotIndex": 4,
+        "gemIndex": 3,
+        "grade": "유물",
+        "isActive": true,
+        "tooltipText": "혼돈의 젬 : 붕괴\n유물 아크 그리드 젬\n가공 완료\n|거래 불가\n젬 기본 정보\n젬 타입 : 혼돈\n젬 포인트 : 17\n젬 효과\n필요 의지력 : 5 (기본 값 10 – 의지력 효율 5)\n혼돈 포인트 : 5\n[보스 피해] Lv.4\n보스 등급 이상 몬스터에게 주는 피해 +0.33%\n[추가 피해] Lv.3\n추가 피해 +0.24%\n[젬 가공] 아크 그리드 젬\n[젬 융합] 가공 완료 젬",
+        "values": {
+          "attackPowerPercent": "0",
+          "additionalDamagePercent": "0.0024",
+          "bossDamagePercent": "0"
+        }
+      },
+      {
+        "path": "arkGrid.Slots[5].Gems[0]",
+        "slotIndex": 5,
+        "gemIndex": 0,
+        "grade": "고대",
+        "isActive": true,
+        "tooltipText": "혼돈의 젬 : 침식\n고대 아크 그리드 젬\n가공 완료\n|거래 불가\n젬 기본 정보\n젬 타입 : 혼돈\n젬 포인트 : 20\n젬 효과\n필요 의지력 : 3 (기본 값 8 – 의지력 효율 5)\n혼돈 포인트 : 5\n[공격력] Lv.5\n공격력 +0.18%\n[추가 피해] Lv.5\n추가 피해 +0.40%",
+        "values": {
+          "attackPowerPercent": "0.0018",
+          "additionalDamagePercent": "0.004",
+          "bossDamagePercent": "0"
+        }
+      },
+      {
+        "path": "arkGrid.Slots[5].Gems[1]",
+        "slotIndex": 5,
+        "gemIndex": 1,
+        "grade": "고대",
+        "isActive": true,
+        "tooltipText": "혼돈의 젬 : 왜곡\n고대 아크 그리드 젬\n가공 완료\n|거래 불가\n젬 기본 정보\n젬 타입 : 혼돈\n젬 포인트 : 19\n젬 효과\n필요 의지력 : 4 (기본 값 9 – 의지력 효율 5)\n혼돈 포인트 : 5\n[아군 공격 강화] Lv.4\n아군 공격력 강화 효과 +0.52%\n[보스 피해] Lv.5\n보스 등급 이상 몬스터에게 주는 피해 +0.41%\n[젬 가공] 아크 그리드 젬\n[젬 융합] 가공 완료 젬",
+        "values": {
+          "attackPowerPercent": "0",
+          "additionalDamagePercent": "0",
+          "bossDamagePercent": "0"
+        }
+      },
+      {
+        "path": "arkGrid.Slots[5].Gems[2]",
+        "slotIndex": 5,
+        "gemIndex": 2,
+        "grade": "유물",
+        "isActive": true,
+        "tooltipText": "혼돈의 젬 : 왜곡\n유물 아크 그리드 젬\n가공 완료\n|거래 불가\n젬 기본 정보\n젬 타입 : 혼돈\n젬 포인트 : 18\n젬 효과\n필요 의지력 : 4 (기본 값 9 – 의지력 효율 5)\n혼돈 포인트 : 3\n[아군 피해 강화] Lv.5\n아군 피해량 강화 효과 +0.26%\n[보스 피해] Lv.5\n보스 등급 이상 몬스터에게 주는 피해 +0.41%\n[젬 가공] 아크 그리드 젬\n[젬 융합] 가공 완료 젬",
+        "values": {
+          "attackPowerPercent": "0",
+          "additionalDamagePercent": "0",
+          "bossDamagePercent": "0"
+        }
+      },
+      {
+        "path": "arkGrid.Slots[5].Gems[3]",
+        "slotIndex": 5,
+        "gemIndex": 3,
+        "grade": "전설",
+        "isActive": true,
+        "tooltipText": "혼돈의 젬 : 붕괴\n전설 아크 그리드 젬\n가공 완료\n|거래 불가\n젬 기본 정보\n젬 타입 : 혼돈\n젬 포인트 : 15\n젬 효과\n필요 의지력 : 6 (기본 값 10 – 의지력 효율 4)\n혼돈 포인트 : 4\n[추가 피해] Lv.3\n추가 피해 +0.24%\n[보스 피해] Lv.4\n보스 등급 이상 몬스터에게 주는 피해 +0.33%\n[젬 가공] 아크 그리드 젬\n[젬 융합] 가공 완료 젬",
+        "values": {
+          "attackPowerPercent": "0",
+          "additionalDamagePercent": "0.0024",
+          "bossDamagePercent": "0"
+        }
+      }
+    ],
+    "sources": [
+      {
+        "sourceType": "API_TOOLTIP",
+        "path": "arkGrid.Slots[0].Gems[0].Tooltip",
+        "label": "아크그리드 젬 additionalDamagePercent",
+        "value": "0.004",
+        "raw": "질서의 젬 : 안정\n고대 아크 그리드 젬\n가공 완료\n|거래 불가\n젬 기본 정보\n젬 타입 : 질서\n젬 포인트 : 19\n젬 효과\n필요 의지력 : 3 (기본 값 8 – 의지력 효율 5)\n질서 포인트 : 4\n[추가 피해] Lv.5\n추가 피해 +0.40%\n[아군 피해 강화] Lv.5\n아군 피해량 강화 효과 +0.26%\n[젬 가공] 아크 그리드 젬\n[젬 융합] 가공 완료 젬",
+        "applied": true,
+        "note": ""
+      },
+      {
+        "sourceType": "API_TOOLTIP",
+        "path": "arkGrid.Slots[0].Gems[1].Tooltip",
+        "label": "아크그리드 젬 additionalDamagePercent",
+        "value": "0.0024",
+        "raw": "질서의 젬 : 안정\n전설 아크 그리드 젬\n가공 완료\n|거래 불가\n젬 기본 정보\n젬 타입 : 질서\n젬 포인트 : 14\n젬 효과\n필요 의지력 : 3 (기본 값 8 – 의지력 효율 5)\n질서 포인트 : 5\n[추가 피해] Lv.3\n추가 피해 +0.24%\n[낙인력] Lv.1\n낙인력 +0.16%\n[젬 가공] 아크 그리드 젬\n[젬 융합] 가공 완료 젬",
+        "applied": true,
+        "note": ""
+      },
+      {
+        "sourceType": "API_TOOLTIP",
+        "path": "arkGrid.Slots[0].Gems[2].Tooltip",
+        "label": "아크그리드 젬 attackPowerPercent",
+        "value": "0.0018",
+        "raw": "질서의 젬 : 견고\n고대 아크 그리드 젬\n가공 완료\n|거래 불가\n젬 기본 정보\n젬 타입 : 질서\n젬 포인트 : 19\n젬 효과\n필요 의지력 : 4 (기본 값 9 – 의지력 효율 5)\n질서 포인트 : 5\n[아군 공격 강화] Lv.4\n아군 공격력 강화 효과 +0.52%\n[공격력] Lv.5\n공격력 +0.18%\n[젬 가공] 아크 그리드 젬\n[젬 융합] 가공 완료 젬",
+        "applied": true,
+        "note": ""
+      },
+      {
+        "sourceType": "API_TOOLTIP",
+        "path": "arkGrid.Slots[0].Gems[3].Tooltip",
+        "label": "아크그리드 젬 attackPowerPercent",
+        "value": "0.0003",
+        "raw": "질서의 젬 : 견고\n전설 아크 그리드 젬\n가공 완료\n|거래 불가\n젬 기본 정보\n젬 타입 : 질서\n젬 포인트 : 12\n젬 효과\n필요 의지력 : 7 (기본 값 9 – 의지력 효율 2)\n질서 포인트 : 4\n[공격력] Lv.1\n공격력 +0.03%\n[보스 피해] Lv.5\n보스 등급 이상 몬스터에게 주는 피해 +0.41%\n[젬 가공] 아크 그리드 젬\n[젬 융합] 가공 완료 젬",
+        "applied": true,
+        "note": ""
+      },
+      {
+        "sourceType": "API_TOOLTIP",
+        "path": "arkGrid.Slots[1].Gems[0].Tooltip",
+        "label": "아크그리드 젬 attackPowerPercent",
+        "value": "0.0003",
+        "raw": "질서의 젬 : 안정\n전설 아크 그리드 젬\n가공 완료\n|거래 불가\n젬 기본 정보\n젬 타입 : 질서\n젬 포인트 : 13\n젬 효과\n필요 의지력 : 3 (기본 값 8 – 의지력 효율 5)\n질서 포인트 : 5\n[추가 피해] Lv.2\n추가 피해 +0.16%\n[공격력] Lv.1\n공격력 +0.03%\n[젬 가공] 아크 그리드 젬\n[젬 융합] 가공 완료 젬",
+        "applied": true,
+        "note": ""
+      },
+      {
+        "sourceType": "API_TOOLTIP",
+        "path": "arkGrid.Slots[1].Gems[0].Tooltip",
+        "label": "아크그리드 젬 additionalDamagePercent",
+        "value": "0.0016",
+        "raw": "질서의 젬 : 안정\n전설 아크 그리드 젬\n가공 완료\n|거래 불가\n젬 기본 정보\n젬 타입 : 질서\n젬 포인트 : 13\n젬 효과\n필요 의지력 : 3 (기본 값 8 – 의지력 효율 5)\n질서 포인트 : 5\n[추가 피해] Lv.2\n추가 피해 +0.16%\n[공격력] Lv.1\n공격력 +0.03%\n[젬 가공] 아크 그리드 젬\n[젬 융합] 가공 완료 젬",
+        "applied": true,
+        "note": ""
+      },
+      {
+        "sourceType": "API_TOOLTIP",
+        "path": "arkGrid.Slots[1].Gems[1].Tooltip",
+        "label": "아크그리드 젬 attackPowerPercent",
+        "value": "0.0018",
+        "raw": "질서의 젬 : 안정\n유물 아크 그리드 젬\n가공 완료\n|거래 불가\n젬 기본 정보\n젬 타입 : 질서\n젬 포인트 : 16\n젬 효과\n필요 의지력 : 3 (기본 값 8 – 의지력 효율 5)\n질서 포인트 : 5\n[추가 피해] Lv.1\n추가 피해 +0.08%\n[공격력] Lv.5\n공격력 +0.18%\n[젬 가공] 아크 그리드 젬\n[젬 융합] 가공 완료 젬",
+        "applied": true,
+        "note": ""
+      },
+      {
+        "sourceType": "API_TOOLTIP",
+        "path": "arkGrid.Slots[1].Gems[1].Tooltip",
+        "label": "아크그리드 젬 additionalDamagePercent",
+        "value": "0.0008",
+        "raw": "질서의 젬 : 안정\n유물 아크 그리드 젬\n가공 완료\n|거래 불가\n젬 기본 정보\n젬 타입 : 질서\n젬 포인트 : 16\n젬 효과\n필요 의지력 : 3 (기본 값 8 – 의지력 효율 5)\n질서 포인트 : 5\n[추가 피해] Lv.1\n추가 피해 +0.08%\n[공격력] Lv.5\n공격력 +0.18%\n[젬 가공] 아크 그리드 젬\n[젬 융합] 가공 완료 젬",
+        "applied": true,
+        "note": ""
+      },
+      {
+        "sourceType": "API_TOOLTIP",
+        "path": "arkGrid.Slots[1].Gems[3].Tooltip",
+        "label": "아크그리드 젬 additionalDamagePercent",
+        "value": "0.0024",
+        "raw": "질서의 젬 : 불변\n유물 아크 그리드 젬\n가공 완료\n|거래 불가\n젬 기본 정보\n젬 타입 : 질서\n젬 포인트 : 16\n젬 효과\n필요 의지력 : 5 (기본 값 10 – 의지력 효율 5)\n질서 포인트 : 4\n[추가 피해] Lv.3\n추가 피해 +0.24%\n[보스 피해] Lv.4\n보스 등급 이상 몬스터에게 주는 피해 +0.33%\n[젬 가공] 아크 그리드 젬\n[젬 융합] 가공 완료 젬",
+        "applied": true,
+        "note": ""
+      },
+      {
+        "sourceType": "API_TOOLTIP",
+        "path": "arkGrid.Slots[2].Gems[1].Tooltip",
+        "label": "아크그리드 젬 attackPowerPercent",
+        "value": "0.0007",
+        "raw": "질서의 젬 : 안정\n전설 아크 그리드 젬\n가공 완료\n|거래 불가\n젬 기본 정보\n젬 타입 : 질서\n젬 포인트 : 13\n젬 효과\n필요 의지력 : 3 (기본 값 8 – 의지력 효율 5)\n질서 포인트 : 5\n[낙인력] Lv.1\n낙인력 +0.16%\n[공격력] Lv.2\n공격력 +0.07%\n[젬 가공] 아크 그리드 젬\n[젬 융합] 가공 완료 젬",
+        "applied": true,
+        "note": ""
+      },
+      {
+        "sourceType": "API_TOOLTIP",
+        "path": "arkGrid.Slots[2].Gems[3].Tooltip",
+        "label": "아크그리드 젬 attackPowerPercent",
+        "value": "0.0011",
+        "raw": "질서의 젬 : 안정\n전설 아크 그리드 젬\n가공 완료\n|거래 불가\n젬 기본 정보\n젬 타입 : 질서\n젬 포인트 : 14\n젬 효과\n필요 의지력 : 4 (기본 값 8 – 의지력 효율 4)\n질서 포인트 : 5\n[추가 피해] Lv.2\n추가 피해 +0.16%\n[공격력] Lv.3\n공격력 +0.11%\n[젬 가공] 아크 그리드 젬\n[젬 융합] 가공 완료 젬",
+        "applied": true,
+        "note": ""
+      },
+      {
+        "sourceType": "API_TOOLTIP",
+        "path": "arkGrid.Slots[2].Gems[3].Tooltip",
+        "label": "아크그리드 젬 additionalDamagePercent",
+        "value": "0.0016",
+        "raw": "질서의 젬 : 안정\n전설 아크 그리드 젬\n가공 완료\n|거래 불가\n젬 기본 정보\n젬 타입 : 질서\n젬 포인트 : 14\n젬 효과\n필요 의지력 : 4 (기본 값 8 – 의지력 효율 4)\n질서 포인트 : 5\n[추가 피해] Lv.2\n추가 피해 +0.16%\n[공격력] Lv.3\n공격력 +0.11%\n[젬 가공] 아크 그리드 젬\n[젬 융합] 가공 완료 젬",
+        "applied": true,
+        "note": ""
+      },
+      {
+        "sourceType": "API_TOOLTIP",
+        "path": "arkGrid.Slots[3].Gems[0].Tooltip",
+        "label": "아크그리드 젬 attackPowerPercent",
+        "value": "0.0011",
+        "raw": "혼돈의 젬 : 침식\n전설 아크 그리드 젬\n가공 완료\n|거래 불가\n젬 기본 정보\n젬 타입 : 혼돈\n젬 포인트 : 14\n젬 효과\n필요 의지력 : 4 (기본 값 8 – 의지력 효율 4)\n혼돈 포인트 : 4\n[추가 피해] Lv.3\n추가 피해 +0.24%\n[공격력] Lv.3\n공격력 +0.11%\n[젬 가공] 아크 그리드 젬\n[젬 융합] 가공 완료 젬",
+        "applied": true,
+        "note": ""
+      },
+      {
+        "sourceType": "API_TOOLTIP",
+        "path": "arkGrid.Slots[3].Gems[0].Tooltip",
+        "label": "아크그리드 젬 additionalDamagePercent",
+        "value": "0.0024",
+        "raw": "혼돈의 젬 : 침식\n전설 아크 그리드 젬\n가공 완료\n|거래 불가\n젬 기본 정보\n젬 타입 : 혼돈\n젬 포인트 : 14\n젬 효과\n필요 의지력 : 4 (기본 값 8 – 의지력 효율 4)\n혼돈 포인트 : 4\n[추가 피해] Lv.3\n추가 피해 +0.24%\n[공격력] Lv.3\n공격력 +0.11%\n[젬 가공] 아크 그리드 젬\n[젬 융합] 가공 완료 젬",
+        "applied": true,
+        "note": ""
+      },
+      {
+        "sourceType": "API_TOOLTIP",
+        "path": "arkGrid.Slots[3].Gems[1].Tooltip",
+        "label": "아크그리드 젬 attackPowerPercent",
+        "value": "0.0014",
+        "raw": "혼돈의 젬 : 침식\n고대 아크 그리드 젬\n가공 완료\n|거래 불가\n젬 기본 정보\n젬 타입 : 혼돈\n젬 포인트 : 19\n젬 효과\n필요 의지력 : 3 (기본 값 8 – 의지력 효율 5)\n혼돈 포인트 : 5\n[추가 피해] Lv.5\n추가 피해 +0.40%\n[공격력] Lv.4\n공격력 +0.14%\n[젬 가공] 아크 그리드 젬\n[젬 융합] 가공 완료 젬",
+        "applied": true,
+        "note": ""
+      },
+      {
+        "sourceType": "API_TOOLTIP",
+        "path": "arkGrid.Slots[3].Gems[1].Tooltip",
+        "label": "아크그리드 젬 additionalDamagePercent",
+        "value": "0.004",
+        "raw": "혼돈의 젬 : 침식\n고대 아크 그리드 젬\n가공 완료\n|거래 불가\n젬 기본 정보\n젬 타입 : 혼돈\n젬 포인트 : 19\n젬 효과\n필요 의지력 : 3 (기본 값 8 – 의지력 효율 5)\n혼돈 포인트 : 5\n[추가 피해] Lv.5\n추가 피해 +0.40%\n[공격력] Lv.4\n공격력 +0.14%\n[젬 가공] 아크 그리드 젬\n[젬 융합] 가공 완료 젬",
+        "applied": true,
+        "note": ""
+      },
+      {
+        "sourceType": "API_TOOLTIP",
+        "path": "arkGrid.Slots[3].Gems[2].Tooltip",
+        "label": "아크그리드 젬 attackPowerPercent",
+        "value": "0.0011",
+        "raw": "혼돈의 젬 : 침식\n전설 아크 그리드 젬\n가공 완료\n|거래 불가\n젬 기본 정보\n젬 타입 : 혼돈\n젬 포인트 : 14\n젬 효과\n필요 의지력 : 4 (기본 값 8 – 의지력 효율 4)\n혼돈 포인트 : 5\n[공격력] Lv.3\n공격력 +0.11%\n[추가 피해] Lv.2\n추가 피해 +0.16%\n[젬 가공] 아크 그리드 젬\n[젬 융합] 가공 완료 젬",
+        "applied": true,
+        "note": ""
+      },
+      {
+        "sourceType": "API_TOOLTIP",
+        "path": "arkGrid.Slots[3].Gems[2].Tooltip",
+        "label": "아크그리드 젬 additionalDamagePercent",
+        "value": "0.0016",
+        "raw": "혼돈의 젬 : 침식\n전설 아크 그리드 젬\n가공 완료\n|거래 불가\n젬 기본 정보\n젬 타입 : 혼돈\n젬 포인트 : 14\n젬 효과\n필요 의지력 : 4 (기본 값 8 – 의지력 효율 4)\n혼돈 포인트 : 5\n[공격력] Lv.3\n공격력 +0.11%\n[추가 피해] Lv.2\n추가 피해 +0.16%\n[젬 가공] 아크 그리드 젬\n[젬 융합] 가공 완료 젬",
+        "applied": true,
+        "note": ""
+      },
+      {
+        "sourceType": "API_TOOLTIP",
+        "path": "arkGrid.Slots[3].Gems[3].Tooltip",
+        "label": "아크그리드 젬 additionalDamagePercent",
+        "value": "0.0032",
+        "raw": "혼돈의 젬 : 붕괴\n유물 아크 그리드 젬\n가공 완료\n|거래 불가\n젬 기본 정보\n젬 타입 : 혼돈\n젬 포인트 : 18\n젬 효과\n필요 의지력 : 6 (기본 값 10 – 의지력 효율 4)\n혼돈 포인트 : 5\n[추가 피해] Lv.4\n추가 피해 +0.32%\n[보스 피해] Lv.5\n보스 등급 이상 몬스터에게 주는 피해 +0.41%\n[젬 가공] 아크 그리드 젬\n[젬 융합] 가공 완료 젬",
+        "applied": true,
+        "note": ""
+      },
+      {
+        "sourceType": "API_TOOLTIP",
+        "path": "arkGrid.Slots[4].Gems[0].Tooltip",
+        "label": "아크그리드 젬 additionalDamagePercent",
+        "value": "0.0032",
+        "raw": "혼돈의 젬 : 침식\n전설 아크 그리드 젬\n가공 완료\n|거래 불가\n젬 기본 정보\n젬 타입 : 혼돈\n젬 포인트 : 15\n젬 효과\n필요 의지력 : 3 (기본 값 8 – 의지력 효율 5)\n혼돈 포인트 : 5\n[아군 피해 강화] Lv.1\n아군 피해량 강화 효과 +0.05%\n[추가 피해] Lv.4\n추가 피해 +0.32%\n[젬 가공] 아크 그리드 젬\n[젬 융합] 가공 완료 젬",
+        "applied": true,
+        "note": ""
+      },
+      {
+        "sourceType": "API_TOOLTIP",
+        "path": "arkGrid.Slots[4].Gems[1].Tooltip",
+        "label": "아크그리드 젬 attackPowerPercent",
+        "value": "0.0018",
+        "raw": "혼돈의 젬 : 왜곡\n유물 아크 그리드 젬\n가공 완료\n|거래 불가\n젬 기본 정보\n젬 타입 : 혼돈\n젬 포인트 : 18\n젬 효과\n필요 의지력 : 4 (기본 값 9 – 의지력 효율 5)\n혼돈 포인트 : 5\n[공격력] Lv.5\n공격력 +0.18%\n[보스 피해] Lv.3\n보스 등급 이상 몬스터에게 주는 피해 +0.25%\n[젬 가공] 아크 그리드 젬\n[젬 융합] 가공 완료 젬",
+        "applied": true,
+        "note": ""
+      },
+      {
+        "sourceType": "API_TOOLTIP",
+        "path": "arkGrid.Slots[4].Gems[2].Tooltip",
+        "label": "아크그리드 젬 additionalDamagePercent",
+        "value": "0.0032",
+        "raw": "혼돈의 젬 : 붕괴\n전설 아크 그리드 젬\n가공 완료\n|거래 불가\n젬 기본 정보\n젬 타입 : 혼돈\n젬 포인트 : 15\n젬 효과\n필요 의지력 : 5 (기본 값 10 – 의지력 효율 5)\n혼돈 포인트 : 5\n[추가 피해] Lv.4\n추가 피해 +0.32%\n[아군 공격 강화] Lv.1\n아군 공격력 강화 효과 +0.13%\n[젬 가공] 아크 그리드 젬\n[젬 융합] 가공 완료 젬",
+        "applied": true,
+        "note": ""
+      },
+      {
+        "sourceType": "API_TOOLTIP",
+        "path": "arkGrid.Slots[4].Gems[3].Tooltip",
+        "label": "아크그리드 젬 additionalDamagePercent",
+        "value": "0.0024",
+        "raw": "혼돈의 젬 : 붕괴\n유물 아크 그리드 젬\n가공 완료\n|거래 불가\n젬 기본 정보\n젬 타입 : 혼돈\n젬 포인트 : 17\n젬 효과\n필요 의지력 : 5 (기본 값 10 – 의지력 효율 5)\n혼돈 포인트 : 5\n[보스 피해] Lv.4\n보스 등급 이상 몬스터에게 주는 피해 +0.33%\n[추가 피해] Lv.3\n추가 피해 +0.24%\n[젬 가공] 아크 그리드 젬\n[젬 융합] 가공 완료 젬",
+        "applied": true,
+        "note": ""
+      },
+      {
+        "sourceType": "API_TOOLTIP",
+        "path": "arkGrid.Slots[5].Gems[0].Tooltip",
+        "label": "아크그리드 젬 attackPowerPercent",
+        "value": "0.0018",
+        "raw": "혼돈의 젬 : 침식\n고대 아크 그리드 젬\n가공 완료\n|거래 불가\n젬 기본 정보\n젬 타입 : 혼돈\n젬 포인트 : 20\n젬 효과\n필요 의지력 : 3 (기본 값 8 – 의지력 효율 5)\n혼돈 포인트 : 5\n[공격력] Lv.5\n공격력 +0.18%\n[추가 피해] Lv.5\n추가 피해 +0.40%",
+        "applied": true,
+        "note": ""
+      },
+      {
+        "sourceType": "API_TOOLTIP",
+        "path": "arkGrid.Slots[5].Gems[0].Tooltip",
+        "label": "아크그리드 젬 additionalDamagePercent",
+        "value": "0.004",
+        "raw": "혼돈의 젬 : 침식\n고대 아크 그리드 젬\n가공 완료\n|거래 불가\n젬 기본 정보\n젬 타입 : 혼돈\n젬 포인트 : 20\n젬 효과\n필요 의지력 : 3 (기본 값 8 – 의지력 효율 5)\n혼돈 포인트 : 5\n[공격력] Lv.5\n공격력 +0.18%\n[추가 피해] Lv.5\n추가 피해 +0.40%",
+        "applied": true,
+        "note": ""
+      },
+      {
+        "sourceType": "API_TOOLTIP",
+        "path": "arkGrid.Slots[5].Gems[3].Tooltip",
+        "label": "아크그리드 젬 additionalDamagePercent",
+        "value": "0.0024",
+        "raw": "혼돈의 젬 : 붕괴\n전설 아크 그리드 젬\n가공 완료\n|거래 불가\n젬 기본 정보\n젬 타입 : 혼돈\n젬 포인트 : 15\n젬 효과\n필요 의지력 : 6 (기본 값 10 – 의지력 효율 4)\n혼돈 포인트 : 4\n[추가 피해] Lv.3\n추가 피해 +0.24%\n[보스 피해] Lv.4\n보스 등급 이상 몬스터에게 주는 피해 +0.33%\n[젬 가공] 아크 그리드 젬\n[젬 융합] 가공 완료 젬",
+        "applied": true,
+        "note": ""
+      }
+    ],
+    "excluded": [
+      {
+        "sourceType": "API_TOOLTIP",
+        "path": "arkGrid.Slots[0].Gems[0].Tooltip",
+        "label": "아군 피해량 강화",
+        "value": 0,
+        "raw": "질서의 젬 : 안정\n고대 아크 그리드 젬\n가공 완료\n|거래 불가\n젬 기본 정보\n젬 타입 : 질서\n젬 포인트 : 19\n젬 효과\n필요 의지력 : 3 (기본 값 8 – 의지력 효율 5)\n질서 포인트 : 4\n[추가 피해] Lv.5\n추가 피해 +0.40%\n[아군 피해 강화] Lv.5\n아군 피해량 강화 효과 +0.26%\n[젬 가공] 아크 그리드 젬\n[젬 융합] 가공 완료 젬",
+        "applied": false,
+        "note": "서포터 옵션은 딜러 개인 피해에서 제외"
+      },
+      {
+        "sourceType": "API_TOOLTIP",
+        "path": "arkGrid.Slots[0].Gems[1].Tooltip",
+        "label": "낙인력",
+        "value": 0,
+        "raw": "질서의 젬 : 안정\n전설 아크 그리드 젬\n가공 완료\n|거래 불가\n젬 기본 정보\n젬 타입 : 질서\n젬 포인트 : 14\n젬 효과\n필요 의지력 : 3 (기본 값 8 – 의지력 효율 5)\n질서 포인트 : 5\n[추가 피해] Lv.3\n추가 피해 +0.24%\n[낙인력] Lv.1\n낙인력 +0.16%\n[젬 가공] 아크 그리드 젬\n[젬 융합] 가공 완료 젬",
+        "applied": false,
+        "note": "서포터 옵션은 딜러 개인 피해에서 제외"
+      },
+      {
+        "sourceType": "API_TOOLTIP",
+        "path": "arkGrid.Slots[0].Gems[2].Tooltip",
+        "label": "아군 공격력 강화",
+        "value": 0,
+        "raw": "질서의 젬 : 견고\n고대 아크 그리드 젬\n가공 완료\n|거래 불가\n젬 기본 정보\n젬 타입 : 질서\n젬 포인트 : 19\n젬 효과\n필요 의지력 : 4 (기본 값 9 – 의지력 효율 5)\n질서 포인트 : 5\n[아군 공격 강화] Lv.4\n아군 공격력 강화 효과 +0.52%\n[공격력] Lv.5\n공격력 +0.18%\n[젬 가공] 아크 그리드 젬\n[젬 융합] 가공 완료 젬",
+        "applied": false,
+        "note": "서포터 옵션은 딜러 개인 피해에서 제외"
+      },
+      {
+        "sourceType": "API_TOOLTIP",
+        "path": "arkGrid.Slots[1].Gems[2].Tooltip",
+        "label": "아군 공격력 강화",
+        "value": 0,
+        "raw": "질서의 젬 : 견고\n유물 아크 그리드 젬\n가공 완료\n|거래 불가\n젬 기본 정보\n젬 타입 : 질서\n젬 포인트 : 18\n젬 효과\n필요 의지력 : 4 (기본 값 9 – 의지력 효율 5)\n질서 포인트 : 4\n[보스 피해] Lv.4\n보스 등급 이상 몬스터에게 주는 피해 +0.33%\n[아군 공격 강화] Lv.5\n아군 공격력 강화 효과 +0.65%\n[젬 가공] 아크 그리드 젬\n[젬 융합] 가공 완료 젬",
+        "applied": false,
+        "note": "서포터 옵션은 딜러 개인 피해에서 제외"
+      },
+      {
+        "sourceType": "API_TOOLTIP",
+        "path": "arkGrid.Slots[2].Gems[0].Tooltip",
+        "label": "아군 피해량 강화",
+        "value": 0,
+        "raw": "질서의 젬 : 견고\n전설 아크 그리드 젬\n가공 완료\n|거래 불가\n젬 기본 정보\n젬 타입 : 질서\n젬 포인트 : 14\n젬 효과\n필요 의지력 : 4 (기본 값 9 – 의지력 효율 5)\n질서 포인트 : 5\n[아군 피해 강화] Lv.1\n아군 피해량 강화 효과 +0.05%\n[보스 피해] Lv.3\n보스 등급 이상 몬스터에게 주는 피해 +0.25%\n[젬 가공] 아크 그리드 젬\n[젬 융합] 가공 완료 젬",
+        "applied": false,
+        "note": "서포터 옵션은 딜러 개인 피해에서 제외"
+      },
+      {
+        "sourceType": "API_TOOLTIP",
+        "path": "arkGrid.Slots[2].Gems[1].Tooltip",
+        "label": "낙인력",
+        "value": 0,
+        "raw": "질서의 젬 : 안정\n전설 아크 그리드 젬\n가공 완료\n|거래 불가\n젬 기본 정보\n젬 타입 : 질서\n젬 포인트 : 13\n젬 효과\n필요 의지력 : 3 (기본 값 8 – 의지력 효율 5)\n질서 포인트 : 5\n[낙인력] Lv.1\n낙인력 +0.16%\n[공격력] Lv.2\n공격력 +0.07%\n[젬 가공] 아크 그리드 젬\n[젬 융합] 가공 완료 젬",
+        "applied": false,
+        "note": "서포터 옵션은 딜러 개인 피해에서 제외"
+      },
+      {
+        "sourceType": "API_TOOLTIP",
+        "path": "arkGrid.Slots[2].Gems[2].Tooltip",
+        "label": "아군 피해량 강화",
+        "value": 0,
+        "raw": "질서의 젬 : 견고\n유물 아크 그리드 젬\n가공 완료\n|거래 불가\n젬 기본 정보\n젬 타입 : 질서\n젬 포인트 : 17\n젬 효과\n필요 의지력 : 4 (기본 값 9 – 의지력 효율 5)\n질서 포인트 : 5\n[보스 피해] Lv.2\n보스 등급 이상 몬스터에게 주는 피해 +0.16%\n[아군 피해 강화] Lv.5\n아군 피해량 강화 효과 +0.26%\n[젬 가공] 아크 그리드 젬\n[젬 융합] 가공 완료 젬",
+        "applied": false,
+        "note": "서포터 옵션은 딜러 개인 피해에서 제외"
+      },
+      {
+        "sourceType": "API_TOOLTIP",
+        "path": "arkGrid.Slots[4].Gems[0].Tooltip",
+        "label": "아군 피해량 강화",
+        "value": 0,
+        "raw": "혼돈의 젬 : 침식\n전설 아크 그리드 젬\n가공 완료\n|거래 불가\n젬 기본 정보\n젬 타입 : 혼돈\n젬 포인트 : 15\n젬 효과\n필요 의지력 : 3 (기본 값 8 – 의지력 효율 5)\n혼돈 포인트 : 5\n[아군 피해 강화] Lv.1\n아군 피해량 강화 효과 +0.05%\n[추가 피해] Lv.4\n추가 피해 +0.32%\n[젬 가공] 아크 그리드 젬\n[젬 융합] 가공 완료 젬",
+        "applied": false,
+        "note": "서포터 옵션은 딜러 개인 피해에서 제외"
+      },
+      {
+        "sourceType": "API_TOOLTIP",
+        "path": "arkGrid.Slots[4].Gems[2].Tooltip",
+        "label": "아군 공격력 강화",
+        "value": 0,
+        "raw": "혼돈의 젬 : 붕괴\n전설 아크 그리드 젬\n가공 완료\n|거래 불가\n젬 기본 정보\n젬 타입 : 혼돈\n젬 포인트 : 15\n젬 효과\n필요 의지력 : 5 (기본 값 10 – 의지력 효율 5)\n혼돈 포인트 : 5\n[추가 피해] Lv.4\n추가 피해 +0.32%\n[아군 공격 강화] Lv.1\n아군 공격력 강화 효과 +0.13%\n[젬 가공] 아크 그리드 젬\n[젬 융합] 가공 완료 젬",
+        "applied": false,
+        "note": "서포터 옵션은 딜러 개인 피해에서 제외"
+      },
+      {
+        "sourceType": "API_TOOLTIP",
+        "path": "arkGrid.Slots[5].Gems[1].Tooltip",
+        "label": "아군 공격력 강화",
+        "value": 0,
+        "raw": "혼돈의 젬 : 왜곡\n고대 아크 그리드 젬\n가공 완료\n|거래 불가\n젬 기본 정보\n젬 타입 : 혼돈\n젬 포인트 : 19\n젬 효과\n필요 의지력 : 4 (기본 값 9 – 의지력 효율 5)\n혼돈 포인트 : 5\n[아군 공격 강화] Lv.4\n아군 공격력 강화 효과 +0.52%\n[보스 피해] Lv.5\n보스 등급 이상 몬스터에게 주는 피해 +0.41%\n[젬 가공] 아크 그리드 젬\n[젬 융합] 가공 완료 젬",
+        "applied": false,
+        "note": "서포터 옵션은 딜러 개인 피해에서 제외"
+      },
+      {
+        "sourceType": "API_TOOLTIP",
+        "path": "arkGrid.Slots[5].Gems[2].Tooltip",
+        "label": "아군 피해량 강화",
+        "value": 0,
+        "raw": "혼돈의 젬 : 왜곡\n유물 아크 그리드 젬\n가공 완료\n|거래 불가\n젬 기본 정보\n젬 타입 : 혼돈\n젬 포인트 : 18\n젬 효과\n필요 의지력 : 4 (기본 값 9 – 의지력 효율 5)\n혼돈 포인트 : 3\n[아군 피해 강화] Lv.5\n아군 피해량 강화 효과 +0.26%\n[보스 피해] Lv.5\n보스 등급 이상 몬스터에게 주는 피해 +0.41%\n[젬 가공] 아크 그리드 젬\n[젬 융합] 가공 완료 젬",
+        "applied": false,
+        "note": "서포터 옵션은 딜러 개인 피해에서 제외"
+      },
+      {
+        "sourceType": "API_FIELD",
+        "path": "arkGrid.Effects[0]",
+        "label": "추가 피해",
+        "value": 49,
+        "raw": "추가 피해 +3.96%",
+        "applied": false,
+        "note": "이번 범위에서는 포인트 활성 효과 제외"
+      },
+      {
+        "sourceType": "API_FIELD",
+        "path": "arkGrid.Effects[1]",
+        "label": "아군 피해 강화",
+        "value": 17,
+        "raw": "아군 피해량 강화 효과 +0.89%",
+        "applied": false,
+        "note": "이번 범위에서는 포인트 활성 효과 제외"
+      },
+      {
+        "sourceType": "API_FIELD",
+        "path": "arkGrid.Effects[2]",
+        "label": "낙인력",
+        "value": 2,
+        "raw": "낙인력 +0.33%",
+        "applied": false,
+        "note": "이번 범위에서는 포인트 활성 효과 제외"
+      },
+      {
+        "sourceType": "API_FIELD",
+        "path": "arkGrid.Effects[3]",
+        "label": "아군 공격 강화",
+        "value": 14,
+        "raw": "아군 공격력 강화 효과 +1.82%",
+        "applied": false,
+        "note": "이번 범위에서는 포인트 활성 효과 제외"
+      },
+      {
+        "sourceType": "API_FIELD",
+        "path": "arkGrid.Effects[4]",
+        "label": "공격력",
+        "value": 37,
+        "raw": "공격력 +1.35%",
+        "applied": false,
+        "note": "이번 범위에서는 포인트 활성 효과 제외"
+      },
+      {
+        "sourceType": "API_FIELD",
+        "path": "arkGrid.Effects[5]",
+        "label": "보스 피해",
+        "value": 44,
+        "raw": "보스 등급 이상 몬스터에게 주는 피해 +3.66%",
+        "applied": false,
+        "note": "이번 범위에서는 포인트 활성 효과 제외"
+      }
+    ]
+  },
+  "excluded": [
+    {
+      "sourceType": "API_FIELD",
+      "path": "avatars[7]",
+      "label": "무기 아바타 중복 아바타",
+      "value": 0,
+      "raw": "수호의 잠룡 우산 / IsInner=False",
+      "applied": false,
+      "note": "부위별 효과 아바타 하나만 선택"
+    },
+    {
+      "sourceType": "API_FIELD",
+      "path": "avatars[8]",
+      "label": "상의 아바타 중복 아바타",
+      "value": 0,
+      "raw": "데일리 모던 상의 / IsInner=False",
+      "applied": false,
+      "note": "부위별 효과 아바타 하나만 선택"
+    },
+    {
+      "sourceType": "API_FIELD",
+      "path": "avatars[9]",
+      "label": "하의 아바타 중복 아바타",
+      "value": 0,
+      "raw": "베이직 돌핀 쇼츠 / IsInner=False",
+      "applied": false,
+      "note": "부위별 효과 아바타 하나만 선택"
+    },
+    {
+      "sourceType": "API_TOOLTIP",
+      "path": "arkGrid.Slots[0].Gems[0].Tooltip",
+      "label": "아군 피해량 강화",
+      "value": 0,
+      "raw": "질서의 젬 : 안정\n고대 아크 그리드 젬\n가공 완료\n|거래 불가\n젬 기본 정보\n젬 타입 : 질서\n젬 포인트 : 19\n젬 효과\n필요 의지력 : 3 (기본 값 8 – 의지력 효율 5)\n질서 포인트 : 4\n[추가 피해] Lv.5\n추가 피해 +0.40%\n[아군 피해 강화] Lv.5\n아군 피해량 강화 효과 +0.26%\n[젬 가공] 아크 그리드 젬\n[젬 융합] 가공 완료 젬",
+      "applied": false,
+      "note": "서포터 옵션은 딜러 개인 피해에서 제외"
+    },
+    {
+      "sourceType": "API_TOOLTIP",
+      "path": "arkGrid.Slots[0].Gems[1].Tooltip",
+      "label": "낙인력",
+      "value": 0,
+      "raw": "질서의 젬 : 안정\n전설 아크 그리드 젬\n가공 완료\n|거래 불가\n젬 기본 정보\n젬 타입 : 질서\n젬 포인트 : 14\n젬 효과\n필요 의지력 : 3 (기본 값 8 – 의지력 효율 5)\n질서 포인트 : 5\n[추가 피해] Lv.3\n추가 피해 +0.24%\n[낙인력] Lv.1\n낙인력 +0.16%\n[젬 가공] 아크 그리드 젬\n[젬 융합] 가공 완료 젬",
+      "applied": false,
+      "note": "서포터 옵션은 딜러 개인 피해에서 제외"
+    },
+    {
+      "sourceType": "API_TOOLTIP",
+      "path": "arkGrid.Slots[0].Gems[2].Tooltip",
+      "label": "아군 공격력 강화",
+      "value": 0,
+      "raw": "질서의 젬 : 견고\n고대 아크 그리드 젬\n가공 완료\n|거래 불가\n젬 기본 정보\n젬 타입 : 질서\n젬 포인트 : 19\n젬 효과\n필요 의지력 : 4 (기본 값 9 – 의지력 효율 5)\n질서 포인트 : 5\n[아군 공격 강화] Lv.4\n아군 공격력 강화 효과 +0.52%\n[공격력] Lv.5\n공격력 +0.18%\n[젬 가공] 아크 그리드 젬\n[젬 융합] 가공 완료 젬",
+      "applied": false,
+      "note": "서포터 옵션은 딜러 개인 피해에서 제외"
+    },
+    {
+      "sourceType": "API_TOOLTIP",
+      "path": "arkGrid.Slots[1].Gems[2].Tooltip",
+      "label": "아군 공격력 강화",
+      "value": 0,
+      "raw": "질서의 젬 : 견고\n유물 아크 그리드 젬\n가공 완료\n|거래 불가\n젬 기본 정보\n젬 타입 : 질서\n젬 포인트 : 18\n젬 효과\n필요 의지력 : 4 (기본 값 9 – 의지력 효율 5)\n질서 포인트 : 4\n[보스 피해] Lv.4\n보스 등급 이상 몬스터에게 주는 피해 +0.33%\n[아군 공격 강화] Lv.5\n아군 공격력 강화 효과 +0.65%\n[젬 가공] 아크 그리드 젬\n[젬 융합] 가공 완료 젬",
+      "applied": false,
+      "note": "서포터 옵션은 딜러 개인 피해에서 제외"
+    },
+    {
+      "sourceType": "API_TOOLTIP",
+      "path": "arkGrid.Slots[2].Gems[0].Tooltip",
+      "label": "아군 피해량 강화",
+      "value": 0,
+      "raw": "질서의 젬 : 견고\n전설 아크 그리드 젬\n가공 완료\n|거래 불가\n젬 기본 정보\n젬 타입 : 질서\n젬 포인트 : 14\n젬 효과\n필요 의지력 : 4 (기본 값 9 – 의지력 효율 5)\n질서 포인트 : 5\n[아군 피해 강화] Lv.1\n아군 피해량 강화 효과 +0.05%\n[보스 피해] Lv.3\n보스 등급 이상 몬스터에게 주는 피해 +0.25%\n[젬 가공] 아크 그리드 젬\n[젬 융합] 가공 완료 젬",
+      "applied": false,
+      "note": "서포터 옵션은 딜러 개인 피해에서 제외"
+    },
+    {
+      "sourceType": "API_TOOLTIP",
+      "path": "arkGrid.Slots[2].Gems[1].Tooltip",
+      "label": "낙인력",
+      "value": 0,
+      "raw": "질서의 젬 : 안정\n전설 아크 그리드 젬\n가공 완료\n|거래 불가\n젬 기본 정보\n젬 타입 : 질서\n젬 포인트 : 13\n젬 효과\n필요 의지력 : 3 (기본 값 8 – 의지력 효율 5)\n질서 포인트 : 5\n[낙인력] Lv.1\n낙인력 +0.16%\n[공격력] Lv.2\n공격력 +0.07%\n[젬 가공] 아크 그리드 젬\n[젬 융합] 가공 완료 젬",
+      "applied": false,
+      "note": "서포터 옵션은 딜러 개인 피해에서 제외"
+    },
+    {
+      "sourceType": "API_TOOLTIP",
+      "path": "arkGrid.Slots[2].Gems[2].Tooltip",
+      "label": "아군 피해량 강화",
+      "value": 0,
+      "raw": "질서의 젬 : 견고\n유물 아크 그리드 젬\n가공 완료\n|거래 불가\n젬 기본 정보\n젬 타입 : 질서\n젬 포인트 : 17\n젬 효과\n필요 의지력 : 4 (기본 값 9 – 의지력 효율 5)\n질서 포인트 : 5\n[보스 피해] Lv.2\n보스 등급 이상 몬스터에게 주는 피해 +0.16%\n[아군 피해 강화] Lv.5\n아군 피해량 강화 효과 +0.26%\n[젬 가공] 아크 그리드 젬\n[젬 융합] 가공 완료 젬",
+      "applied": false,
+      "note": "서포터 옵션은 딜러 개인 피해에서 제외"
+    },
+    {
+      "sourceType": "API_TOOLTIP",
+      "path": "arkGrid.Slots[4].Gems[0].Tooltip",
+      "label": "아군 피해량 강화",
+      "value": 0,
+      "raw": "혼돈의 젬 : 침식\n전설 아크 그리드 젬\n가공 완료\n|거래 불가\n젬 기본 정보\n젬 타입 : 혼돈\n젬 포인트 : 15\n젬 효과\n필요 의지력 : 3 (기본 값 8 – 의지력 효율 5)\n혼돈 포인트 : 5\n[아군 피해 강화] Lv.1\n아군 피해량 강화 효과 +0.05%\n[추가 피해] Lv.4\n추가 피해 +0.32%\n[젬 가공] 아크 그리드 젬\n[젬 융합] 가공 완료 젬",
+      "applied": false,
+      "note": "서포터 옵션은 딜러 개인 피해에서 제외"
+    },
+    {
+      "sourceType": "API_TOOLTIP",
+      "path": "arkGrid.Slots[4].Gems[2].Tooltip",
+      "label": "아군 공격력 강화",
+      "value": 0,
+      "raw": "혼돈의 젬 : 붕괴\n전설 아크 그리드 젬\n가공 완료\n|거래 불가\n젬 기본 정보\n젬 타입 : 혼돈\n젬 포인트 : 15\n젬 효과\n필요 의지력 : 5 (기본 값 10 – 의지력 효율 5)\n혼돈 포인트 : 5\n[추가 피해] Lv.4\n추가 피해 +0.32%\n[아군 공격 강화] Lv.1\n아군 공격력 강화 효과 +0.13%\n[젬 가공] 아크 그리드 젬\n[젬 융합] 가공 완료 젬",
+      "applied": false,
+      "note": "서포터 옵션은 딜러 개인 피해에서 제외"
+    },
+    {
+      "sourceType": "API_TOOLTIP",
+      "path": "arkGrid.Slots[5].Gems[1].Tooltip",
+      "label": "아군 공격력 강화",
+      "value": 0,
+      "raw": "혼돈의 젬 : 왜곡\n고대 아크 그리드 젬\n가공 완료\n|거래 불가\n젬 기본 정보\n젬 타입 : 혼돈\n젬 포인트 : 19\n젬 효과\n필요 의지력 : 4 (기본 값 9 – 의지력 효율 5)\n혼돈 포인트 : 5\n[아군 공격 강화] Lv.4\n아군 공격력 강화 효과 +0.52%\n[보스 피해] Lv.5\n보스 등급 이상 몬스터에게 주는 피해 +0.41%\n[젬 가공] 아크 그리드 젬\n[젬 융합] 가공 완료 젬",
+      "applied": false,
+      "note": "서포터 옵션은 딜러 개인 피해에서 제외"
+    },
+    {
+      "sourceType": "API_TOOLTIP",
+      "path": "arkGrid.Slots[5].Gems[2].Tooltip",
+      "label": "아군 피해량 강화",
+      "value": 0,
+      "raw": "혼돈의 젬 : 왜곡\n유물 아크 그리드 젬\n가공 완료\n|거래 불가\n젬 기본 정보\n젬 타입 : 혼돈\n젬 포인트 : 18\n젬 효과\n필요 의지력 : 4 (기본 값 9 – 의지력 효율 5)\n혼돈 포인트 : 3\n[아군 피해 강화] Lv.5\n아군 피해량 강화 효과 +0.26%\n[보스 피해] Lv.5\n보스 등급 이상 몬스터에게 주는 피해 +0.41%\n[젬 가공] 아크 그리드 젬\n[젬 융합] 가공 완료 젬",
+      "applied": false,
+      "note": "서포터 옵션은 딜러 개인 피해에서 제외"
+    },
+    {
+      "sourceType": "API_FIELD",
+      "path": "arkGrid.Effects[0]",
+      "label": "추가 피해",
+      "value": 49,
+      "raw": "추가 피해 +3.96%",
+      "applied": false,
+      "note": "이번 범위에서는 포인트 활성 효과 제외"
+    },
+    {
+      "sourceType": "API_FIELD",
+      "path": "arkGrid.Effects[1]",
+      "label": "아군 피해 강화",
+      "value": 17,
+      "raw": "아군 피해량 강화 효과 +0.89%",
+      "applied": false,
+      "note": "이번 범위에서는 포인트 활성 효과 제외"
+    },
+    {
+      "sourceType": "API_FIELD",
+      "path": "arkGrid.Effects[2]",
+      "label": "낙인력",
+      "value": 2,
+      "raw": "낙인력 +0.33%",
+      "applied": false,
+      "note": "이번 범위에서는 포인트 활성 효과 제외"
+    },
+    {
+      "sourceType": "API_FIELD",
+      "path": "arkGrid.Effects[3]",
+      "label": "아군 공격 강화",
+      "value": 14,
+      "raw": "아군 공격력 강화 효과 +1.82%",
+      "applied": false,
+      "note": "이번 범위에서는 포인트 활성 효과 제외"
+    },
+    {
+      "sourceType": "API_FIELD",
+      "path": "arkGrid.Effects[4]",
+      "label": "공격력",
+      "value": 37,
+      "raw": "공격력 +1.35%",
+      "applied": false,
+      "note": "이번 범위에서는 포인트 활성 효과 제외"
+    },
+    {
+      "sourceType": "API_FIELD",
+      "path": "arkGrid.Effects[5]",
+      "label": "보스 피해",
+      "value": 44,
+      "raw": "보스 등급 이상 몬스터에게 주는 피해 +3.66%",
+      "applied": false,
+      "note": "이번 범위에서는 포인트 활성 효과 제외"
+    }
+  ],
+  "calculations": {
+    "ruleVersion": "current-v2.1.0",
+    "withoutArkGridGemEffects": {
+      "calculatorVersion": "2.1.0",
+      "ruleVersion": "current-v2.1.0",
+      "ruleLabel": "엑셀 구조 + 사용자 최신 확정 규칙",
+      "ruleSource": "season3-xlsx-v2.0.0 + explicit user overrides",
+      "intermediateFloorStages": [],
+      "includeArkGrid": false,
+      "inputs": {
+        "equipmentMainStat": "701492",
+        "levelMainStat": "477",
+        "expeditionMainStat": "680",
+        "collectionMainStat": "976",
+        "avatarMainStatPercent": "0.08",
+        "petMainStatPercent": "0.01",
+        "baseWeaponAttack": "241367",
+        "equipmentWeaponAttackFlat": "0",
+        "equipmentWeaponAttackPercent": "0.06",
+        "karmaWeaponAttackPercent": "0.027",
+        "regularGemBaseAttackPercent": "0.102",
+        "stoneBaseAttackPercent": "0.015",
+        "equipmentAttackPowerFlat": "0",
+        "equipmentAttackPowerPercent": "0.0190",
+        "adrenalineAttackPowerPercent": "0.1038",
+        "arkGridAttackPowerPercent": "0",
+        "weaponAdditionalDamage": "0.30",
+        "necklaceAdditionalDamage": "0.026",
+        "otherAdditionalDamage": "0.035",
+        "arkPassiveAdditionalDamage": "0.085",
+        "petAdditionalDamage": "0.01",
+        "arkGridAdditionalDamage": "0"
+      },
+      "mainStat": {
+        "base": "703625",
+        "percent": "0.09",
+        "rawBeforeStageRounding": "766951.25",
+        "final": "766951.25",
+        "stageRounded": false
+      },
+      "weaponAttack": {
+        "base": "241367",
+        "flat": "0",
+        "subtotalBeforePercent": "241367",
+        "percent": "0.087",
+        "rawBeforeStageRounding": "262365.929",
+        "final": "262365.929",
+        "stageRounded": false
+      },
+      "attackPower": {
+        "rootBeforeBaseAttackPercent": "183131.0447029491001332609376936259758753",
+        "baseAttackPercent": "0.117",
+        "afterBaseAttackPercent": "204557.3769331941448488524674037802150527",
+        "flatAttackPower": "0",
+        "base": "204557.3769331941448488524674037802150527",
+        "finalAttackPercent": "0.1228",
+        "rawBeforeStageRounding": "229677.0228205903858362915504009644254612",
+        "final": "229677.0228205903858362915504009644254612",
+        "stageRounded": false,
+        "profileValueForComparison": "217160",
+        "differenceFromProfile": "12517.0228205903858362915504009644254612"
+      },
+      "speed": {
+        "attackComponents": {
+          "base": "1",
+          "swiftness": "0.2824",
+          "massIncrease": "-0.10",
+          "combatBlessing": "0.09",
+          "feast": "0.05",
+          "gale": "0.12"
+        },
+        "moveComponents": {
+          "base": "1",
+          "swiftness": "0.2824",
+          "combatBlessing": "0.09",
+          "feast": "0.05",
+          "gale": "0.12"
+        },
+        "rawAttackSpeed": "1.4424",
+        "cappedAttackSpeed": "1.4",
+        "rawAttackSpeedIncrease": "0.4424",
+        "cappedAttackSpeedIncrease": "0.4",
+        "rawMoveSpeed": "1.5424",
+        "cappedMoveSpeed": "1.4",
+        "rawMoveSpeedIncrease": "0.5424",
+        "cappedMoveSpeedIncrease": "0.4",
+        "sonicBreakthroughLevel": 2,
+        "sonicBreakthroughEvolutionDamage": "0.215440",
+        "sonicBreakthroughBreakdown": {
+          "ruleVersion": "current-v2.1.0",
+          "level": 2,
+          "attackSpeedIncrease": "0.4424",
+          "moveSpeedIncrease": "0.5424",
+          "baseRate": "0.10",
+          "baseAttackInput": "0.4",
+          "baseMoveInput": "0.4",
+          "baseDamage": "0.080",
+          "bothSpeedsExceededCap": true,
+          "bothExceededBonus": "0.08",
+          "overCapRate": "0.30",
+          "attackOverCap": "0.0424",
+          "moveOverCap": "0.1424",
+          "overCapDamage": "0.055440",
+          "uncappedTotal": "0.215440",
+          "maximum": "0.24",
+          "final": "0.215440",
+          "limitedByMaximum": false
+        }
+      },
+      "damageGroups": {
+        "engravingParts": [
+          {
+            "name": "원한",
+            "value": "0.24"
+          },
+          {
+            "name": "질량 증가",
+            "value": "0.19"
+          },
+          {
+            "name": "타격의 대가",
+            "value": "0.17"
+          }
+        ],
+        "additionalDamagePercent": "0.456",
+        "additionalDamageMultiplier": "1.456",
+        "evolutionParts": [
+          {
+            "name": "예리한 감각",
+            "value": "0.05"
+          },
+          {
+            "name": "한계 돌파",
+            "value": "0.2"
+          },
+          {
+            "name": "무한한 마력",
+            "value": "0.08"
+          },
+          {
+            "name": "혼신의 강타",
+            "value": "0.02"
+          },
+          {
+            "name": "진화 카르마",
+            "value": "0.06"
+          },
+          {
+            "name": "음속 돌파 Lv.2",
+            "value": "0.215440"
+          }
+        ],
+        "subtitles": [
+          {
+            "name": "원한",
+            "percent": "0.24",
+            "multiplier": "1.24"
+          },
+          {
+            "name": "질량 증가",
+            "percent": "0.19",
+            "multiplier": "1.19"
+          },
+          {
+            "name": "타격의 대가",
+            "percent": "0.17",
+            "multiplier": "1.17"
+          },
+          {
+            "name": "진화형 피해",
+            "percent": "0.625440",
+            "multiplier": "1.625440"
+          },
+          {
+            "name": "악마 추가 피해",
+            "percent": "0.070",
+            "multiplier": "1.070"
+          },
+          {
+            "name": "카드 피해",
+            "percent": "0.15",
+            "multiplier": "1.15"
+          },
+          {
+            "name": "돌격대장",
+            "percent": "0.184",
+            "multiplier": "1.184"
+          },
+          {
+            "name": "풀려난 힘",
+            "percent": "0.15",
+            "multiplier": "1.15"
+          },
+          {
+            "name": "바람의 길",
+            "percent": "0.024",
+            "multiplier": "1.024"
+          },
+          {
+            "name": "목걸이 적에게 주는 피해",
+            "percent": "0.012",
+            "multiplier": "1.012"
+          },
+          {
+            "name": "팔찌 적에게 주는 피해",
+            "percent": "0.045",
+            "multiplier": "1.045"
+          },
+          {
+            "name": "기타 적에게 주는 피해",
+            "percent": "0",
+            "multiplier": "1"
+          },
+          {
+            "name": "단련된 가르기",
+            "percent": "0.75",
+            "multiplier": "1.75"
+          },
+          {
+            "name": "팔찌 비방향성 피해",
+            "percent": "0",
+            "multiplier": "1"
+          },
+          {
+            "name": "아크그리드 보스 피해",
+            "percent": "0",
+            "multiplier": "1"
+          }
+        ],
+        "totalSubtitleMultiplier": "8.910281408520857384237137920000000"
+      },
+      "critical": {
+        "rateRaw": "0.9576",
+        "rateCapped": "0.9576",
+        "damageMultiplier": "2.596",
+        "criticalHitDamageMultiplier": "1.13680"
+      },
+      "enemy": {
+        "defense": "5850",
+        "defenseConstant": "6500",
+        "defenseMultiplier": "0.5263157894736842105263157894736842105263",
+        "damageTakenMultiplier": "0.76",
+        "species": "악마"
+      },
+      "damage": {
+        "skillBaseRaw": "80729393.39000622010962744257694356601635",
+        "nonCriticalRaw": "418932907.4369065633373428328940833494996",
+        "criticalRaw": "1236326644.136418889600109898998648298642",
+        "expectedRaw": "1201669149.700359566966568575395814744799",
+        "nonCritical": 418932907,
+        "critical": 1236326644,
+        "expected": 1201669149
+      },
+      "assumptions": [
+        {
+          "sourceType": "EXAMPLE_DB",
+          "path": "fixed.levelMainStat",
+          "label": "레벨 주스탯",
+          "value": "477",
+          "raw": "",
+          "applied": true,
+          "note": "current-v2.1.0 규칙의 고정값"
+        },
+        {
+          "sourceType": "EXAMPLE_DB",
+          "path": "fixed.expeditionMainStat",
+          "label": "원정대 주스탯",
+          "value": "680",
+          "raw": "",
+          "applied": true,
+          "note": "current-v2.1.0 규칙의 고정값"
+        },
+        {
+          "sourceType": "EXAMPLE_DB",
+          "path": "fixed.collectionMainStat",
+          "label": "카드·내실 주스탯",
+          "value": "976",
+          "raw": "",
+          "applied": true,
+          "note": "current-v2.1.0 규칙의 고정값"
+        },
+        {
+          "sourceType": "API_TOOLTIP",
+          "path": "engravings.entries.아드레날린.Description",
+          "label": "아드레날린 attackPowerPercent",
+          "value": "0.1038",
+          "raw": "이동기 및 기본공격을 제외한 스킬 사용 후 6초 동안 공격력이 1.73% 증가하며 (최대 6중첩) 해당 효과가 최대 중첩 도달 시 치명타 적중률이 추가로 20.00% 증가한다. 해당 효과는 스킬 취소에 따른 재사용 대기시간 감소가 적용되는 경우, 스킬 종료 후 적용된다.",
+          "applied": true,
+          "note": "현재 API 설명에서 파싱"
+        },
+        {
+          "sourceType": "API_TOOLTIP",
+          "path": "engravings.entries.질량 증가.Description",
+          "label": "질량 증가 attackSpeed",
+          "value": "-0.10",
+          "raw": "공격속도가 10.00% 감소하지만, 적에게 주는 피해가 19.00% 증가한다.",
+          "applied": true,
+          "note": "현재 API 설명에서 파싱"
+        },
+        {
+          "sourceType": "API_TOOLTIP",
+          "path": "engravings.entries.원한.Description",
+          "label": "원한 generalDamage",
+          "value": "0.24",
+          "raw": "보스 및 레이드 몬스터에게 주는 피해가 24.00% 증가하지만, 받는 피해가 20.00% 증가한다.",
+          "applied": true,
+          "note": "현재 API 설명에서 파싱"
+        },
+        {
+          "sourceType": "API_TOOLTIP",
+          "path": "engravings.entries.질량 증가.Description",
+          "label": "질량 증가 generalDamage",
+          "value": "0.19",
+          "raw": "공격속도가 10.00% 감소하지만, 적에게 주는 피해가 19.00% 증가한다.",
+          "applied": true,
+          "note": "현재 API 설명에서 파싱"
+        },
+        {
+          "sourceType": "API_FIELD+EXAMPLE_DB",
+          "path": "effects.타격의 대가",
+          "label": "타격의 대가 generalDamage",
+          "value": "0.17",
+          "raw": "현재 API에서 효과 존재 확인",
+          "applied": true,
+          "note": "현재 수치 파싱 실패 또는 레거시 버전이므로 예시 DB 사용"
+        },
+        {
+          "sourceType": "API_FIELD+DERIVED",
+          "path": "effects.돌격대장",
+          "label": "돌격대장 피해",
+          "value": "0.184",
+          "raw": "상한 적용 이동속도=1.4; 이동속도 증가량 계수=0.46",
+          "applied": true,
+          "note": ""
+        },
+        {
+          "sourceType": "API_TOOLTIP+EXAMPLE_DB",
+          "path": "equipment[*].Tooltip",
+          "label": "회심 치명타 시 피해",
+          "value": "0.12",
+          "raw": "회심 문자열 확인",
+          "applied": true,
+          "note": ""
+        },
+        {
+          "sourceType": "API_TOOLTIP",
+          "path": "engravings.entries.아드레날린.Description",
+          "label": "아드레날린 criticalRate",
+          "value": "0.20",
+          "raw": "이동기 및 기본공격을 제외한 스킬 사용 후 6초 동안 공격력이 1.73% 증가하며 (최대 6중첩) 해당 효과가 최대 중첩 도달 시 치명타 적중률이 추가로 20.00% 증가한다. 해당 효과는 스킬 취소에 따른 재사용 대기시간 감소가 적용되는 경우, 스킬 종료 후 적용된다.",
+          "applied": true,
+          "note": "현재 API 설명에서 파싱"
+        }
+      ]
+    },
+    "withArkGridGemEffects": {
+      "calculatorVersion": "2.1.0",
+      "ruleVersion": "current-v2.1.0",
+      "ruleLabel": "엑셀 구조 + 사용자 최신 확정 규칙",
+      "ruleSource": "season3-xlsx-v2.0.0 + explicit user overrides",
+      "intermediateFloorStages": [],
+      "includeArkGrid": true,
+      "inputs": {
+        "equipmentMainStat": "701492",
+        "levelMainStat": "477",
+        "expeditionMainStat": "680",
+        "collectionMainStat": "976",
+        "avatarMainStatPercent": "0.08",
+        "petMainStatPercent": "0.01",
+        "baseWeaponAttack": "241367",
+        "equipmentWeaponAttackFlat": "0",
+        "equipmentWeaponAttackPercent": "0.06",
+        "karmaWeaponAttackPercent": "0.027",
+        "regularGemBaseAttackPercent": "0.102",
+        "stoneBaseAttackPercent": "0.015",
+        "equipmentAttackPowerFlat": "0",
+        "equipmentAttackPowerPercent": "0.0190",
+        "adrenalineAttackPowerPercent": "0.1038",
+        "arkGridAttackPowerPercent": "0.0132",
+        "weaponAdditionalDamage": "0.30",
+        "necklaceAdditionalDamage": "0.026",
+        "otherAdditionalDamage": "0.035",
+        "arkPassiveAdditionalDamage": "0.085",
+        "petAdditionalDamage": "0.01",
+        "arkGridAdditionalDamage": "0.0392"
+      },
+      "mainStat": {
+        "base": "703625",
+        "percent": "0.09",
+        "rawBeforeStageRounding": "766951.25",
+        "final": "766951.25",
+        "stageRounded": false
+      },
+      "weaponAttack": {
+        "base": "241367",
+        "flat": "0",
+        "subtotalBeforePercent": "241367",
+        "percent": "0.087",
+        "rawBeforeStageRounding": "262365.929",
+        "final": "262365.929",
+        "stageRounded": false
+      },
+      "attackPower": {
+        "rootBeforeBaseAttackPercent": "183131.0447029491001332609376936259758753",
+        "baseAttackPercent": "0.117",
+        "afterBaseAttackPercent": "204557.3769331941448488524674037802150527",
+        "flatAttackPower": "0",
+        "base": "204557.3769331941448488524674037802150527",
+        "finalAttackPercent": "0.1360",
+        "rawBeforeStageRounding": "232377.1801961085485482964029706943242999",
+        "final": "232377.1801961085485482964029706943242999",
+        "stageRounded": false,
+        "profileValueForComparison": "217160",
+        "differenceFromProfile": "15217.1801961085485482964029706943242999"
+      },
+      "speed": {
+        "attackComponents": {
+          "base": "1",
+          "swiftness": "0.2824",
+          "massIncrease": "-0.10",
+          "combatBlessing": "0.09",
+          "feast": "0.05",
+          "gale": "0.12"
+        },
+        "moveComponents": {
+          "base": "1",
+          "swiftness": "0.2824",
+          "combatBlessing": "0.09",
+          "feast": "0.05",
+          "gale": "0.12"
+        },
+        "rawAttackSpeed": "1.4424",
+        "cappedAttackSpeed": "1.4",
+        "rawAttackSpeedIncrease": "0.4424",
+        "cappedAttackSpeedIncrease": "0.4",
+        "rawMoveSpeed": "1.5424",
+        "cappedMoveSpeed": "1.4",
+        "rawMoveSpeedIncrease": "0.5424",
+        "cappedMoveSpeedIncrease": "0.4",
+        "sonicBreakthroughLevel": 2,
+        "sonicBreakthroughEvolutionDamage": "0.215440",
+        "sonicBreakthroughBreakdown": {
+          "ruleVersion": "current-v2.1.0",
+          "level": 2,
+          "attackSpeedIncrease": "0.4424",
+          "moveSpeedIncrease": "0.5424",
+          "baseRate": "0.10",
+          "baseAttackInput": "0.4",
+          "baseMoveInput": "0.4",
+          "baseDamage": "0.080",
+          "bothSpeedsExceededCap": true,
+          "bothExceededBonus": "0.08",
+          "overCapRate": "0.30",
+          "attackOverCap": "0.0424",
+          "moveOverCap": "0.1424",
+          "overCapDamage": "0.055440",
+          "uncappedTotal": "0.215440",
+          "maximum": "0.24",
+          "final": "0.215440",
+          "limitedByMaximum": false
+        }
+      },
+      "damageGroups": {
+        "engravingParts": [
+          {
+            "name": "원한",
+            "value": "0.24"
+          },
+          {
+            "name": "질량 증가",
+            "value": "0.19"
+          },
+          {
+            "name": "타격의 대가",
+            "value": "0.17"
+          }
+        ],
+        "additionalDamagePercent": "0.4952",
+        "additionalDamageMultiplier": "1.4952",
+        "evolutionParts": [
+          {
+            "name": "예리한 감각",
+            "value": "0.05"
+          },
+          {
+            "name": "한계 돌파",
+            "value": "0.2"
+          },
+          {
+            "name": "무한한 마력",
+            "value": "0.08"
+          },
+          {
+            "name": "혼신의 강타",
+            "value": "0.02"
+          },
+          {
+            "name": "진화 카르마",
+            "value": "0.06"
+          },
+          {
+            "name": "음속 돌파 Lv.2",
+            "value": "0.215440"
+          }
+        ],
+        "subtitles": [
+          {
+            "name": "원한",
+            "percent": "0.24",
+            "multiplier": "1.24"
+          },
+          {
+            "name": "질량 증가",
+            "percent": "0.19",
+            "multiplier": "1.19"
+          },
+          {
+            "name": "타격의 대가",
+            "percent": "0.17",
+            "multiplier": "1.17"
+          },
+          {
+            "name": "진화형 피해",
+            "percent": "0.625440",
+            "multiplier": "1.625440"
+          },
+          {
+            "name": "악마 추가 피해",
+            "percent": "0.070",
+            "multiplier": "1.070"
+          },
+          {
+            "name": "카드 피해",
+            "percent": "0.15",
+            "multiplier": "1.15"
+          },
+          {
+            "name": "돌격대장",
+            "percent": "0.184",
+            "multiplier": "1.184"
+          },
+          {
+            "name": "풀려난 힘",
+            "percent": "0.15",
+            "multiplier": "1.15"
+          },
+          {
+            "name": "바람의 길",
+            "percent": "0.024",
+            "multiplier": "1.024"
+          },
+          {
+            "name": "목걸이 적에게 주는 피해",
+            "percent": "0.012",
+            "multiplier": "1.012"
+          },
+          {
+            "name": "팔찌 적에게 주는 피해",
+            "percent": "0.045",
+            "multiplier": "1.045"
+          },
+          {
+            "name": "기타 적에게 주는 피해",
+            "percent": "0",
+            "multiplier": "1"
+          },
+          {
+            "name": "단련된 가르기",
+            "percent": "0.75",
+            "multiplier": "1.75"
+          },
+          {
+            "name": "팔찌 비방향성 피해",
+            "percent": "0",
+            "multiplier": "1"
+          },
+          {
+            "name": "아크그리드 보스 피해",
+            "percent": "0",
+            "multiplier": "1"
+          }
+        ],
+        "totalSubtitleMultiplier": "8.910281408520857384237137920000000"
+      },
+      "critical": {
+        "rateRaw": "0.9576",
+        "rateCapped": "0.9576",
+        "damageMultiplier": "2.596",
+        "criticalHitDamageMultiplier": "1.13680"
+      },
+      "enemy": {
+        "defense": "5850",
+        "defenseConstant": "6500",
+        "defenseMultiplier": "0.5263157894736842105263157894736842105263",
+        "damageTakenMultiplier": "0.76",
+        "species": "악마"
+      },
+      "damage": {
+        "skillBaseRaw": "81677856.07004548098017169110029202974223",
+        "nonCriticalRaw": "435266285.9069979896909084747405649541764",
+        "criticalRaw": "1284528613.074319516910901861604852726801",
+        "expectedRaw": "1248519890.402425084156774142001806925242",
+        "nonCritical": 435266285,
+        "critical": 1284528613,
+        "expected": 1248519890
+      },
+      "assumptions": [
+        {
+          "sourceType": "EXAMPLE_DB",
+          "path": "fixed.levelMainStat",
+          "label": "레벨 주스탯",
+          "value": "477",
+          "raw": "",
+          "applied": true,
+          "note": "current-v2.1.0 규칙의 고정값"
+        },
+        {
+          "sourceType": "EXAMPLE_DB",
+          "path": "fixed.expeditionMainStat",
+          "label": "원정대 주스탯",
+          "value": "680",
+          "raw": "",
+          "applied": true,
+          "note": "current-v2.1.0 규칙의 고정값"
+        },
+        {
+          "sourceType": "EXAMPLE_DB",
+          "path": "fixed.collectionMainStat",
+          "label": "카드·내실 주스탯",
+          "value": "976",
+          "raw": "",
+          "applied": true,
+          "note": "current-v2.1.0 규칙의 고정값"
+        },
+        {
+          "sourceType": "API_TOOLTIP",
+          "path": "engravings.entries.아드레날린.Description",
+          "label": "아드레날린 attackPowerPercent",
+          "value": "0.1038",
+          "raw": "이동기 및 기본공격을 제외한 스킬 사용 후 6초 동안 공격력이 1.73% 증가하며 (최대 6중첩) 해당 효과가 최대 중첩 도달 시 치명타 적중률이 추가로 20.00% 증가한다. 해당 효과는 스킬 취소에 따른 재사용 대기시간 감소가 적용되는 경우, 스킬 종료 후 적용된다.",
+          "applied": true,
+          "note": "현재 API 설명에서 파싱"
+        },
+        {
+          "sourceType": "API_TOOLTIP",
+          "path": "engravings.entries.질량 증가.Description",
+          "label": "질량 증가 attackSpeed",
+          "value": "-0.10",
+          "raw": "공격속도가 10.00% 감소하지만, 적에게 주는 피해가 19.00% 증가한다.",
+          "applied": true,
+          "note": "현재 API 설명에서 파싱"
+        },
+        {
+          "sourceType": "API_TOOLTIP",
+          "path": "engravings.entries.원한.Description",
+          "label": "원한 generalDamage",
+          "value": "0.24",
+          "raw": "보스 및 레이드 몬스터에게 주는 피해가 24.00% 증가하지만, 받는 피해가 20.00% 증가한다.",
+          "applied": true,
+          "note": "현재 API 설명에서 파싱"
+        },
+        {
+          "sourceType": "API_TOOLTIP",
+          "path": "engravings.entries.질량 증가.Description",
+          "label": "질량 증가 generalDamage",
+          "value": "0.19",
+          "raw": "공격속도가 10.00% 감소하지만, 적에게 주는 피해가 19.00% 증가한다.",
+          "applied": true,
+          "note": "현재 API 설명에서 파싱"
+        },
+        {
+          "sourceType": "API_FIELD+EXAMPLE_DB",
+          "path": "effects.타격의 대가",
+          "label": "타격의 대가 generalDamage",
+          "value": "0.17",
+          "raw": "현재 API에서 효과 존재 확인",
+          "applied": true,
+          "note": "현재 수치 파싱 실패 또는 레거시 버전이므로 예시 DB 사용"
+        },
+        {
+          "sourceType": "API_FIELD+DERIVED",
+          "path": "effects.돌격대장",
+          "label": "돌격대장 피해",
+          "value": "0.184",
+          "raw": "상한 적용 이동속도=1.4; 이동속도 증가량 계수=0.46",
+          "applied": true,
+          "note": ""
+        },
+        {
+          "sourceType": "API_TOOLTIP+EXAMPLE_DB",
+          "path": "equipment[*].Tooltip",
+          "label": "회심 치명타 시 피해",
+          "value": "0.12",
+          "raw": "회심 문자열 확인",
+          "applied": true,
+          "note": ""
+        },
+        {
+          "sourceType": "API_TOOLTIP",
+          "path": "engravings.entries.아드레날린.Description",
+          "label": "아드레날린 criticalRate",
+          "value": "0.20",
+          "raw": "이동기 및 기본공격을 제외한 스킬 사용 후 6초 동안 공격력이 1.73% 증가하며 (최대 6중첩) 해당 효과가 최대 중첩 도달 시 치명타 적중률이 추가로 20.00% 증가한다. 해당 효과는 스킬 취소에 따른 재사용 대기시간 감소가 적용되는 경우, 스킬 종료 후 적용된다.",
+          "applied": true,
+          "note": "현재 API 설명에서 파싱"
+        }
+      ]
+    }
+  },
+  "validation": {
+    "passed": true,
+    "failures": []
+  }
+}

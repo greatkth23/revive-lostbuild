@@ -1,0 +1,6616 @@
+{
+  "workbookPath": "C:\\Users\\great\\Downloads\\시즌3 전용 데미지 계산기.xlsx",
+  "sheetName": "데미지 계산기",
+  "ranges": [
+    {
+      "address": "B4:E39",
+      "cells": [
+        {
+          "address": "D4",
+          "value": "최종 데미지",
+          "formula": ""
+        },
+        {
+          "address": "E4",
+          "value": 814010.0417682251,
+          "formula": "=BI4"
+        },
+        {
+          "address": "B7",
+          "value": "구분",
+          "formula": ""
+        },
+        {
+          "address": "C7",
+          "value": "항목",
+          "formula": ""
+        },
+        {
+          "address": "D7",
+          "value": "옵션",
+          "formula": ""
+        },
+        {
+          "address": "E7",
+          "value": "입력값",
+          "formula": ""
+        },
+        {
+          "address": "B8",
+          "value": "전투 특성",
+          "formula": ""
+        },
+        {
+          "address": "D8",
+          "value": "치명",
+          "formula": ""
+        },
+        {
+          "address": "E8",
+          "value": 645,
+          "formula": ""
+        },
+        {
+          "address": "D9",
+          "value": "신속",
+          "formula": ""
+        },
+        {
+          "address": "E9",
+          "value": 65,
+          "formula": ""
+        },
+        {
+          "address": "B10",
+          "value": "방어구",
+          "formula": ""
+        },
+        {
+          "address": "D10",
+          "value": "힘민지 합",
+          "formula": ""
+        },
+        {
+          "address": "E10",
+          "value": 264253,
+          "formula": ""
+        },
+        {
+          "address": "B11",
+          "value": "무기",
+          "formula": ""
+        },
+        {
+          "address": "D11",
+          "value": "무기 공격력",
+          "formula": ""
+        },
+        {
+          "address": "E11",
+          "value": 103835,
+          "formula": ""
+        },
+        {
+          "address": "D12",
+          "value": "추가 피해",
+          "formula": ""
+        },
+        {
+          "address": "E12",
+          "value": 0.2961,
+          "formula": ""
+        },
+        {
+          "address": "B13",
+          "value": "장신구",
+          "formula": ""
+        },
+        {
+          "address": "C13",
+          "value": "전 부위",
+          "formula": ""
+        },
+        {
+          "address": "D13",
+          "value": "힘민지 합",
+          "formula": ""
+        },
+        {
+          "address": "E13",
+          "value": 50184,
+          "formula": ""
+        },
+        {
+          "address": "C14",
+          "value": "목걸이",
+          "formula": ""
+        },
+        {
+          "address": "D14",
+          "value": "추가 피해",
+          "formula": ""
+        },
+        {
+          "address": "E14",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "D15",
+          "value": "적에게 주는 피해",
+          "formula": ""
+        },
+        {
+          "address": "E15",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "C16",
+          "value": "귀걸이",
+          "formula": ""
+        },
+        {
+          "address": "D16",
+          "value": "공격력 %",
+          "formula": ""
+        },
+        {
+          "address": "E16",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "D17",
+          "value": "무기 공격력 %",
+          "formula": ""
+        },
+        {
+          "address": "E17",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "C18",
+          "value": "반지",
+          "formula": ""
+        },
+        {
+          "address": "D18",
+          "value": "치명타 적중률",
+          "formula": ""
+        },
+        {
+          "address": "E18",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "D19",
+          "value": "치명타 피해",
+          "formula": ""
+        },
+        {
+          "address": "E19",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "C20",
+          "value": "공용",
+          "formula": ""
+        },
+        {
+          "address": "D20",
+          "value": "공격력 + 합",
+          "formula": ""
+        },
+        {
+          "address": "E20",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "D21",
+          "value": "무기 공격력 + 합",
+          "formula": ""
+        },
+        {
+          "address": "E21",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "B22",
+          "value": "팔찌",
+          "formula": ""
+        },
+        {
+          "address": "C22",
+          "value": "스탯",
+          "formula": ""
+        },
+        {
+          "address": "D22",
+          "value": "힘민지",
+          "formula": ""
+        },
+        {
+          "address": "E22",
+          "value": 5000,
+          "formula": ""
+        },
+        {
+          "address": "D23",
+          "value": "무기 공격력",
+          "formula": ""
+        },
+        {
+          "address": "E23",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "C24",
+          "value": "헤드어택으로 주는 피해",
+          "formula": ""
+        },
+        {
+          "address": "E24",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "C25",
+          "value": "백어택으로 주는 피해",
+          "formula": ""
+        },
+        {
+          "address": "E25",
+          "value": 0.04,
+          "formula": ""
+        },
+        {
+          "address": "C26",
+          "value": "타대로 주는 피해",
+          "formula": ""
+        },
+        {
+          "address": "E26",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "C27",
+          "value": "치명타 피해",
+          "formula": ""
+        },
+        {
+          "address": "E27",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "C28",
+          "value": "공이속",
+          "formula": ""
+        },
+        {
+          "address": "E28",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "C29",
+          "value": "추가 피해",
+          "formula": ""
+        },
+        {
+          "address": "E29",
+          "value": 0.028,
+          "formula": ""
+        },
+        {
+          "address": "C30",
+          "value": "치명타 적중률",
+          "formula": ""
+        },
+        {
+          "address": "E30",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "C31",
+          "value": "적에게 주는 피해",
+          "formula": ""
+        },
+        {
+          "address": "E31",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "C32",
+          "value": "이중옵",
+          "formula": ""
+        },
+        {
+          "address": "D32",
+          "value": "치명타시 주는 피해",
+          "formula": ""
+        },
+        {
+          "address": "E32",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "B34",
+          "value": "스톤",
+          "formula": ""
+        },
+        {
+          "address": "C34",
+          "value": "97/106돌",
+          "formula": ""
+        },
+        {
+          "address": "D34",
+          "value": "기본 공격력 %",
+          "formula": ""
+        },
+        {
+          "address": "E34",
+          "value": 0.015,
+          "formula": ""
+        },
+        {
+          "address": "B35",
+          "value": "아바타",
+          "formula": ""
+        },
+        {
+          "address": "D35",
+          "value": "힘민지 % 합",
+          "formula": ""
+        },
+        {
+          "address": "E35",
+          "value": 0.08,
+          "formula": ""
+        },
+        {
+          "address": "B36",
+          "value": "보석",
+          "formula": ""
+        },
+        {
+          "address": "D36",
+          "value": "기본 공격력 % 합",
+          "formula": ""
+        },
+        {
+          "address": "E36",
+          "value": 0.068,
+          "formula": ""
+        }
+      ]
+    },
+    {
+      "address": "G4:J39",
+      "cells": [
+        {
+          "address": "G7",
+          "value": "구분",
+          "formula": ""
+        },
+        {
+          "address": "H7",
+          "value": "항목",
+          "formula": ""
+        },
+        {
+          "address": "I7",
+          "value": "옵션",
+          "formula": ""
+        },
+        {
+          "address": "J7",
+          "value": "입력값",
+          "formula": ""
+        },
+        {
+          "address": "G8",
+          "value": "아크그리드",
+          "formula": ""
+        },
+        {
+          "address": "I8",
+          "value": "공격력 + 합",
+          "formula": ""
+        },
+        {
+          "address": "J8",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "I9",
+          "value": "힘민지 + 합",
+          "formula": ""
+        },
+        {
+          "address": "J9",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "I10",
+          "value": "무기 공격력 + 합",
+          "formula": ""
+        },
+        {
+          "address": "J10",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "H11",
+          "value": "젬",
+          "formula": ""
+        },
+        {
+          "address": "I11",
+          "value": "공격+젬 : 공격력 %",
+          "formula": ""
+        },
+        {
+          "address": "J11",
+          "value": 0.0108,
+          "formula": ""
+        },
+        {
+          "address": "I12",
+          "value": "보스 피해",
+          "formula": ""
+        },
+        {
+          "address": "J12",
+          "value": 0.024,
+          "formula": ""
+        },
+        {
+          "address": "I13",
+          "value": "추가 피해",
+          "formula": ""
+        },
+        {
+          "address": "J13",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "H14",
+          "value": "재빠공",
+          "formula": ""
+        },
+        {
+          "address": "I14",
+          "value": "치명타 피해",
+          "formula": ""
+        },
+        {
+          "address": "J14",
+          "value": 0.07,
+          "formula": ""
+        },
+        {
+          "address": "H15",
+          "value": "현공+불일",
+          "formula": ""
+        },
+        {
+          "address": "I15",
+          "value": "적에게 주는 피해",
+          "formula": ""
+        },
+        {
+          "address": "J15",
+          "value": 0.0144,
+          "formula": ""
+        },
+        {
+          "address": "H16",
+          "value": "달인",
+          "formula": ""
+        },
+        {
+          "address": "I16",
+          "value": "치명타 적중률",
+          "formula": ""
+        },
+        {
+          "address": "J16",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "I17",
+          "value": "추가 피해",
+          "formula": ""
+        },
+        {
+          "address": "J17",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "H18",
+          "value": "현공+회심",
+          "formula": ""
+        },
+        {
+          "address": "I18",
+          "value": "치명타 시 적에게 주는 피해",
+          "formula": ""
+        },
+        {
+          "address": "J18",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "G19",
+          "value": "직업 고유",
+          "formula": ""
+        },
+        {
+          "address": "I19",
+          "value": "공격력 %",
+          "formula": ""
+        },
+        {
+          "address": "J19",
+          "value": 0.24,
+          "formula": ""
+        },
+        {
+          "address": "I20",
+          "value": "치명타 적중률",
+          "formula": ""
+        },
+        {
+          "address": "J20",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "I21",
+          "value": "치명타 피해",
+          "formula": ""
+        },
+        {
+          "address": "J21",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "I22",
+          "value": "치명타 시 적에게 주는 피해",
+          "formula": ""
+        },
+        {
+          "address": "J22",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "I23",
+          "value": "공격 속도",
+          "formula": ""
+        },
+        {
+          "address": "J23",
+          "value": 0.2,
+          "formula": ""
+        },
+        {
+          "address": "I24",
+          "value": "이동 속도",
+          "formula": ""
+        },
+        {
+          "address": "J24",
+          "value": 0.1,
+          "formula": ""
+        },
+        {
+          "address": "I25",
+          "value": "피해 증가",
+          "formula": ""
+        },
+        {
+          "address": "J25",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "G26",
+          "value": "시너지(본인/파티)",
+          "formula": ""
+        },
+        {
+          "address": "I26",
+          "value": "공격력 %",
+          "formula": ""
+        },
+        {
+          "address": "J26",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "I27",
+          "value": "치명타 적중률",
+          "formula": ""
+        },
+        {
+          "address": "J27",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "I28",
+          "value": "치명타 시 적에게 주는 피해",
+          "formula": ""
+        },
+        {
+          "address": "J28",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "I29",
+          "value": "공격 속도",
+          "formula": ""
+        },
+        {
+          "address": "J29",
+          "value": 0.128,
+          "formula": ""
+        },
+        {
+          "address": "I30",
+          "value": "이동 속도",
+          "formula": ""
+        },
+        {
+          "address": "J30",
+          "value": 0.128,
+          "formula": ""
+        },
+        {
+          "address": "I31",
+          "value": "헤드/백 어택 피해 증가",
+          "formula": ""
+        },
+        {
+          "address": "J31",
+          "value": 0.05,
+          "formula": ""
+        },
+        {
+          "address": "I32",
+          "value": "피해 증가",
+          "formula": ""
+        },
+        {
+          "address": "J32",
+          "value": 0.04,
+          "formula": ""
+        },
+        {
+          "address": "G33",
+          "value": "만찬",
+          "formula": ""
+        },
+        {
+          "address": "I33",
+          "value": "공격 속도/이동 속도",
+          "formula": ""
+        },
+        {
+          "address": "J33",
+          "value": 0.035,
+          "formula": ""
+        },
+        {
+          "address": "G35",
+          "value": "평균 성공률",
+          "formula": ""
+        },
+        {
+          "address": "I35",
+          "value": "헤드 어택",
+          "formula": ""
+        },
+        {
+          "address": "J35",
+          "value": 0.7,
+          "formula": ""
+        },
+        {
+          "address": "I36",
+          "value": "백 어택",
+          "formula": ""
+        },
+        {
+          "address": "J36",
+          "value": 0.7,
+          "formula": ""
+        }
+      ]
+    },
+    {
+      "address": "L4:P39",
+      "cells": [
+        {
+          "address": "L4",
+          "value": "힘민지",
+          "formula": ""
+        },
+        {
+          "address": "M4",
+          "value": 347319,
+          "formula": "=ROUNDDOWN(SUM(M8:M15)*(1+P8),0)"
+        },
+        {
+          "address": "O4",
+          "value": "공격력",
+          "formula": ""
+        },
+        {
+          "address": "P4",
+          "value": 109555,
+          "formula": "=ROUNDDOWN(((M4*M5/6)^0.5*(1+SUM(P25:P26))+SUM(M25:M27))*(1+SUM(P29:P34)),0)"
+        },
+        {
+          "address": "L5",
+          "value": "무기 공격력",
+          "formula": ""
+        },
+        {
+          "address": "M5",
+          "value": 103835,
+          "formula": "=ROUNDDOWN(SUM(M18:M22)*(1+P18),0)"
+        },
+        {
+          "address": "L7",
+          "value": "힘민지 +",
+          "formula": ""
+        },
+        {
+          "address": "O7",
+          "value": "힘민지 %",
+          "formula": ""
+        },
+        {
+          "address": "L8",
+          "value": "기본",
+          "formula": ""
+        },
+        {
+          "address": "M8",
+          "value": 477,
+          "formula": ""
+        },
+        {
+          "address": "O8",
+          "value": "아바타",
+          "formula": ""
+        },
+        {
+          "address": "P8",
+          "value": 0.08,
+          "formula": "=E35"
+        },
+        {
+          "address": "L9",
+          "value": "물약/원정대",
+          "formula": ""
+        },
+        {
+          "address": "M9",
+          "value": 702,
+          "formula": ""
+        },
+        {
+          "address": "L10",
+          "value": "카드 도감",
+          "formula": ""
+        },
+        {
+          "address": "M10",
+          "value": 976,
+          "formula": ""
+        },
+        {
+          "address": "L11",
+          "value": "방어구",
+          "formula": ""
+        },
+        {
+          "address": "M11",
+          "value": 264253,
+          "formula": "=E10"
+        },
+        {
+          "address": "L12",
+          "value": "장신구",
+          "formula": ""
+        },
+        {
+          "address": "M12",
+          "value": 50184,
+          "formula": "=E13"
+        },
+        {
+          "address": "L13",
+          "value": "팔찌",
+          "formula": ""
+        },
+        {
+          "address": "M13",
+          "value": 5000,
+          "formula": "=E22"
+        },
+        {
+          "address": "L14",
+          "value": "엘릭서(공용)",
+          "formula": ""
+        },
+        {
+          "address": "M14",
+          "value": 0,
+          "formula": "=J9"
+        },
+        {
+          "address": "L15",
+          "value": "초월(126)",
+          "formula": ""
+        },
+        {
+          "address": "M15",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "L17",
+          "value": "무기 공격력 +",
+          "formula": ""
+        },
+        {
+          "address": "O17",
+          "value": "무기 공격력 %",
+          "formula": ""
+        },
+        {
+          "address": "L18",
+          "value": "무기",
+          "formula": ""
+        },
+        {
+          "address": "M18",
+          "value": 103835,
+          "formula": "=E11"
+        },
+        {
+          "address": "O18",
+          "value": "장신구(귀걸이)",
+          "formula": ""
+        },
+        {
+          "address": "P18",
+          "value": 0,
+          "formula": "=E17"
+        },
+        {
+          "address": "L19",
+          "value": "장신구(공용)",
+          "formula": ""
+        },
+        {
+          "address": "M19",
+          "value": 0,
+          "formula": "=E21"
+        },
+        {
+          "address": "L20",
+          "value": "팔찌",
+          "formula": ""
+        },
+        {
+          "address": "M20",
+          "value": 0,
+          "formula": "=E23"
+        },
+        {
+          "address": "L21",
+          "value": "엘릭서(공용)",
+          "formula": ""
+        },
+        {
+          "address": "M21",
+          "value": 0,
+          "formula": "=J10"
+        },
+        {
+          "address": "L22",
+          "value": "초월(126)",
+          "formula": ""
+        },
+        {
+          "address": "M22",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "L24",
+          "value": "공격력 +",
+          "formula": ""
+        },
+        {
+          "address": "O24",
+          "value": "기본 공격력 %",
+          "formula": ""
+        },
+        {
+          "address": "L25",
+          "value": "장신구(공용)",
+          "formula": ""
+        },
+        {
+          "address": "M25",
+          "value": 0,
+          "formula": "=E20"
+        },
+        {
+          "address": "O25",
+          "value": "보석",
+          "formula": ""
+        },
+        {
+          "address": "P25",
+          "value": 0.068,
+          "formula": "=E36"
+        },
+        {
+          "address": "L26",
+          "value": "엘릭서(공용)",
+          "formula": ""
+        },
+        {
+          "address": "M26",
+          "value": 0,
+          "formula": "=J8"
+        },
+        {
+          "address": "O26",
+          "value": "97/106돌",
+          "formula": ""
+        },
+        {
+          "address": "P26",
+          "value": 0.015,
+          "formula": "=E34"
+        },
+        {
+          "address": "L27",
+          "value": "초월(126)",
+          "formula": ""
+        },
+        {
+          "address": "M27",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "O28",
+          "value": "공격력 %",
+          "formula": ""
+        },
+        {
+          "address": "O29",
+          "value": "장신구(귀걸이)",
+          "formula": ""
+        },
+        {
+          "address": "P29",
+          "value": 0,
+          "formula": "=E16"
+        },
+        {
+          "address": "O30",
+          "value": "엘릭서(질서)",
+          "formula": ""
+        },
+        {
+          "address": "P30",
+          "value": 0.0108,
+          "formula": "=J11"
+        },
+        {
+          "address": "O31",
+          "value": "아드레날린(6)",
+          "formula": ""
+        },
+        {
+          "address": "P31",
+          "value": 0.054,
+          "formula": "=SUM(V25:W25)"
+        },
+        {
+          "address": "O32",
+          "value": "에테르 포식자(30)",
+          "formula": ""
+        },
+        {
+          "address": "P32",
+          "value": 0,
+          "formula": "=T28+V28"
+        },
+        {
+          "address": "O33",
+          "value": "직업 고유",
+          "formula": ""
+        },
+        {
+          "address": "P33",
+          "value": 0.24,
+          "formula": "=J19"
+        },
+        {
+          "address": "O34",
+          "value": "시너지",
+          "formula": ""
+        },
+        {
+          "address": "P34",
+          "value": 0,
+          "formula": "=J26"
+        }
+      ]
+    },
+    {
+      "address": "R4:W39",
+      "cells": [
+        {
+          "address": "S4",
+          "value": "피해 증가",
+          "formula": ""
+        },
+        {
+          "address": "T4",
+          "value": 1.5084175999999998,
+          "formula": "=(1+T8+V8)*(1+T9+V9)*(1+T11+V11)*(1+T14+V14)*(1+T15+V15)*(1+T16+V16)*(1+T17+V17)*(1+T21+V21)*(1+T22+V22)"
+        },
+        {
+          "address": "V4",
+          "value": "최종 데미지",
+          "formula": ""
+        },
+        {
+          "address": "W4",
+          "value": 814010.0417682251,
+          "formula": "=BI4"
+        },
+        {
+          "address": "T5",
+          "value": "붉은 글씨 각인은 \"스킬\"에서 최종 계산 ↑",
+          "formula": ""
+        },
+        {
+          "address": "R7",
+          "value": "구분",
+          "formula": ""
+        },
+        {
+          "address": "S7",
+          "value": "각인서",
+          "formula": ""
+        },
+        {
+          "address": "T7",
+          "value": "피증",
+          "formula": ""
+        },
+        {
+          "address": "U7",
+          "value": "스톤 효과",
+          "formula": ""
+        },
+        {
+          "address": "V7",
+          "value": "피증",
+          "formula": ""
+        },
+        {
+          "address": "R8",
+          "value": "달인의 저력",
+          "formula": ""
+        },
+        {
+          "address": "S8",
+          "value": "-",
+          "formula": ""
+        },
+        {
+          "address": "T8",
+          "value": 0,
+          "formula": "=INDEX($R$50:$X$61,MATCH(R8,$R$50:$R$61,0),MATCH(S8,$R$50:$X$50,0))"
+        },
+        {
+          "address": "U8",
+          "value": "-",
+          "formula": ""
+        },
+        {
+          "address": "V8",
+          "value": 0,
+          "formula": "=INDEX($R$63:$W$74,MATCH(R8,$R$63:$R$74,0),MATCH(U8,$R$63:$W$63,0))"
+        },
+        {
+          "address": "R9",
+          "value": "돌격대장",
+          "formula": ""
+        },
+        {
+          "address": "S9",
+          "value": "-",
+          "formula": ""
+        },
+        {
+          "address": "T9",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "U9",
+          "value": "-",
+          "formula": ""
+        },
+        {
+          "address": "V9",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "R10",
+          "value": "마나 효율 증가",
+          "formula": ""
+        },
+        {
+          "address": "S10",
+          "value": "-",
+          "formula": ""
+        },
+        {
+          "address": "T10",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "U10",
+          "value": "-",
+          "formula": ""
+        },
+        {
+          "address": "V10",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "R11",
+          "value": "바리케이드",
+          "formula": ""
+        },
+        {
+          "address": "S11",
+          "value": "-",
+          "formula": ""
+        },
+        {
+          "address": "T11",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "U11",
+          "value": "-",
+          "formula": ""
+        },
+        {
+          "address": "V11",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "R12",
+          "value": "속전속결",
+          "formula": ""
+        },
+        {
+          "address": "S12",
+          "value": "-",
+          "formula": ""
+        },
+        {
+          "address": "T12",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "U12",
+          "value": "-",
+          "formula": ""
+        },
+        {
+          "address": "V12",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "R13",
+          "value": "슈퍼 차지",
+          "formula": ""
+        },
+        {
+          "address": "S13",
+          "value": "-",
+          "formula": ""
+        },
+        {
+          "address": "T13",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "U13",
+          "value": "-",
+          "formula": ""
+        },
+        {
+          "address": "V13",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "R14",
+          "value": "안정된 상태",
+          "formula": ""
+        },
+        {
+          "address": "S14",
+          "value": "-",
+          "formula": ""
+        },
+        {
+          "address": "T14",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "U14",
+          "value": "-",
+          "formula": ""
+        },
+        {
+          "address": "V14",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "R15",
+          "value": "원한",
+          "formula": ""
+        },
+        {
+          "address": "S15",
+          "value": "전설4",
+          "formula": ""
+        },
+        {
+          "address": "T15",
+          "value": 0.18,
+          "formula": ""
+        },
+        {
+          "address": "U15",
+          "value": "-",
+          "formula": ""
+        },
+        {
+          "address": "V15",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "R16",
+          "value": "저주받은 인형",
+          "formula": ""
+        },
+        {
+          "address": "S16",
+          "value": "-",
+          "formula": ""
+        },
+        {
+          "address": "T16",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "U16",
+          "value": "-",
+          "formula": ""
+        },
+        {
+          "address": "V16",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "R17",
+          "value": "질량 증가",
+          "formula": ""
+        },
+        {
+          "address": "S17",
+          "value": "전설4",
+          "formula": ""
+        },
+        {
+          "address": "T17",
+          "value": 0.16,
+          "formula": ""
+        },
+        {
+          "address": "U17",
+          "value": "-",
+          "formula": ""
+        },
+        {
+          "address": "V17",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "R18",
+          "value": "타격의 대가",
+          "formula": ""
+        },
+        {
+          "address": "S18",
+          "value": "-",
+          "formula": ""
+        },
+        {
+          "address": "T18",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "U18",
+          "value": "-",
+          "formula": ""
+        },
+        {
+          "address": "V18",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "R20",
+          "value": "구분",
+          "formula": ""
+        },
+        {
+          "address": "S20",
+          "value": "각인서",
+          "formula": ""
+        },
+        {
+          "address": "T20",
+          "value": "피증",
+          "formula": ""
+        },
+        {
+          "address": "U20",
+          "value": "스톤 효과",
+          "formula": ""
+        },
+        {
+          "address": "V20",
+          "value": "피증",
+          "formula": ""
+        },
+        {
+          "address": "W20",
+          "value": "방향피증",
+          "formula": ""
+        },
+        {
+          "address": "R21",
+          "value": "결투의 대가",
+          "formula": ""
+        },
+        {
+          "address": "S21",
+          "value": "-",
+          "formula": ""
+        },
+        {
+          "address": "T21",
+          "value": 0,
+          "formula": "=INDEX($R$76:$X$78,MATCH(R21,$R$76:$R$78,0),MATCH(S21,$R$76:$X$76,0))"
+        },
+        {
+          "address": "U21",
+          "value": "-",
+          "formula": ""
+        },
+        {
+          "address": "V21",
+          "value": 0,
+          "formula": "=INDEX($R$80:$W$82,MATCH(R21,$R$80:$R$82,0),MATCH(U21,$R$80:$W$80,0))"
+        },
+        {
+          "address": "W21",
+          "value": 0,
+          "formula": "=IF(S21=\"-\",0,0.15)"
+        },
+        {
+          "address": "R22",
+          "value": "기습의 대가",
+          "formula": ""
+        },
+        {
+          "address": "S22",
+          "value": "전설4",
+          "formula": ""
+        },
+        {
+          "address": "T22",
+          "value": 0.048,
+          "formula": ""
+        },
+        {
+          "address": "U22",
+          "value": "Lv.4",
+          "formula": ""
+        },
+        {
+          "address": "V22",
+          "value": 0.054,
+          "formula": ""
+        },
+        {
+          "address": "W22",
+          "value": 0.15,
+          "formula": ""
+        },
+        {
+          "address": "R24",
+          "value": "구분",
+          "formula": ""
+        },
+        {
+          "address": "S24",
+          "value": "각인서",
+          "formula": ""
+        },
+        {
+          "address": "T24",
+          "value": "치적",
+          "formula": ""
+        },
+        {
+          "address": "U24",
+          "value": "스톤 효과",
+          "formula": ""
+        },
+        {
+          "address": "V24",
+          "value": "공격력 %",
+          "formula": ""
+        },
+        {
+          "address": "W24",
+          "value": "공격력 %",
+          "formula": ""
+        },
+        {
+          "address": "R25",
+          "value": "아드레날린(6)",
+          "formula": ""
+        },
+        {
+          "address": "S25",
+          "value": "전설4",
+          "formula": ""
+        },
+        {
+          "address": "T25",
+          "value": 0.14,
+          "formula": "=INDEX($R$84:$X$85,MATCH(R25,$R$84:$R$85,0),MATCH(S25,$R$84:$X$84,0))"
+        },
+        {
+          "address": "U25",
+          "value": "-",
+          "formula": ""
+        },
+        {
+          "address": "V25",
+          "value": 0,
+          "formula": "=INDEX($R$87:$W$88,MATCH(R25,$R$87:$R$88,0),MATCH(U25,$R$87:$W$87,0))"
+        },
+        {
+          "address": "W25",
+          "value": 0.054,
+          "formula": "=IF(S25=\"-\",0,0.054)"
+        },
+        {
+          "address": "R27",
+          "value": "구분",
+          "formula": ""
+        },
+        {
+          "address": "S27",
+          "value": "각인서",
+          "formula": ""
+        },
+        {
+          "address": "T27",
+          "value": "공격력 %",
+          "formula": ""
+        },
+        {
+          "address": "U27",
+          "value": "스톤 효과",
+          "formula": ""
+        },
+        {
+          "address": "V27",
+          "value": "공격력 %",
+          "formula": ""
+        },
+        {
+          "address": "R28",
+          "value": "에테르 포식자(30)",
+          "formula": ""
+        },
+        {
+          "address": "S28",
+          "value": "-",
+          "formula": ""
+        },
+        {
+          "address": "T28",
+          "value": 0,
+          "formula": "=INDEX($R$90:$X$91,MATCH(R28,$R$90:$R$91,0),MATCH(S28,$R$90:$X$90,0))"
+        },
+        {
+          "address": "U28",
+          "value": "-",
+          "formula": ""
+        },
+        {
+          "address": "V28",
+          "value": 0,
+          "formula": "=INDEX($R$93:$W$94,MATCH(R28,$R$93:$R$94,0),MATCH(U28,$R$93:$W$93,0))"
+        },
+        {
+          "address": "R30",
+          "value": "구분",
+          "formula": ""
+        },
+        {
+          "address": "S30",
+          "value": "각인서",
+          "formula": ""
+        },
+        {
+          "address": "T30",
+          "value": "치피",
+          "formula": ""
+        },
+        {
+          "address": "U30",
+          "value": "스톤 효과",
+          "formula": ""
+        },
+        {
+          "address": "V30",
+          "value": "치피",
+          "formula": ""
+        },
+        {
+          "address": "R31",
+          "value": "예리한 둔기",
+          "formula": ""
+        },
+        {
+          "address": "S31",
+          "value": "전설4",
+          "formula": ""
+        },
+        {
+          "address": "T31",
+          "value": 0.44,
+          "formula": "=INDEX($R$96:$X$97,MATCH(R31,$R$96:$R$97,0),MATCH(S31,$R$96:$X$96,0))"
+        },
+        {
+          "address": "U31",
+          "value": "Lv.1",
+          "formula": ""
+        },
+        {
+          "address": "V31",
+          "value": 0.075,
+          "formula": "=INDEX($R$99:$W$100,MATCH(R31,$R$99:$R$100,0),MATCH(U31,$R$99:$W$99,0))"
+        },
+        {
+          "address": "R33",
+          "value": "구분",
+          "formula": ""
+        },
+        {
+          "address": "S33",
+          "value": "각인서",
+          "formula": ""
+        },
+        {
+          "address": "T33",
+          "value": "치적",
+          "formula": ""
+        },
+        {
+          "address": "U33",
+          "value": "스톤 효과",
+          "formula": ""
+        },
+        {
+          "address": "V33",
+          "value": "치적",
+          "formula": ""
+        },
+        {
+          "address": "W33",
+          "value": "치피",
+          "formula": ""
+        },
+        {
+          "address": "R34",
+          "value": "정밀 단도",
+          "formula": ""
+        },
+        {
+          "address": "S34",
+          "value": "-",
+          "formula": ""
+        },
+        {
+          "address": "T34",
+          "value": 0,
+          "formula": "=INDEX($R$102:$X$103,MATCH(R34,$R$102:$R$103,0),MATCH(S34,$R$102:$X$102,0))"
+        },
+        {
+          "address": "U34",
+          "value": "-",
+          "formula": ""
+        },
+        {
+          "address": "V34",
+          "value": 0,
+          "formula": "=INDEX($R$105:$W$106,MATCH(R34,$R$105:$R$106,0),MATCH(U34,$R$105:$W$105,0))"
+        },
+        {
+          "address": "W34",
+          "value": 0,
+          "formula": "=IF(S34=\"-\",0,-0.06)"
+        }
+      ]
+    },
+    {
+      "address": "Z4:AA39",
+      "cells": [
+        {
+          "address": "Z4",
+          "value": "치명타 적중률",
+          "formula": ""
+        },
+        {
+          "address": "AA4",
+          "value": 0.650818797,
+          "formula": "=SUM(AA8:AA19)"
+        },
+        {
+          "address": "Z5",
+          "value": "치명타 피해",
+          "formula": ""
+        },
+        {
+          "address": "AA5",
+          "value": 2.585,
+          "formula": "=SUM(AA22:AA29)"
+        },
+        {
+          "address": "Z7",
+          "value": "항목",
+          "formula": ""
+        },
+        {
+          "address": "AA7",
+          "value": "치적",
+          "formula": ""
+        },
+        {
+          "address": "Z8",
+          "value": 645,
+          "formula": "=E8"
+        },
+        {
+          "address": "AA8",
+          "value": 0.230818797,
+          "formula": "=Z8*0.0003578586"
+        },
+        {
+          "address": "Z9",
+          "value": "아드레날린(6)",
+          "formula": ""
+        },
+        {
+          "address": "AA9",
+          "value": 0.14,
+          "formula": "=T25"
+        },
+        {
+          "address": "Z10",
+          "value": "정밀 단도",
+          "formula": ""
+        },
+        {
+          "address": "AA10",
+          "value": 0,
+          "formula": "=T34+V34"
+        },
+        {
+          "address": "Z11",
+          "value": "예리한 감각(2T)",
+          "formula": ""
+        },
+        {
+          "address": "AA11",
+          "value": 0.08,
+          "formula": "=AJ31"
+        },
+        {
+          "address": "Z12",
+          "value": "혼신의 강타(3T)",
+          "formula": ""
+        },
+        {
+          "address": "AA12",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "Z13",
+          "value": "일격(3T)",
+          "formula": ""
+        },
+        {
+          "address": "AA13",
+          "value": 0.2,
+          "formula": ""
+        },
+        {
+          "address": "Z14",
+          "value": "반지",
+          "formula": ""
+        },
+        {
+          "address": "AA14",
+          "value": 0,
+          "formula": "=E18"
+        },
+        {
+          "address": "Z15",
+          "value": "달인",
+          "formula": ""
+        },
+        {
+          "address": "AA15",
+          "value": 0,
+          "formula": "=J16"
+        },
+        {
+          "address": "Z16",
+          "value": "정밀",
+          "formula": ""
+        },
+        {
+          "address": "AA16",
+          "value": 0,
+          "formula": "=E33"
+        },
+        {
+          "address": "Z17",
+          "value": "약점 노출",
+          "formula": ""
+        },
+        {
+          "address": "AA17",
+          "value": 0,
+          "formula": "=E30"
+        },
+        {
+          "address": "AA18",
+          "value": 0,
+          "formula": "=J20"
+        },
+        {
+          "address": "AA19",
+          "value": 0,
+          "formula": "=J27"
+        },
+        {
+          "address": "Z21",
+          "value": "항목",
+          "formula": ""
+        },
+        {
+          "address": "AA21",
+          "value": "치피",
+          "formula": ""
+        },
+        {
+          "address": "AA22",
+          "value": 2,
+          "formula": ""
+        },
+        {
+          "address": "Z23",
+          "value": "예리한 둔기",
+          "formula": ""
+        },
+        {
+          "address": "AA23",
+          "value": 0.515,
+          "formula": "=T31+V31"
+        },
+        {
+          "address": "Z24",
+          "value": "정밀 단도",
+          "formula": ""
+        },
+        {
+          "address": "AA24",
+          "value": 0,
+          "formula": "=W34"
+        },
+        {
+          "address": "Z25",
+          "value": "반지",
+          "formula": ""
+        },
+        {
+          "address": "AA25",
+          "value": 0,
+          "formula": "=E19"
+        },
+        {
+          "address": "Z26",
+          "value": "치명타 피해",
+          "formula": ""
+        },
+        {
+          "address": "AA26",
+          "value": 0.07,
+          "formula": "=J14"
+        },
+        {
+          "address": "Z27",
+          "value": "망치",
+          "formula": ""
+        },
+        {
+          "address": "AA27",
+          "value": 0,
+          "formula": "=E27"
+        },
+        {
+          "address": "Z28",
+          "value": "습격",
+          "formula": ""
+        },
+        {
+          "address": "AA29",
+          "value": 0,
+          "formula": "=J21"
+        },
+        {
+          "address": "Z31",
+          "value": "항목",
+          "formula": ""
+        },
+        {
+          "address": "AA31",
+          "value": "치피증",
+          "formula": ""
+        },
+        {
+          "address": "Z32",
+          "value": "이중옵",
+          "formula": ""
+        },
+        {
+          "address": "AA32",
+          "value": 0,
+          "formula": "=E32"
+        },
+        {
+          "address": "AA33",
+          "value": 0,
+          "formula": "=J22"
+        },
+        {
+          "address": "AA34",
+          "value": 0,
+          "formula": "=J28"
+        }
+      ]
+    },
+    {
+      "address": "AC4:AE39",
+      "cells": [
+        {
+          "address": "AD4",
+          "value": "이동 속도",
+          "formula": ""
+        },
+        {
+          "address": "AE4",
+          "value": 1.364164335,
+          "formula": "=SUM(AE17:AE22)+1"
+        },
+        {
+          "address": "AD5",
+          "value": "공격 속도",
+          "formula": ""
+        },
+        {
+          "address": "AE5",
+          "value": 1.364164335,
+          "formula": "=SUM(AE8:AE15)+1"
+        },
+        {
+          "address": "AC7",
+          "value": "구분",
+          "formula": ""
+        },
+        {
+          "address": "AD7",
+          "value": "항목",
+          "formula": ""
+        },
+        {
+          "address": "AE7",
+          "value": "공속",
+          "formula": ""
+        },
+        {
+          "address": "AC8",
+          "value": "신속",
+          "formula": ""
+        },
+        {
+          "address": "AD8",
+          "value": 65,
+          "formula": "=E9"
+        },
+        {
+          "address": "AE8",
+          "value": 0.011164335000000001,
+          "formula": "=AD8*0.000171759"
+        },
+        {
+          "address": "AC9",
+          "value": "각인",
+          "formula": ""
+        },
+        {
+          "address": "AD9",
+          "value": "질량 증가",
+          "formula": ""
+        },
+        {
+          "address": "AE9",
+          "value": -0.1,
+          "formula": "=IF(S17=\"-\",0,-0.1)"
+        },
+        {
+          "address": "AC10",
+          "value": "아크 패시브",
+          "formula": ""
+        },
+        {
+          "address": "AD10",
+          "value": "파괴 전차(3T)",
+          "formula": ""
+        },
+        {
+          "address": "AE10",
+          "value": 0,
+          "formula": "=AJ39"
+        },
+        {
+          "address": "AD11",
+          "value": "축복의 여신(2T)",
+          "formula": ""
+        },
+        {
+          "address": "AE11",
+          "value": 0.09,
+          "formula": ""
+        },
+        {
+          "address": "AC12",
+          "value": "만찬",
+          "formula": ""
+        },
+        {
+          "address": "AE12",
+          "value": 0.035,
+          "formula": "=J33"
+        },
+        {
+          "address": "AC13",
+          "value": "직업 고유",
+          "formula": ""
+        },
+        {
+          "address": "AE13",
+          "value": 0.2,
+          "formula": "=J23"
+        },
+        {
+          "address": "AC14",
+          "value": "시너지",
+          "formula": ""
+        },
+        {
+          "address": "AE14",
+          "value": 0.128,
+          "formula": "=J29"
+        },
+        {
+          "address": "AC15",
+          "value": "팔찌",
+          "formula": ""
+        },
+        {
+          "address": "AE15",
+          "value": 0,
+          "formula": "=E28"
+        },
+        {
+          "address": "AC16",
+          "value": "구분",
+          "formula": ""
+        },
+        {
+          "address": "AD16",
+          "value": "항목",
+          "formula": ""
+        },
+        {
+          "address": "AE16",
+          "value": "이속",
+          "formula": ""
+        },
+        {
+          "address": "AC17",
+          "value": "신속",
+          "formula": ""
+        },
+        {
+          "address": "AD17",
+          "value": 65,
+          "formula": "=E9"
+        },
+        {
+          "address": "AE17",
+          "value": 0.011164335000000001,
+          "formula": "=AD17*0.000171759"
+        },
+        {
+          "address": "AC18",
+          "value": "아크 패시브",
+          "formula": ""
+        },
+        {
+          "address": "AD18",
+          "value": "축복의 여신(2T)",
+          "formula": ""
+        },
+        {
+          "address": "AE18",
+          "value": 0.09,
+          "formula": ""
+        },
+        {
+          "address": "AC19",
+          "value": "만찬",
+          "formula": ""
+        },
+        {
+          "address": "AE19",
+          "value": 0.035,
+          "formula": "=J33"
+        },
+        {
+          "address": "AC20",
+          "value": "직업 고유",
+          "formula": ""
+        },
+        {
+          "address": "AE20",
+          "value": 0.1,
+          "formula": "=J24"
+        },
+        {
+          "address": "AC21",
+          "value": "시너지",
+          "formula": ""
+        },
+        {
+          "address": "AE21",
+          "value": 0.128,
+          "formula": "=J30"
+        },
+        {
+          "address": "AC22",
+          "value": "팔찌",
+          "formula": ""
+        },
+        {
+          "address": "AE22",
+          "value": 0,
+          "formula": "=E28"
+        }
+      ]
+    },
+    {
+      "address": "AG4:AL39",
+      "cells": [
+        {
+          "address": "AG4",
+          "value": "진화형 피해",
+          "formula": ""
+        },
+        {
+          "address": "AH4",
+          "value": 1.44,
+          "formula": "=SUM(AJ8:AJ24)+1"
+        },
+        {
+          "address": "AJ4",
+          "value": "최종 데미지",
+          "formula": ""
+        },
+        {
+          "address": "AK4",
+          "value": 814010.0417682251,
+          "formula": "=BI4"
+        },
+        {
+          "address": "AH5",
+          "value": "↑ 붉은 글씨 아크 패시브는 \"스킬\"에서 최종 계산",
+          "formula": ""
+        },
+        {
+          "address": "AG7",
+          "value": "구분",
+          "formula": ""
+        },
+        {
+          "address": "AH7",
+          "value": "아크 패시브",
+          "formula": ""
+        },
+        {
+          "address": "AI7",
+          "value": "레벨",
+          "formula": ""
+        },
+        {
+          "address": "AJ7",
+          "value": "진화형 피해",
+          "formula": ""
+        },
+        {
+          "address": "AG8",
+          "value": "2T",
+          "formula": ""
+        },
+        {
+          "address": "AH8",
+          "value": "끝없는 마나",
+          "formula": ""
+        },
+        {
+          "address": "AI8",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "AJ8",
+          "value": 0,
+          "formula": "=VLOOKUP(AH8,$AH$51:$AL$65,AI8+2,FALSE)"
+        },
+        {
+          "address": "AH9",
+          "value": "금단의 주문",
+          "formula": ""
+        },
+        {
+          "address": "AI9",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "AJ9",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "AH10",
+          "value": "예리한 감각",
+          "formula": ""
+        },
+        {
+          "address": "AI10",
+          "value": 2,
+          "formula": ""
+        },
+        {
+          "address": "AJ10",
+          "value": 0.1,
+          "formula": ""
+        },
+        {
+          "address": "AH11",
+          "value": "한계 돌파",
+          "formula": ""
+        },
+        {
+          "address": "AI11",
+          "value": 1,
+          "formula": ""
+        },
+        {
+          "address": "AJ11",
+          "value": 0.1,
+          "formula": ""
+        },
+        {
+          "address": "AH12",
+          "value": "최적화 훈련",
+          "formula": ""
+        },
+        {
+          "address": "AI12",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "AJ12",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "AG13",
+          "value": "3T",
+          "formula": ""
+        },
+        {
+          "address": "AH13",
+          "value": "무한한 마력",
+          "formula": ""
+        },
+        {
+          "address": "AI13",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "AJ13",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "AH14",
+          "value": "혼신의 강타",
+          "formula": ""
+        },
+        {
+          "address": "AI14",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "AJ14",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "AH15",
+          "value": "일격",
+          "formula": ""
+        },
+        {
+          "address": "AI15",
+          "value": 2,
+          "formula": ""
+        },
+        {
+          "address": "AJ15",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "AH16",
+          "value": "파괴 전차",
+          "formula": ""
+        },
+        {
+          "address": "AI16",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "AJ16",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "AH17",
+          "value": "타이밍 지배",
+          "formula": ""
+        },
+        {
+          "address": "AI17",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "AJ17",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "AG18",
+          "value": "4T",
+          "formula": ""
+        },
+        {
+          "address": "AH18",
+          "value": "뭉툭한 가시",
+          "formula": ""
+        },
+        {
+          "address": "AI18",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "AJ18",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "AH19",
+          "value": "음속 돌파",
+          "formula": ""
+        },
+        {
+          "address": "AI19",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "AJ19",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "AH20",
+          "value": "인파이팅",
+          "formula": ""
+        },
+        {
+          "address": "AI20",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "AJ20",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "AH21",
+          "value": "입식 타격가",
+          "formula": ""
+        },
+        {
+          "address": "AI21",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "AJ21",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "AH22",
+          "value": "마나 용광로",
+          "formula": ""
+        },
+        {
+          "address": "AI22",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "AJ22",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "AG23",
+          "value": "SUP",
+          "formula": ""
+        },
+        {
+          "address": "AH23",
+          "value": "정열의 춤사위",
+          "formula": ""
+        },
+        {
+          "address": "AI23",
+          "value": 2,
+          "formula": ""
+        },
+        {
+          "address": "AJ23",
+          "value": 0.14,
+          "formula": "=AI23*0.07"
+        },
+        {
+          "address": "AH24",
+          "value": "분쇄",
+          "formula": ""
+        },
+        {
+          "address": "AI24",
+          "value": 1,
+          "formula": ""
+        },
+        {
+          "address": "AJ24",
+          "value": 0.1,
+          "formula": "=AI24*0.1"
+        },
+        {
+          "address": "AG25",
+          "value": "구분",
+          "formula": ""
+        },
+        {
+          "address": "AH25",
+          "value": "아크패시브",
+          "formula": ""
+        },
+        {
+          "address": "AI25",
+          "value": "레벨",
+          "formula": ""
+        },
+        {
+          "address": "AJ25",
+          "value": "진화형 추피",
+          "formula": ""
+        },
+        {
+          "address": "AK25",
+          "value": "비고",
+          "formula": ""
+        },
+        {
+          "address": "AG26",
+          "value": "2T",
+          "formula": ""
+        },
+        {
+          "address": "AH26",
+          "value": "금단의 주문",
+          "formula": ""
+        },
+        {
+          "address": "AI26",
+          "value": 0,
+          "formula": "=AI9"
+        },
+        {
+          "address": "AJ26",
+          "value": 0,
+          "formula": "=VLOOKUP(AH26,$AH$68:$AK$70,AI26+2,FALSE)"
+        },
+        {
+          "address": "AK26",
+          "value": "마나 스킬",
+          "formula": ""
+        },
+        {
+          "address": "AH27",
+          "value": "최적화 훈련",
+          "formula": ""
+        },
+        {
+          "address": "AI27",
+          "value": 0,
+          "formula": "=AI12"
+        },
+        {
+          "address": "AJ27",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "AK27",
+          "value": "각성기 X",
+          "formula": ""
+        },
+        {
+          "address": "AG28",
+          "value": "3T",
+          "formula": ""
+        },
+        {
+          "address": "AH28",
+          "value": "타이밍 지배",
+          "formula": ""
+        },
+        {
+          "address": "AI28",
+          "value": 0,
+          "formula": "=AI17"
+        },
+        {
+          "address": "AJ28",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "AK28",
+          "value": "각성기 X",
+          "formula": ""
+        },
+        {
+          "address": "AG30",
+          "value": "구분",
+          "formula": ""
+        },
+        {
+          "address": "AH30",
+          "value": "아크패시브",
+          "formula": ""
+        },
+        {
+          "address": "AI30",
+          "value": "레벨",
+          "formula": ""
+        },
+        {
+          "address": "AJ30",
+          "value": "치적",
+          "formula": ""
+        },
+        {
+          "address": "AG31",
+          "value": "2T",
+          "formula": ""
+        },
+        {
+          "address": "AH31",
+          "value": "예리한 감각",
+          "formula": ""
+        },
+        {
+          "address": "AI31",
+          "value": 2,
+          "formula": "=AI10"
+        },
+        {
+          "address": "AJ31",
+          "value": 0.08,
+          "formula": "=VLOOKUP(AH31,$AH$73:$AK$75,AI31+2,FALSE)"
+        },
+        {
+          "address": "AG32",
+          "value": "3T",
+          "formula": ""
+        },
+        {
+          "address": "AH32",
+          "value": "혼신의 강타",
+          "formula": ""
+        },
+        {
+          "address": "AI32",
+          "value": 0,
+          "formula": "=AI14"
+        },
+        {
+          "address": "AJ32",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "AH33",
+          "value": "일격",
+          "formula": ""
+        },
+        {
+          "address": "AI33",
+          "value": 2,
+          "formula": ""
+        },
+        {
+          "address": "AJ33",
+          "value": 0.2,
+          "formula": ""
+        },
+        {
+          "address": "AG35",
+          "value": "구분",
+          "formula": ""
+        },
+        {
+          "address": "AH35",
+          "value": "아크패시브",
+          "formula": ""
+        },
+        {
+          "address": "AI35",
+          "value": "레벨",
+          "formula": ""
+        },
+        {
+          "address": "AJ35",
+          "value": "방향성 치피",
+          "formula": ""
+        },
+        {
+          "address": "AG36",
+          "value": "3T",
+          "formula": ""
+        },
+        {
+          "address": "AH36",
+          "value": "일격",
+          "formula": ""
+        },
+        {
+          "address": "AI36",
+          "value": 2,
+          "formula": "=AI15"
+        },
+        {
+          "address": "AJ36",
+          "value": 0.32,
+          "formula": "=VLOOKUP(AH36,$AH$78:$AK$78,AI36+2,FALSE)"
+        },
+        {
+          "address": "AG38",
+          "value": "구분",
+          "formula": ""
+        },
+        {
+          "address": "AH38",
+          "value": "아크패시브",
+          "formula": ""
+        },
+        {
+          "address": "AI38",
+          "value": "레벨",
+          "formula": ""
+        },
+        {
+          "address": "AJ38",
+          "value": "공속",
+          "formula": ""
+        },
+        {
+          "address": "AG39",
+          "value": "3T",
+          "formula": ""
+        },
+        {
+          "address": "AH39",
+          "value": "파괴 전차",
+          "formula": ""
+        },
+        {
+          "address": "AI39",
+          "value": 0,
+          "formula": "=AI16"
+        },
+        {
+          "address": "AJ39",
+          "value": 0,
+          "formula": "=VLOOKUP(AH39,$AH$81:$AK$81,AI39+2,FALSE)"
+        }
+      ]
+    },
+    {
+      "address": "AN7:BB39",
+      "cells": [
+        {
+          "address": "AN7",
+          "value": "일반 데미지",
+          "formula": ""
+        },
+        {
+          "address": "AO7",
+          "value": "횟수",
+          "formula": ""
+        },
+        {
+          "address": "AP7",
+          "value": "비중",
+          "formula": ""
+        },
+        {
+          "address": "AQ7",
+          "value": "타입",
+          "formula": ""
+        },
+        {
+          "address": "AR7",
+          "value": "마나",
+          "formula": ""
+        },
+        {
+          "address": "AS7",
+          "value": "속속",
+          "formula": ""
+        },
+        {
+          "address": "AT7",
+          "value": "슈차",
+          "formula": ""
+        },
+        {
+          "address": "AU7",
+          "value": "각인",
+          "formula": ""
+        },
+        {
+          "address": "AV7",
+          "value": "트포",
+          "formula": ""
+        },
+        {
+          "address": "AW7",
+          "value": "최종",
+          "formula": ""
+        },
+        {
+          "address": "AX7",
+          "value": "트포",
+          "formula": ""
+        },
+        {
+          "address": "AY7",
+          "value": "최종",
+          "formula": ""
+        },
+        {
+          "address": "AZ7",
+          "value": "추가",
+          "formula": ""
+        },
+        {
+          "address": "BA7",
+          "value": "최종",
+          "formula": ""
+        },
+        {
+          "address": "BB7",
+          "value": "치명타/진화",
+          "formula": ""
+        },
+        {
+          "address": "AN8",
+          "value": 2553159,
+          "formula": ""
+        },
+        {
+          "address": "AO8",
+          "value": 0.5,
+          "formula": ""
+        },
+        {
+          "address": "AP8",
+          "value": 0.005642083513825118,
+          "formula": "=(AN8*AO8)/SUMPRODUCT($AN$8:$AN$27,$AO$8:$AO$27)"
+        },
+        {
+          "address": "AQ8",
+          "value": "타대",
+          "formula": ""
+        },
+        {
+          "address": "AR8",
+          "value": 349,
+          "formula": ""
+        },
+        {
+          "address": "AS8",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "AT8",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "AU8",
+          "value": 0.005529241843548615,
+          "formula": "=AP8*(1+IF(AR8>0,$T$10+$V$10,0))*(1+IF(AS8=1,$T$12+$V$12,0))*(1+IF(AT8=1,$T$13+$V$13,0))*(1+IF(AQ8=\"타대\",$T$18+$V$18,0))*(1-0.02*IF($S$31=\"-\",0,1))"
+        },
+        {
+          "address": "AV8",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "AW8",
+          "value": 0.650818797,
+          "formula": "=IF($AI$18=0,MIN(AV8+$AA$4,1),MIN(AV8+$AA$4,0.8))"
+        },
+        {
+          "address": "AX8",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "AY8",
+          "value": 2.585,
+          "formula": "=AX8+$AA$5+IF(AND($AI$15=1,OR(AQ8=\"헤드\",AQ8=\"백\")),$AJ$78,IF(AND($AI$15=2,OR(AQ8=\"헤드\",AQ8=\"백\")),$AK$78,0))"
+        },
+        {
+          "address": "AZ8",
+          "value": 0,
+          "formula": "=IF(AND($AI$9=1,AR8>0),$AJ$68,IF(AND($AI$9=2,AR8>0),$AK$68,0))+IF(AQ8=\"각성기\",0,IF($AI$12=1,$AJ$69,IF($AI$12=2,$AK$69,0)))+IF(AQ8=\"각성기\",0,IF($AI$17=1,$AJ$70,IF($AI$17=2,$AK$70,0)))+IF(AQ8=\"백\",0,IF($AI$18=1,MIN(MAX(($AA$4+AV8-0.8)*1.2,0),0.425),IF($AI$18=2,MIN(MAX(($AA$4+AV8-0.8)*1.4,0),0.55),0)))+IF($AI$22=1,MIN(0.0025*AR8/10,0.12),IF($AI$22=2,MIN(0.005*AR8/10,0.24),0))"
+        },
+        {
+          "address": "BA8",
+          "value": 1.44,
+          "formula": "=$AH$4+AZ8"
+        },
+        {
+          "address": "BB8",
+          "value": 0.016175403454433912,
+          "formula": "=IF(AQ8=\"헤드\",(1-$BB$30)*AU8*(AW8*AY8*(1+$AA$32)*(1+$AA$33)*(1+$AA$34)+(1-AW8))*BA8+$BB$30*AU8*(AW8*AY8*(1+$AA$32)*(1+$AA$33)*(1+$AA$34)+(1-AW8))*BA8*(1+$W$21)*(1+$BB$32)*(1+$BB$34)*(1+$BB$35),IF(AQ8=\"백\",(1-$BB$31)*AU8*(AW8*AY8*(1+$AA$32)*(1+$AA$33)*(1+$AA$34)+(1-AW8))*(BA8+IF($AI$18=1,MIN(MAX(($AA$4+AV8-0.8)*1.2,0),0.425),IF($AI$18=2,MIN(MAX(($AA$4+AV8-0.8)*1.4,0),0.55),0)))+$BB$31*AU8*(IF($AI$18>0,MIN(AW8+$BB$37,0.8),MIN(AW8+$BB$37,1))*AY8*(1+$AA$32)*(1+$AA$33)*(1+$AA$34)+(1-IF($AI$18>0,MIN(AW8+$BB$37,0.8),MIN(AW8+$BB$37,1))))*(BA8+IF($AI$18=1,MIN(MAX(($AA$4+AV8+$BB$37-0.8)*1.2,0),0.425),IF($AI$18=2,MIN(MAX(($AA$4+AV8+$BB$37-0.8)*1.4,0),0.55),0)))*(1+$W$22)*(1+$BB$33)*(1+$BB$34)*(1+$BB$36),AU8*(AW8*AY8*(1+$AA$32)*(1+$AA$33)*(1+$AA$34)+(1-AW8))*BA8*(1+$BB$38)))"
+        },
+        {
+          "address": "AN9",
+          "value": 19481454,
+          "formula": ""
+        },
+        {
+          "address": "AO9",
+          "value": 1,
+          "formula": ""
+        },
+        {
+          "address": "AP9",
+          "value": 0.08610195482439001,
+          "formula": ""
+        },
+        {
+          "address": "AQ9",
+          "value": "백",
+          "formula": ""
+        },
+        {
+          "address": "AR9",
+          "value": 412,
+          "formula": ""
+        },
+        {
+          "address": "AS9",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "AT9",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "AU9",
+          "value": 0.08437991572790221,
+          "formula": ""
+        },
+        {
+          "address": "AV9",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "AW9",
+          "value": 0.650818797,
+          "formula": ""
+        },
+        {
+          "address": "AX9",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "AY9",
+          "value": 2.905,
+          "formula": ""
+        },
+        {
+          "address": "AZ9",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "BA9",
+          "value": 1.44,
+          "formula": ""
+        },
+        {
+          "address": "BB9",
+          "value": 0.3542114198062526,
+          "formula": "=IF(AQ9=\"헤드\",(1-$BB$30)*AU9*(AW9*AY9*(1+$AA$32)*(1+$AA$33)*(1+$AA$34)+(1-AW9))*BA9+$BB$30*AU9*(AW9*AY9*(1+$AA$32)*(1+$AA$33)*(1+$AA$34)+(1-AW9))*BA9*(1+$W$21)*(1+$BB$32)*(1+$BB$34)*(1+$BB$35),IF(AQ9=\"백\",(1-$BB$31)*AU9*(AW9*AY9*(1+$AA$32)*(1+$AA$33)*(1+$AA$34)+(1-AW9))*(BA9+IF($AI$18=1,MIN(MAX(($AA$4+AV9-0.8)*1.2,0),0.425),IF($AI$18=2,MIN(MAX(($AA$4+AV9-0.8)*1.4,0),0.55),0)))+$BB$31*AU9*(IF($AI$18>0,MIN(AW9+$BB$37,0.8),MIN(AW9+$BB$37,1))*AY9*(1+$AA$32)*(1+$AA$33)*(1+$AA$34)+(1-IF($AI$18>0,MIN(AW9+$BB$37,0.8),MIN(AW9+$BB$37,1))))*(BA9+IF($AI$18=1,MIN(MAX(($AA$4+AV9+$BB$37-0.8)*1.2,0),0.425),IF($AI$18=2,MIN(MAX(($AA$4+AV9+$BB$37-0.8)*1.4,0),0.55),0)))*(1+$W$22)*(1+$BB$33)*(1+$BB$34)*(1+$BB$36),AU9*(AW9*AY9*(1+$AA$32)*(1+$AA$33)*(1+$AA$34)+(1-AW9))*BA9*(1+$BB$38)))"
+        },
+        {
+          "address": "AN10",
+          "value": 17029482,
+          "formula": ""
+        },
+        {
+          "address": "AO10",
+          "value": 1,
+          "formula": ""
+        },
+        {
+          "address": "AP10",
+          "value": 0.07526500279941954,
+          "formula": ""
+        },
+        {
+          "address": "AQ10",
+          "value": "백",
+          "formula": ""
+        },
+        {
+          "address": "AR10",
+          "value": 397,
+          "formula": ""
+        },
+        {
+          "address": "AS10",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "AT10",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "AU10",
+          "value": 0.07375970274343115,
+          "formula": ""
+        },
+        {
+          "address": "AV10",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "AW10",
+          "value": 0.650818797,
+          "formula": ""
+        },
+        {
+          "address": "AX10",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "AY10",
+          "value": 2.905,
+          "formula": ""
+        },
+        {
+          "address": "AZ10",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "BA10",
+          "value": 1.44,
+          "formula": ""
+        },
+        {
+          "address": "BB10",
+          "value": 0.3096297123297379,
+          "formula": ""
+        },
+        {
+          "address": "AN11",
+          "value": 1023423,
+          "formula": ""
+        },
+        {
+          "address": "AO11",
+          "value": 1,
+          "formula": ""
+        },
+        {
+          "address": "AP11",
+          "value": 0.004523210686032043,
+          "formula": ""
+        },
+        {
+          "address": "AQ11",
+          "value": "타대",
+          "formula": ""
+        },
+        {
+          "address": "AR11",
+          "value": 592,
+          "formula": ""
+        },
+        {
+          "address": "AS11",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "AT11",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "AU11",
+          "value": 0.004432746472311402,
+          "formula": ""
+        },
+        {
+          "address": "AV11",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "AW11",
+          "value": 0.650818797,
+          "formula": ""
+        },
+        {
+          "address": "AX11",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "AY11",
+          "value": 2.585,
+          "formula": ""
+        },
+        {
+          "address": "AZ11",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "BA11",
+          "value": 1.44,
+          "formula": ""
+        },
+        {
+          "address": "BB11",
+          "value": 0.012967684291927854,
+          "formula": ""
+        },
+        {
+          "address": "AN12",
+          "value": 20311263,
+          "formula": ""
+        },
+        {
+          "address": "AO12",
+          "value": 1,
+          "formula": ""
+        },
+        {
+          "address": "AP12",
+          "value": 0.08976945197480149,
+          "formula": ""
+        },
+        {
+          "address": "AQ12",
+          "value": "백",
+          "formula": ""
+        },
+        {
+          "address": "AR12",
+          "value": 469,
+          "formula": ""
+        },
+        {
+          "address": "AS12",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "AT12",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "AU12",
+          "value": 0.08797406293530546,
+          "formula": ""
+        },
+        {
+          "address": "AV12",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "AW12",
+          "value": 0.650818797,
+          "formula": ""
+        },
+        {
+          "address": "AX12",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "AY12",
+          "value": 2.905,
+          "formula": ""
+        },
+        {
+          "address": "AZ12",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "BA12",
+          "value": 1.44,
+          "formula": ""
+        },
+        {
+          "address": "BB12",
+          "value": 0.36929899099359853,
+          "formula": ""
+        },
+        {
+          "address": "AN13",
+          "value": 31200293,
+          "formula": ""
+        },
+        {
+          "address": "AO13",
+          "value": 1,
+          "formula": ""
+        },
+        {
+          "address": "AP13",
+          "value": 0.13789557075122483,
+          "formula": ""
+        },
+        {
+          "address": "AQ13",
+          "value": "백",
+          "formula": ""
+        },
+        {
+          "address": "AR13",
+          "value": 521,
+          "formula": ""
+        },
+        {
+          "address": "AS13",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "AT13",
+          "value": 1,
+          "formula": ""
+        },
+        {
+          "address": "AU13",
+          "value": 0.13513765933620034,
+          "formula": ""
+        },
+        {
+          "address": "AV13",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "AW13",
+          "value": 0.650818797,
+          "formula": ""
+        },
+        {
+          "address": "AX13",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "AY13",
+          "value": 2.905,
+          "formula": ""
+        },
+        {
+          "address": "AZ13",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "BA13",
+          "value": 1.44,
+          "formula": ""
+        },
+        {
+          "address": "BB13",
+          "value": 0.5672831238315725,
+          "formula": ""
+        },
+        {
+          "address": "AN14",
+          "value": 3691569,
+          "formula": ""
+        },
+        {
+          "address": "AO14",
+          "value": 2,
+          "formula": ""
+        },
+        {
+          "address": "AP14",
+          "value": 0.03263116883053171,
+          "formula": ""
+        },
+        {
+          "address": "AQ14",
+          "value": "백",
+          "formula": ""
+        },
+        {
+          "address": "AR14",
+          "value": 315,
+          "formula": ""
+        },
+        {
+          "address": "AS14",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "AT14",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "AU14",
+          "value": 0.03197854545392107,
+          "formula": ""
+        },
+        {
+          "address": "AV14",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "AW14",
+          "value": 0.650818797,
+          "formula": ""
+        },
+        {
+          "address": "AX14",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "AY14",
+          "value": 2.905,
+          "formula": ""
+        },
+        {
+          "address": "AZ14",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "BA14",
+          "value": 1.44,
+          "formula": ""
+        },
+        {
+          "address": "BB14",
+          "value": 0.13424007230700008,
+          "formula": ""
+        },
+        {
+          "address": "AN15",
+          "value": 1942357,
+          "formula": ""
+        },
+        {
+          "address": "AO15",
+          "value": 2,
+          "formula": ""
+        },
+        {
+          "address": "AP15",
+          "value": 0.017169225117061357,
+          "formula": ""
+        },
+        {
+          "address": "AQ15",
+          "value": "타대",
+          "formula": ""
+        },
+        {
+          "address": "AR15",
+          "value": 211,
+          "formula": ""
+        },
+        {
+          "address": "AS15",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "AT15",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "AU15",
+          "value": 0.01682584061472013,
+          "formula": ""
+        },
+        {
+          "address": "AV15",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "AW15",
+          "value": 0.650818797,
+          "formula": ""
+        },
+        {
+          "address": "AX15",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "AY15",
+          "value": 2.585,
+          "formula": ""
+        },
+        {
+          "address": "AZ15",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "BA15",
+          "value": 1.44,
+          "formula": ""
+        },
+        {
+          "address": "BB15",
+          "value": 0.049222799093270556,
+          "formula": ""
+        },
+        {
+          "address": "AN16",
+          "value": 124669952,
+          "formula": ""
+        },
+        {
+          "address": "AO16",
+          "value": 1,
+          "formula": ""
+        },
+        {
+          "address": "AP16",
+          "value": 0.5510023315027139,
+          "formula": ""
+        },
+        {
+          "address": "AQ16",
+          "value": "타대",
+          "formula": ""
+        },
+        {
+          "address": "AR16",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "AS16",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "AT16",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "AU16",
+          "value": 0.5399822848726596,
+          "formula": ""
+        },
+        {
+          "address": "AV16",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "AW16",
+          "value": 0.650818797,
+          "formula": ""
+        },
+        {
+          "address": "AX16",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "AY16",
+          "value": 2.585,
+          "formula": ""
+        },
+        {
+          "address": "AZ16",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "BA16",
+          "value": 1.44,
+          "formula": ""
+        },
+        {
+          "address": "BB16",
+          "value": 1.5796797396832005,
+          "formula": ""
+        },
+        {
+          "address": "AP17",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "AS17",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "AT17",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "AU17",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "AV17",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "AW17",
+          "value": 0.650818797,
+          "formula": ""
+        },
+        {
+          "address": "AX17",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "AY17",
+          "value": 2.585,
+          "formula": ""
+        },
+        {
+          "address": "AZ17",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "BA17",
+          "value": 1.44,
+          "formula": ""
+        },
+        {
+          "address": "BB17",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "AP18",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "AS18",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "AT18",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "AU18",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "AV18",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "AW18",
+          "value": 0.650818797,
+          "formula": ""
+        },
+        {
+          "address": "AX18",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "AY18",
+          "value": 2.585,
+          "formula": ""
+        },
+        {
+          "address": "AZ18",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "BA18",
+          "value": 1.44,
+          "formula": ""
+        },
+        {
+          "address": "BB18",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "AP19",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "AS19",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "AT19",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "AU19",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "AV19",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "AW19",
+          "value": 0.650818797,
+          "formula": ""
+        },
+        {
+          "address": "AX19",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "AY19",
+          "value": 2.585,
+          "formula": ""
+        },
+        {
+          "address": "AZ19",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "BA19",
+          "value": 1.44,
+          "formula": ""
+        },
+        {
+          "address": "BB19",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "AP20",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "AS20",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "AT20",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "AU20",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "AV20",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "AW20",
+          "value": 0.650818797,
+          "formula": ""
+        },
+        {
+          "address": "AX20",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "AY20",
+          "value": 2.585,
+          "formula": ""
+        },
+        {
+          "address": "AZ20",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "BA20",
+          "value": 1.44,
+          "formula": ""
+        },
+        {
+          "address": "BB20",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "AP21",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "AS21",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "AT21",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "AU21",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "AV21",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "AW21",
+          "value": 0.650818797,
+          "formula": ""
+        },
+        {
+          "address": "AX21",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "AY21",
+          "value": 2.585,
+          "formula": ""
+        },
+        {
+          "address": "AZ21",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "BA21",
+          "value": 1.44,
+          "formula": ""
+        },
+        {
+          "address": "BB21",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "AP22",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "AS22",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "AT22",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "AU22",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "AV22",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "AW22",
+          "value": 0.650818797,
+          "formula": ""
+        },
+        {
+          "address": "AX22",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "AY22",
+          "value": 2.585,
+          "formula": ""
+        },
+        {
+          "address": "AZ22",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "BA22",
+          "value": 1.44,
+          "formula": ""
+        },
+        {
+          "address": "BB22",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "AP23",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "AS23",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "AT23",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "AU23",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "AV23",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "AW23",
+          "value": 0.650818797,
+          "formula": ""
+        },
+        {
+          "address": "AX23",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "AY23",
+          "value": 2.585,
+          "formula": ""
+        },
+        {
+          "address": "AZ23",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "BA23",
+          "value": 1.44,
+          "formula": ""
+        },
+        {
+          "address": "BB23",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "AP24",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "AS24",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "AT24",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "AU24",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "AV24",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "AW24",
+          "value": 0.650818797,
+          "formula": ""
+        },
+        {
+          "address": "AX24",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "AY24",
+          "value": 2.585,
+          "formula": ""
+        },
+        {
+          "address": "AZ24",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "BA24",
+          "value": 1.44,
+          "formula": ""
+        },
+        {
+          "address": "BB24",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "AP25",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "AS25",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "AT25",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "AU25",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "AV25",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "AW25",
+          "value": 0.650818797,
+          "formula": ""
+        },
+        {
+          "address": "AX25",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "AY25",
+          "value": 2.585,
+          "formula": ""
+        },
+        {
+          "address": "AZ25",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "BA25",
+          "value": 1.44,
+          "formula": ""
+        },
+        {
+          "address": "BB25",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "AP26",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "AS26",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "AT26",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "AU26",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "AV26",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "AW26",
+          "value": 0.650818797,
+          "formula": ""
+        },
+        {
+          "address": "AX26",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "AY26",
+          "value": 2.585,
+          "formula": ""
+        },
+        {
+          "address": "AZ26",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "BA26",
+          "value": 1.44,
+          "formula": ""
+        },
+        {
+          "address": "BB26",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "AP27",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "AS27",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "AT27",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "AU27",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "AV27",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "AW27",
+          "value": 0.650818797,
+          "formula": ""
+        },
+        {
+          "address": "AX27",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "AY27",
+          "value": 2.585,
+          "formula": ""
+        },
+        {
+          "address": "AZ27",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "BA27",
+          "value": 1.44,
+          "formula": ""
+        },
+        {
+          "address": "BB27",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "AW28",
+          "value": "뭉툭한 가시(4T) 치적 상한 ↑",
+          "formula": ""
+        },
+        {
+          "address": "AY28",
+          "value": "일격(3T) ↑",
+          "formula": ""
+        },
+        {
+          "address": "BB28",
+          "value": "뭉툭한 가시(백) 진추피, 치피증 ↑",
+          "formula": ""
+        },
+        {
+          "address": "AZ30",
+          "value": "헤드어택 성공률",
+          "formula": ""
+        },
+        {
+          "address": "BB30",
+          "value": 0.7,
+          "formula": "=J35"
+        },
+        {
+          "address": "AZ31",
+          "value": "백어택 성공률",
+          "formula": ""
+        },
+        {
+          "address": "BB31",
+          "value": 0.7,
+          "formula": ""
+        },
+        {
+          "address": "AZ32",
+          "value": "팔찌(결투)",
+          "formula": ""
+        },
+        {
+          "address": "BB32",
+          "value": 0,
+          "formula": "=E24"
+        },
+        {
+          "address": "AZ33",
+          "value": "팔찌(기습)",
+          "formula": ""
+        },
+        {
+          "address": "BB33",
+          "value": 0.04,
+          "formula": ""
+        },
+        {
+          "address": "AZ34",
+          "value": "헤드/백 피증 시너지",
+          "formula": ""
+        },
+        {
+          "address": "BB34",
+          "value": 0.05,
+          "formula": "=J31"
+        },
+        {
+          "address": "AZ35",
+          "value": "헤드어택 피해량",
+          "formula": ""
+        },
+        {
+          "address": "BB35",
+          "value": 0.2,
+          "formula": ""
+        },
+        {
+          "address": "AZ36",
+          "value": "백어택 피해량",
+          "formula": ""
+        },
+        {
+          "address": "BB36",
+          "value": 0.05,
+          "formula": ""
+        },
+        {
+          "address": "AZ37",
+          "value": "백어택 치적",
+          "formula": ""
+        },
+        {
+          "address": "BB37",
+          "value": 0.1,
+          "formula": ""
+        },
+        {
+          "address": "AZ38",
+          "value": "팔찌(타대)",
+          "formula": ""
+        },
+        {
+          "address": "BB38",
+          "value": 0,
+          "formula": "=E26"
+        }
+      ]
+    },
+    {
+      "address": "BD4:BF39",
+      "cells": [
+        {
+          "address": "BE4",
+          "value": "추가 피해",
+          "formula": ""
+        },
+        {
+          "address": "BF4",
+          "value": 1.3241,
+          "formula": "=SUM(BF8:BF12)+1"
+        },
+        {
+          "address": "BE5",
+          "value": "피해 증가",
+          "formula": ""
+        },
+        {
+          "address": "BF5",
+          "value": 1.0964998553599998,
+          "formula": "=(1+BF15)*(1+BF16)*(1+BF17)*(1+BF18)*(1+BF19)*(1+BF20)*(1+BF21)*(1+BF22)*(1+BF23)"
+        },
+        {
+          "address": "BD7",
+          "value": "구분",
+          "formula": ""
+        },
+        {
+          "address": "BE7",
+          "value": "항목",
+          "formula": ""
+        },
+        {
+          "address": "BF7",
+          "value": "추가 피해",
+          "formula": ""
+        },
+        {
+          "address": "BD8",
+          "value": "무기",
+          "formula": ""
+        },
+        {
+          "address": "BF8",
+          "value": 0.2961,
+          "formula": "=E12"
+        },
+        {
+          "address": "BD9",
+          "value": "장신구",
+          "formula": ""
+        },
+        {
+          "address": "BE9",
+          "value": "목걸이",
+          "formula": ""
+        },
+        {
+          "address": "BF9",
+          "value": 0,
+          "formula": "=E14"
+        },
+        {
+          "address": "BD10",
+          "value": "엘릭서",
+          "formula": ""
+        },
+        {
+          "address": "BE10",
+          "value": "추가 피해",
+          "formula": ""
+        },
+        {
+          "address": "BF10",
+          "value": 0,
+          "formula": "=J13"
+        },
+        {
+          "address": "BE11",
+          "value": "달인",
+          "formula": ""
+        },
+        {
+          "address": "BF11",
+          "value": 0,
+          "formula": "=J17"
+        },
+        {
+          "address": "BD12",
+          "value": "팔찌",
+          "formula": ""
+        },
+        {
+          "address": "BE12",
+          "value": "쐐기",
+          "formula": ""
+        },
+        {
+          "address": "BF12",
+          "value": 0.028,
+          "formula": "=E29"
+        },
+        {
+          "address": "BD14",
+          "value": "구분",
+          "formula": ""
+        },
+        {
+          "address": "BE14",
+          "value": "항목",
+          "formula": ""
+        },
+        {
+          "address": "BF14",
+          "value": "피해 증가",
+          "formula": ""
+        },
+        {
+          "address": "BD15",
+          "value": "장신구",
+          "formula": ""
+        },
+        {
+          "address": "BE15",
+          "value": "목걸이",
+          "formula": ""
+        },
+        {
+          "address": "BF15",
+          "value": 0,
+          "formula": "=E15"
+        },
+        {
+          "address": "BD16",
+          "value": "엘릭서",
+          "formula": ""
+        },
+        {
+          "address": "BE16",
+          "value": "혼돈",
+          "formula": ""
+        },
+        {
+          "address": "BF16",
+          "value": 0.0144,
+          "formula": "=J15"
+        },
+        {
+          "address": "BE17",
+          "value": "보스 피해",
+          "formula": ""
+        },
+        {
+          "address": "BF17",
+          "value": 0.024,
+          "formula": "=J12"
+        },
+        {
+          "address": "BD18",
+          "value": "초월",
+          "formula": ""
+        },
+        {
+          "address": "BE18",
+          "value": "하의(7)",
+          "formula": ""
+        },
+        {
+          "address": "BF18",
+          "value": 0.015,
+          "formula": ""
+        },
+        {
+          "address": "BD19",
+          "value": "팔찌",
+          "formula": ""
+        },
+        {
+          "address": "BE19",
+          "value": "냉정",
+          "formula": ""
+        },
+        {
+          "address": "BF19",
+          "value": 0,
+          "formula": "=E26"
+        },
+        {
+          "address": "BE20",
+          "value": "열정",
+          "formula": ""
+        },
+        {
+          "address": "BF20",
+          "value": 0,
+          "formula": "=E31"
+        },
+        {
+          "address": "BE21",
+          "value": "우월",
+          "formula": ""
+        },
+        {
+          "address": "BF21",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "BD22",
+          "value": "직업 고유",
+          "formula": ""
+        },
+        {
+          "address": "BF22",
+          "value": 0,
+          "formula": "=J25"
+        },
+        {
+          "address": "BD23",
+          "value": "시너지",
+          "formula": ""
+        },
+        {
+          "address": "BF23",
+          "value": 0.04,
+          "formula": "=J32"
+        }
+      ]
+    },
+    {
+      "address": "BH4:BI12",
+      "cells": [
+        {
+          "address": "BH4",
+          "value": "최종 데미지",
+          "formula": ""
+        },
+        {
+          "address": "BI4",
+          "value": 814010.0417682251,
+          "formula": "=BI8*BI9*BI10*BI11*BI12"
+        },
+        {
+          "address": "BH7",
+          "value": "구분",
+          "formula": ""
+        },
+        {
+          "address": "BI7",
+          "value": "수치",
+          "formula": ""
+        },
+        {
+          "address": "BH8",
+          "value": "공격력",
+          "formula": ""
+        },
+        {
+          "address": "BI8",
+          "value": 109555,
+          "formula": "=P4"
+        },
+        {
+          "address": "BH9",
+          "value": "피해 증가(각인)",
+          "formula": ""
+        },
+        {
+          "address": "BI9",
+          "value": 1.5084175999999998,
+          "formula": "=T4"
+        },
+        {
+          "address": "BH10",
+          "value": "스킬 데미지",
+          "formula": ""
+        },
+        {
+          "address": "BI10",
+          "value": 3.3927089457909947,
+          "formula": "=BB4"
+        },
+        {
+          "address": "BH11",
+          "value": "추가 피해",
+          "formula": ""
+        },
+        {
+          "address": "BI11",
+          "value": 1.3241,
+          "formula": "=BF4"
+        },
+        {
+          "address": "BH12",
+          "value": "피해 증가(기타)",
+          "formula": ""
+        },
+        {
+          "address": "BI12",
+          "value": 1.0964998553599998,
+          "formula": ""
+        }
+      ]
+    },
+    {
+      "address": "R50:X106",
+      "cells": [
+        {
+          "address": "R50",
+          "value": "구분",
+          "formula": ""
+        },
+        {
+          "address": "S50",
+          "value": "-",
+          "formula": ""
+        },
+        {
+          "address": "T50",
+          "value": "전설4",
+          "formula": ""
+        },
+        {
+          "address": "U50",
+          "value": "유물1",
+          "formula": ""
+        },
+        {
+          "address": "V50",
+          "value": "유물2",
+          "formula": ""
+        },
+        {
+          "address": "W50",
+          "value": "유물3",
+          "formula": ""
+        },
+        {
+          "address": "X50",
+          "value": "유물4",
+          "formula": ""
+        },
+        {
+          "address": "R51",
+          "value": "달인의 저력",
+          "formula": ""
+        },
+        {
+          "address": "S51",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "T51",
+          "value": 0.14,
+          "formula": ""
+        },
+        {
+          "address": "U51",
+          "value": 0.1475,
+          "formula": ""
+        },
+        {
+          "address": "V51",
+          "value": 0.155,
+          "formula": ""
+        },
+        {
+          "address": "W51",
+          "value": 0.1625,
+          "formula": ""
+        },
+        {
+          "address": "X51",
+          "value": 0.17,
+          "formula": ""
+        },
+        {
+          "address": "R52",
+          "value": "돌격대장",
+          "formula": ""
+        },
+        {
+          "address": "S52",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "T52",
+          "value": 0.14566573399999996,
+          "formula": "=MIN(($AE$4-1),0.4)*0.4"
+        },
+        {
+          "address": "U52",
+          "value": 0.15294902069999994,
+          "formula": "=MIN(($AE$4-1),0.4)*0.42"
+        },
+        {
+          "address": "V52",
+          "value": 0.16023230739999997,
+          "formula": "=MIN(($AE$4-1),0.4)*0.44"
+        },
+        {
+          "address": "W52",
+          "value": 0.16751559409999997,
+          "formula": "=MIN(($AE$4-1),0.4)*0.46"
+        },
+        {
+          "address": "X52",
+          "value": 0.17479888079999994,
+          "formula": "=MIN(($AE$4-1),0.4)*0.48"
+        },
+        {
+          "address": "R53",
+          "value": "마나 효율 증가",
+          "formula": ""
+        },
+        {
+          "address": "S53",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "T53",
+          "value": 0.13,
+          "formula": ""
+        },
+        {
+          "address": "U53",
+          "value": 0.1375,
+          "formula": ""
+        },
+        {
+          "address": "V53",
+          "value": 0.145,
+          "formula": ""
+        },
+        {
+          "address": "W53",
+          "value": 0.1525,
+          "formula": ""
+        },
+        {
+          "address": "X53",
+          "value": 0.16,
+          "formula": ""
+        },
+        {
+          "address": "R54",
+          "value": "바리케이드",
+          "formula": ""
+        },
+        {
+          "address": "S54",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "T54",
+          "value": 0.14,
+          "formula": ""
+        },
+        {
+          "address": "U54",
+          "value": 0.1475,
+          "formula": ""
+        },
+        {
+          "address": "V54",
+          "value": 0.155,
+          "formula": ""
+        },
+        {
+          "address": "W54",
+          "value": 0.1625,
+          "formula": ""
+        },
+        {
+          "address": "X54",
+          "value": 0.17,
+          "formula": ""
+        },
+        {
+          "address": "R55",
+          "value": "속전속결",
+          "formula": ""
+        },
+        {
+          "address": "S55",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "T55",
+          "value": 0.18,
+          "formula": ""
+        },
+        {
+          "address": "U55",
+          "value": 0.1875,
+          "formula": ""
+        },
+        {
+          "address": "V55",
+          "value": 0.195,
+          "formula": ""
+        },
+        {
+          "address": "W55",
+          "value": 0.2025,
+          "formula": ""
+        },
+        {
+          "address": "X55",
+          "value": 0.21,
+          "formula": ""
+        },
+        {
+          "address": "R56",
+          "value": "슈퍼 차지",
+          "formula": ""
+        },
+        {
+          "address": "S56",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "T56",
+          "value": 0.18,
+          "formula": ""
+        },
+        {
+          "address": "U56",
+          "value": 0.1875,
+          "formula": ""
+        },
+        {
+          "address": "V56",
+          "value": 0.195,
+          "formula": ""
+        },
+        {
+          "address": "W56",
+          "value": 0.2025,
+          "formula": ""
+        },
+        {
+          "address": "X56",
+          "value": 0.21,
+          "formula": ""
+        },
+        {
+          "address": "R57",
+          "value": "안정된 상태",
+          "formula": ""
+        },
+        {
+          "address": "S57",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "T57",
+          "value": 0.14,
+          "formula": ""
+        },
+        {
+          "address": "U57",
+          "value": 0.1475,
+          "formula": ""
+        },
+        {
+          "address": "V57",
+          "value": 0.155,
+          "formula": ""
+        },
+        {
+          "address": "W57",
+          "value": 0.1625,
+          "formula": ""
+        },
+        {
+          "address": "X57",
+          "value": 0.17,
+          "formula": ""
+        },
+        {
+          "address": "R58",
+          "value": "원한",
+          "formula": ""
+        },
+        {
+          "address": "S58",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "T58",
+          "value": 0.18,
+          "formula": ""
+        },
+        {
+          "address": "U58",
+          "value": 0.1875,
+          "formula": ""
+        },
+        {
+          "address": "V58",
+          "value": 0.195,
+          "formula": ""
+        },
+        {
+          "address": "W58",
+          "value": 0.2025,
+          "formula": ""
+        },
+        {
+          "address": "X58",
+          "value": 0.21,
+          "formula": ""
+        },
+        {
+          "address": "R59",
+          "value": "저주받은 인형",
+          "formula": ""
+        },
+        {
+          "address": "S59",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "T59",
+          "value": 0.14,
+          "formula": ""
+        },
+        {
+          "address": "U59",
+          "value": 0.1475,
+          "formula": ""
+        },
+        {
+          "address": "V59",
+          "value": 0.155,
+          "formula": ""
+        },
+        {
+          "address": "W59",
+          "value": 0.1625,
+          "formula": ""
+        },
+        {
+          "address": "X59",
+          "value": 0.17,
+          "formula": ""
+        },
+        {
+          "address": "R60",
+          "value": "질량 증가",
+          "formula": ""
+        },
+        {
+          "address": "S60",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "T60",
+          "value": 0.16,
+          "formula": ""
+        },
+        {
+          "address": "U60",
+          "value": 0.1675,
+          "formula": ""
+        },
+        {
+          "address": "V60",
+          "value": 0.175,
+          "formula": ""
+        },
+        {
+          "address": "W60",
+          "value": 0.1825,
+          "formula": ""
+        },
+        {
+          "address": "X60",
+          "value": 0.19,
+          "formula": ""
+        },
+        {
+          "address": "R61",
+          "value": "타격의 대가",
+          "formula": ""
+        },
+        {
+          "address": "S61",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "T61",
+          "value": 0.14,
+          "formula": ""
+        },
+        {
+          "address": "U61",
+          "value": 0.1475,
+          "formula": ""
+        },
+        {
+          "address": "V61",
+          "value": 0.155,
+          "formula": ""
+        },
+        {
+          "address": "W61",
+          "value": 0.1625,
+          "formula": ""
+        },
+        {
+          "address": "X61",
+          "value": 0.17,
+          "formula": ""
+        },
+        {
+          "address": "R63",
+          "value": "구분",
+          "formula": ""
+        },
+        {
+          "address": "S63",
+          "value": "-",
+          "formula": ""
+        },
+        {
+          "address": "T63",
+          "value": "Lv.1",
+          "formula": ""
+        },
+        {
+          "address": "U63",
+          "value": "Lv.2",
+          "formula": ""
+        },
+        {
+          "address": "V63",
+          "value": "Lv.3",
+          "formula": ""
+        },
+        {
+          "address": "W63",
+          "value": "Lv.4",
+          "formula": ""
+        },
+        {
+          "address": "R64",
+          "value": "달인의 저력",
+          "formula": ""
+        },
+        {
+          "address": "S64",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "T64",
+          "value": 0.03,
+          "formula": ""
+        },
+        {
+          "address": "U64",
+          "value": 0.0375,
+          "formula": ""
+        },
+        {
+          "address": "V64",
+          "value": 0.0525,
+          "formula": ""
+        },
+        {
+          "address": "W64",
+          "value": 0.06,
+          "formula": ""
+        },
+        {
+          "address": "R65",
+          "value": "돌격대장",
+          "formula": ""
+        },
+        {
+          "address": "S65",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "T65",
+          "value": 0.02731232512499999,
+          "formula": "=MIN(($AE$4-1),0.4)*0.075"
+        },
+        {
+          "address": "U65",
+          "value": 0.03423144748999999,
+          "formula": "=MIN(($AE$4-1),0.4)*0.094"
+        },
+        {
+          "address": "V65",
+          "value": 0.04806969221999999,
+          "formula": "=MIN(($AE$4-1),0.4)*0.132"
+        },
+        {
+          "address": "W65",
+          "value": 0.05462465024999998,
+          "formula": "=MIN(($AE$4-1),0.4)*0.15"
+        },
+        {
+          "address": "R66",
+          "value": "마나 효율 증가",
+          "formula": ""
+        },
+        {
+          "address": "S66",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "T66",
+          "value": 0.03,
+          "formula": ""
+        },
+        {
+          "address": "U66",
+          "value": 0.0375,
+          "formula": ""
+        },
+        {
+          "address": "V66",
+          "value": 0.0525,
+          "formula": ""
+        },
+        {
+          "address": "W66",
+          "value": 0.06,
+          "formula": ""
+        },
+        {
+          "address": "R67",
+          "value": "바리케이드",
+          "formula": ""
+        },
+        {
+          "address": "S67",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "T67",
+          "value": 0.03,
+          "formula": ""
+        },
+        {
+          "address": "U67",
+          "value": 0.0375,
+          "formula": ""
+        },
+        {
+          "address": "V67",
+          "value": 0.0525,
+          "formula": ""
+        },
+        {
+          "address": "W67",
+          "value": 0.06,
+          "formula": ""
+        },
+        {
+          "address": "R68",
+          "value": "속전속결",
+          "formula": ""
+        },
+        {
+          "address": "S68",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "T68",
+          "value": 0.03,
+          "formula": ""
+        },
+        {
+          "address": "U68",
+          "value": 0.0375,
+          "formula": ""
+        },
+        {
+          "address": "V68",
+          "value": 0.0525,
+          "formula": ""
+        },
+        {
+          "address": "W68",
+          "value": 0.06,
+          "formula": ""
+        },
+        {
+          "address": "R69",
+          "value": "슈퍼 차지",
+          "formula": ""
+        },
+        {
+          "address": "S69",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "T69",
+          "value": 0.03,
+          "formula": ""
+        },
+        {
+          "address": "U69",
+          "value": 0.0375,
+          "formula": ""
+        },
+        {
+          "address": "V69",
+          "value": 0.0525,
+          "formula": ""
+        },
+        {
+          "address": "W69",
+          "value": 0.06,
+          "formula": ""
+        },
+        {
+          "address": "R70",
+          "value": "안정된 상태",
+          "formula": ""
+        },
+        {
+          "address": "S70",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "T70",
+          "value": 0.03,
+          "formula": ""
+        },
+        {
+          "address": "U70",
+          "value": 0.0375,
+          "formula": ""
+        },
+        {
+          "address": "V70",
+          "value": 0.0525,
+          "formula": ""
+        },
+        {
+          "address": "W70",
+          "value": 0.06,
+          "formula": ""
+        },
+        {
+          "address": "R71",
+          "value": "원한",
+          "formula": ""
+        },
+        {
+          "address": "S71",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "T71",
+          "value": 0.03,
+          "formula": ""
+        },
+        {
+          "address": "U71",
+          "value": 0.0375,
+          "formula": ""
+        },
+        {
+          "address": "V71",
+          "value": 0.0525,
+          "formula": ""
+        },
+        {
+          "address": "W71",
+          "value": 0.06,
+          "formula": ""
+        },
+        {
+          "address": "R72",
+          "value": "저주받은 인형",
+          "formula": ""
+        },
+        {
+          "address": "S72",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "T72",
+          "value": 0.03,
+          "formula": ""
+        },
+        {
+          "address": "U72",
+          "value": 0.0375,
+          "formula": ""
+        },
+        {
+          "address": "V72",
+          "value": 0.0525,
+          "formula": ""
+        },
+        {
+          "address": "W72",
+          "value": 0.06,
+          "formula": ""
+        },
+        {
+          "address": "R73",
+          "value": "질량 증가",
+          "formula": ""
+        },
+        {
+          "address": "S73",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "T73",
+          "value": 0.03,
+          "formula": ""
+        },
+        {
+          "address": "U73",
+          "value": 0.0375,
+          "formula": ""
+        },
+        {
+          "address": "V73",
+          "value": 0.0525,
+          "formula": ""
+        },
+        {
+          "address": "W73",
+          "value": 0.06,
+          "formula": ""
+        },
+        {
+          "address": "R74",
+          "value": "타격의 대가",
+          "formula": ""
+        },
+        {
+          "address": "S74",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "T74",
+          "value": 0.03,
+          "formula": ""
+        },
+        {
+          "address": "U74",
+          "value": 0.0375,
+          "formula": ""
+        },
+        {
+          "address": "V74",
+          "value": 0.0525,
+          "formula": ""
+        },
+        {
+          "address": "W74",
+          "value": 0.06,
+          "formula": ""
+        },
+        {
+          "address": "R76",
+          "value": "구분",
+          "formula": ""
+        },
+        {
+          "address": "S76",
+          "value": "-",
+          "formula": ""
+        },
+        {
+          "address": "T76",
+          "value": "전설4",
+          "formula": ""
+        },
+        {
+          "address": "U76",
+          "value": "유물1",
+          "formula": ""
+        },
+        {
+          "address": "V76",
+          "value": "유물2",
+          "formula": ""
+        },
+        {
+          "address": "W76",
+          "value": "유물3",
+          "formula": ""
+        },
+        {
+          "address": "X76",
+          "value": "유물4",
+          "formula": ""
+        },
+        {
+          "address": "R77",
+          "value": "결투의 대가",
+          "formula": ""
+        },
+        {
+          "address": "S77",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "T77",
+          "value": 0.048,
+          "formula": ""
+        },
+        {
+          "address": "U77",
+          "value": 0.055,
+          "formula": ""
+        },
+        {
+          "address": "V77",
+          "value": 0.062,
+          "formula": ""
+        },
+        {
+          "address": "W77",
+          "value": 0.069,
+          "formula": ""
+        },
+        {
+          "address": "X77",
+          "value": 0.076,
+          "formula": ""
+        },
+        {
+          "address": "R78",
+          "value": "기습의 대가",
+          "formula": ""
+        },
+        {
+          "address": "S78",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "T78",
+          "value": 0.048,
+          "formula": ""
+        },
+        {
+          "address": "U78",
+          "value": 0.055,
+          "formula": ""
+        },
+        {
+          "address": "V78",
+          "value": 0.062,
+          "formula": ""
+        },
+        {
+          "address": "W78",
+          "value": 0.069,
+          "formula": ""
+        },
+        {
+          "address": "X78",
+          "value": 0.076,
+          "formula": ""
+        },
+        {
+          "address": "R80",
+          "value": "구분",
+          "formula": ""
+        },
+        {
+          "address": "S80",
+          "value": "-",
+          "formula": ""
+        },
+        {
+          "address": "T80",
+          "value": "Lv.1",
+          "formula": ""
+        },
+        {
+          "address": "U80",
+          "value": "Lv.2",
+          "formula": ""
+        },
+        {
+          "address": "V80",
+          "value": "Lv.3",
+          "formula": ""
+        },
+        {
+          "address": "W80",
+          "value": "Lv.4",
+          "formula": ""
+        },
+        {
+          "address": "R81",
+          "value": "결투의 대가",
+          "formula": ""
+        },
+        {
+          "address": "S81",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "T81",
+          "value": 0.027,
+          "formula": ""
+        },
+        {
+          "address": "U81",
+          "value": 0.034,
+          "formula": ""
+        },
+        {
+          "address": "V81",
+          "value": 0.047,
+          "formula": ""
+        },
+        {
+          "address": "W81",
+          "value": 0.054,
+          "formula": ""
+        },
+        {
+          "address": "R82",
+          "value": "기습의 대가",
+          "formula": ""
+        },
+        {
+          "address": "S82",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "T82",
+          "value": 0.027,
+          "formula": ""
+        },
+        {
+          "address": "U82",
+          "value": 0.034,
+          "formula": ""
+        },
+        {
+          "address": "V82",
+          "value": 0.047,
+          "formula": ""
+        },
+        {
+          "address": "W82",
+          "value": 0.054,
+          "formula": ""
+        },
+        {
+          "address": "R84",
+          "value": "구분",
+          "formula": ""
+        },
+        {
+          "address": "S84",
+          "value": "-",
+          "formula": ""
+        },
+        {
+          "address": "T84",
+          "value": "전설4",
+          "formula": ""
+        },
+        {
+          "address": "U84",
+          "value": "유물1",
+          "formula": ""
+        },
+        {
+          "address": "V84",
+          "value": "유물2",
+          "formula": ""
+        },
+        {
+          "address": "W84",
+          "value": "유물3",
+          "formula": ""
+        },
+        {
+          "address": "X84",
+          "value": "유물4",
+          "formula": ""
+        },
+        {
+          "address": "R85",
+          "value": "아드레날린(6)",
+          "formula": ""
+        },
+        {
+          "address": "S85",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "T85",
+          "value": 0.14,
+          "formula": ""
+        },
+        {
+          "address": "U85",
+          "value": 0.155,
+          "formula": ""
+        },
+        {
+          "address": "V85",
+          "value": 0.17,
+          "formula": ""
+        },
+        {
+          "address": "W85",
+          "value": 0.185,
+          "formula": ""
+        },
+        {
+          "address": "X85",
+          "value": 0.2,
+          "formula": ""
+        },
+        {
+          "address": "R87",
+          "value": "구분",
+          "formula": ""
+        },
+        {
+          "address": "S87",
+          "value": "-",
+          "formula": ""
+        },
+        {
+          "address": "T87",
+          "value": "Lv.1",
+          "formula": ""
+        },
+        {
+          "address": "U87",
+          "value": "Lv.2",
+          "formula": ""
+        },
+        {
+          "address": "V87",
+          "value": "Lv.3",
+          "formula": ""
+        },
+        {
+          "address": "W87",
+          "value": "Lv.4",
+          "formula": ""
+        },
+        {
+          "address": "R88",
+          "value": "아드레날린(6)",
+          "formula": ""
+        },
+        {
+          "address": "S88",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "T88",
+          "value": 0.0288,
+          "formula": ""
+        },
+        {
+          "address": "U88",
+          "value": 0.036,
+          "formula": ""
+        },
+        {
+          "address": "V88",
+          "value": 0.0498,
+          "formula": ""
+        },
+        {
+          "address": "W88",
+          "value": 0.057,
+          "formula": ""
+        },
+        {
+          "address": "R90",
+          "value": "구분",
+          "formula": ""
+        },
+        {
+          "address": "S90",
+          "value": "-",
+          "formula": ""
+        },
+        {
+          "address": "T90",
+          "value": "전설4",
+          "formula": ""
+        },
+        {
+          "address": "U90",
+          "value": "유물1",
+          "formula": ""
+        },
+        {
+          "address": "V90",
+          "value": "유물2",
+          "formula": ""
+        },
+        {
+          "address": "W90",
+          "value": "유물3",
+          "formula": ""
+        },
+        {
+          "address": "X90",
+          "value": "유물4",
+          "formula": ""
+        },
+        {
+          "address": "R91",
+          "value": "에테르 포식자(30)",
+          "formula": ""
+        },
+        {
+          "address": "S91",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "T91",
+          "value": 0.126,
+          "formula": ""
+        },
+        {
+          "address": "U91",
+          "value": 0.135,
+          "formula": ""
+        },
+        {
+          "address": "V91",
+          "value": 0.144,
+          "formula": ""
+        },
+        {
+          "address": "W91",
+          "value": 0.153,
+          "formula": ""
+        },
+        {
+          "address": "X91",
+          "value": 0.162,
+          "formula": ""
+        },
+        {
+          "address": "R93",
+          "value": "구분",
+          "formula": ""
+        },
+        {
+          "address": "S93",
+          "value": "-",
+          "formula": ""
+        },
+        {
+          "address": "T93",
+          "value": "Lv.1",
+          "formula": ""
+        },
+        {
+          "address": "U93",
+          "value": "Lv.2",
+          "formula": ""
+        },
+        {
+          "address": "V93",
+          "value": "Lv.3",
+          "formula": ""
+        },
+        {
+          "address": "W93",
+          "value": "Lv.4",
+          "formula": ""
+        },
+        {
+          "address": "R94",
+          "value": "에테르 포식자(30)",
+          "formula": ""
+        },
+        {
+          "address": "S94",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "T94",
+          "value": 0.03,
+          "formula": ""
+        },
+        {
+          "address": "U94",
+          "value": 0.039,
+          "formula": ""
+        },
+        {
+          "address": "V94",
+          "value": 0.054,
+          "formula": ""
+        },
+        {
+          "address": "W94",
+          "value": 0.06,
+          "formula": ""
+        },
+        {
+          "address": "R96",
+          "value": "구분",
+          "formula": ""
+        },
+        {
+          "address": "S96",
+          "value": "-",
+          "formula": ""
+        },
+        {
+          "address": "T96",
+          "value": "전설4",
+          "formula": ""
+        },
+        {
+          "address": "U96",
+          "value": "유물1",
+          "formula": ""
+        },
+        {
+          "address": "V96",
+          "value": "유물2",
+          "formula": ""
+        },
+        {
+          "address": "W96",
+          "value": "유물3",
+          "formula": ""
+        },
+        {
+          "address": "X96",
+          "value": "유물4",
+          "formula": ""
+        },
+        {
+          "address": "R97",
+          "value": "예리한 둔기",
+          "formula": ""
+        },
+        {
+          "address": "S97",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "T97",
+          "value": 0.44,
+          "formula": ""
+        },
+        {
+          "address": "U97",
+          "value": 0.46,
+          "formula": ""
+        },
+        {
+          "address": "V97",
+          "value": 0.48,
+          "formula": ""
+        },
+        {
+          "address": "W97",
+          "value": 0.5,
+          "formula": ""
+        },
+        {
+          "address": "X97",
+          "value": 0.52,
+          "formula": ""
+        },
+        {
+          "address": "R99",
+          "value": "구분",
+          "formula": ""
+        },
+        {
+          "address": "S99",
+          "value": "-",
+          "formula": ""
+        },
+        {
+          "address": "T99",
+          "value": "Lv.1",
+          "formula": ""
+        },
+        {
+          "address": "U99",
+          "value": "Lv.2",
+          "formula": ""
+        },
+        {
+          "address": "V99",
+          "value": "Lv.3",
+          "formula": ""
+        },
+        {
+          "address": "W99",
+          "value": "Lv.4",
+          "formula": ""
+        },
+        {
+          "address": "R100",
+          "value": "예리한 둔기",
+          "formula": ""
+        },
+        {
+          "address": "S100",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "T100",
+          "value": 0.075,
+          "formula": ""
+        },
+        {
+          "address": "U100",
+          "value": 0.094,
+          "formula": ""
+        },
+        {
+          "address": "V100",
+          "value": 0.132,
+          "formula": ""
+        },
+        {
+          "address": "W100",
+          "value": 0.15,
+          "formula": ""
+        },
+        {
+          "address": "R102",
+          "value": "구분",
+          "formula": ""
+        },
+        {
+          "address": "S102",
+          "value": "-",
+          "formula": ""
+        },
+        {
+          "address": "T102",
+          "value": "전설4",
+          "formula": ""
+        },
+        {
+          "address": "U102",
+          "value": "유물1",
+          "formula": ""
+        },
+        {
+          "address": "V102",
+          "value": "유물2",
+          "formula": ""
+        },
+        {
+          "address": "W102",
+          "value": "유물3",
+          "formula": ""
+        },
+        {
+          "address": "X102",
+          "value": "유물4",
+          "formula": ""
+        },
+        {
+          "address": "R103",
+          "value": "정밀 단도",
+          "formula": ""
+        },
+        {
+          "address": "S103",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "T103",
+          "value": 0.18,
+          "formula": ""
+        },
+        {
+          "address": "U103",
+          "value": 0.1875,
+          "formula": ""
+        },
+        {
+          "address": "V103",
+          "value": 0.195,
+          "formula": ""
+        },
+        {
+          "address": "W103",
+          "value": 0.2025,
+          "formula": ""
+        },
+        {
+          "address": "X103",
+          "value": 0.21,
+          "formula": ""
+        },
+        {
+          "address": "R105",
+          "value": "구분",
+          "formula": ""
+        },
+        {
+          "address": "S105",
+          "value": "-",
+          "formula": ""
+        },
+        {
+          "address": "T105",
+          "value": "Lv.1",
+          "formula": ""
+        },
+        {
+          "address": "U105",
+          "value": "Lv.2",
+          "formula": ""
+        },
+        {
+          "address": "V105",
+          "value": "Lv.3",
+          "formula": ""
+        },
+        {
+          "address": "W105",
+          "value": "Lv.4",
+          "formula": ""
+        },
+        {
+          "address": "R106",
+          "value": "정밀 단도",
+          "formula": ""
+        },
+        {
+          "address": "S106",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "T106",
+          "value": 0.03,
+          "formula": ""
+        },
+        {
+          "address": "U106",
+          "value": 0.0375,
+          "formula": ""
+        },
+        {
+          "address": "V106",
+          "value": 0.0525,
+          "formula": ""
+        },
+        {
+          "address": "W106",
+          "value": 0.06,
+          "formula": ""
+        }
+      ]
+    },
+    {
+      "address": "AH50:AL82",
+      "cells": [
+        {
+          "address": "AH50",
+          "value": "진화형 피해",
+          "formula": ""
+        },
+        {
+          "address": "AI50",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "AJ50",
+          "value": 1,
+          "formula": ""
+        },
+        {
+          "address": "AK50",
+          "value": 2,
+          "formula": ""
+        },
+        {
+          "address": "AL50",
+          "value": 3,
+          "formula": ""
+        },
+        {
+          "address": "AH51",
+          "value": "끝없는 마나",
+          "formula": ""
+        },
+        {
+          "address": "AI51",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "AJ51",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "AK51",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "AH52",
+          "value": "금단의 주문",
+          "formula": ""
+        },
+        {
+          "address": "AI52",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "AJ52",
+          "value": 0.05,
+          "formula": ""
+        },
+        {
+          "address": "AK52",
+          "value": 0.1,
+          "formula": ""
+        },
+        {
+          "address": "AH53",
+          "value": "예리한 감각",
+          "formula": ""
+        },
+        {
+          "address": "AI53",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "AJ53",
+          "value": 0.05,
+          "formula": ""
+        },
+        {
+          "address": "AK53",
+          "value": 0.1,
+          "formula": ""
+        },
+        {
+          "address": "AH54",
+          "value": "한계 돌파",
+          "formula": ""
+        },
+        {
+          "address": "AI54",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "AJ54",
+          "value": 0.1,
+          "formula": ""
+        },
+        {
+          "address": "AK54",
+          "value": 0.2,
+          "formula": ""
+        },
+        {
+          "address": "AL54",
+          "value": 0.3,
+          "formula": ""
+        },
+        {
+          "address": "AH55",
+          "value": "최적화 훈련",
+          "formula": ""
+        },
+        {
+          "address": "AI55",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "AJ55",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "AK55",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "AH56",
+          "value": "무한한 마력",
+          "formula": ""
+        },
+        {
+          "address": "AI56",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "AJ56",
+          "value": 0.08,
+          "formula": ""
+        },
+        {
+          "address": "AK56",
+          "value": 0.16,
+          "formula": ""
+        },
+        {
+          "address": "AH57",
+          "value": "혼신의 강타",
+          "formula": ""
+        },
+        {
+          "address": "AI57",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "AJ57",
+          "value": 0.02,
+          "formula": ""
+        },
+        {
+          "address": "AK57",
+          "value": 0.04,
+          "formula": ""
+        },
+        {
+          "address": "AH58",
+          "value": "일격",
+          "formula": ""
+        },
+        {
+          "address": "AI58",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "AJ58",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "AK58",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "AH59",
+          "value": "파괴 전차",
+          "formula": ""
+        },
+        {
+          "address": "AI59",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "AJ59",
+          "value": 0.12,
+          "formula": ""
+        },
+        {
+          "address": "AK59",
+          "value": 0.24,
+          "formula": ""
+        },
+        {
+          "address": "AH60",
+          "value": "타이밍 지배",
+          "formula": ""
+        },
+        {
+          "address": "AI60",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "AJ60",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "AK60",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "AH61",
+          "value": "뭉툭한 가시",
+          "formula": ""
+        },
+        {
+          "address": "AI61",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "AJ61",
+          "value": 0.075,
+          "formula": ""
+        },
+        {
+          "address": "AK61",
+          "value": 0.15,
+          "formula": ""
+        },
+        {
+          "address": "AH62",
+          "value": "음속 돌파",
+          "formula": ""
+        },
+        {
+          "address": "AI62",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "AJ62",
+          "value": 0.03641643349999999,
+          "formula": "=MIN((MIN((AE4-1),0.4)+MIN((AE5-1),0.4))*0.05+IF(AND((AE4>1.4),(AE5>1.4)),0.04+(SUM(AE4:AE5)-2.8)*0.1,0),0.12)"
+        },
+        {
+          "address": "AK62",
+          "value": 0.07283286699999998,
+          "formula": "=MIN((MIN((AE4-1),0.4)+MIN((AE5-1),0.4))*0.1+IF(AND((AE4>1.4),(AE5>1.4)),0.08+(SUM(AE4:AE5)-2.8)*0.2,0),0.24)"
+        },
+        {
+          "address": "AH63",
+          "value": "인파이팅",
+          "formula": ""
+        },
+        {
+          "address": "AI63",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "AJ63",
+          "value": 0.09,
+          "formula": ""
+        },
+        {
+          "address": "AK63",
+          "value": 0.18,
+          "formula": ""
+        },
+        {
+          "address": "AH64",
+          "value": "입식 타격가",
+          "formula": ""
+        },
+        {
+          "address": "AI64",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "AJ64",
+          "value": 0.105,
+          "formula": ""
+        },
+        {
+          "address": "AK64",
+          "value": 0.21,
+          "formula": ""
+        },
+        {
+          "address": "AH65",
+          "value": "마나 용광로",
+          "formula": ""
+        },
+        {
+          "address": "AI65",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "AJ65",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "AK65",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "AH67",
+          "value": "진화형 추피",
+          "formula": ""
+        },
+        {
+          "address": "AI67",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "AJ67",
+          "value": 1,
+          "formula": ""
+        },
+        {
+          "address": "AK67",
+          "value": 2,
+          "formula": ""
+        },
+        {
+          "address": "AH68",
+          "value": "금단의 주문",
+          "formula": ""
+        },
+        {
+          "address": "AI68",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "AJ68",
+          "value": 0.05,
+          "formula": ""
+        },
+        {
+          "address": "AK68",
+          "value": 0.1,
+          "formula": ""
+        },
+        {
+          "address": "AH69",
+          "value": "최적화 훈련",
+          "formula": ""
+        },
+        {
+          "address": "AI69",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "AJ69",
+          "value": 0.05,
+          "formula": ""
+        },
+        {
+          "address": "AK69",
+          "value": 0.1,
+          "formula": ""
+        },
+        {
+          "address": "AH70",
+          "value": "타이밍 지배",
+          "formula": ""
+        },
+        {
+          "address": "AI70",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "AJ70",
+          "value": 0.08,
+          "formula": ""
+        },
+        {
+          "address": "AK70",
+          "value": 0.16,
+          "formula": ""
+        },
+        {
+          "address": "AH72",
+          "value": "치적",
+          "formula": ""
+        },
+        {
+          "address": "AI72",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "AJ72",
+          "value": 1,
+          "formula": ""
+        },
+        {
+          "address": "AK72",
+          "value": 2,
+          "formula": ""
+        },
+        {
+          "address": "AH73",
+          "value": "예리한 감각",
+          "formula": ""
+        },
+        {
+          "address": "AI73",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "AJ73",
+          "value": 0.04,
+          "formula": ""
+        },
+        {
+          "address": "AK73",
+          "value": 0.08,
+          "formula": ""
+        },
+        {
+          "address": "AH74",
+          "value": "혼신의 강타",
+          "formula": ""
+        },
+        {
+          "address": "AI74",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "AJ74",
+          "value": 0.12,
+          "formula": ""
+        },
+        {
+          "address": "AK74",
+          "value": 0.24,
+          "formula": ""
+        },
+        {
+          "address": "AH75",
+          "value": "일격",
+          "formula": ""
+        },
+        {
+          "address": "AI75",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "AJ75",
+          "value": 0.1,
+          "formula": ""
+        },
+        {
+          "address": "AK75",
+          "value": 0.2,
+          "formula": ""
+        },
+        {
+          "address": "AH77",
+          "value": "방향성 치피",
+          "formula": ""
+        },
+        {
+          "address": "AI77",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "AJ77",
+          "value": 1,
+          "formula": ""
+        },
+        {
+          "address": "AK77",
+          "value": 2,
+          "formula": ""
+        },
+        {
+          "address": "AH78",
+          "value": "일격",
+          "formula": ""
+        },
+        {
+          "address": "AI78",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "AJ78",
+          "value": 0.16,
+          "formula": ""
+        },
+        {
+          "address": "AK78",
+          "value": 0.32,
+          "formula": ""
+        },
+        {
+          "address": "AH80",
+          "value": "공속",
+          "formula": ""
+        },
+        {
+          "address": "AI80",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "AJ80",
+          "value": 1,
+          "formula": ""
+        },
+        {
+          "address": "AK80",
+          "value": 2,
+          "formula": ""
+        },
+        {
+          "address": "AH81",
+          "value": "파괴 전차",
+          "formula": ""
+        },
+        {
+          "address": "AI81",
+          "value": 0,
+          "formula": ""
+        },
+        {
+          "address": "AJ81",
+          "value": 0.04,
+          "formula": ""
+        },
+        {
+          "address": "AK81",
+          "value": 0.08,
+          "formula": ""
+        }
+      ]
+    }
+  ]
+}

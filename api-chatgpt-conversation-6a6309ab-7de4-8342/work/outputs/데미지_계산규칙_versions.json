@@ -1,0 +1,167 @@
+{
+  "calculatorVersion": "2.1.0",
+  "parsedSchemaVersion": "2.0.0",
+  "defaultRuleVersion": "current-v2.1.0",
+  "precedence": [
+    "explicit_user_rule",
+    "live_api_description",
+    "workbook_formula",
+    "example_fallback_db"
+  ],
+  "versions": {
+    "example-v1.0.0": {
+      "label": "기존 대화 예시 규칙",
+      "source": "conversation",
+      "attackPipeline": "legacy",
+      "intermediateFloorStages": [],
+      "useLiveEngravingDescriptions": false,
+      "includeFlatWeaponAttack": false,
+      "includeFlatAttackPower": false,
+      "includePetMainStat": true,
+      "includePetAdditionalDamage": true,
+      "levelMainStat": "477",
+      "expeditionMainStat": "680",
+      "collectionMainStat": "976",
+      "feastAttackSpeedPercent": "0.05",
+      "feastMoveSpeedPercent": "0.05",
+      "combatBlessingAttackSpeedPercent": "0.09",
+      "combatBlessingMoveSpeedPercent": "0.09",
+      "raidCaptainFallbackCoefficient": "0.40",
+      "criticalStatFallbackCoefficient": "0.0003578586",
+      "swiftnessSpeedFallbackCoefficient": "0.000171759",
+      "sonic": {
+        "1": {
+          "baseRate": "0.05",
+          "bothBonus": "0.04",
+          "overRate": "0.15",
+          "maximum": "0.12"
+        },
+        "2": {
+          "baseRate": "0.10",
+          "bothBonus": "0.08",
+          "overRate": "0.30",
+          "maximum": "0.24"
+        }
+      }
+    },
+    "season3-xlsx-v2.0.0": {
+      "label": "시즌3 엑셀 원본 호환 규칙",
+      "source": "시즌3 전용 데미지 계산기.xlsx",
+      "attackPipeline": "workbook",
+      "intermediateFloorStages": [
+        "attackPower",
+        "mainStat",
+        "weaponAttack"
+      ],
+      "useLiveEngravingDescriptions": true,
+      "includeFlatWeaponAttack": true,
+      "includeFlatAttackPower": true,
+      "includePetMainStat": false,
+      "includePetAdditionalDamage": false,
+      "levelMainStat": "477",
+      "expeditionMainStat": "702",
+      "collectionMainStat": "976",
+      "feastAttackSpeedPercent": "0.035",
+      "feastMoveSpeedPercent": "0.035",
+      "combatBlessingAttackSpeedPercent": "0.09",
+      "combatBlessingMoveSpeedPercent": "0.09",
+      "raidCaptainFallbackCoefficient": "0.48",
+      "criticalStatFallbackCoefficient": "0.0003578586",
+      "swiftnessSpeedFallbackCoefficient": "0.000171759",
+      "sonic": {
+        "1": {
+          "baseRate": "0.05",
+          "bothBonus": "0.04",
+          "overRate": "0.10",
+          "maximum": "0.12"
+        },
+        "2": {
+          "baseRate": "0.10",
+          "bothBonus": "0.08",
+          "overRate": "0.20",
+          "maximum": "0.24"
+        }
+      }
+    },
+    "current-v2.1.0": {
+      "label": "엑셀 구조 + 사용자 최신 확정 규칙",
+      "source": "season3-xlsx-v2.0.0 + explicit user overrides",
+      "attackPipeline": "workbook",
+      "intermediateFloorStages": [],
+      "useLiveEngravingDescriptions": true,
+      "includeFlatWeaponAttack": true,
+      "includeFlatAttackPower": true,
+      "includePetMainStat": true,
+      "includePetAdditionalDamage": true,
+      "levelMainStat": "477",
+      "expeditionMainStat": "680",
+      "collectionMainStat": "976",
+      "feastAttackSpeedPercent": "0.05",
+      "feastMoveSpeedPercent": "0.05",
+      "combatBlessingAttackSpeedPercent": "0.09",
+      "combatBlessingMoveSpeedPercent": "0.09",
+      "raidCaptainFallbackCoefficient": "0.48",
+      "criticalStatFallbackCoefficient": "0.0003578586",
+      "swiftnessSpeedFallbackCoefficient": "0.000171759",
+      "sonic": {
+        "1": {
+          "baseRate": "0.05",
+          "bothBonus": "0.04",
+          "overRate": "0.15",
+          "maximum": "0.12"
+        },
+        "2": {
+          "baseRate": "0.10",
+          "bothBonus": "0.08",
+          "overRate": "0.30",
+          "maximum": "0.24"
+        }
+      }
+    }
+  },
+  "workbookFormulaEvidence": {
+    "sourceWorkbook": "시즌3 전용 데미지 계산기.xlsx",
+    "sheet": "데미지 계산기",
+    "usedRange": "A1:BI106",
+    "mainStat": {
+      "cell": "M4",
+      "formula": "=ROUNDDOWN(SUM(M8:M15)*(1+P8),0)"
+    },
+    "weaponAttack": {
+      "cell": "M5",
+      "formula": "=ROUNDDOWN(SUM(M18:M22)*(1+P18),0)"
+    },
+    "attackPower": {
+      "cell": "P4",
+      "formula": "=ROUNDDOWN(((M4*M5/6)^0.5*(1+SUM(P25:P26))+SUM(M25:M27))*(1+SUM(P29:P34)),0)"
+    },
+    "engravingDamage": {
+      "cell": "T4",
+      "formula": "=(1+T8+V8)*(1+T9+V9)*(1+T11+V11)*(1+T14+V14)*(1+T15+V15)*(1+T16+V16)*(1+T17+V17)*(1+T21+V21)*(1+T22+V22)"
+    },
+    "skillExpectedDamage": {
+      "cell": "BB4",
+      "formula": "=SUM(BB8:BB27)"
+    },
+    "additionalDamage": {
+      "cell": "BF4",
+      "formula": "=SUM(BF8:BF12)+1"
+    },
+    "otherDamage": {
+      "cell": "BF5",
+      "formula": "=(1+BF15)*(1+BF16)*(1+BF17)*(1+BF18)*(1+BF19)*(1+BF20)*(1+BF21)*(1+BF22)*(1+BF23)"
+    },
+    "finalDamage": {
+      "cell": "BI4",
+      "formula": "=BI8*BI9*BI10*BI11*BI12"
+    },
+    "sonicBreakthroughLv1": {
+      "cell": "AJ62",
+      "overCapRate": "0.10"
+    },
+    "sonicBreakthroughLv2": {
+      "cell": "AK62",
+      "overCapRate": "0.20"
+    }
+  }
+}
