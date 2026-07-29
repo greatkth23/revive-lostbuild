@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""우레바람 Lost Ark Open API parsing and damage calculation.
+"""기상술사 Lost Ark Open API parsing and damage calculation.
 
 The bearer token is read only from LOSTARK_API_TOKEN and is never persisted.
 All arithmetic uses Decimal. Rounding and effect formulas are selected through
@@ -29,10 +29,20 @@ getcontext().prec = 40
 API_BASE = "https://developer-lostark.game.onstove.com"
 CHARACTER_NAME = "봄날꽃씨"
 CANONICAL_SKILL = "우레바람"
-SKILL_ALIASES = {"우뢰바람": CANONICAL_SKILL, CANONICAL_SKILL: CANONICAL_SKILL}
-CALCULATOR_VERSION = "2.1.0"
-PARSED_SCHEMA_VERSION = "2.0.0"
-DEFAULT_RULE_VERSION = "current-v2.1.0"
+SPACE_CUTTING_SKILL = "공간 가르기"
+SKILL_ALIASES = {
+    "우뢰바람": CANONICAL_SKILL,
+    CANONICAL_SKILL: CANONICAL_SKILL,
+    "공간가르기": SPACE_CUTTING_SKILL,
+    SPACE_CUTTING_SKILL: SPACE_CUTTING_SKILL,
+}
+CALCULATOR_VERSION = "2.4.1"
+PARSER_VERSION = "lostark-api-v2.4.1"
+PARSED_SCHEMA_VERSION = "3.2.1"
+DEFAULT_RULE_VERSION = "current-v2.4.1"
+DB_RELEASE = "weather-artist-v0.3.1"
+SCENARIO_PRESET_ID = "max-favorable-example-boss-v1"
+CALCULATION_MODE = "ESTIMATE_WITH_FALLBACK"
 
 ENDPOINTS = {
     "profiles": "profiles",
@@ -182,6 +192,85 @@ RULESETS = {
     },
 }
 
+SKILL_MODELS = {
+    CANONICAL_SKILL: {
+        "displayName": CANONICAL_SKILL,
+        "variant": "최대 홀딩",
+        "hits": [
+            {
+                "name": "최대 홀딩",
+                "coefficient": Decimal("351.262"),
+                "constant": Decimal("52583"),
+            }
+        ],
+        "tags": {
+            "NON_DIRECTIONAL",
+            "UMBRELLA_SKILL",
+            "HYPER_AWAKENING_SKILL",
+        },
+        "tagVerification": "PROVISIONAL",
+        "source": "LEGACY_EXAMPLE",
+    },
+    SPACE_CUTTING_SKILL: {
+        "displayName": SPACE_CUTTING_SKILL,
+        "variant": "1타+2타",
+        "hits": [
+            {
+                "name": "1타",
+                "coefficient": Decimal("40.07"),
+                "constant": Decimal("6117"),
+            },
+            {
+                "name": "2타",
+                "coefficient": Decimal("93.50"),
+                "constant": Decimal("14283"),
+            },
+        ],
+        # The API exposes no direction-type field for this X-key Ark Passive
+        # skill. NON_DIRECTIONAL is an explicit estimate used only to decide
+        # Hit Master scope and is surfaced in every report.
+        "tags": {"NON_DIRECTIONAL", "ENLIGHTENMENT_X_SKILL"},
+        "tagVerification": "PROVISIONAL",
+        "source": "USER_VERIFIED",
+    },
+}
+
+# v2.2.0 keeps the explicitly confirmed v2.1.0 arithmetic rules. The version
+# bump identifies parser, provenance, ArkGrid point-effect, regular-gem, and
+# profile-attack selection behavior added after the v2.1.0 audit.
+RULESETS["current-v2.2.0"] = {
+    **RULESETS["current-v2.1.0"],
+    "label": "v2.1 확정 산식 + 데이터 출처 감사 수정",
+    "source": (
+        "current-v2.1.0 + calculator_v2.1.0_data_source_audit "
+        "+ explicit user corrections"
+    ),
+}
+RULESETS["current-v2.3.0"] = {
+    **RULESETS["current-v2.2.0"],
+    "label": "v2.2 감사 산식 + 다중 스킬·다중 타격",
+    "source": (
+        "current-v2.2.0 + user-provided space-cutting hit coefficients "
+        "+ explicit scope assumptions"
+    ),
+}
+RULESETS["current-v2.4.0"] = {
+    **RULESETS["current-v2.3.0"],
+    "label": "v2.3 다중 타격 산식 + ArkGrid 코어 임계 효과",
+    "source": (
+        "current-v2.3.0 + live ArkGrid.Slots core tooltip thresholds "
+        "+ user-provided weather-artist core reference"
+    ),
+}
+RULESETS["current-v2.4.1"] = {
+    **RULESETS["current-v2.4.0"],
+    "label": "v2.4 코어 임계 효과 + ArkGrid 연산자·등급 분기",
+    "source": (
+        "current-v2.4.0 + user-confirmed additive/multiplicative core rules "
+        "+ relic/ancient slash resolution"
+    ),
+}
+
 WORKBOOK_FORMULA_EVIDENCE = {
     "sourceWorkbook": "시즌3 전용 데미지 계산기.xlsx",
     "sheet": "데미지 계산기",
@@ -285,6 +374,33 @@ SUPPORTED_GENERAL_DAMAGE_ENGRAVING_SET = set(
 )
 
 SUPPORT_ARKGRID_TERMS = ("낙인력", "아군 공격력 강화", "아군 피해량 강화", "아공강", "아피강")
+ARKGRID_SKILL_NAMES = (
+    "회오리 걸음",
+    "몰아치기",
+    "바람송곳",
+    "칼바람",
+    "여우비 기본 공격",
+    "여우비",
+    "소나기",
+    "싹쓸바람",
+    "뙤약볕",
+    "센바람",
+)
+ARKGRID_CORE_TOTAL_KEYS = (
+    "attackPowerFlat",
+    "attackPowerPercent",
+    "weaponAttackFlat",
+    "weaponAttackPercent",
+    "additionalDamagePercent",
+    "bossDamagePercent",
+    "generalDamagePercent",
+    "criticalRate",
+    "criticalDamage",
+    "criticalHitDamagePercent",
+    "attackSpeed",
+    "moveSpeed",
+    "enemyDefenseReductionPercent",
+)
 TRANSCENDENCE_TERMS = ("초월",)
 PERCENT = r"([0-9]+(?:\.[0-9]+)?)\s*%"
 NUMBER = r"([0-9][0-9,]*(?:\.[0-9]+)?)"
@@ -353,6 +469,7 @@ def write_json(path: Path, value: Any) -> None:
     path.write_text(
         json.dumps(json_ready(value), ensure_ascii=False, indent=2),
         encoding="utf-8",
+        newline="\n",
     )
 
 
@@ -432,22 +549,80 @@ def source(
     label: str,
     value: Decimal | str | int | bool,
     raw: str = "",
+    parsed: bool = True,
+    eligible: bool | None = None,
     applied: bool = True,
+    excluded_reason: str = "",
     note: str = "",
 ) -> dict[str, Any]:
+    if eligible is None:
+        eligible = applied
+    if not applied and not excluded_reason:
+        excluded_reason = note
     return {
         "sourceType": source_type,
         "path": path,
         "label": label,
         "value": value,
         "raw": raw,
+        "parsed": parsed,
+        "eligible": eligible,
         "applied": applied,
+        "excludedReason": excluded_reason,
         "note": note,
     }
 
 
 def canonical_skill(name: str) -> str:
     return SKILL_ALIASES.get(name, name)
+
+
+def get_skill_model(skill_name: str) -> dict[str, Any]:
+    canonical = canonical_skill(skill_name)
+    try:
+        return SKILL_MODELS[canonical]
+    except KeyError as exc:
+        supported = ", ".join(SKILL_MODELS)
+        raise CalculationError(
+            f"등록되지 않은 스킬 '{skill_name}'. 지원: {supported}"
+        ) from exc
+
+
+def ark_passive_skill_damage_scope(
+    effect_name: str, skill_name: str
+) -> tuple[bool, str]:
+    canonical = canonical_skill(skill_name)
+    tags = get_skill_model(canonical)["tags"]
+    if effect_name == SPACE_CUTTING_SKILL:
+        return (
+            canonical == SPACE_CUTTING_SKILL,
+            f"{SPACE_CUTTING_SKILL} 전용 아크 패시브",
+        )
+    if effect_name == "단련된 가르기":
+        return canonical == CANONICAL_SKILL, f"{CANONICAL_SKILL} 전용 효과"
+    if effect_name == "바람의 길":
+        return (
+            "UMBRELLA_SKILL" in tags,
+            "우산 스킬 태그 필요",
+        )
+    if effect_name == "풀려난 힘":
+        return (
+            "HYPER_AWAKENING_SKILL" in tags,
+            "초각성 스킬 태그 필요",
+        )
+    return True, "일반 스킬 피해 효과"
+
+
+def engraving_scope(
+    engraving_name: str, skill_name: str
+) -> tuple[bool, str]:
+    if engraving_name != "타격의 대가":
+        return True, "등록된 일반 피해 각인"
+    tags = get_skill_model(skill_name)["tags"]
+    eligible = (
+        "NON_DIRECTIONAL" in tags and "AWAKENING_SKILL" not in tags
+    )
+    return eligible, "비방향성·각성기 제외 조건"
 
 
 def fetch_endpoint(token: str, character: str, endpoint: str) -> tuple[dict[str, Any], Any]:
@@ -891,8 +1066,11 @@ def parse_engravings(body: dict[str, Any] | None, warnings: list[str]) -> dict[s
             pct(v)
             for v in find_numbers(
                 description,
+                rf"(?:"
                 rf"(?:보스\s*및\s*레이드\s*몬스터에게|적에게)\s*주는\s*"
-                rf"피해(?:량)?(?:이|가)?\s*(?:\+)?{PERCENT}(?:\s*증가)?",
+                rf"피해(?:량)?"
+                rf"|공격(?:의)?\s*피해"
+                rf")(?:이|가)?\s*(?:\+)?{PERCENT}(?:\s*증가)?",
             )
         )
         raid_coefficient = max_or_zero(
@@ -1012,11 +1190,17 @@ def parse_cards(body: dict[str, Any] | None, warnings: list[str]) -> dict[str, A
     return {"damagePercent": total, "sources": sources}
 
 
-def parse_gems(body: dict[str, Any] | None, warnings: list[str]) -> dict[str, Any]:
+def parse_gems(
+    body: dict[str, Any] | None,
+    warnings: list[str],
+    target_skill: str = CANONICAL_SKILL,
+) -> dict[str, Any]:
     body = body or {}
+    target_skill = canonical_skill(target_skill)
     total_base_attack = Decimal("0")
     sources: list[dict[str, Any]] = []
     gems: list[dict[str, Any]] = []
+    skill_effects: list[dict[str, Any]] = []
     for index, gem in enumerate(body.get("Gems") or []):
         text = tooltip_to_text(gem.get("Tooltip"))
         values = [
@@ -1036,12 +1220,79 @@ def parse_gems(body: dict[str, Any] | None, warnings: list[str]) -> dict[str, An
         ]
         value = max_or_zero(values)
         total_base_attack += value
+
+        damage_matches = re.findall(
+            rf"(?:\[[^\]\n]+\]\s*)?([가-힣A-Za-z0-9·' ]+?)\s+"
+            rf"피해(?:량)?(?:이|가)?\s*(?:\+)?{PERCENT}\s*증가",
+            text,
+            re.I,
+        )
+        cooldown_matches = re.findall(
+            rf"(?:\[[^\]\n]+\]\s*)?([가-힣A-Za-z0-9·' ]+?)\s+"
+            rf"재사용\s*대기시간(?:이|가)?\s*(?:\+)?{PERCENT}\s*감소",
+            text,
+            re.I,
+        )
+        parsed_skill_effects: list[dict[str, Any]] = []
+        for raw_skill, raw_value in damage_matches:
+            skill_name = canonical_skill(raw_skill.strip())
+            if skill_name in {"추가", "기본 공격력"}:
+                continue
+            skill_value = pct(raw_value)
+            item = {
+                "skillName": skill_name,
+                "effectType": "damage",
+                "value": skill_value,
+                "sourceGemIndex": index,
+            }
+            parsed_skill_effects.append(item)
+            skill_effects.append(item)
+            sources.append(
+                source(
+                    source_type="OFFICIAL_TOOLTIP",
+                    path=f"gems.Gems[{index}].Tooltip",
+                    label=f"일반 보석 {skill_name} 피해",
+                    value=skill_value,
+                    raw=text,
+                    eligible=skill_name == target_skill,
+                    applied=skill_name == target_skill,
+                    excluded_reason=(
+                        ""
+                        if skill_name == target_skill
+                        else f"현재 계산 스킬은 {target_skill}"
+                    ),
+                )
+            )
+        for raw_skill, raw_value in cooldown_matches:
+            skill_name = canonical_skill(raw_skill.strip())
+            cooldown_value = pct(raw_value)
+            item = {
+                "skillName": skill_name,
+                "effectType": "cooldownReduction",
+                "value": cooldown_value,
+                "sourceGemIndex": index,
+            }
+            parsed_skill_effects.append(item)
+            skill_effects.append(item)
+            sources.append(
+                source(
+                    source_type="OFFICIAL_TOOLTIP",
+                    path=f"gems.Gems[{index}].Tooltip",
+                    label=f"일반 보석 {skill_name} 재사용 대기시간 감소",
+                    value=cooldown_value,
+                    raw=text,
+                    eligible=False,
+                    applied=False,
+                    excluded_reason="1회 피해에는 영향이 없고 로테이션/DPS에서 사용",
+                )
+            )
         parsed = {
             "slot": gem.get("Slot"),
             "name": gem.get("Name"),
             "level": gem.get("Level"),
             "grade": gem.get("Grade"),
             "baseAttackPercent": value,
+            "skillEffects": parsed_skill_effects,
             "tooltipText": text,
         }
         gems.append(parsed)
@@ -1055,7 +1306,39 @@ def parse_gems(body: dict[str, Any] | None, warnings: list[str]) -> dict[str, An
                     raw=text,
                 )
             )
-    return {"baseAttackPercent": total_base_attack, "gems": gems, "sources": sources}
+    return {
+        "baseAttackPercent": total_base_attack,
+        "skillEffects": skill_effects,
+        "gems": gems,
+        "sources": sources,
+    }
+
+
+def regular_gem_effect_for_skill(
+    parsed_gems: dict[str, Any], skill_name: str
+) -> dict[str, Any]:
+    canonical = canonical_skill(skill_name)
+    damage_values: list[Decimal] = []
+    cooldown_values: list[Decimal] = []
+    matched: list[dict[str, Any]] = []
+    for item in parsed_gems.get("skillEffects") or []:
+        if canonical_skill(str(item.get("skillName") or "")) != canonical:
+            continue
+        matched.append(item)
+        value = dec(item.get("value"))
+        if item.get("effectType") == "damage":
+            damage_values.append(value)
+        elif item.get("effectType") == "cooldownReduction":
+            cooldown_values.append(value)
+    # A character normally has at most one damage and one cooldown gem per
+    # skill. max() prevents malformed duplicate snapshots from double-counting.
+    return {
+        "skillName": canonical,
+        "damagePercent": max_or_zero(damage_values),
+        "cooldownReductionPercent": max_or_zero(cooldown_values),
+        "cooldownMultiplier": Decimal("1") - max_or_zero(cooldown_values),
+        "matchedEffects": matched,
+    }
 
 
 def normalize_effect_name(name: str) -> str:
@@ -1072,10 +1355,16 @@ def match_example_effect(text: str) -> str | None:
     return None
 
 
-def parse_ark_passive(body: dict[str, Any] | None, warnings: list[str]) -> dict[str, Any]:
+def parse_ark_passive(
+    body: dict[str, Any] | None,
+    warnings: list[str],
+    target_skill: str = CANONICAL_SKILL,
+) -> dict[str, Any]:
     body = body or {}
+    target_skill = canonical_skill(target_skill)
     effects: dict[str, dict[str, Any]] = {}
     sources: list[dict[str, Any]] = []
+    fallbacks: list[dict[str, Any]] = []
     evolution_by_name: dict[str, Decimal] = {}
     skill_damage_by_name: dict[str, Decimal] = {}
     critical_rate_by_name: dict[str, Decimal] = {}
@@ -1083,6 +1372,21 @@ def parse_ark_passive(body: dict[str, Any] | None, warnings: list[str]) -> dict[
     critical_hit_damage_by_name: dict[str, Decimal] = {}
     additional_damage_by_name: dict[str, Decimal] = {}
     speed_by_name: dict[str, dict[str, Decimal]] = {}
+
+    def record_fallback(
+        *, path: str, label: str, value: Decimal, raw: str, note: str
+    ) -> None:
+        fallbacks.append(
+            source(
+                source_type="LEGACY_EXAMPLE",
+                path=path,
+                label=label,
+                value=value,
+                raw=raw,
+                parsed=False,
+                note=note,
+            )
+        )
 
     for index, effect in enumerate(body.get("Effects") or []):
         raw_name = str(effect.get("Name") or "")
@@ -1124,7 +1428,12 @@ def parse_ark_passive(body: dict[str, Any] | None, warnings: list[str]) -> dict[
             )
         )
         skill_damage = Decimal("0")
-        if matched in {"바람의 길", "풀려난 힘", "단련된 가르기"}:
+        if matched in {
+            "바람의 길",
+            "풀려난 힘",
+            "단련된 가르기",
+            SPACE_CUTTING_SKILL,
+        }:
             skill_damage = max_or_zero(
                 pct(v)
                 for v in find_numbers(
@@ -1185,6 +1494,13 @@ def parse_ark_passive(body: dict[str, Any] | None, warnings: list[str]) -> dict[
         fallback = EXAMPLE_EFFECT_DB.get(matched, {})
         if not evolution and fallback.get("evolutionDamage"):
             evolution_by_name[matched] = fallback["evolutionDamage"]
+            record_fallback(
+                path=f"arkPassive.Effects[{index}]",
+                label=f"{matched} 진화형 피해",
+                value=fallback["evolutionDamage"],
+                raw=description,
+                note="API 툴팁 수치 파싱 실패로 예시 DB 사용",
+            )
             warn_once(
                 warnings,
                 f"{matched} 현재 수치를 툴팁에서 파싱하지 못해 예시값 "
@@ -1192,6 +1508,13 @@ def parse_ark_passive(body: dict[str, Any] | None, warnings: list[str]) -> dict[
             )
         if not skill_damage and fallback.get("skillDamage"):
             skill_damage_by_name[matched] = fallback["skillDamage"]
+            record_fallback(
+                path=f"arkPassive.Effects[{index}]",
+                label=f"{matched} 스킬 피해",
+                value=fallback["skillDamage"],
+                raw=description,
+                note="API 툴팁 수치 파싱 실패로 예시 DB 사용",
+            )
             warn_once(
                 warnings,
                 f"{matched} 현재 수치를 툴팁에서 파싱하지 못해 예시값 "
@@ -1199,8 +1522,22 @@ def parse_ark_passive(body: dict[str, Any] | None, warnings: list[str]) -> dict[
             )
         if not critical_rate and fallback.get("criticalRate") and matched != "기민함":
             critical_rate_by_name[matched] = fallback["criticalRate"]
+            record_fallback(
+                path=f"arkPassive.Effects[{index}]",
+                label=f"{matched} 치명타 적중률",
+                value=fallback["criticalRate"],
+                raw=description,
+                note="API 툴팁 수치 파싱 실패로 예시 DB 사용",
+            )
         if not critical_hit_damage and fallback.get("criticalHitDamage"):
             critical_hit_damage_by_name[matched] = fallback["criticalHitDamage"]
+            record_fallback(
+                path=f"arkPassive.Effects[{index}]",
+                label=f"{matched} 치명타 적중 시 피해",
+                value=fallback["criticalHitDamage"],
+                raw=description,
+                note="API 툴팁 수치 파싱 실패로 예시 DB 사용",
+            )
         if not attack_move_speed and (
             fallback.get("attackSpeed") or fallback.get("moveSpeed")
         ):
@@ -1208,6 +1545,16 @@ def parse_ark_passive(body: dict[str, Any] | None, warnings: list[str]) -> dict[
                 "attackSpeed": fallback.get("attackSpeed", Decimal("0")),
                 "moveSpeed": fallback.get("moveSpeed", Decimal("0")),
             }
+            record_fallback(
+                path=f"arkPassive.Effects[{index}]",
+                label=f"{matched} 공격·이동속도",
+                value=max(
+                    fallback.get("attackSpeed", Decimal("0")),
+                    fallback.get("moveSpeed", Decimal("0")),
+                ),
+                raw=description,
+                note="API 툴팁 수치 파싱 실패로 예시 DB 사용",
+            )
 
         effects[matched] = {
             "name": matched,
@@ -1233,6 +1580,48 @@ def parse_ark_passive(body: dict[str, Any] | None, warnings: list[str]) -> dict[
                 ),
             },
         }
+        parsed_components = effects[matched]["parsed"]
+        scoped_skill_damage = dec(parsed_components.get("skillDamage"))
+        skill_damage_eligible, skill_scope_reason = (
+            ark_passive_skill_damage_scope(matched, target_skill)
+            if scoped_skill_damage
+            else (False, "")
+        )
+        universal_component_keys = {
+            "evolutionDamage",
+            "criticalRate",
+            "criticalDamage",
+            "criticalHitDamage",
+            "additionalDamage",
+            "attackSpeed",
+            "moveSpeed",
+        }
+        eligible = (
+            matched == "음속 돌파"
+            or any(
+                dec(parsed_components.get(key)) != 0
+                for key in universal_component_keys
+            )
+            or (scoped_skill_damage != 0 and skill_damage_eligible)
+        )
+        excluded_reasons = {
+            "환기": "자원 회복은 1회 피해에 직접 영향 없음",
+            "치명": "최종 프로필 치명 및 치명타율에 이미 반영",
+            "신속": "최종 프로필 신속 및 속도 환산값에 이미 반영",
+            "잠재력 해방": "초각성 스킬 쿨타임 효과는 로테이션/DPS 대상",
+            "즉각적인 주문": "시전 속도·마나 효과는 1회 피해에 직접 배율 없음",
+        }
+        excluded_reason = (
+            ""
+            if eligible
+            else (
+                f"{skill_scope_reason}; 현재 계산 스킬은 {target_skill}"
+                if scoped_skill_damage
+                else excluded_reasons.get(
+                    matched, "현재 단일 시전 피해식에 연결된 컴포넌트 없음"
+                )
+            )
+        )
         sources.append(
             source(
                 source_type="API_FIELD",
@@ -1240,6 +1629,9 @@ def parse_ark_passive(body: dict[str, Any] | None, warnings: list[str]) -> dict[
                 label=matched,
                 value=level or 0,
                 raw=description,
+                eligible=eligible,
+                applied=eligible,
+                excluded_reason=excluded_reason,
             )
         )
 
@@ -1266,6 +1658,13 @@ def parse_ark_passive(body: dict[str, Any] | None, warnings: list[str]) -> dict[
                 karma_weapon_attack = max(weapon_values)
             elif text:
                 karma_weapon_attack = Decimal("0.027")
+                record_fallback(
+                    path=f"arkPassive.Points[{index}]",
+                    label="깨달음 카르마 무기 공격력",
+                    value=karma_weapon_attack,
+                    raw=text,
+                    note="랭크·레벨 전체 표가 없어 예시 DB 사용",
+                )
                 warn_once(
                     warnings,
                     "깨달음 카르마 수치를 파싱하지 못해 예시값 +2.7%를 사용했습니다.",
@@ -1275,6 +1674,13 @@ def parse_ark_passive(body: dict[str, Any] | None, warnings: list[str]) -> dict[
                 karma_evolution = max(evolution_values)
             elif text and ("카르마" in text or "랭크" in text):
                 karma_evolution = Decimal("0.06")
+                record_fallback(
+                    path=f"arkPassive.Points[{index}]",
+                    label="진화 카르마 진화형 피해",
+                    value=karma_evolution,
+                    raw=text,
+                    note="랭크·레벨 전체 표가 없어 예시 DB 사용",
+                )
                 warn_once(
                     warnings,
                     "진화 카르마 수치를 파싱하지 못해 예시값 +6.0%를 사용했습니다.",
@@ -1292,6 +1698,7 @@ def parse_ark_passive(body: dict[str, Any] | None, warnings: list[str]) -> dict[
             )
     return {
         "effects": effects,
+        "targetSkill": target_skill,
         "points": points,
         "karmaWeaponAttackPercent": karma_weapon_attack,
         "karmaEvolutionDamage": karma_evolution,
@@ -1303,6 +1710,7 @@ def parse_ark_passive(body: dict[str, Any] | None, warnings: list[str]) -> dict[
         "additionalDamageByName": additional_damage_by_name,
         "speedByName": speed_by_name,
         "sources": sources,
+        "fallbacks": fallbacks,
     }
 
 
@@ -1340,15 +1748,604 @@ def parse_combat_skills(body: list[dict[str, Any]] | None) -> dict[str, Any]:
     }
 
 
-def parse_ark_grid(body: dict[str, Any] | None, warnings: list[str]) -> dict[str, Any]:
+def parse_arkgrid_damage_values(text: str) -> dict[str, Decimal]:
+    attack_values = [
+        pct(v)
+        for v in find_numbers(
+            text,
+            rf"(?<!무기\s)(?<!아군\s)(?:^|\s)공격력(?:이)?\s*"
+            rf"(?:\+|증가\s*)?{PERCENT}",
+            re.M,
+        )
+    ]
+    additional_values = [
+        pct(v)
+        for v in find_numbers(
+            text, rf"추가\s*피해(?:가|량이)?\s*(?:\+|증가\s*)?{PERCENT}"
+        )
+    ]
+    boss_values = [
+        pct(v)
+        for v in find_numbers(
+            text,
+            rf"(?:"
+            rf"보스(?:\s*등급\s*이상\s*몬스터)?에게\s*주는\s*피해"
+            rf"|보스\s*피해"
+            rf")(?:가|량이)?\s*(?:\+|증가\s*)?{PERCENT}",
+        )
+    ]
+    return {
+        "attackPowerPercent": max_or_zero(attack_values),
+        "additionalDamagePercent": max_or_zero(additional_values),
+        "bossDamagePercent": max_or_zero(boss_values),
+    }
+
+
+def extract_arkgrid_core_options(text: str) -> list[dict[str, Any]]:
+    """Return [nP] core options, including continuation lines, in tooltip order."""
+    options: list[dict[str, Any]] = []
+    current: dict[str, Any] | None = None
+    in_options = False
+    for raw_line in text.splitlines():
+        line = raw_line.strip()
+        if line == "코어 옵션":
+            in_options = True
+            continue
+        if line in {"코어 옵션 발동 조건", "분해불가"}:
+            if current:
+                options.append(current)
+                current = None
+            in_options = False
+            continue
+        if not in_options:
+            continue
+        match = re.match(r"\[(\d+)P\]\s*(.*)", line)
+        if match:
+            if current:
+                options.append(current)
+            current = {
+                "requiredPoints": int(match.group(1)),
+                "text": match.group(2).strip(),
+            }
+        elif current and line:
+            current["text"] += "\n" + line
+    if current:
+        options.append(current)
+    return options
+
+
+def arkgrid_component(
+    category: str,
+    value: Decimal,
+    *,
+    scope_kind: str = "ALL",
+    scope_value: str | list[str] = "",
+    condition: str = "",
+    operator: str = "ADD",
+) -> dict[str, Any]:
+    return {
+        "category": category,
+        "value": value,
+        "scopeKind": scope_kind,
+        "scopeValue": scope_value,
+        "condition": condition,
+        "operator": operator,
+    }
+
+
+ARKGRID_MULTIPLICATIVE_CATEGORIES = {
+    "generalDamagePercent",
+    "bossDamagePercent",
+    "skillDamagePercent",
+    "criticalHitDamagePercent",
+    "enemyDefenseReductionPercent",
+}
+
+
+def resolve_arkgrid_grade_values(text: str, core_grade: str) -> str:
+    """Select relic/ancient values from A/B% core reference text."""
+    use_ancient = "고대" in core_grade
+
+    def replace(match: re.Match[str]) -> str:
+        selected = match.group(2) if use_ancient else match.group(1)
+        suffix = "%" if match.group(3) else ""
+        return f"{selected}{suffix}"
+
+    return re.sub(
+        (
+            r"(?<![0-9.])([0-9]+(?:\.[0-9]+)?)\s*/\s*"
+            r"([0-9]+(?:\.[0-9]+)?)(\s*%)?"
+        ),
+        replace,
+        text,
+    )
+
+
+def arkgrid_core_component_scope(
+    component: dict[str, Any], skill_name: str
+) -> tuple[bool, str]:
+    scope_kind = component["scopeKind"]
+    scope_value = component.get("scopeValue")
+    model = get_skill_model(skill_name)
+    if scope_kind == "ALL":
+        return True, "모든 공격"
+    if scope_kind == "SKILL_TAG":
+        eligible = str(scope_value) in model["tags"]
+        return eligible, f"{scope_value} 태그 필요"
+    if scope_kind == "SKILL_NAMES":
+        names = list(scope_value or [])
+        eligible = canonical_skill(skill_name) in names
+        return eligible, "대상 스킬: " + ", ".join(names)
+    if scope_kind == "SINGLE_CAST_EXCLUDED":
+        return False, "1회 피해 계산에 직접 반영하지 않는 재사용 대기시간 효과"
+    return False, f"지원하지 않는 범위: {scope_kind}"
+
+
+def parse_arkgrid_core_option_components(
+    text: str,
+    skill_name: str,
+    core_name: str = "",
+    core_grade: str = "",
+) -> tuple[list[dict[str, Any]], list[str]]:
+    """Classify one core option and retain its additive/multiplicative intent."""
+    text = resolve_arkgrid_grade_values(text, core_grade)
+    components: list[dict[str, Any]] = []
+    notes: list[str] = []
+    condition = ""
+    if "기류 보호막" in text:
+        condition = "기류 보호막 보유(최대 유리 조건)"
+    elif "여우비 상태" in text:
+        condition = "여우비 상태(최대 유리 조건)"
+    elif "'운명" in text or "운명:" in text:
+        condition = "운명 효과 활성(최대 유리 조건)"
+
+    def add_percent(
+        category: str,
+        pattern: str,
+        *,
+        scope_kind: str = "ALL",
+        scope_value: str | list[str] = "",
+        source_text: str | None = None,
+        multiplicative: bool = False,
+    ) -> None:
+        target = text if source_text is None else source_text
+        for match in re.finditer(pattern, target):
+            tail = target[match.end() : match.end() + 24]
+            operator = "ADD"
+            if multiplicative:
+                operator = (
+                    "ADD_TO_PREVIOUS"
+                    if re.match(r"\s*추가로\s*증가", tail)
+                    else "MULTIPLY"
+                )
+            components.append(
+                arkgrid_component(
+                    category,
+                    pct(match.group(1)),
+                    scope_kind=scope_kind,
+                    scope_value=scope_value,
+                    condition=condition,
+                    operator=operator,
+                )
+            )
+
+    # Skill-scoped damage. The API core tooltip has already resolved ancient
+    # versus relic values, so this parser never guesses between A/B values.
+    add_percent(
+        "skillDamagePercent",
+        rf"우산\s*스킬의\s*피해량이\s*{PERCENT}",
+        scope_kind="SKILL_TAG",
+        scope_value="UMBRELLA_SKILL",
+        multiplicative=True,
+    )
+    add_percent(
+        "skillDamagePercent",
+        rf"기상\s*스킬의\s*피해량이\s*{PERCENT}",
+        scope_kind="SKILL_TAG",
+        scope_value="WEATHER_SKILL",
+        multiplicative=True,
+    )
+    for damage_match in re.finditer(
+        rf"([^.\n]+?)의\s*피해량이\s*{PERCENT}", text
+    ):
+        prefix = damage_match.group(1)
+        value = pct(damage_match.group(2))
+        tail = text[damage_match.end() : damage_match.end() + 24]
+        operator = (
+            "ADD_TO_PREVIOUS"
+            if re.match(r"\s*추가로\s*증가", tail)
+            else "MULTIPLY"
+        )
+        if "우산 스킬" in prefix or "기상 스킬" in prefix:
+            continue
+        names = [name for name in ARKGRID_SKILL_NAMES if name in prefix]
+        # "여우비 기본 공격" is more specific than "여우비".
+        if "여우비 기본 공격" in names and "여우비" in names:
+            names.remove("여우비")
+        if names:
+            components.append(
+                arkgrid_component(
+                    "skillDamagePercent",
+                    value,
+                    scope_kind="SKILL_NAMES",
+                    scope_value=names,
+                    condition=condition,
+                    operator=operator,
+                )
+            )
+
+    replacement_targets = {
+        "바람의 칼날": ["칼바람"],
+        "해와 바람": ["싹쓸바람"],
+    }
+    replacement_match = re.search(
+        rf"피해\s*증가량을\s*{PERCENT}\s*(?:로)?\s*변경", text
+    )
+    if replacement_match:
+        names = next(
+            (
+                targets
+                for core_key, targets in replacement_targets.items()
+                if core_key in core_name
+            ),
+            [],
+        )
+        if names:
+            components.append(
+                arkgrid_component(
+                    "skillDamagePercent",
+                    pct(replacement_match.group(1)),
+                    scope_kind="SKILL_NAMES",
+                    scope_value=names,
+                    condition=condition,
+                    operator="REPLACE",
+                )
+            )
+        else:
+            notes.append("피해 증가량 변경 대상 스킬을 코어 이름에서 결정하지 못함")
+
+    # Mutually exclusive "damage to enemy" families are removed from a
+    # scratch copy before the general-damage expression is parsed.
+    general_text = text
+    critical_pattern = (
+        rf"치명타(?:로)?(?:\s*적중)?\s*시\s*적에게\s*주는\s*피해"
+        rf"(?:가|량이)?\s*{PERCENT}"
+    )
+    add_percent(
+        "criticalHitDamagePercent",
+        critical_pattern,
+        multiplicative=True,
+    )
+    general_text = re.sub(critical_pattern, "", general_text)
+    boss_pattern = (
+        rf"보스(?:\s*등급)?\s*이상\s*적에게\s*주는\s*피해"
+        rf"(?:가|량이)?\s*{PERCENT}"
+    )
+    add_percent("bossDamagePercent", boss_pattern, multiplicative=True)
+    general_text = re.sub(boss_pattern, "", general_text)
+    add_percent(
+        "generalDamagePercent",
+        rf"적에게\s*주는\s*피해(?:가|량이)?\s*{PERCENT}",
+        source_text=general_text,
+        multiplicative=True,
+    )
+    add_percent(
+        "additionalDamagePercent",
+        rf"추가\s*피해(?:가|량이)?\s*{PERCENT}",
+    )
+    add_percent(
+        "criticalRate",
+        rf"치명타\s*적중률(?:이)?\s*{PERCENT}",
+    )
+    add_percent(
+        "criticalDamage",
+        rf"(?<!입는\s)치명타\s*피해(?:가|량이)?\s*{PERCENT}",
+    )
+    add_percent(
+        "criticalHitDamagePercent",
+        rf"입는\s*치명타\s*피해량을\s*{PERCENT}",
+        multiplicative=True,
+    )
+    add_percent("attackSpeed", rf"공격\s*속도(?:가|는)?\s*{PERCENT}")
+    add_percent("moveSpeed", rf"이동\s*속도(?:가|는)?\s*{PERCENT}")
+    for value in find_numbers(
+        text, rf"공격\s*및\s*이동\s*속도(?:가|는)?\s*{PERCENT}"
+    ):
+        components.append(arkgrid_component("attackSpeed", pct(value)))
+        components.append(arkgrid_component("moveSpeed", pct(value)))
+    add_percent(
+        "enemyDefenseReductionPercent",
+        rf"모든\s*방어력을\s*{PERCENT}\s*감소",
+        multiplicative=True,
+    )
+
+    # Attack and weapon-attack effects can contain a percent and a flat value
+    # in the same threshold option.
+    add_percent(
+        "weaponAttackPercent",
+        rf"무기\s*공격력이\s*{PERCENT}",
+    )
+    weapon_flat_text = re.sub(PERCENT, "", text)
+    for value in find_numbers(
+        weapon_flat_text,
+        rf"무기\s*공격력이\s*{NUMBER}\s*(?:추가로\s*)?증가",
+    ):
+        components.append(arkgrid_component("weaponAttackFlat", value))
+    if "무기 공격력" in text:
+        for value in find_numbers(
+            weapon_flat_text, rf"추가로\s*{NUMBER}\s*증가"
+        ):
+            components.append(arkgrid_component("weaponAttackFlat", value))
+    attack_text = re.sub(r"무기\s*공격력", "", text)
+    add_percent(
+        "attackPowerPercent",
+        rf"(?<!아군\s)공격력이\s*{PERCENT}",
+        source_text=attack_text,
+    )
+    attack_flat_text = re.sub(PERCENT, "", attack_text)
+    for value in find_numbers(
+        attack_flat_text,
+        rf"(?<!아군\s)공격력이\s*{NUMBER}\s*(?:추가로\s*)?증가",
+    ):
+        components.append(arkgrid_component("attackPowerFlat", value))
+    if "무기 공격력" not in text and "공격력" in text:
+        for value in find_numbers(
+            attack_flat_text, rf"추가로\s*{NUMBER}\s*증가"
+        ):
+            components.append(arkgrid_component("attackPowerFlat", value))
+
+    # Cooldown is retained structurally for rotation/DPS consumers, but a
+    # single-cast damage estimate does not apply it.
+    for value in find_numbers(
+        text,
+        rf"재사용\s*대기시간이\s*{PERCENT}\s*(?:추가로\s*)?감소",
+    ):
+        components.append(
+            arkgrid_component(
+                "cooldownReductionPercent",
+                pct(value),
+                scope_kind="SINGLE_CAST_EXCLUDED",
+                condition=condition,
+            )
+        )
+    for value in find_numbers(
+        text,
+        rf"재사용\s*대기시간이\s*([0-9]+(?:\.[0-9]+)?)\s*초\s*감소",
+    ):
+        components.append(
+            arkgrid_component(
+                "cooldownReductionSeconds",
+                value,
+                scope_kind="SINGLE_CAST_EXCLUDED",
+                condition=condition,
+            )
+        )
+    for value in find_numbers(
+        text,
+        rf"재사용\s*대기시간이\s*([0-9]+(?:\.[0-9]+)?)\s*초\s*증가",
+    ):
+        components.append(
+            arkgrid_component(
+                "cooldownReductionSeconds",
+                -value,
+                scope_kind="SINGLE_CAST_EXCLUDED",
+                condition=condition,
+            )
+        )
+
+    for component in components:
+        eligible, reason = arkgrid_core_component_scope(component, skill_name)
+        component["eligible"] = eligible
+        component["applied"] = eligible and component["category"] in (
+            set(ARKGRID_CORE_TOTAL_KEYS) | {"skillDamagePercent"}
+        )
+        component["scopeReason"] = reason
+    if not components:
+        if any(
+            term in text
+            for term in (
+                "피해",
+                "공격",
+                "치명타",
+                "재사용 대기시간",
+                "방어력",
+            )
+        ):
+            notes.append("수치화 가능한 개인 단일 피해 효과 없음 또는 미지원 효과")
+        else:
+            notes.append("개인 단일 피해와 무관한 유틸리티·방어·지원 효과")
+    return components, notes
+
+
+def parse_ark_grid(
+    body: dict[str, Any] | None,
+    warnings: list[str],
+    target_skill: str = CANONICAL_SKILL,
+) -> dict[str, Any]:
     body = body or {}
-    attack = Decimal("0")
-    additional = Decimal("0")
-    boss = Decimal("0")
+    target_skill = canonical_skill(target_skill)
+    gem_totals = {
+        "attackPowerPercent": Decimal("0"),
+        "additionalDamagePercent": Decimal("0"),
+        "bossDamagePercent": Decimal("0"),
+    }
+    point_totals = {
+        "attackPowerPercent": Decimal("0"),
+        "additionalDamagePercent": Decimal("0"),
+        "bossDamagePercent": Decimal("0"),
+    }
+    core_totals = {
+        key: Decimal("0") for key in ARKGRID_CORE_TOTAL_KEYS
+    }
+    core_totals["skillDamagePercent"] = Decimal("0")
     active: list[dict[str, Any]] = []
+    active_point_effects: list[dict[str, Any]] = []
+    cores: list[dict[str, Any]] = []
+    core_damage_factors: list[dict[str, Any]] = []
     excluded: list[dict[str, Any]] = []
     sources: list[dict[str, Any]] = []
     for slot_index, slot in enumerate(body.get("Slots") or []):
+        core_path = f"arkGrid.Slots[{slot_index}]"
+        core_name = str(slot.get("Name") or "이름 없는 아크그리드 코어")
+        core_point = int(slot.get("Point") or 0)
+        core_grade = str(slot.get("Grade") or "")
+        core_text = tooltip_to_text(slot.get("Tooltip"))
+        core_options: list[dict[str, Any]] = []
+        for option_index, option in enumerate(
+            extract_arkgrid_core_options(core_text)
+        ):
+            required = option["requiredPoints"]
+            option_text = option["text"]
+            activated = core_point >= required
+            option_path = f"{core_path}.Tooltip.options[{option_index}]"
+            option_result = {
+                "path": option_path,
+                "requiredPoints": required,
+                "currentPoints": core_point,
+                "activated": activated,
+                "text": option_text,
+                "resolvedText": resolve_arkgrid_grade_values(
+                    option_text, core_grade
+                ),
+                "components": [],
+                "notes": [],
+            }
+            if activated:
+                components, notes = parse_arkgrid_core_option_components(
+                    option_text, target_skill, core_name, core_grade
+                )
+                option_result["components"] = components
+                option_result["notes"] = notes
+                for component in components:
+                    category = component["category"]
+                    value = component["value"]
+                    if component["applied"]:
+                        operator = component.get("operator", "ADD")
+                        matching_factors = [
+                            factor
+                            for factor in core_damage_factors
+                            if factor["corePath"] == core_path
+                            and factor["category"] == category
+                            and factor["scopeKind"] == component["scopeKind"]
+                            and factor.get("scopeValue")
+                            == component.get("scopeValue")
+                        ]
+                        if category in ARKGRID_MULTIPLICATIVE_CATEGORIES:
+                            if operator == "ADD_TO_PREVIOUS" and matching_factors:
+                                factor = matching_factors[-1]
+                                factor["value"] += value
+                                factor["contributions"].append(
+                                    {
+                                        "path": option_path,
+                                        "requiredPoints": required,
+                                        "value": value,
+                                        "operator": operator,
+                                    }
+                                )
+                            elif operator == "REPLACE" and matching_factors:
+                                same_condition = [
+                                    factor
+                                    for factor in matching_factors
+                                    if factor.get("condition") == component["condition"]
+                                ]
+                                factor = (same_condition or matching_factors)[-1]
+                                core_totals[category] -= factor["value"]
+                                factor["value"] = value
+                                factor["contributions"].append(
+                                    {
+                                        "path": option_path,
+                                        "requiredPoints": required,
+                                        "value": value,
+                                        "operator": operator,
+                                    }
+                                )
+                            else:
+                                factor = {
+                                    "factorId": (
+                                        f"{core_path}:{category}:"
+                                        f"{len(core_damage_factors) + 1}"
+                                    ),
+                                    "corePath": core_path,
+                                    "coreName": core_name,
+                                    "coreGrade": core_grade,
+                                    "category": category,
+                                    "value": value,
+                                    "scopeKind": component["scopeKind"],
+                                    "scopeValue": component.get("scopeValue"),
+                                    "condition": component["condition"],
+                                    "contributions": [
+                                        {
+                                            "path": option_path,
+                                            "requiredPoints": required,
+                                            "value": value,
+                                            "operator": operator,
+                                        }
+                                    ],
+                                }
+                                core_damage_factors.append(factor)
+                            component["factorId"] = factor["factorId"]
+                            component["factorValue"] = factor["value"]
+                        core_totals[category] += value
+                    sources.append(
+                        source(
+                            source_type="OFFICIAL_TOOLTIP+DERIVED",
+                            path=option_path,
+                            label=(
+                                f"아크그리드 코어 {core_name} "
+                                f"{required}P {category}"
+                            ),
+                            value=value,
+                            raw=option_text,
+                            eligible=component["eligible"],
+                            applied=component["applied"],
+                            excluded_reason=(
+                                ""
+                                if component["applied"]
+                                else component["scopeReason"]
+                            ),
+                            note=(
+                                f"현재 {core_point}P/{core_grade}; "
+                                f"연산자={component['operator']}; "
+                                f"{component['scopeReason']}"
+                                + (
+                                    f"; {component['condition']}"
+                                    if component["condition"]
+                                    else ""
+                                )
+                            ),
+                        )
+                    )
+                if not components:
+                    excluded.append(
+                        source(
+                            source_type="OFFICIAL_TOOLTIP",
+                            path=option_path,
+                            label=f"아크그리드 코어 {core_name} {required}P",
+                            value=0,
+                            raw=option_text,
+                            parsed=False,
+                            eligible=False,
+                            applied=False,
+                            excluded_reason="; ".join(notes),
+                        )
+                    )
+            core_options.append(option_result)
+        if core_text and not core_options:
+            warn_once(
+                warnings,
+                f"{core_path} '{core_name}' 툴팁에서 [nP] 코어 옵션을 찾지 못했습니다.",
+            )
+        cores.append(
+            {
+                "path": core_path,
+                "slotIndex": slot.get("Index"),
+                "name": core_name,
+                "grade": core_grade,
+                "point": core_point,
+                "tooltipText": core_text,
+                "options": core_options,
+            }
+        )
         for gem_index, gem in enumerate(slot.get("Gems") or []):
             path = f"arkGrid.Slots[{slot_index}].Gems[{gem_index}]"
             text = tooltip_to_text(gem.get("Tooltip"))
@@ -1390,38 +2387,9 @@ def parse_ark_grid(body: dict[str, Any] | None, warnings: list[str]) -> dict[str
             scrubbed = text
             for term in SUPPORT_ARKGRID_TERMS:
                 scrubbed = "\n".join(line for line in scrubbed.splitlines() if term not in line)
-            attack_values = [
-                pct(v)
-                for v in find_numbers(
-                    scrubbed,
-                    rf"(?<!무기\s)(?<!아군\s)(?:^|\s)공격력(?:이)?\s*(?:\+|증가\s*)?{PERCENT}",
-                    re.M,
-                )
-            ]
-            additional_values = [
-                pct(v)
-                for v in find_numbers(
-                    scrubbed, rf"추가\s*피해(?:가|량이)?\s*(?:\+|증가\s*)?{PERCENT}"
-                )
-            ]
-            boss_values = [
-                pct(v)
-                for v in find_numbers(
-                    scrubbed,
-                    rf"(?:보스에게\s*주는\s*피해|보스\s*피해)(?:가|량이)?\s*(?:\+|증가\s*)?{PERCENT}",
-                )
-            ]
-            parsed_attack = max_or_zero(attack_values)
-            parsed_additional = max_or_zero(additional_values)
-            parsed_boss = max_or_zero(boss_values)
-            attack += parsed_attack
-            additional += parsed_additional
-            boss += parsed_boss
-            base["values"] = {
-                "attackPowerPercent": parsed_attack,
-                "additionalDamagePercent": parsed_additional,
-                "bossDamagePercent": parsed_boss,
-            }
+            base["values"] = parse_arkgrid_damage_values(scrubbed)
+            for key, value in base["values"].items():
+                gem_totals[key] += value
             active.append(base)
             for label, value in base["values"].items():
                 if value:
@@ -1436,24 +2404,85 @@ def parse_ark_grid(body: dict[str, Any] | None, warnings: list[str]) -> dict[str
                     )
             if not any(base["values"].values()) and not support_hits:
                 warnings.append(f"{path} 활성 젬의 딜러 추가 효과를 파싱하지 못했습니다.")
-    # Point-based Effects are deliberately preserved only as exclusions.
+
     for index, effect in enumerate(body.get("Effects") or []):
-        excluded.append(
-            source(
-                source_type="API_FIELD",
-                path=f"arkGrid.Effects[{index}]",
-                label=str(effect.get("Name") or "아크그리드 포인트 효과"),
-                value=effect.get("Level") or 0,
-                raw=tooltip_to_text(effect.get("Tooltip")),
-                applied=False,
-                note="이번 범위에서는 포인트 활성 효과 제외",
+        path = f"arkGrid.Effects[{index}]"
+        name = str(effect.get("Name") or "아크그리드 포인트 효과")
+        text = tooltip_to_text(effect.get("Tooltip"))
+        support_hits = [
+            term
+            for term in SUPPORT_ARKGRID_TERMS
+            if term in name or term in text
+        ]
+        if support_hits:
+            excluded.append(
+                source(
+                    source_type="API_TOOLTIP",
+                    path=path,
+                    label=name,
+                    value=0,
+                    raw=text,
+                    eligible=False,
+                    applied=False,
+                    excluded_reason="서포터 파티 강화 옵션은 딜러 개인 피해에서 제외",
+                )
             )
+            continue
+        values = parse_arkgrid_damage_values(text)
+        if not any(values.values()):
+            excluded.append(
+                source(
+                    source_type="API_FIELD",
+                    path=path,
+                    label=name,
+                    value=effect.get("Level") or 0,
+                    raw=text,
+                    parsed=False,
+                    eligible=False,
+                    applied=False,
+                    excluded_reason="지원하지 않는 아크그리드 포인트 효과",
+                )
+            )
+            warn_once(warnings, f"{path} '{name}' 효과의 수치를 분류하지 못했습니다.")
+            continue
+        for key, value in values.items():
+            point_totals[key] += value
+            if value:
+                sources.append(
+                    source(
+                        source_type="OFFICIAL_TOOLTIP",
+                        path=f"{path}.Tooltip",
+                        label=f"아크그리드 포인트 {name} {key}",
+                        value=value,
+                        raw=text,
+                    )
+                )
+        active_point_effects.append(
+            {
+                "path": path,
+                "name": name,
+                "level": effect.get("Level"),
+                "tooltipText": text,
+                "values": values,
+            }
         )
+    combined = {
+        key: gem_totals[key] + point_totals[key] + core_totals[key]
+        for key in gem_totals
+    }
+    for key in ARKGRID_CORE_TOTAL_KEYS:
+        if key not in combined:
+            combined[key] = core_totals[key]
+    combined["skillDamagePercent"] = core_totals["skillDamagePercent"]
     return {
-        "attackPowerPercent": attack,
-        "additionalDamagePercent": additional,
-        "bossDamagePercent": boss,
+        **combined,
+        "gemEffects": gem_totals,
+        "pointEffects": point_totals,
+        "coreEffects": core_totals,
+        "coreDamageFactors": core_damage_factors,
+        "cores": cores,
         "activeGems": active,
+        "activePointEffects": active_point_effects,
         "sources": sources,
         "excluded": excluded,
     }
@@ -1604,8 +2633,11 @@ def calculate(
     parsed: dict[str, Any],
     include_arkgrid: bool = True,
     rule_version: str = DEFAULT_RULE_VERSION,
+    skill_name: str = CANONICAL_SKILL,
 ) -> dict[str, Any]:
     rules = get_rules(rule_version)
+    skill_name = canonical_skill(skill_name)
+    skill_model = get_skill_model(skill_name)
     warnings = parsed["warnings"]
     assumptions: list[dict[str, Any]] = []
     equipment = parsed["equipment"]
@@ -1613,6 +2645,38 @@ def calculate(
     engravings = parsed["engravings"]
     ark = parsed["arkPassive"]
     grid = parsed["arkGrid"]
+
+    assumptions.append(
+        source(
+            source_type=skill_model["source"],
+            path=f"skillModels.{skill_name}.hits",
+            label=f"{skill_name} 타격 계수·상수",
+            value=len(skill_model["hits"]),
+            raw="; ".join(
+                f"{hit['name']}={hit['coefficient']}×공격력+{hit['constant']}"
+                for hit in skill_model["hits"]
+            ),
+            note=(
+                "사용자가 제공한 1타·2타 수치를 사용"
+                if skill_name == SPACE_CUTTING_SKILL
+                else "기존 계산기 스킬 모델"
+            ),
+        )
+    )
+    if skill_model["tagVerification"] != "VERIFIED":
+        assumptions.append(
+            source(
+                source_type="PROVISIONAL",
+                path=f"skillModels.{skill_name}.tags",
+                label=f"{skill_name} 스킬 태그",
+                value=", ".join(sorted(skill_model["tags"])),
+                raw="공식 API에 방향성·각성기·우산 스킬 분류 필드가 없음",
+                note=(
+                    "타격의 대가 및 범위형 아크 패시브의 적용 여부를 판정하기 위한 "
+                    "잠정 분류이며 보고서에 명시"
+                ),
+            )
+        )
 
     for fixed_name, label in (
         ("levelMainStat", "레벨 주스탯"),
@@ -1667,10 +2731,14 @@ def calculate(
         if rules["includeFlatWeaponAttack"]
         else Decimal("0")
     )
+    if include_arkgrid:
+        weapon_attack_flat += grid["weaponAttackFlat"]
     weapon_attack_subtotal = equipment["baseWeaponAttack"] + weapon_attack_flat
     weapon_attack_percent = (
         equipment["weaponAttackPercent"] + ark["karmaWeaponAttackPercent"]
     )
+    if include_arkgrid:
+        weapon_attack_percent += grid["weaponAttackPercent"]
     final_weapon_attack_raw = weapon_attack_subtotal * (
         Decimal("1") + weapon_attack_percent
     )
@@ -1692,6 +2760,8 @@ def calculate(
         if rules["includeFlatAttackPower"]
         else Decimal("0")
     )
+    if include_arkgrid:
+        attack_power_flat += grid["attackPowerFlat"]
     base_attack = root_with_base_attack_percent + attack_power_flat
 
     adrenaline_attack = resolved_engraving_value(
@@ -1711,6 +2781,16 @@ def calculate(
     final_attack = apply_stage_rounding(
         final_attack_raw, "attackPower", rules
     )
+    profile_attack = profile["profileAttackPower"]
+    attack_values_match = profile_attack == final_attack
+    use_profile_attack = profile_attack > 0 and not attack_values_match
+    damage_formula_attack = profile_attack if use_profile_attack else final_attack
+    if use_profile_attack:
+        warn_once(
+            warnings,
+            "재구성 공격력과 API 프로필 공격력이 불일치하여 재구성 과정은 "
+            "검산용으로 표시하고 이후 피해 계산에는 프로필 공격력을 사용했습니다.",
+        )
 
     additional_damage_percent = (
         equipment["weaponAdditionalDamage"]
@@ -1735,6 +2815,12 @@ def calculate(
     gale_move = ark["speedByName"].get("질풍노도", {}).get(
         "moveSpeed", Decimal("0")
     )
+    arkgrid_attack_speed = (
+        grid["attackSpeed"] if include_arkgrid else Decimal("0")
+    )
+    arkgrid_move_speed = (
+        grid["moveSpeed"] if include_arkgrid else Decimal("0")
+    )
     raw_attack_speed = (
         Decimal("1")
         + profile["attackSpeedFromSwiftness"]
@@ -1742,6 +2828,7 @@ def calculate(
         + rules["combatBlessingAttackSpeedPercent"]
         + rules["feastAttackSpeedPercent"]
         + gale_attack
+        + arkgrid_attack_speed
     )
     raw_move_speed = (
         Decimal("1")
@@ -1749,6 +2836,7 @@ def calculate(
         + rules["combatBlessingMoveSpeedPercent"]
         + rules["feastMoveSpeedPercent"]
         + gale_move
+        + arkgrid_move_speed
     )
     capped_attack_speed = min(raw_attack_speed, FIXED["speedCap"])
     capped_move_speed = min(raw_move_speed, FIXED["speedCap"])
@@ -1804,6 +2892,7 @@ def calculate(
 
     general_engraving_damage: list[tuple[str, Decimal]] = []
     for engraving_name in SUPPORTED_GENERAL_DAMAGE_ENGRAVINGS:
+        eligible, scope_reason = engraving_scope(engraving_name, skill_name)
         value = resolved_engraving_value(
             engraving_name,
             "generalDamage",
@@ -1811,8 +2900,35 @@ def calculate(
             assumptions,
             rules,
         )
-        if value:
+        if value and eligible:
             general_engraving_damage.append((engraving_name, value))
+            if (
+                engraving_name == "타격의 대가"
+                and skill_model["tagVerification"] != "VERIFIED"
+            ):
+                assumptions.append(
+                    source(
+                        source_type="PROVISIONAL",
+                        path=f"skillModels.{skill_name}.tags.NON_DIRECTIONAL",
+                        label=f"{skill_name} 타격의 대가 범위 판정",
+                        value=value,
+                        raw=scope_reason,
+                        note="비방향성·각성기 제외 스킬로 잠정 분류하여 적용",
+                    )
+                )
+        elif value:
+            assumptions.append(
+                source(
+                    source_type="DERIVED",
+                    path=f"effects.{engraving_name}",
+                    label=f"{engraving_name} 범위 판정",
+                    value=value,
+                    raw=scope_reason,
+                    eligible=False,
+                    applied=False,
+                    excluded_reason=f"{skill_name}: {scope_reason} 불충족",
+                )
+            )
     if rules["useLiveEngravingDescriptions"]:
         for engraving_name, parsed_effect in engravings["parsedEffects"].items():
             if (
@@ -1823,12 +2939,40 @@ def calculate(
             ):
                 warn_once(
                     warnings,
-                    f"{engraving_name} 피해 수치는 API에서 읽었지만 우레바람 적용 범위가 "
+                    f"{engraving_name} 피해 수치는 API에서 읽었지만 {skill_name} 적용 범위가 "
                     "미등록되어 계산에서 제외했습니다.",
                 )
-    released = ark["skillDamageByName"].get("풀려난 힘", Decimal("0"))
-    wind_path = ark["skillDamageByName"].get("바람의 길", Decimal("0"))
-    disciplined = ark["skillDamageByName"].get("단련된 가르기", Decimal("0"))
+    skill_damage_parts: list[tuple[str, Decimal]] = []
+    skill_damage_scope: list[dict[str, Any]] = []
+    for effect_name, value in ark["skillDamageByName"].items():
+        if not value:
+            continue
+        eligible, scope_reason = ark_passive_skill_damage_scope(
+            effect_name, skill_name
+        )
+        scope_item = {
+            "name": effect_name,
+            "value": value,
+            "eligible": eligible,
+            "applied": eligible,
+            "reason": scope_reason,
+        }
+        skill_damage_scope.append(scope_item)
+        if eligible:
+            skill_damage_parts.append((effect_name, value))
+        else:
+            assumptions.append(
+                source(
+                    source_type="DERIVED",
+                    path=f"arkPassive.skillDamageByName.{effect_name}",
+                    label=f"{effect_name} 스킬 범위 판정",
+                    value=value,
+                    raw=scope_reason,
+                    eligible=False,
+                    applied=False,
+                    excluded_reason=f"{skill_name}에 적용되는 태그가 아님",
+                )
+            )
     raid_captain = Decimal("0")
     if effect_present("돌격대장", parsed):
         raid_coefficient = dec(
@@ -1854,16 +2998,35 @@ def calculate(
             )
         )
     master_critical = ark["criticalHitDamageByName"].get("회심", Decimal("0"))
+    master_from_ark_passive = bool(master_critical)
     if not master_critical and equipment["hasMasterElixir"]:
         master_critical = EXAMPLE_EFFECT_DB["회심"]["criticalHitDamage"]
     if master_critical:
+        master_effect = ark["effects"].get("회심", {})
         assumptions.append(
             source(
-                source_type="API_TOOLTIP+EXAMPLE_DB",
-                path="equipment[*].Tooltip",
+                source_type=(
+                    "OFFICIAL_TOOLTIP"
+                    if master_from_ark_passive
+                    else "API_FIELD+EXAMPLE_DB"
+                ),
+                path=(
+                    "arkPassive.Effects[회심]"
+                    if master_from_ark_passive
+                    else "equipment[*].Tooltip"
+                ),
                 label="회심 치명타 시 피해",
                 value=master_critical,
-                raw="회심 문자열 확인",
+                raw=(
+                    str(master_effect.get("description") or "")
+                    if master_from_ark_passive
+                    else "회심 문자열 확인"
+                ),
+                note=(
+                    "현재 API 아크 패시브 설명에서 파싱"
+                    if master_from_ark_passive
+                    else "장비의 회심 문자열만 확인되어 예시 DB 수치 사용"
+                ),
             )
         )
 
@@ -1871,21 +3034,57 @@ def calculate(
         FIXED["petDemonDamagePercent"] + FIXED["collectionDemonDamagePercent"]
     )
     card_damage = parsed["cards"]["damagePercent"]
-    boss_damage = grid["bossDamagePercent"] if include_arkgrid else Decimal("0")
+    boss_damage = (
+        grid["gemEffects"]["bossDamagePercent"]
+        + grid["pointEffects"]["bossDamagePercent"]
+        if include_arkgrid
+        else Decimal("0")
+    )
+    arkgrid_general_damage = (
+        grid["generalDamagePercent"] if include_arkgrid else Decimal("0")
+    )
+    arkgrid_skill_damage = (
+        grid["skillDamagePercent"] if include_arkgrid else Decimal("0")
+    )
+    regular_gem_effect = regular_gem_effect_for_skill(parsed["gems"], skill_name)
+    regular_gem_skill_damage = regular_gem_effect["damagePercent"]
+    active_core_factors = (
+        grid.get("coreDamageFactors", []) if include_arkgrid else []
+    )
+    core_subtitle_factors = [
+        factor
+        for factor in active_core_factors
+        if factor["category"]
+        in {
+            "generalDamagePercent",
+            "bossDamagePercent",
+            "skillDamagePercent",
+        }
+    ]
+    core_subtitle_parts = [
+        (
+            (
+                f"아크그리드 {factor['coreName']} "
+                f"{'+'.join(str(item['requiredPoints']) + 'P' for item in factor['contributions'])}"
+            ),
+            factor["value"],
+        )
+        for factor in core_subtitle_factors
+    ]
     subtitle_percentages = [
         *general_engraving_damage,
         ("진화형 피해", evolution_percent),
         ("악마 추가 피해", demon_damage),
         ("카드 피해", card_damage),
         ("돌격대장", raid_captain),
-        ("풀려난 힘", released),
-        ("바람의 길", wind_path),
+        *skill_damage_parts,
         ("목걸이 적에게 주는 피해", equipment["necklaceDamageToEnemy"]),
         ("팔찌 적에게 주는 피해", equipment["braceletDamageToEnemy"]),
         ("기타 적에게 주는 피해", equipment["otherDamageToEnemy"]),
-        ("단련된 가르기", disciplined),
         ("팔찌 비방향성 피해", equipment["braceletNonDirectionalDamage"]),
         ("아크그리드 보스 피해", boss_damage),
+        *core_subtitle_parts,
+        (f"일반 보석 {skill_name} 피해", regular_gem_skill_damage),
     ]
     subtitle_multipliers = [
         (name, Decimal("1") + value) for name, value in subtitle_percentages
@@ -1894,17 +3093,33 @@ def calculate(
     for _, multiplier in subtitle_multipliers:
         total_damage_multiplier *= multiplier
 
-    skill_base = FIXED["skillCoefficient"] * final_attack + FIXED["skillConstant"]
-    defense_multiplier = FIXED["defenseConstant"] / (
-        FIXED["defenseConstant"] + FIXED["enemyDefense"]
+    hit_bases = [
+        hit["coefficient"] * damage_formula_attack + hit["constant"]
+        for hit in skill_model["hits"]
+    ]
+    skill_base = sum(hit_bases, Decimal("0"))
+    enemy_defense_reduction = (
+        grid["enemyDefenseReductionPercent"]
+        if include_arkgrid
+        else Decimal("0")
     )
-    noncritical_raw = (
-        skill_base
-        * additional_damage_multiplier
+    defense_retention_multiplier = Decimal("1")
+    for factor in active_core_factors:
+        if factor["category"] == "enemyDefenseReductionPercent":
+            defense_retention_multiplier *= Decimal("1") - factor["value"]
+    effective_enemy_defense = (
+        FIXED["enemyDefense"] * defense_retention_multiplier
+    )
+    defense_multiplier = FIXED["defenseConstant"] / (
+        FIXED["defenseConstant"] + effective_enemy_defense
+    )
+    common_damage_multiplier = (
+        additional_damage_multiplier
         * total_damage_multiplier
         * FIXED["enemyDamageTakenMultiplier"]
         * defense_multiplier
     )
+    noncritical_raw = skill_base * common_damage_multiplier
 
     adrenaline_crit = resolved_engraving_value(
         "아드레날린", "criticalRate", parsed, assumptions, rules
@@ -1921,16 +3136,24 @@ def calculate(
         + adrenaline_crit
         + ark_critical_rate
         + exposed
+        + (grid["criticalRate"] if include_arkgrid else Decimal("0"))
     )
     critical_rate = min(Decimal("1"), max(Decimal("0"), critical_rate_raw))
     critical_damage = (
         FIXED["baseCriticalDamage"]
         + equipment["criticalDamage"]
         + sum(ark["criticalDamageByName"].values(), Decimal("0"))
+        + (grid["criticalDamage"] if include_arkgrid else Decimal("0"))
     )
+    core_critical_hit_multiplier = Decimal("1")
+    for factor in active_core_factors:
+        if factor["category"] == "criticalHitDamagePercent":
+            core_critical_hit_multiplier *= Decimal("1") + factor["value"]
     critical_hit_damage_multiplier = (
-        Decimal("1") + master_critical
-    ) * (Decimal("1") + equipment["braceletCriticalHitDamage"])
+        (Decimal("1") + master_critical)
+        * (Decimal("1") + equipment["braceletCriticalHitDamage"])
+        * core_critical_hit_multiplier
+    )
     critical_raw = (
         noncritical_raw * critical_damage * critical_hit_damage_multiplier
     )
@@ -1938,9 +3161,66 @@ def calculate(
         critical_raw * critical_rate
         + noncritical_raw * (Decimal("1") - critical_rate)
     )
+    hit_results: list[dict[str, Any]] = []
+    for hit, hit_base in zip(skill_model["hits"], hit_bases):
+        hit_noncritical = hit_base * common_damage_multiplier
+        hit_critical = (
+            hit_noncritical
+            * critical_damage
+            * critical_hit_damage_multiplier
+        )
+        hit_expected = (
+            hit_critical * critical_rate
+            + hit_noncritical * (Decimal("1") - critical_rate)
+        )
+        hit_results.append(
+            {
+                "name": hit["name"],
+                "coefficient": hit["coefficient"],
+                "constant": hit["constant"],
+                "skillBaseRaw": hit_base,
+                "nonCriticalRaw": hit_noncritical,
+                "criticalRaw": hit_critical,
+                "expectedRaw": hit_expected,
+                "nonCritical": int(
+                    hit_noncritical.to_integral_value(rounding=ROUND_FLOOR)
+                ),
+                "critical": int(
+                    hit_critical.to_integral_value(rounding=ROUND_FLOOR)
+                ),
+                "expected": int(
+                    hit_expected.to_integral_value(rounding=ROUND_FLOOR)
+                ),
+            }
+        )
+    # Define the cast total as the exact sum of independently evaluated hits.
+    # This avoids a last-place Decimal difference from distributing the common
+    # multiplier over a multi-hit skill.
+    noncritical_raw = sum(
+        (hit["nonCriticalRaw"] for hit in hit_results), Decimal("0")
+    )
+    critical_raw = sum(
+        (hit["criticalRaw"] for hit in hit_results), Decimal("0")
+    )
+    expected_raw = sum(
+        (hit["expectedRaw"] for hit in hit_results), Decimal("0")
+    )
 
     return {
         "calculatorVersion": CALCULATOR_VERSION,
+        "parserVersion": PARSER_VERSION,
+        "dbRelease": DB_RELEASE,
+        "scenarioPresetId": SCENARIO_PRESET_ID,
+        "calculationMode": CALCULATION_MODE,
+        "skillName": skill_name,
+        "skillModel": {
+            "variant": skill_model["variant"],
+            "hitCount": len(skill_model["hits"]),
+            "tags": sorted(skill_model["tags"]),
+            "tagVerification": skill_model["tagVerification"],
+            "source": skill_model["source"],
+        },
+        "skillScope": skill_damage_scope,
         "ruleVersion": rule_version,
         "ruleLabel": rules["label"],
         "ruleSource": rules["source"],
@@ -1954,15 +3234,52 @@ def calculate(
             "avatarMainStatPercent": parsed["avatars"]["mainStatPercent"],
             "petMainStatPercent": pet_main_stat_percent,
             "baseWeaponAttack": equipment["baseWeaponAttack"],
-            "equipmentWeaponAttackFlat": weapon_attack_flat,
+            "equipmentWeaponAttackFlat": (
+                equipment["weaponAttackFlat"]
+                if rules["includeFlatWeaponAttack"]
+                else Decimal("0")
+            ),
+            "arkGridCoreWeaponAttackFlat": (
+                grid["weaponAttackFlat"] if include_arkgrid else Decimal("0")
+            ),
             "equipmentWeaponAttackPercent": equipment["weaponAttackPercent"],
             "karmaWeaponAttackPercent": ark["karmaWeaponAttackPercent"],
+            "arkGridCoreWeaponAttackPercent": (
+                grid["weaponAttackPercent"]
+                if include_arkgrid
+                else Decimal("0")
+            ),
             "regularGemBaseAttackPercent": parsed["gems"]["baseAttackPercent"],
             "stoneBaseAttackPercent": engravings["stoneBaseAttackPercent"],
-            "equipmentAttackPowerFlat": attack_power_flat,
+            "equipmentAttackPowerFlat": (
+                equipment["attackPowerFlat"]
+                if rules["includeFlatAttackPower"]
+                else Decimal("0")
+            ),
+            "arkGridCoreAttackPowerFlat": (
+                grid["attackPowerFlat"] if include_arkgrid else Decimal("0")
+            ),
             "equipmentAttackPowerPercent": equipment["attackPowerPercent"],
             "adrenalineAttackPowerPercent": adrenaline_attack,
             "arkGridAttackPowerPercent": arkgrid_attack,
+            "arkGridCoreGeneralDamagePercent": arkgrid_general_damage,
+            "arkGridCoreSkillDamagePercent": arkgrid_skill_damage,
+            "arkGridCoreCriticalRate": (
+                grid["criticalRate"] if include_arkgrid else Decimal("0")
+            ),
+            "arkGridCoreCriticalDamage": (
+                grid["criticalDamage"] if include_arkgrid else Decimal("0")
+            ),
+            "arkGridCoreCriticalHitDamagePercent": (
+                grid["criticalHitDamagePercent"]
+                if include_arkgrid
+                else Decimal("0")
+            ),
+            "arkGridCoreEnemyDefenseReductionPercent": enemy_defense_reduction,
+            "regularGemSkillDamagePercent": regular_gem_skill_damage,
+            "regularGemCooldownReductionPercent": regular_gem_effect[
+                "cooldownReductionPercent"
+            ],
             "weaponAdditionalDamage": equipment["weaponAdditionalDamage"],
             "necklaceAdditionalDamage": equipment["necklaceAdditionalDamage"],
             "otherAdditionalDamage": equipment["otherAdditionalDamage"],
@@ -2006,7 +3323,13 @@ def calculate(
             "stageRounded": final_attack != final_attack_raw,
             "profileValueForComparison": profile["profileAttackPower"],
             "differenceFromProfile": final_attack - profile["profileAttackPower"],
+            "matchesProfile": attack_values_match,
+            "usedForDamage": damage_formula_attack,
+            "usedForDamageSource": (
+                "API_PROFILE" if use_profile_attack else "CALCULATED"
+            ),
         },
+        "regularGemSkillEffect": regular_gem_effect,
         "speed": {
             "attackComponents": {
                 "base": Decimal("1"),
@@ -2017,6 +3340,7 @@ def calculate(
                 ],
                 "feast": rules["feastAttackSpeedPercent"],
                 "gale": gale_attack,
+                "arkGridCore": arkgrid_attack_speed,
             },
             "moveComponents": {
                 "base": Decimal("1"),
@@ -2026,6 +3350,7 @@ def calculate(
                 ],
                 "feast": rules["feastMoveSpeedPercent"],
                 "gale": gale_move,
+                "arkGridCore": arkgrid_move_speed,
             },
             "rawAttackSpeed": raw_attack_speed,
             "cappedAttackSpeed": capped_attack_speed,
@@ -2049,26 +3374,40 @@ def calculate(
             "evolutionParts": [
                 {"name": name, "value": value} for name, value in evolution_parts
             ],
+            "skillDamageParts": [
+                {"name": name, "value": value}
+                for name, value in skill_damage_parts
+            ],
             "subtitles": [
                 {"name": name, "percent": percent, "multiplier": Decimal("1") + percent}
                 for name, percent in subtitle_percentages
             ],
             "totalSubtitleMultiplier": total_damage_multiplier,
+            "arkGridCoreFactors": active_core_factors,
         },
         "critical": {
             "rateRaw": critical_rate_raw,
             "rateCapped": critical_rate,
             "damageMultiplier": critical_damage,
             "criticalHitDamageMultiplier": critical_hit_damage_multiplier,
+            "arkGridCriticalHitDamageMultiplier": (
+                core_critical_hit_multiplier
+            ),
         },
         "enemy": {
             "defense": FIXED["enemyDefense"],
             "defenseConstant": FIXED["defenseConstant"],
             "defenseMultiplier": defense_multiplier,
             "damageTakenMultiplier": FIXED["enemyDamageTakenMultiplier"],
+            "defenseReductionPercent": enemy_defense_reduction,
+            "defenseRetentionMultiplier": defense_retention_multiplier,
+            "effectiveDefense": effective_enemy_defense,
             "species": "악마",
         },
         "damage": {
+            "attackPowerUsed": damage_formula_attack,
+            "hitCount": len(hit_results),
+            "hits": hit_results,
             "skillBaseRaw": skill_base,
             "nonCriticalRaw": noncritical_raw,
             "criticalRaw": critical_raw,
@@ -2078,21 +3417,54 @@ def calculate(
             "expected": int(expected_raw.to_integral_value(rounding=ROUND_FLOOR)),
         },
         "assumptions": assumptions,
+        "provenance": {
+            "fallbacks": [
+                *parsed.get("fallbacks", []),
+                *[
+                    item
+                    for item in assumptions
+                    if "EXAMPLE_DB" in str(item.get("sourceType"))
+                    or item.get("sourceType") == "LEGACY_EXAMPLE"
+                ],
+            ],
+            "appliedEffects": [
+                item
+                for item in [*report_sources(parsed), *assumptions]
+                if item.get("applied") is True
+            ],
+            "excludedEffects": [
+                item
+                for item in [*report_sources(parsed), *parsed.get("excluded", [])]
+                if item.get("applied") is False
+            ],
+        },
     }
 
 
 def parse_all(
-    responses: dict[str, Any], character: str = CHARACTER_NAME
+    responses: dict[str, Any],
+    character: str = CHARACTER_NAME,
+    skill_name: str = CANONICAL_SKILL,
 ) -> dict[str, Any]:
+    skill_name = canonical_skill(skill_name)
+    get_skill_model(skill_name)
     warnings: list[str] = []
     parsed = {
         "schemaVersion": PARSED_SCHEMA_VERSION,
         "calculatorVersion": CALCULATOR_VERSION,
+        "parserVersion": PARSER_VERSION,
+        "dbRelease": DB_RELEASE,
+        "scenarioPresetId": SCENARIO_PRESET_ID,
+        "calculationMode": CALCULATION_MODE,
         "availableRuleVersions": list(RULESETS),
         "defaultRuleVersion": DEFAULT_RULE_VERSION,
         "characterName": character,
-        "canonicalSkillName": CANONICAL_SKILL,
-        "aliases": ["우뢰바람"],
+        "canonicalSkillName": skill_name,
+        "aliases": [
+            alias
+            for alias, canonical in SKILL_ALIASES.items()
+            if canonical == skill_name and alias != skill_name
+        ],
         "warnings": warnings,
     }
     parsed["profile"] = parse_profile(responses.get("profiles"), warnings)
@@ -2100,15 +3472,47 @@ def parse_all(
     parsed["avatars"] = parse_avatars(responses.get("avatars"), warnings)
     parsed["engravings"] = parse_engravings(responses.get("engravings"), warnings)
     parsed["cards"] = parse_cards(responses.get("cards"), warnings)
-    parsed["gems"] = parse_gems(responses.get("gems"), warnings)
-    parsed["arkPassive"] = parse_ark_passive(responses.get("arkPassive"), warnings)
+    parsed["gems"] = parse_gems(responses.get("gems"), warnings, skill_name)
+    parsed["arkPassive"] = parse_ark_passive(
+        responses.get("arkPassive"), warnings, skill_name
+    )
     parsed["combatSkills"] = parse_combat_skills(responses.get("combatSkills"))
-    parsed["arkGrid"] = parse_ark_grid(responses.get("arkGrid"), warnings)
+    parsed["arkGrid"] = parse_ark_grid(
+        responses.get("arkGrid"), warnings, skill_name
+    )
     parsed["excluded"] = (
         parsed["equipment"]["excluded"]
         + parsed["avatars"]["excluded"]
         + parsed["arkGrid"]["excluded"]
     )
+    fallback_sources: list[dict[str, Any]] = []
+    for block_name in (
+        "avatars",
+        "engravings",
+        "combatSkills",
+        "arkPassive",
+    ):
+        block = parsed.get(block_name) or {}
+        candidates = [
+            *(block.get("sources") or block.get("selected") or []),
+            *(block.get("fallbacks") or []),
+        ]
+        for item in candidates:
+            source_type = str(item.get("sourceType") or "")
+            try:
+                has_effect = dec(item.get("value")) != 0
+            except Exception:
+                has_effect = bool(item.get("value"))
+            if (
+                has_effect
+                and item.get("applied") is True
+                and (
+                    "EXAMPLE_DB" in source_type
+                    or source_type == "LEGACY_EXAMPLE"
+                )
+            ):
+                fallback_sources.append(item)
+    parsed["fallbacks"] = fallback_sources
     return parsed
 
 
@@ -2140,7 +3544,9 @@ def report_sources(parsed: dict[str, Any]) -> list[dict[str, Any]]:
         "arkGrid",
     ):
         block = parsed.get(key) or {}
-        result.extend(block.get("sources") or block.get("selected") or [])
+        result.extend(block.get("sources") or [])
+        result.extend(block.get("selected") or [])
+        result.extend(block.get("fallbacks") or [])
     return result
 
 
@@ -2155,14 +3561,19 @@ def render_report(
     p = parsed
     c = with_grid
     lines: list[str] = [
-        f"# {p['profile'].get('characterName') or p['characterName']} 우레바람 API 파싱·피해 계산 보고서",
+        f"# {p['profile'].get('characterName') or p['characterName']} "
+        f"{c['skillName']} API 파싱·피해 계산 보고서",
         "",
         f"- API 스냅샷: `{raw_bundle.get('capturedAtKst')}`",
         f"- 캐릭터: `{p['profile'].get('characterName')}` / `{p['profile'].get('className')}`",
         f"- 아이템 레벨: `{p['profile'].get('itemLevel')}`",
-        f"- 계산 스킬: `{CANONICAL_SKILL}` 최대 홀딩",
+        f"- 계산 스킬: `{c['skillName']}` / `{c['skillModel']['variant']}`",
         f"- 계산기 버전: `{c['calculatorVersion']}`",
+        f"- 파서 버전: `{c['parserVersion']}`",
         f"- 규칙 버전: `{c['ruleVersion']}` — {c['ruleLabel']}",
+        f"- DB 릴리스: `{c['dbRelease']}`",
+        f"- 시나리오 프리셋: `{c['scenarioPresetId']}`",
+        f"- 계산 모드: `{c['calculationMode']}`",
         f"- 규칙 출처: `{c['ruleSource']}`",
         f"- 중간 버림 단계: `{', '.join(c['intermediateFloorStages']) or '없음'}`",
         f"- API 원본: [{raw_path.name}]({raw_path.name})",
@@ -2184,63 +3595,58 @@ def render_report(
         "",
         "전체 응답 본문은 API 원본 JSON에 엔드포인트별 `rawBody`와 파싱된 `responses`로 보존했습니다. Authorization 헤더는 저장하지 않았습니다.",
         "",
-        "### 핵심 원본 데이터 발췌",
-        "",
-        "```json",
-        json.dumps(
-            json_ready(
-                {
-                    "profile": {
-                        "CharacterName": (raw_bundle["responses"].get("profiles") or {}).get(
-                            "CharacterName"
-                        ),
-                        "CharacterLevel": (raw_bundle["responses"].get("profiles") or {}).get(
-                            "CharacterLevel"
-                        ),
-                        "ExpeditionLevel": (
-                            raw_bundle["responses"].get("profiles") or {}
-                        ).get("ExpeditionLevel"),
-                        "CharacterClassName": (
-                            raw_bundle["responses"].get("profiles") or {}
-                        ).get("CharacterClassName"),
-                        "ItemAvgLevel": (
-                            raw_bundle["responses"].get("profiles") or {}
-                        ).get("ItemAvgLevel"),
-                        "Stats": (raw_bundle["responses"].get("profiles") or {}).get(
-                            "Stats"
-                        ),
-                    },
-                    "equipmentCount": len(
-                        raw_bundle["responses"].get("equipment") or []
-                    ),
-                    "gemCount": len(
-                        (raw_bundle["responses"].get("gems") or {}).get("Gems") or []
-                    ),
-                    "arkGrid": raw_bundle["responses"].get("arkGrid"),
-                }
-            ),
-            ensure_ascii=False,
-            indent=2,
-        ),
-        "```",
-        "",
         "## 2. 파싱 결과와 출처",
         "",
-        "| 값 | 정규화 결과 | 출처 | 적용 |",
-        "|---|---:|---|---|",
+        "| 값 | 정규화 결과 | 출처 | 파싱 | 적용 가능 | 실제 적용 | 제외 사유 |",
+        "|---|---:|---|---|---|---|---|",
     ]
     for item in report_sources(parsed):
-        raw_short = re.sub(r"\s+", " ", str(item.get("raw") or ""))[:120]
+        raw_short = (
+            re.sub(r"\s+", " ", str(item.get("raw") or ""))[:120]
+            .replace("|", "\\|")
+        )
         label = str(item.get("label") or "").replace("|", "\\|")
         path = str(item.get("path") or "").replace("|", "\\|")
-        note = str(item.get("note") or "")
+        note = str(item.get("note") or "").replace("|", "\\|")
+        parsed_status = "예" if item.get("parsed", True) else "아니오"
+        eligible = "예" if item.get("eligible", True) else "아니오"
         applied = "예" if item.get("applied", True) else "아니오"
+        excluded_reason = str(item.get("excludedReason") or "").replace("|", "\\|")
         value = item.get("value")
         lines.append(
             f"| {label} | `{fmt(value)}` | `{path}`"
             f"{'<br>' + raw_short if raw_short else ''}"
-            f"{'<br>' + note if note else ''} | {applied} |"
+            f"{'<br>' + note if note else ''} | {parsed_status} | {eligible} | "
+            f"{applied} | {excluded_reason or '-'} |"
         )
+
+    lines += [
+        "",
+        "### 활성 ArkGrid 코어 임계 효과",
+        "",
+        "| 코어 | 포인트 | 임계치 | 카테고리 | 값 | 연산 | 적용 | 범위·조건 |",
+        "|---|---:|---:|---|---:|---|---|---|",
+    ]
+    core_row_count = 0
+    for core in p["arkGrid"]["cores"]:
+        for option in core["options"]:
+            if not option["activated"]:
+                continue
+            for component in option["components"]:
+                core_row_count += 1
+                condition = component["scopeReason"]
+                if component["condition"]:
+                    condition += "; " + component["condition"]
+                safe_condition = condition.replace("|", "\\|")
+                lines.append(
+                    f"| {core['name']} ({core['grade']}) | {core['point']} | "
+                    f"{option['requiredPoints']}P | `{component['category']}` | "
+                    f"{fmt(component['value'])} | `{component['operator']}` | "
+                    f"{'예' if component['applied'] else '아니오'} | "
+                    f"{safe_condition} |"
+                )
+    if not core_row_count:
+        lines.append("| - | - | - | - | - | - | - | 활성 수치 효과 없음 |")
 
     i = c["inputs"]
     ms = c["mainStat"]
@@ -2252,6 +3658,7 @@ def render_report(
     crit = c["critical"]
     enemy = c["enemy"]
     damage = c["damage"]
+    regular_gem = c["regularGemSkillEffect"]
 
     lines += [
         "",
@@ -2281,10 +3688,12 @@ def render_report(
         "### 3.2 무기 공격력",
         "",
         f"`무기 공격력 증가 = {pct_fmt(i['equipmentWeaponAttackPercent'])} + "
-        f"{pct_fmt(i['karmaWeaponAttackPercent'])} = {pct_fmt(wa['percent'])}`",
+        f"{pct_fmt(i['karmaWeaponAttackPercent'])} + 아크그리드 코어 "
+        f"{pct_fmt(i['arkGridCoreWeaponAttackPercent'])} = {pct_fmt(wa['percent'])}`",
         "",
         f"`무기 공격력 소계 = 기본 {fmt(i['baseWeaponAttack'])} + "
-        f"평면 증가 {fmt(i['equipmentWeaponAttackFlat'])} = "
+        f"장비 평면 증가 {fmt(i['equipmentWeaponAttackFlat'])} + "
+        f"아크그리드 코어 평면 증가 {fmt(i['arkGridCoreWeaponAttackFlat'])} = "
         f"{fmt(wa['subtotalBeforePercent'])}`",
         "",
         f"`최종 무기 공격력 원시값 = {fmt(wa['subtotalBeforePercent'])} × "
@@ -2306,7 +3715,9 @@ def render_report(
         f"{fmt(ap['afterBaseAttackPercent'])}`",
         "",
         f"`기본 공격력 단계 = {fmt(ap['afterBaseAttackPercent'])} + "
-        f"공격력 평면 증가 {fmt(ap['flatAttackPower'])} = {fmt(ap['base'])}`",
+        f"장비 공격력 평면 증가 {fmt(i['equipmentAttackPowerFlat'])} + "
+        f"아크그리드 코어 평면 증가 {fmt(i['arkGridCoreAttackPowerFlat'])} = "
+        f"{fmt(ap['base'])}`",
         "",
         f"`공격력 증가 = 장신구 {pct_fmt(i['equipmentAttackPowerPercent'])} + "
         f"아드레날린 {pct_fmt(i['adrenalineAttackPowerPercent'])} + "
@@ -2320,8 +3731,22 @@ def render_report(
         f"`규칙 적용 최종 공격력 = {fmt(ap['final'])}`",
         "",
         f"API 프로필 공격력은 `{fmt(ap['profileValueForComparison'])}`이며 계산값과의 차이는 "
-        f"`{fmt(ap['differenceFromProfile'])}`입니다. 이는 고정 예시값·최대 조건을 적용한 이론값과 "
-        "조회 시점 프로필 값의 비교일 뿐, 어느 한쪽을 강제로 맞추지 않았습니다.",
+        f"`{fmt(ap['differenceFromProfile'])}`입니다.",
+        "",
+        (
+            f"두 값이 불일치하므로 위 재구성 값과 계산 과정은 검산용으로 보존하고, "
+            f"이후 스킬 피해 계산에는 API 프로필 공격력 "
+            f"`{fmt(ap['usedForDamage'])}`을 사용합니다."
+            if ap["usedForDamageSource"] == "API_PROFILE"
+            else f"두 값이 일치하거나 프로필 값이 없어 이후 계산에는 재구성 공격력 "
+            f"`{fmt(ap['usedForDamage'])}`을 사용합니다."
+        ),
+        "",
+        (
+            "아크그리드 공격력은 위 재구성 공격력의 `아크그리드` 항에 분류해 "
+            "반영했습니다. 프로필 공격력으로 전환한 뒤에는 조회 시점 프로필에 이미 "
+            "포함된 공격력 효과를 다시 곱하지 않아 중복 적용을 방지합니다."
+        ),
         "",
         "### 3.4 공격·이동속도 및 음속 돌파",
         "",
@@ -2332,6 +3757,7 @@ def render_report(
         f"+ 전투 축복 {fmt(speed['attackComponents']['combatBlessing'])} "
         f"+ 만찬 {fmt(speed['attackComponents']['feast'])} "
         f"+ 질풍노도 {fmt(speed['attackComponents']['gale'])} "
+        f"+ 아크그리드 코어 {fmt(speed['attackComponents']['arkGridCore'])} "
         f"= {fmt(speed['rawAttackSpeed'])}`",
         "",
         f"- 원시 공격속도 증가량: `{pct_fmt(speed['rawAttackSpeedIncrease'])}`",
@@ -2344,6 +3770,7 @@ def render_report(
         f"+ 전투 축복 {fmt(speed['moveComponents']['combatBlessing'])} "
         f"+ 만찬 {fmt(speed['moveComponents']['feast'])} "
         f"+ 질풍노도 {fmt(speed['moveComponents']['gale'])} "
+        f"+ 아크그리드 코어 {fmt(speed['moveComponents']['arkGridCore'])} "
         f"= {fmt(speed['rawMoveSpeed'])}`",
         "",
         f"- 원시 이동속도 증가량: `{pct_fmt(speed['rawMoveSpeedIncrease'])}`",
@@ -2394,6 +3821,16 @@ def render_report(
         f"아크그리드 {fmt(i['arkGridAdditionalDamage'])} = "
         f"{fmt(dg['additionalDamageMultiplier'])}`",
         "",
+        "### 3.5.1 일반 보석 스킬 효과",
+        "",
+        f"- 대상 스킬: `{regular_gem['skillName']}`",
+        f"- 스킬 피해 증가: `{pct_fmt(regular_gem['damagePercent'])}` "
+        "(아래 독립 피해 소제목에 적용)",
+        f"- 재사용 대기시간 감소: "
+        f"`{pct_fmt(regular_gem['cooldownReductionPercent'])}`",
+        f"- 쿨다운 배율: `{fmt(regular_gem['cooldownMultiplier'])}` "
+        "(1회 피해에는 미적용, 로테이션/DPS 입력으로 보존)",
+        "",
         "### 3.6 서로 곱하는 피해 소제목",
         "",
         "| 소제목 | 증가율 | 배율 |",
@@ -2418,16 +3855,31 @@ def render_report(
         "",
         "### 3.7 적 보정",
         "",
+        f"`유효 방어력 = {fmt(enemy['defense'])} × "
+        f"(1 - {fmt(enemy['defenseReductionPercent'])}) = "
+        f"{fmt(enemy['effectiveDefense'])}`",
+        "",
         f"`방어력 보정 = {fmt(enemy['defenseConstant'])} ÷ "
-        f"({fmt(enemy['defenseConstant'])} + {fmt(enemy['defense'])}) = "
+        f"({fmt(enemy['defenseConstant'])} + {fmt(enemy['effectiveDefense'])}) = "
         f"{fmt(enemy['defenseMultiplier'])}`",
         "",
         f"`적 받는 피해 배율 = {fmt(enemy['damageTakenMultiplier'])}`",
         "",
         "### 3.8 비치명타",
         "",
-        f"`스킬 본체 = 351.262 × {fmt(ap['final'])} + 52,583 = "
-        f"{fmt(damage['skillBaseRaw'])}`",
+        "| 타격 | 모션 계수 | 모션 상수 | 사용 공격력 | 스킬 본체 |",
+        "|---|---:|---:|---:|---:|",
+    ]
+    for hit in damage["hits"]:
+        lines.append(
+            f"| {hit['name']} | {fmt(hit['coefficient'])} | "
+            f"{fmt(hit['constant'])} | {fmt(ap['usedForDamage'])} "
+            f"({ap['usedForDamageSource']}) | {fmt(hit['skillBaseRaw'])} |"
+        )
+    lines += [
+        "",
+        f"`스킬 본체 합계 = {' + '.join(fmt(hit['skillBaseRaw']) for hit in damage['hits'])} "
+        f"= {fmt(damage['skillBaseRaw'])}`",
         "",
         f"`비치명타 원시값 = {fmt(damage['skillBaseRaw'])} × "
         f"{fmt(dg['additionalDamageMultiplier'])} × "
@@ -2454,24 +3906,52 @@ def render_report(
         "",
         "## 4. 계산 결과",
         "",
+        "| 타격 | 비치명타 | 치명타 | 기대 피해 |",
+        "|---|---:|---:|---:|",
+    ]
+    for hit in damage["hits"]:
+        lines.append(
+            f"| {hit['name']} | {fmt(hit['nonCritical'])} | "
+            f"{fmt(hit['critical'])} | {fmt(hit['expected'])} |"
+        )
+    lines += [
+        "",
         f"- 비치명타 피해: **{fmt(damage['nonCritical'])}**",
         f"- 치명타 피해: **{fmt(damage['critical'])}**",
         f"- 기대 피해: **{fmt(damage['expected'])}**",
         f"- 치명타율: **{pct_fmt(crit['rateCapped'])}**",
-        "",
-        "### 아크그리드 젬 적용 전후",
-        "",
-        "| 결과 | 미적용 | 적용 | 차이 |",
-        "|---|---:|---:|---:|",
     ]
-    for key, label in (
-        ("nonCritical", "비치명타"),
-        ("critical", "치명타"),
-        ("expected", "기대 피해"),
-    ):
-        before = without_grid["damage"][key]
-        after = with_grid["damage"][key]
-        lines.append(f"| {label} | {before:,} | {after:,} | {after-before:+,} |")
+
+    lines += [
+        "",
+        "### 스킬 범위 판정",
+        "",
+        f"- 스킬 태그: `{', '.join(c['skillModel']['tags'])}` "
+        f"({c['skillModel']['tagVerification']})",
+    ]
+    if c["skillScope"]:
+        for item in c["skillScope"]:
+            status = "적용" if item["applied"] else "제외"
+            lines.append(
+                f"- {item['name']} {pct_fmt(item['value'])}: **{status}** "
+                f"({item['reason']})"
+            )
+    else:
+        lines.append("- 판정할 스킬 전용 아크 패시브 효과 없음")
+    if c["skillName"] == SPACE_CUTTING_SKILL:
+        lines += [
+            "- `공간 가르기` 피해 +200%는 1타와 2타에 동일하게 적용했습니다.",
+            "- `바람의 길`, `풀려난 힘`, `단련된 가르기`는 현재 스킬 태그와 "
+            "전용 범위가 맞지 않아 제외했습니다.",
+        ]
+        if any(
+            item["name"] == "타격의 대가"
+            for item in dg["engravingParts"]
+        ):
+            lines.append(
+                "- 공식 API에 방향성 분류가 없어 `타격의 대가` 적용은 "
+                "비방향성 스킬이라는 잠정 가정입니다."
+            )
 
     lines += [
         "",
@@ -2499,9 +3979,15 @@ def render_report(
         "",
         "- 과거 스펙의 최종 피해와 회귀 비교하지 않았습니다.",
         "- 원본 API 경로와 각 파싱값을 출처 표로 연결했습니다.",
-        "- 초월, 비활성 아크그리드 젬, 서포터 젬 옵션, 포인트 효과는 제외 목록에서 확인할 수 있습니다.",
-        "- 아크그리드 적용 전후 계산을 별도로 수행했습니다.",
-        "- `우뢰바람`은 입력 별칭으로만 허용하고 결과에는 `우레바람`을 사용했습니다.",
+        "- 초월, 비활성 아크그리드 젬, 서포터 옵션, 미지원 효과는 제외 목록에서 확인할 수 있습니다.",
+        "- 아크그리드 활성 젬·포인트 효과와 코어별 활성 임계 효과를 구조화해 검증했습니다.",
+        "- 출처마다 parsed / eligible / applied / excludedReason 상태를 분리했습니다.",
+        "- fallback 사용 내역은 파싱 JSON의 `fallbacks`와 계산별 `provenance.fallbacks`에 구조화했습니다.",
+        (
+            "- `우뢰바람`은 입력 별칭으로만 허용하고 결과에는 `우레바람`을 사용했습니다."
+            if c["skillName"] == CANONICAL_SKILL
+            else "- `공간가르기` 입력은 결과에서 `공간 가르기`로 정규화했습니다."
+        ),
         (
             "- 최종 비치명타·치명타·기대 피해 외에는 버림을 적용하지 않았습니다."
             if not c["intermediateFloorStages"]
@@ -2543,22 +4029,117 @@ def validate(parsed: dict[str, Any], without_grid: dict[str, Any], with_grid: di
             failures.append(f"{stage} 중간 버림 정책 검증 실패")
     if with_grid["inputs"]["arkGridAttackPowerPercent"] != parsed["arkGrid"]["attackPowerPercent"]:
         failures.append("아크그리드 공격력 연결 실패")
+    if parsed["arkGrid"]["attackPowerPercent"] != (
+        parsed["arkGrid"]["gemEffects"]["attackPowerPercent"]
+        + parsed["arkGrid"]["pointEffects"]["attackPowerPercent"]
+        + parsed["arkGrid"]["coreEffects"]["attackPowerPercent"]
+    ):
+        failures.append("아크그리드 젬/포인트/코어 공격력 합산 실패")
+    if parsed["arkGrid"]["additionalDamagePercent"] != (
+        parsed["arkGrid"]["gemEffects"]["additionalDamagePercent"]
+        + parsed["arkGrid"]["pointEffects"]["additionalDamagePercent"]
+        + parsed["arkGrid"]["coreEffects"]["additionalDamagePercent"]
+    ):
+        failures.append("아크그리드 젬/포인트/코어 추가 피해 합산 실패")
+    if parsed["arkGrid"]["bossDamagePercent"] != (
+        parsed["arkGrid"]["gemEffects"]["bossDamagePercent"]
+        + parsed["arkGrid"]["pointEffects"]["bossDamagePercent"]
+        + parsed["arkGrid"]["coreEffects"]["bossDamagePercent"]
+    ):
+        failures.append("아크그리드 젬/포인트/코어 보스 피해 합산 실패")
+    for key in ARKGRID_CORE_TOTAL_KEYS:
+        if key in {
+            "attackPowerPercent",
+            "additionalDamagePercent",
+            "bossDamagePercent",
+        }:
+            continue
+        if parsed["arkGrid"][key] != parsed["arkGrid"]["coreEffects"][key]:
+            failures.append(f"아크그리드 코어 {key} 합산 실패")
     if without_grid["inputs"]["arkGridAttackPowerPercent"] != 0:
-        failures.append("아크그리드 미적용 계산에 공격력 젬이 남아 있음")
+        failures.append("아크그리드 미적용 계산에 공격력 효과가 남아 있음")
     if without_grid["inputs"]["arkGridAdditionalDamage"] != 0:
-        failures.append("아크그리드 미적용 계산에 추가 피해 젬이 남아 있음")
+        failures.append("아크그리드 미적용 계산에 추가 피해 효과가 남아 있음")
+    for key in (
+        "arkGridCoreWeaponAttackFlat",
+        "arkGridCoreWeaponAttackPercent",
+        "arkGridCoreAttackPowerFlat",
+        "arkGridCoreGeneralDamagePercent",
+        "arkGridCoreSkillDamagePercent",
+        "arkGridCoreCriticalRate",
+        "arkGridCoreCriticalDamage",
+        "arkGridCoreCriticalHitDamagePercent",
+        "arkGridCoreEnemyDefenseReductionPercent",
+    ):
+        if without_grid["inputs"][key] != 0:
+            failures.append(f"아크그리드 미적용 계산에 {key} 효과가 남아 있음")
+    profile_attack = parsed["profile"]["profileAttackPower"]
+    calculated_attack = with_grid["attackPower"]["final"]
+    expected_damage_attack = (
+        profile_attack
+        if profile_attack > 0 and profile_attack != calculated_attack
+        else calculated_attack
+    )
+    if with_grid["damage"]["attackPowerUsed"] != expected_damage_attack:
+        failures.append("프로필/재구성 공격력 선택 규칙 검증 실패")
+    skill_model = get_skill_model(with_grid["skillName"])
+    expected_skill_base = sum(
+        (
+            hit["coefficient"] * expected_damage_attack + hit["constant"]
+            for hit in skill_model["hits"]
+        ),
+        Decimal("0"),
+    )
+    if with_grid["damage"]["skillBaseRaw"] != expected_skill_base:
+        failures.append("선택 공격력의 스킬 본체 연결 실패")
+    if with_grid["damage"]["hitCount"] != len(skill_model["hits"]):
+        failures.append("스킬 타격 수 연결 실패")
+    for hit_result, hit_model in zip(
+        with_grid["damage"]["hits"], skill_model["hits"]
+    ):
+        expected_hit_base = (
+            hit_model["coefficient"] * expected_damage_attack
+            + hit_model["constant"]
+        )
+        if hit_result["skillBaseRaw"] != expected_hit_base:
+            failures.append(f"{hit_result['name']} 스킬 본체 연결 실패")
+        for raw_key, final_key, label in (
+            ("nonCriticalRaw", "nonCritical", "비치명타"),
+            ("criticalRaw", "critical", "치명타"),
+            ("expectedRaw", "expected", "기대 피해"),
+        ):
+            expected_floor = int(
+                hit_result[raw_key].to_integral_value(rounding=ROUND_FLOOR)
+            )
+            if hit_result[final_key] != expected_floor:
+                failures.append(
+                    f"{hit_result['name']} {label} 최종 버림 검증 실패"
+                )
+    for key in ("nonCriticalRaw", "criticalRaw", "expectedRaw"):
+        hit_sum = sum(
+            (hit[key] for hit in with_grid["damage"]["hits"]),
+            Decimal("0"),
+        )
+        if hit_sum != with_grid["damage"][key]:
+            failures.append(f"타격별 {key} 합계 검증 실패")
     for item in parsed["arkGrid"]["excluded"]:
         if item.get("applied") is not False:
             failures.append(f"제외 아크그리드 데이터가 적용됨: {item.get('path')}")
+        if item.get("eligible") is not False:
+            failures.append(f"제외 아크그리드 데이터가 적용 가능으로 표시됨: {item.get('path')}")
     return failures
 
 
 def make_paths(
-    output_dir: Path, character: str, rule_version: str
+    output_dir: Path,
+    character: str,
+    rule_version: str,
+    skill_name: str = CANONICAL_SKILL,
 ) -> tuple[Path, Path, Path]:
     safe_character = re.sub(r'[<>:"/\\|?*]', "_", character)
+    safe_skill = re.sub(r'[<>:"/\\|?*]', "_", canonical_skill(skill_name))
     safe_version = re.sub(r'[^A-Za-z0-9._-]', "_", rule_version)
-    stem = f"{safe_character}_우레바람_{safe_version}"
+    stem = f"{safe_character}_{safe_skill}_{safe_version}"
     return (
         output_dir / f"{stem}_api_raw.json",
         output_dir / f"{stem}_parsed.json",
@@ -2569,8 +4150,12 @@ def make_paths(
 def build_rule_manifest() -> dict[str, Any]:
     return {
         "calculatorVersion": CALCULATOR_VERSION,
+        "parserVersion": PARSER_VERSION,
         "parsedSchemaVersion": PARSED_SCHEMA_VERSION,
         "defaultRuleVersion": DEFAULT_RULE_VERSION,
+        "dbRelease": DB_RELEASE,
+        "scenarioPresetId": SCENARIO_PRESET_ID,
+        "calculationMode": CALCULATION_MODE,
         "precedence": [
             "explicit_user_rule",
             "live_api_description",
@@ -2585,6 +4170,12 @@ def build_rule_manifest() -> dict[str, Any]:
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--character", default=CHARACTER_NAME)
+    parser.add_argument(
+        "--skill",
+        choices=tuple(SKILL_MODELS),
+        default=CANONICAL_SKILL,
+        help="계산할 스킬",
+    )
     parser.add_argument("--output-dir", type=Path, default=Path("outputs"))
     parser.add_argument(
         "--rules-version",
@@ -2599,7 +4190,7 @@ def main() -> int:
     )
     args = parser.parse_args()
     raw_path, parsed_path, report_path = make_paths(
-        args.output_dir, args.character, args.rules_version
+        args.output_dir, args.character, args.rules_version, args.skill
     )
     write_json(
         args.output_dir / "데미지_계산규칙_versions.json",
@@ -2609,6 +4200,7 @@ def main() -> int:
     if args.snapshot:
         raw_bundle = json.loads(args.snapshot.read_text(encoding="utf-8"))
         responses = response_from_raw_bundle(raw_bundle)
+        write_json(raw_path, raw_bundle)
     else:
         token = os.environ.get("LOSTARK_API_TOKEN", "")
         if not token.strip():
@@ -2621,31 +4213,35 @@ def main() -> int:
         raw_bundle, responses = fetch_all(token, args.character)
         write_json(raw_path, raw_bundle)
 
-    parsed = parse_all(responses, args.character)
+    parsed = parse_all(responses, args.character, args.skill)
     without_grid = calculate(
         parsed,
         include_arkgrid=False,
         rule_version=args.rules_version,
+        skill_name=args.skill,
     )
     with_grid = calculate(
         parsed,
         include_arkgrid=True,
         rule_version=args.rules_version,
+        skill_name=args.skill,
     )
     failures = validate(parsed, without_grid, with_grid)
     parsed["calculations"] = {
         "ruleVersion": args.rules_version,
-        "withoutArkGridGemEffects": without_grid,
-        "withArkGridGemEffects": with_grid,
+        "withoutArkGridEffects": without_grid,
+        "withArkGridEffects": with_grid,
+        "renamedKeys": {
+            "withoutArkGridGemEffects": "withoutArkGridEffects",
+            "withArkGridGemEffects": "withArkGridEffects",
+        },
     }
     parsed["validation"] = {"passed": not failures, "failures": failures}
     write_json(parsed_path, parsed)
-    if args.snapshot and not raw_path.exists():
-        write_json(raw_path, raw_bundle)
     report = render_report(
         raw_bundle, parsed, without_grid, with_grid, raw_path, parsed_path
     )
-    report_path.write_text(report, encoding="utf-8")
+    report_path.write_text(report, encoding="utf-8", newline="\n")
 
     if failures:
         print("검증 실패:")
