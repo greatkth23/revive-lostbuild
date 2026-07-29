@@ -17,12 +17,19 @@ data-source audit.
 python lostark_damage_test.py `
   --snapshot ..\outputs\봄날꽃씨_우레바람_current-v2.1.0_api_raw.json `
   --output-dir ..\outputs `
-  --rules-version current-v2.4.1 `
-  --skill "공간 가르기"
+  --rules-version current-v2.5.0 `
+  --skill "몰아치기"
 ```
 
 The parsed JSON records calculator, parser, ruleset, DB release, scenario
 preset, per-source application state, and structured fallback usage.
+
+`arkGrid.pointEffects` is a compatibility key for the API's top-level
+`ArkGrid.Effects[]` aggregate effects. It is not a core threshold. Reports
+label it `아크그리드 누적 효과(Effects[])`. Because it is calculated from
+the same effect levels shown on active gem tooltips, the calculator uses
+`Effects[]` as the authoritative value and retains `gemEffects` only for
+provenance and fallback when the aggregate API field is absent.
 
 Calculation reports intentionally omit the former `핵심 원본 데이터 발췌`
 and ArkGrid before/after comparison sections. Inspect source data at:
@@ -38,14 +45,16 @@ and ArkGrid before/after comparison sections. Inspect source data at:
 python build_damage_db.py
 ```
 
-This creates `db/weather-artist-v0.3.1.sqlite3`. Existing files are preserved by
+This creates `db/weather-artist-v0.4.sqlite3`. Existing files are preserved by
 default; use `--force` only when intentionally rebuilding that exact database.
 
 The first release is intentionally narrow:
 
 - class: 기상술사
-- skills registered: 우레바람, 칼바람, 공간 가르기
-- damage models: 우레바람 maximum hold and 공간 가르기 two-hit cast
+- skills registered: 우레바람, 공간 가르기, 바람송곳, 칼바람, 몰아치기,
+  회오리 걸음
+- damage models: 우레바람 maximum hold, 공간 가르기 two-hit cast, and the
+  봄날꽃씨 tripod variants for 바람송곳, 칼바람, 몰아치기, 회오리 걸음
 - verified parser scopes: ArkGrid attack/additional/boss effects, regular-gem
   skill damage/cooldown, and 타격의 대가
 - ArkGrid core effects are read from each slot's grade-resolved tooltip and

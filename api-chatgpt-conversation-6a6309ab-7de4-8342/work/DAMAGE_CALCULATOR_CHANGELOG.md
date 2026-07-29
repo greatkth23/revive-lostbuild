@@ -1,5 +1,30 @@
 # Damage calculator changelog
 
+## 2.5.0 — Gale umbrella-skill models
+
+- Confirmed `공간 가르기` as an umbrella skill and regenerated both character
+  reports with umbrella-scoped Ark Passive and ArkGrid effects.
+- Added user-provided motion formulas for `바람송곳`, `칼바람`, `몰아치기`,
+  and `회오리 걸음`.
+- Bound each formula to 봄날꽃씨's selected tripod variant and added
+  skill-specific critical-damage handling for `우레` and `벼락`.
+- Applied each skill's regular damage gem exactly once and retained cooldown
+  gems as rotation/DPS-only data.
+- Added the `weather-artist-v0.4` knowledge DB release and snapshot regression
+  coverage for all four skills.
+
+## 2.4.2 — enlightenment Karma weapon attack
+
+- Changed enlightenment Karma weapon attack to `Karma level × 0.1%`.
+- Parsed the Karma level from `ArkPassive.Points[].Description` instead of
+  using a fixed 2.7% fallback.
+- Split the report's ArkGrid attack-power subtotal into gem, aggregate
+  `Effects[]`, and core contributions so the combined value is not mistaken
+  for core-only.
+- Fixed double counting between per-gem tooltip values and the top-level
+  `ArkGrid.Effects[]` value generated from those same gem-effect levels.
+  `Effects[]` is authoritative; per-gem values remain provenance-only.
+
 ## 2.4.1 — ArkGrid core stacking operators
 
 - Kept simple stat increases, including flat and percentage attack/weapon

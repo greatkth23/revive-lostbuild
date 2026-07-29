@@ -30,17 +30,26 @@ API_BASE = "https://developer-lostark.game.onstove.com"
 CHARACTER_NAME = "봄날꽃씨"
 CANONICAL_SKILL = "우레바람"
 SPACE_CUTTING_SKILL = "공간 가르기"
+WIND_GIMLET_SKILL = "바람송곳"
+CUTTING_WIND_SKILL = "칼바람"
+DOWNPOUR_SKILL = "몰아치기"
+WHIRLWIND_STEP_SKILL = "회오리 걸음"
 SKILL_ALIASES = {
     "우뢰바람": CANONICAL_SKILL,
     CANONICAL_SKILL: CANONICAL_SKILL,
     "공간가르기": SPACE_CUTTING_SKILL,
     SPACE_CUTTING_SKILL: SPACE_CUTTING_SKILL,
+    WIND_GIMLET_SKILL: WIND_GIMLET_SKILL,
+    CUTTING_WIND_SKILL: CUTTING_WIND_SKILL,
+    DOWNPOUR_SKILL: DOWNPOUR_SKILL,
+    "회오리걸음": WHIRLWIND_STEP_SKILL,
+    WHIRLWIND_STEP_SKILL: WHIRLWIND_STEP_SKILL,
 }
-CALCULATOR_VERSION = "2.4.1"
-PARSER_VERSION = "lostark-api-v2.4.1"
-PARSED_SCHEMA_VERSION = "3.2.1"
-DEFAULT_RULE_VERSION = "current-v2.4.1"
-DB_RELEASE = "weather-artist-v0.3.1"
+CALCULATOR_VERSION = "2.5.0"
+PARSER_VERSION = "lostark-api-v2.5.0"
+PARSED_SCHEMA_VERSION = "3.3.0"
+DEFAULT_RULE_VERSION = "current-v2.5.0"
+DB_RELEASE = "weather-artist-v0.4"
 SCENARIO_PRESET_ID = "max-favorable-example-boss-v1"
 CALCULATION_MODE = "ESTIMATE_WITH_FALLBACK"
 
@@ -226,10 +235,100 @@ SKILL_MODELS = {
                 "constant": Decimal("14283"),
             },
         ],
-        # The API exposes no direction-type field for this X-key Ark Passive
-        # skill. NON_DIRECTIONAL is an explicit estimate used only to decide
-        # Hit Master scope and is surfaced in every report.
-        "tags": {"NON_DIRECTIONAL", "ENLIGHTENMENT_X_SKILL"},
+        # The user confirmed that Space Cutting is an umbrella skill. The API
+        # still exposes no direction-type field for this X-key Ark Passive
+        # skill, so NON_DIRECTIONAL remains an explicit estimate used only to
+        # decide Hit Master scope and is surfaced in every report.
+        "tags": {
+            "NON_DIRECTIONAL",
+            "UMBRELLA_SKILL",
+            "ENLIGHTENMENT_X_SKILL",
+        },
+        "tagVerification": "PROVISIONAL",
+        "source": "USER_VERIFIED",
+    },
+    WIND_GIMLET_SKILL: {
+        "displayName": WIND_GIMLET_SKILL,
+        "variant": "역류·큰 센바람·집중 공격",
+        "hits": [
+            {
+                "name": "전체 타격",
+                "coefficient": Decimal("52.20"),
+                "constant": Decimal("7874"),
+            },
+        ],
+        "tags": {"NON_DIRECTIONAL", "UMBRELLA_SKILL"},
+        "requiredTripods": ["역류", "큰 센바람", "집중 공격"],
+        "criticalDamageTripod": None,
+        "tagVerification": "PROVISIONAL",
+        "source": "USER_VERIFIED",
+    },
+    CUTTING_WIND_SKILL: {
+        "displayName": CUTTING_WIND_SKILL,
+        "variant": "거대 돌풍·역류·벼락",
+        "hits": [
+            {
+                "name": "전체 타격",
+                "coefficient": Decimal("48.98"),
+                "constant": Decimal("7388.5"),
+            },
+        ],
+        "tags": {"NON_DIRECTIONAL", "UMBRELLA_SKILL"},
+        "requiredTripods": ["거대 돌풍", "역류", "벼락"],
+        "criticalDamageTripod": {
+            "name": "벼락",
+            "value": Decimal("2.10"),
+        },
+        "tagVerification": "PROVISIONAL",
+        "source": "USER_VERIFIED",
+    },
+    DOWNPOUR_SKILL: {
+        "displayName": DOWNPOUR_SKILL,
+        "variant": "역류·우레·공간베기",
+        "hits": [
+            {
+                "name": "1타",
+                "coefficient": Decimal("9.72"),
+                "constant": Decimal("1466.7"),
+            },
+            {
+                "name": "2타",
+                "coefficient": Decimal("22.65"),
+                "constant": Decimal("3417.1"),
+            },
+            {
+                "name": "3타(공간베기)",
+                "coefficient": Decimal("30.69"),
+                "constant": Decimal("4629.8"),
+            },
+        ],
+        "tags": {"NON_DIRECTIONAL", "UMBRELLA_SKILL"},
+        "requiredTripods": ["역류", "우레", "공간베기"],
+        "criticalDamageTripod": {
+            "name": "우레",
+            "value": Decimal("1.80"),
+        },
+        "tagVerification": "PROVISIONAL",
+        "source": "USER_VERIFIED",
+    },
+    WHIRLWIND_STEP_SKILL: {
+        "displayName": WHIRLWIND_STEP_SKILL,
+        "variant": "재빠른 손놀림·역류·초고속 회전",
+        "hits": [
+            {
+                "name": "1타",
+                "coefficient": Decimal("22.72"),
+                "constant": Decimal("3427.5"),
+            },
+            {
+                "name": "2타",
+                "coefficient": Decimal("9.75"),
+                "constant": Decimal("1470.9"),
+            },
+        ],
+        "tags": {"NON_DIRECTIONAL", "UMBRELLA_SKILL"},
+        "requiredTripods": ["재빠른 손놀림", "역류", "초고속 회전"],
+        "criticalDamageTripod": None,
         "tagVerification": "PROVISIONAL",
         "source": "USER_VERIFIED",
     },
@@ -268,6 +367,22 @@ RULESETS["current-v2.4.1"] = {
     "source": (
         "current-v2.4.0 + user-confirmed additive/multiplicative core rules "
         "+ relic/ancient slash resolution"
+    ),
+}
+RULESETS["current-v2.4.2"] = {
+    **RULESETS["current-v2.4.1"],
+    "label": "v2.4.1 ArkGrid 연산 + 깨달음 카르마 레벨 환산",
+    "source": (
+        "current-v2.4.1 + user-confirmed enlightenment karma "
+        "weapon-attack rate (0.1% per level)"
+    ),
+}
+RULESETS["current-v2.5.0"] = {
+    **RULESETS["current-v2.4.2"],
+    "label": "v2.4.2 계산식 + 질풍노도 우산 스킬 4종",
+    "source": (
+        "current-v2.4.2 + user-provided wind-gimlet, cutting-wind, "
+        "downpour, and whirlwind-step motion formulas"
     ),
 }
 
@@ -1641,6 +1756,8 @@ def parse_ark_passive(
     for index, point in enumerate(body.get("Points") or []):
         name = str(point.get("Name") or "")
         text = tooltip_to_text(point.get("Description") or point.get("Tooltip"))
+        level_values = find_numbers(text, r"([0-9]+)\s*레벨")
+        karma_level = int(max(level_values)) if level_values else 0
         weapon_values = [
             pct(v)
             for v in find_numbers(
@@ -1654,20 +1771,30 @@ def parse_ark_passive(
             )
         ]
         if "깨달음" in name or "깨달음" in text:
-            if weapon_values:
+            if karma_level:
+                karma_weapon_attack = (
+                    Decimal(karma_level) * Decimal("0.001")
+                )
+                sources.append(
+                    source(
+                        source_type="API_FIELD+USER_VERIFIED",
+                        path=f"arkPassive.Points[{index}].Description",
+                        label="깨달음 카르마 무기 공격력",
+                        value=karma_weapon_attack,
+                        raw=text,
+                        note=(
+                            f"깨달음 카르마 {karma_level}레벨 × "
+                            "레벨당 무기 공격력 0.1%"
+                        ),
+                    )
+                )
+            elif weapon_values:
                 karma_weapon_attack = max(weapon_values)
             elif text:
-                karma_weapon_attack = Decimal("0.027")
-                record_fallback(
-                    path=f"arkPassive.Points[{index}]",
-                    label="깨달음 카르마 무기 공격력",
-                    value=karma_weapon_attack,
-                    raw=text,
-                    note="랭크·레벨 전체 표가 없어 예시 DB 사용",
-                )
                 warn_once(
                     warnings,
-                    "깨달음 카르마 수치를 파싱하지 못해 예시값 +2.7%를 사용했습니다.",
+                    "깨달음 카르마 레벨과 무기 공격력 수치를 파싱하지 못해 "
+                    "무기 공격력 증가를 적용하지 않았습니다.",
                 )
         if "진화" in name or "진화" in text:
             if evolution_values:
@@ -1685,7 +1812,14 @@ def parse_ark_passive(
                     warnings,
                     "진화 카르마 수치를 파싱하지 못해 예시값 +6.0%를 사용했습니다.",
                 )
-        points.append({"name": name, "value": point.get("Value"), "text": text})
+        points.append(
+            {
+                "name": name,
+                "value": point.get("Value"),
+                "text": text,
+                "karmaLevel": karma_level,
+            }
+        )
         if weapon_values or evolution_values:
             sources.append(
                 source(
@@ -2180,6 +2314,7 @@ def parse_ark_grid(
     core_totals["skillDamagePercent"] = Decimal("0")
     active: list[dict[str, Any]] = []
     active_point_effects: list[dict[str, Any]] = []
+    aggregate_effect_categories: set[str] = set()
     cores: list[dict[str, Any]] = []
     core_damage_factors: list[dict[str, Any]] = []
     excluded: list[dict[str, Any]] = []
@@ -2407,7 +2542,7 @@ def parse_ark_grid(
 
     for index, effect in enumerate(body.get("Effects") or []):
         path = f"arkGrid.Effects[{index}]"
-        name = str(effect.get("Name") or "아크그리드 포인트 효과")
+        name = str(effect.get("Name") or "아크그리드 누적 효과")
         text = tooltip_to_text(effect.get("Tooltip"))
         support_hits = [
             term
@@ -2440,7 +2575,7 @@ def parse_ark_grid(
                     parsed=False,
                     eligible=False,
                     applied=False,
-                    excluded_reason="지원하지 않는 아크그리드 포인트 효과",
+                    excluded_reason="지원하지 않는 아크그리드 누적 효과(Effects[])",
                 )
             )
             warn_once(warnings, f"{path} '{name}' 효과의 수치를 분류하지 못했습니다.")
@@ -2448,11 +2583,12 @@ def parse_ark_grid(
         for key, value in values.items():
             point_totals[key] += value
             if value:
+                aggregate_effect_categories.add(key)
                 sources.append(
                     source(
                         source_type="OFFICIAL_TOOLTIP",
                         path=f"{path}.Tooltip",
-                        label=f"아크그리드 포인트 {name} {key}",
+                        label=f"아크그리드 누적 효과(Effects[]) {name} {key}",
                         value=value,
                         raw=text,
                     )
@@ -2466,8 +2602,28 @@ def parse_ark_grid(
                 "values": values,
             }
         )
+    effective_base_effects = {
+        key: (
+            point_totals[key]
+            if key in aggregate_effect_categories
+            else gem_totals[key]
+        )
+        for key in gem_totals
+    }
+    for item in sources:
+        if (
+            str(item.get("path") or "").startswith("arkGrid.Slots[")
+            and str(item.get("label") or "").startswith("아크그리드 젬 ")
+        ):
+            category = str(item["label"]).removeprefix("아크그리드 젬 ")
+            if category in aggregate_effect_categories:
+                item["applied"] = False
+                item["excludedReason"] = (
+                    "동일 젬 효과 레벨의 ArkGrid.Effects[] 통합값 사용"
+                )
+                item["note"] = "개별 젬 값은 검산·출처용이며 중복 합산하지 않음"
     combined = {
-        key: gem_totals[key] + point_totals[key] + core_totals[key]
+        key: effective_base_effects[key] + core_totals[key]
         for key in gem_totals
     }
     for key in ARKGRID_CORE_TOTAL_KEYS:
@@ -2478,6 +2634,8 @@ def parse_ark_grid(
         **combined,
         "gemEffects": gem_totals,
         "pointEffects": point_totals,
+        "aggregateEffects": point_totals,
+        "effectiveBaseEffects": effective_base_effects,
         "coreEffects": core_totals,
         "coreDamageFactors": core_damage_factors,
         "cores": cores,
@@ -2659,10 +2817,67 @@ def calculate(
             note=(
                 "사용자가 제공한 1타·2타 수치를 사용"
                 if skill_name == SPACE_CUTTING_SKILL
-                else "기존 계산기 스킬 모델"
+                else (
+                    "사용자가 제공한 현재 트라이포드 조합의 수치를 사용"
+                    if skill_model["source"] == "USER_VERIFIED"
+                    else "기존 계산기 스킬 모델"
+                )
             ),
         )
     )
+    selected_skill_tripods = {
+        item["name"]
+        for item in parsed["combatSkills"]["selectedTripods"]
+        if item["skill"] == skill_name
+    }
+    required_tripods = set(skill_model.get("requiredTripods", []))
+    missing_tripods = sorted(required_tripods - selected_skill_tripods)
+    if required_tripods:
+        assumptions.append(
+            source(
+                source_type="OFFICIAL_API",
+                path=f"combatSkills[{skill_name}].Tripods[IsSelected=true]",
+                label=f"{skill_name} 모션식 대상 트라이포드",
+                value=", ".join(sorted(selected_skill_tripods)),
+                raw="필수 트라이포드: " + ", ".join(sorted(required_tripods)),
+                parsed=not missing_tripods,
+                eligible=not missing_tripods,
+                applied=not missing_tripods,
+                excluded_reason=(
+                    "누락: " + ", ".join(missing_tripods)
+                    if missing_tripods
+                    else ""
+                ),
+                note=(
+                    "제공된 모션계수·모션상수는 이 트라이포드 조합을 전제로 함"
+                ),
+            )
+        )
+    critical_tripod = skill_model.get("criticalDamageTripod")
+    tripod_critical_damage = Decimal("0")
+    if critical_tripod:
+        critical_tripod_active = (
+            critical_tripod["name"] in selected_skill_tripods
+        )
+        if critical_tripod_active:
+            tripod_critical_damage = critical_tripod["value"]
+        assumptions.append(
+            source(
+                source_type="OFFICIAL_TOOLTIP",
+                path=f"combatSkills[{skill_name}].Tripods[{critical_tripod['name']}]",
+                label=f"{skill_name} {critical_tripod['name']} 치명타 피해",
+                value=critical_tripod["value"],
+                raw=f"치명타 피해 {critical_tripod['value'] * 100}% 증가",
+                eligible=critical_tripod_active,
+                applied=critical_tripod_active,
+                excluded_reason=(
+                    ""
+                    if critical_tripod_active
+                    else "해당 트라이포드가 선택되지 않음"
+                ),
+                note="스킬 전용 치명타 피해는 공용 치명타 피해에 합산",
+            )
+        )
     if skill_model["tagVerification"] != "VERIFIED":
         assumptions.append(
             source(
@@ -2772,6 +2987,21 @@ def calculate(
         rules,
     )
     arkgrid_attack = grid["attackPowerPercent"] if include_arkgrid else Decimal("0")
+    arkgrid_gem_attack = (
+        grid["gemEffects"]["attackPowerPercent"]
+        if include_arkgrid
+        else Decimal("0")
+    )
+    arkgrid_point_attack = (
+        grid["pointEffects"]["attackPowerPercent"]
+        if include_arkgrid
+        else Decimal("0")
+    )
+    arkgrid_core_attack = (
+        grid["coreEffects"]["attackPowerPercent"]
+        if include_arkgrid
+        else Decimal("0")
+    )
     attack_power_percent = (
         equipment["attackPowerPercent"] + adrenaline_attack + arkgrid_attack
     )
@@ -3144,6 +3374,7 @@ def calculate(
         + equipment["criticalDamage"]
         + sum(ark["criticalDamageByName"].values(), Decimal("0"))
         + (grid["criticalDamage"] if include_arkgrid else Decimal("0"))
+        + tripod_critical_damage
     )
     core_critical_hit_multiplier = Decimal("1")
     for factor in active_core_factors:
@@ -3219,6 +3450,9 @@ def calculate(
             "tags": sorted(skill_model["tags"]),
             "tagVerification": skill_model["tagVerification"],
             "source": skill_model["source"],
+            "requiredTripods": sorted(required_tripods),
+            "missingTripods": missing_tripods,
+            "tripodCriticalDamage": tripod_critical_damage,
         },
         "skillScope": skill_damage_scope,
         "ruleVersion": rule_version,
@@ -3262,6 +3496,9 @@ def calculate(
             "equipmentAttackPowerPercent": equipment["attackPowerPercent"],
             "adrenalineAttackPowerPercent": adrenaline_attack,
             "arkGridAttackPowerPercent": arkgrid_attack,
+            "arkGridGemAttackPowerPercent": arkgrid_gem_attack,
+            "arkGridPointAttackPowerPercent": arkgrid_point_attack,
+            "arkGridCoreAttackPowerPercent": arkgrid_core_attack,
             "arkGridCoreGeneralDamagePercent": arkgrid_general_damage,
             "arkGridCoreSkillDamagePercent": arkgrid_skill_damage,
             "arkGridCoreCriticalRate": (
@@ -3270,6 +3507,7 @@ def calculate(
             "arkGridCoreCriticalDamage": (
                 grid["criticalDamage"] if include_arkgrid else Decimal("0")
             ),
+            "skillTripodCriticalDamage": tripod_critical_damage,
             "arkGridCoreCriticalHitDamagePercent": (
                 grid["criticalHitDamagePercent"]
                 if include_arkgrid
@@ -3389,6 +3627,7 @@ def calculate(
             "rateRaw": critical_rate_raw,
             "rateCapped": critical_rate,
             "damageMultiplier": critical_damage,
+            "skillTripodCriticalDamage": tripod_critical_damage,
             "criticalHitDamageMultiplier": critical_hit_damage_multiplier,
             "arkGridCriticalHitDamageMultiplier": (
                 core_critical_hit_multiplier
@@ -3659,6 +3898,17 @@ def render_report(
     enemy = c["enemy"]
     damage = c["damage"]
     regular_gem = c["regularGemSkillEffect"]
+    arkgrid_gem_attack_parts = [
+        (
+            f"슬롯 {gem['slotIndex']}/젬 {gem['gemIndex']} "
+            f"{pct_fmt(dec(gem['values']['attackPowerPercent']))}"
+        )
+        for gem in p["arkGrid"]["activeGems"]
+        if dec(gem["values"]["attackPowerPercent"])
+    ]
+    arkgrid_gem_attack_formula = (
+        " + ".join(arkgrid_gem_attack_parts) or "공격력 옵션 없음"
+    )
 
     lines += [
         "",
@@ -3721,8 +3971,17 @@ def render_report(
         "",
         f"`공격력 증가 = 장신구 {pct_fmt(i['equipmentAttackPowerPercent'])} + "
         f"아드레날린 {pct_fmt(i['adrenalineAttackPowerPercent'])} + "
-        f"아크그리드 {pct_fmt(i['arkGridAttackPowerPercent'])} = "
+        f"아크그리드 누적 효과(Effects[]) "
+        f"{pct_fmt(i['arkGridPointAttackPowerPercent'])} + "
+        f"아크그리드 코어 {pct_fmt(i['arkGridCoreAttackPowerPercent'])} = "
         f"{pct_fmt(ap['finalAttackPercent'])}`",
+        "",
+        (
+            f"`아크그리드 활성 젬 공격력 상세 = "
+            f"{arkgrid_gem_attack_formula} = "
+            f"{pct_fmt(i['arkGridGemAttackPowerPercent'])} "
+            "(Effects[] 원천 검산값, 중복 합산하지 않음)`"
+        ),
         "",
         f"`최종 공격력 원시값 = {fmt(ap['base'])} × "
         f"(1 + {fmt(ap['finalAttackPercent'])}) = "
@@ -3893,6 +4152,8 @@ def render_report(
         "",
         f"- 원시 치명타율: `{pct_fmt(crit['rateRaw'])}`",
         f"- 상한 적용 치명타율: `{pct_fmt(crit['rateCapped'])}`",
+        f"- 스킬 트라이포드 치명타 피해: "
+        f"`{pct_fmt(crit['skillTripodCriticalDamage'])}`",
         f"- 치명타 피해 배율: `{fmt(crit['damageMultiplier'])}`",
         f"- 치명타 시 피해 증가 배율: `{fmt(crit['criticalHitDamageMultiplier'])}`",
         "",
@@ -3941,8 +4202,8 @@ def render_report(
     if c["skillName"] == SPACE_CUTTING_SKILL:
         lines += [
             "- `공간 가르기` 피해 +200%는 1타와 2타에 동일하게 적용했습니다.",
-            "- `바람의 길`, `풀려난 힘`, `단련된 가르기`는 현재 스킬 태그와 "
-            "전용 범위가 맞지 않아 제외했습니다.",
+            "- `풀려난 힘`, `단련된 가르기`는 현재 스킬의 전용 범위가 "
+            "아니어서 제외했습니다.",
         ]
         if any(
             item["name"] == "타격의 대가"
@@ -3980,7 +4241,7 @@ def render_report(
         "- 과거 스펙의 최종 피해와 회귀 비교하지 않았습니다.",
         "- 원본 API 경로와 각 파싱값을 출처 표로 연결했습니다.",
         "- 초월, 비활성 아크그리드 젬, 서포터 옵션, 미지원 효과는 제외 목록에서 확인할 수 있습니다.",
-        "- 아크그리드 활성 젬·포인트 효과와 코어별 활성 임계 효과를 구조화해 검증했습니다.",
+        "- 아크그리드 활성 젬·누적 효과(Effects[])와 코어별 활성 임계 효과를 구조화해 검증했습니다.",
         "- 출처마다 parsed / eligible / applied / excludedReason 상태를 분리했습니다.",
         "- fallback 사용 내역은 파싱 JSON의 `fallbacks`와 계산별 `provenance.fallbacks`에 구조화했습니다.",
         (
@@ -4030,23 +4291,20 @@ def validate(parsed: dict[str, Any], without_grid: dict[str, Any], with_grid: di
     if with_grid["inputs"]["arkGridAttackPowerPercent"] != parsed["arkGrid"]["attackPowerPercent"]:
         failures.append("아크그리드 공격력 연결 실패")
     if parsed["arkGrid"]["attackPowerPercent"] != (
-        parsed["arkGrid"]["gemEffects"]["attackPowerPercent"]
-        + parsed["arkGrid"]["pointEffects"]["attackPowerPercent"]
+        parsed["arkGrid"]["effectiveBaseEffects"]["attackPowerPercent"]
         + parsed["arkGrid"]["coreEffects"]["attackPowerPercent"]
     ):
-        failures.append("아크그리드 젬/포인트/코어 공격력 합산 실패")
+        failures.append("아크그리드 권위 기본 효과/코어 공격력 합산 실패")
     if parsed["arkGrid"]["additionalDamagePercent"] != (
-        parsed["arkGrid"]["gemEffects"]["additionalDamagePercent"]
-        + parsed["arkGrid"]["pointEffects"]["additionalDamagePercent"]
+        parsed["arkGrid"]["effectiveBaseEffects"]["additionalDamagePercent"]
         + parsed["arkGrid"]["coreEffects"]["additionalDamagePercent"]
     ):
-        failures.append("아크그리드 젬/포인트/코어 추가 피해 합산 실패")
+        failures.append("아크그리드 권위 기본 효과/코어 추가 피해 합산 실패")
     if parsed["arkGrid"]["bossDamagePercent"] != (
-        parsed["arkGrid"]["gemEffects"]["bossDamagePercent"]
-        + parsed["arkGrid"]["pointEffects"]["bossDamagePercent"]
+        parsed["arkGrid"]["effectiveBaseEffects"]["bossDamagePercent"]
         + parsed["arkGrid"]["coreEffects"]["bossDamagePercent"]
     ):
-        failures.append("아크그리드 젬/포인트/코어 보스 피해 합산 실패")
+        failures.append("아크그리드 권위 기본 효과/코어 보스 피해 합산 실패")
     for key in ARKGRID_CORE_TOTAL_KEYS:
         if key in {
             "attackPowerPercent",
