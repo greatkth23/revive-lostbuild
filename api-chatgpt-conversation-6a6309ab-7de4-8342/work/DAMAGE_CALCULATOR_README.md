@@ -17,12 +17,26 @@ data-source audit.
 python lostark_damage_test.py `
   --snapshot ..\outputs\봄날꽃씨_우레바람_current-v2.1.0_api_raw.json `
   --output-dir ..\outputs `
-  --rules-version current-v2.5.0 `
+  --rules-version current-v2.6.0 `
   --skill "몰아치기"
 ```
 
 The parsed JSON records calculator, parser, ruleset, DB release, scenario
 preset, per-source application state, and structured fallback usage.
+
+`current-v2.6.0` recognizes `Type == "완갑"` and parses its `지능`, flat
+`무기 공격력`, flat `기본 공격력`, and percentage `기본 공격력` values.
+The base-attack reconstruction stage is:
+
+```text
+(sqrt(final main stat × final weapon attack / 6) + Armlet flat base attack)
+× (1 + gem + ability-stone + Armlet base-attack percentages)
+```
+
+For 바람송곳, 칼바람, 몰아치기, and 회오리 걸음, `역류` is parsed from
+the selected tripod tooltip and multiplied independently under the report's
+maximum-favorable scenario (기류 보호막 보유). It is not part of the stored
+motion coefficient or motion constant.
 
 `arkGrid.pointEffects` is a compatibility key for the API's top-level
 `ArkGrid.Effects[]` aggregate effects. It is not a core threshold. Reports

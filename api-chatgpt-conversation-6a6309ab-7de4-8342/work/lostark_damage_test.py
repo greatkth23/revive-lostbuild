@@ -45,10 +45,10 @@ SKILL_ALIASES = {
     "회오리걸음": WHIRLWIND_STEP_SKILL,
     WHIRLWIND_STEP_SKILL: WHIRLWIND_STEP_SKILL,
 }
-CALCULATOR_VERSION = "2.5.0"
-PARSER_VERSION = "lostark-api-v2.5.0"
-PARSED_SCHEMA_VERSION = "3.3.0"
-DEFAULT_RULE_VERSION = "current-v2.5.0"
+CALCULATOR_VERSION = "2.6.0"
+PARSER_VERSION = "lostark-api-v2.6.0"
+PARSED_SCHEMA_VERSION = "3.4.0"
+DEFAULT_RULE_VERSION = "current-v2.6.0"
 DB_RELEASE = "weather-artist-v0.4"
 SCENARIO_PRESET_ID = "max-favorable-example-boss-v1"
 CALCULATION_MODE = "ESTIMATE_WITH_FALLBACK"
@@ -259,6 +259,10 @@ SKILL_MODELS = {
         ],
         "tags": {"NON_DIRECTIONAL", "UMBRELLA_SKILL"},
         "requiredTripods": ["역류", "큰 센바람", "집중 공격"],
+        "separateDamageTripod": {
+            "name": "역류",
+            "condition": "기류 보호막 보유",
+        },
         "criticalDamageTripod": None,
         "tagVerification": "PROVISIONAL",
         "source": "USER_VERIFIED",
@@ -275,6 +279,10 @@ SKILL_MODELS = {
         ],
         "tags": {"NON_DIRECTIONAL", "UMBRELLA_SKILL"},
         "requiredTripods": ["거대 돌풍", "역류", "벼락"],
+        "separateDamageTripod": {
+            "name": "역류",
+            "condition": "기류 보호막 보유",
+        },
         "criticalDamageTripod": {
             "name": "벼락",
             "value": Decimal("2.10"),
@@ -304,6 +312,10 @@ SKILL_MODELS = {
         ],
         "tags": {"NON_DIRECTIONAL", "UMBRELLA_SKILL"},
         "requiredTripods": ["역류", "우레", "공간베기"],
+        "separateDamageTripod": {
+            "name": "역류",
+            "condition": "기류 보호막 보유",
+        },
         "criticalDamageTripod": {
             "name": "우레",
             "value": Decimal("1.80"),
@@ -328,6 +340,10 @@ SKILL_MODELS = {
         ],
         "tags": {"NON_DIRECTIONAL", "UMBRELLA_SKILL"},
         "requiredTripods": ["재빠른 손놀림", "역류", "초고속 회전"],
+        "separateDamageTripod": {
+            "name": "역류",
+            "condition": "기류 보호막 보유",
+        },
         "criticalDamageTripod": None,
         "tagVerification": "PROVISIONAL",
         "source": "USER_VERIFIED",
@@ -384,6 +400,16 @@ RULESETS["current-v2.5.0"] = {
         "current-v2.4.2 + user-provided wind-gimlet, cutting-wind, "
         "downpour, and whirlwind-step motion formulas"
     ),
+}
+RULESETS["current-v2.6.0"] = {
+    **RULESETS["current-v2.5.0"],
+    "label": "v2.5 우산 스킬 산식 + 완갑·역류 분리 적용",
+    "source": (
+        "current-v2.5.0 + Armlet equipment tooltip fields "
+        "+ user-confirmed Reflux exclusion from motion formulas"
+    ),
+    "includeArmletBaseAttack": True,
+    "includeSeparateTripodDamage": True,
 }
 
 WORKBOOK_FORMULA_EVIDENCE = {
@@ -924,6 +950,8 @@ def parse_equipment(body: list[dict[str, Any]] | None, warnings: list[str]) -> d
         "baseWeaponAttack": Decimal("0"),
         "weaponAttackFlat": Decimal("0"),
         "weaponAttackPercent": Decimal("0"),
+        "baseAttackPowerFlat": Decimal("0"),
+        "baseAttackPowerPercent": Decimal("0"),
         "attackPowerFlat": Decimal("0"),
         "attackPowerPercent": Decimal("0"),
         "weaponAdditionalDamage": Decimal("0"),
@@ -986,6 +1014,24 @@ def parse_equipment(body: list[dict[str, Any]] | None, warnings: list[str]) -> d
                 rf"(?<!무기\s)(?<!아군\s)(?<!기본\s)공격력\s*\+?{PERCENT}",
             )
         )
+        # 완갑의 기본 공격력 옵션은 최종 공격력이나 보석/스톤 옵션과
+        # 계산 단계가 다르다. 완갑 타입에만 한정해 중복 파싱을 막는다.
+        base_attack_flat = Decimal("0")
+        base_attack_percent = Decimal("0")
+        if item_type == "완갑":
+            base_attack_flat = sum_unique(
+                find_numbers(
+                    text,
+                    rf"기본\s*공격력\s*\+?{NUMBER}\s*(?:\n|$)",
+                )
+            )
+            base_attack_percent = sum_unique(
+                pct(v)
+                for v in find_numbers(
+                    text,
+                    rf"기본\s*공격력(?:이)?\s*\+?{PERCENT}(?:\s*증가)?",
+                )
+            )
         additional = sum_unique(
             pct(v) for v in find_numbers(text, rf"추가\s*피해\s*\+?{PERCENT}")
         )
@@ -1044,6 +1090,8 @@ def parse_equipment(body: list[dict[str, Any]] | None, warnings: list[str]) -> d
         else:
             result["weaponAttackFlat"] += base_weapon_attack
         result["weaponAttackPercent"] += wa_percent
+        result["baseAttackPowerFlat"] += base_attack_flat
+        result["baseAttackPowerPercent"] += base_attack_percent
         result["attackPowerFlat"] += attack_flat
         result["attackPowerPercent"] += attack_percent
         if item_type == "무기":
@@ -1076,6 +1124,8 @@ def parse_equipment(body: list[dict[str, Any]] | None, warnings: list[str]) -> d
                 Decimal("0") if item_type == "무기" else base_weapon_attack
             ),
             "weaponAttackPercent": wa_percent,
+            "baseAttackPowerFlat": base_attack_flat,
+            "baseAttackPowerPercent": base_attack_percent,
             "attackPowerFlat": attack_flat,
             "attackPowerPercent": attack_percent,
             "additionalDamage": additional,
@@ -1859,8 +1909,25 @@ def parse_combat_skills(body: list[dict[str, Any]] | None) -> dict[str, Any]:
         for tripod_index, tripod in enumerate(skill.get("Tripods") or []):
             if tripod.get("IsSelected") is True:
                 tripod_name = str(tripod.get("Name") or "")
+                tripod_text = tooltip_to_text(tripod.get("Tooltip"))
+                damage_percent = Decimal("0")
+                if tripod_name == "역류":
+                    damage_percent = sum_unique(
+                        pct(v)
+                        for v in find_numbers(
+                            tripod_text,
+                            rf"적에게\s*주는\s*피해(?:가|를|량이)?\s*"
+                            rf"(?:\+)?{PERCENT}(?:\s*증가|\s*증가시킨다)?",
+                        )
+                    )
                 selected_tripods.append(
-                    {"skill": skill_name, "name": tripod_name, "tier": tripod.get("Tier")}
+                    {
+                        "skill": skill_name,
+                        "name": tripod_name,
+                        "tier": tripod.get("Tier"),
+                        "tooltipText": tripod_text,
+                        "damagePercent": damage_percent,
+                    }
                 )
                 if "급소 노출" in tripod_name:
                     exposed_weakness = True
@@ -2878,6 +2945,52 @@ def calculate(
                 note="스킬 전용 치명타 피해는 공용 치명타 피해에 합산",
             )
         )
+    separate_damage_tripod = skill_model.get("separateDamageTripod")
+    tripod_damage_percent = Decimal("0")
+    if separate_damage_tripod and rules.get("includeSeparateTripodDamage", False):
+        tripod_name = separate_damage_tripod["name"]
+        tripod_item = next(
+            (
+                item
+                for item in parsed["combatSkills"]["selectedTripods"]
+                if item["skill"] == skill_name and item["name"] == tripod_name
+            ),
+            None,
+        )
+        if tripod_item:
+            tripod_damage_percent = dec(tripod_item.get("damagePercent"))
+            if not tripod_damage_percent:
+                warn_once(
+                    warnings,
+                    f"{skill_name} {tripod_name} 피해 증가율을 선택 트라이포드 "
+                    "툴팁에서 파싱하지 못해 적용하지 않았습니다.",
+                )
+        assumptions.append(
+            source(
+                source_type="OFFICIAL_TOOLTIP",
+                path=f"combatSkills[{skill_name}].Tripods[{tripod_name}]",
+                label=f"{skill_name} {tripod_name} 피해",
+                value=tripod_damage_percent,
+                raw=(tripod_item or {}).get("tooltipText", ""),
+                parsed=bool(tripod_damage_percent),
+                eligible=bool(tripod_item),
+                applied=bool(tripod_damage_percent),
+                excluded_reason=(
+                    ""
+                    if tripod_damage_percent
+                    else (
+                        "피해 증가율 파싱 실패"
+                        if tripod_item
+                        else "해당 트라이포드가 선택되지 않음"
+                    )
+                ),
+                note=(
+                    f"모션계수·모션상수에 포함되지 않은 독립 곱연산; "
+                    f"{separate_damage_tripod['condition']} 조건을 최대 유리 "
+                    "시나리오에서 충족"
+                ),
+            )
+        )
     if skill_model["tagVerification"] != "VERIFIED":
         assumptions.append(
             source(
@@ -2961,13 +3074,26 @@ def calculate(
         final_weapon_attack_raw, "weaponAttack", rules
     )
 
+    armlet_base_attack_flat = (
+        equipment["baseAttackPowerFlat"]
+        if rules.get("includeArmletBaseAttack", False)
+        else Decimal("0")
+    )
+    armlet_base_attack_percent = (
+        equipment["baseAttackPowerPercent"]
+        if rules.get("includeArmletBaseAttack", False)
+        else Decimal("0")
+    )
     base_attack_percent = (
-        parsed["gems"]["baseAttackPercent"] + engravings["stoneBaseAttackPercent"]
+        parsed["gems"]["baseAttackPercent"]
+        + engravings["stoneBaseAttackPercent"]
+        + armlet_base_attack_percent
     )
     if final_main_stat < 0 or final_weapon_attack < 0:
         raise CalculationError("주스탯 또는 무기 공격력이 음수입니다.")
     root_attack = (final_main_stat * final_weapon_attack / Decimal("6")).sqrt()
-    root_with_base_attack_percent = root_attack * (
+    base_attack_subtotal = root_attack + armlet_base_attack_flat
+    root_with_base_attack_percent = base_attack_subtotal * (
         Decimal("1") + base_attack_percent
     )
     attack_power_flat = (
@@ -3301,6 +3427,11 @@ def calculate(
         )
         for factor in core_subtitle_factors
     ]
+    tripod_damage_parts = (
+        [(f"{skill_name} {separate_damage_tripod['name']}", tripod_damage_percent)]
+        if separate_damage_tripod and tripod_damage_percent
+        else []
+    )
     subtitle_percentages = [
         *general_engraving_damage,
         ("진화형 피해", evolution_percent),
@@ -3314,6 +3445,7 @@ def calculate(
         ("팔찌 비방향성 피해", equipment["braceletNonDirectionalDamage"]),
         ("아크그리드 보스 피해", boss_damage),
         *core_subtitle_parts,
+        *tripod_damage_parts,
         (f"일반 보석 {skill_name} 피해", regular_gem_skill_damage),
     ]
     subtitle_multipliers = [
@@ -3453,6 +3585,8 @@ def calculate(
             "requiredTripods": sorted(required_tripods),
             "missingTripods": missing_tripods,
             "tripodCriticalDamage": tripod_critical_damage,
+            "separateDamageTripod": separate_damage_tripod,
+            "tripodDamagePercent": tripod_damage_percent,
         },
         "skillScope": skill_damage_scope,
         "ruleVersion": rule_version,
@@ -3485,6 +3619,8 @@ def calculate(
             ),
             "regularGemBaseAttackPercent": parsed["gems"]["baseAttackPercent"],
             "stoneBaseAttackPercent": engravings["stoneBaseAttackPercent"],
+            "armletBaseAttackPowerFlat": armlet_base_attack_flat,
+            "armletBaseAttackPowerPercent": armlet_base_attack_percent,
             "equipmentAttackPowerFlat": (
                 equipment["attackPowerFlat"]
                 if rules["includeFlatAttackPower"]
@@ -3508,6 +3644,7 @@ def calculate(
                 grid["criticalDamage"] if include_arkgrid else Decimal("0")
             ),
             "skillTripodCriticalDamage": tripod_critical_damage,
+            "skillTripodDamagePercent": tripod_damage_percent,
             "arkGridCoreCriticalHitDamagePercent": (
                 grid["criticalHitDamagePercent"]
                 if include_arkgrid
@@ -3551,6 +3688,8 @@ def calculate(
         },
         "attackPower": {
             "rootBeforeBaseAttackPercent": root_attack,
+            "armletBaseAttackFlat": armlet_base_attack_flat,
+            "subtotalBeforeBaseAttackPercent": base_attack_subtotal,
             "baseAttackPercent": base_attack_percent,
             "afterBaseAttackPercent": root_with_base_attack_percent,
             "flatAttackPower": attack_power_flat,
@@ -3615,6 +3754,10 @@ def calculate(
             "skillDamageParts": [
                 {"name": name, "value": value}
                 for name, value in skill_damage_parts
+            ],
+            "tripodDamageParts": [
+                {"name": name, "value": value}
+                for name, value in tripod_damage_parts
             ],
             "subtitles": [
                 {"name": name, "percent": percent, "multiplier": Decimal("1") + percent}
@@ -3957,10 +4100,16 @@ def render_report(
         f"{fmt(ap['rootBeforeBaseAttackPercent'])}`",
         "",
         f"`기본 공격력 증가 = 보석 {pct_fmt(i['regularGemBaseAttackPercent'])} + "
-        f"스톤 {pct_fmt(i['stoneBaseAttackPercent'])} = "
+        f"스톤 {pct_fmt(i['stoneBaseAttackPercent'])} + 완갑 "
+        f"{pct_fmt(i['armletBaseAttackPowerPercent'])} = "
         f"{pct_fmt(ap['baseAttackPercent'])}`",
         "",
-        f"`루트 공격력 × 기본 공격력% = {fmt(ap['rootBeforeBaseAttackPercent'])} × "
+        f"`기본 공격력 소계 = 루트 공격력 {fmt(ap['rootBeforeBaseAttackPercent'])} + "
+        f"완갑 평면 증가 {fmt(i['armletBaseAttackPowerFlat'])} = "
+        f"{fmt(ap['subtotalBeforeBaseAttackPercent'])}`",
+        "",
+        f"`기본 공격력 소계 × 기본 공격력% = "
+        f"{fmt(ap['subtotalBeforeBaseAttackPercent'])} × "
         f"(1 + {fmt(ap['baseAttackPercent'])}) = "
         f"{fmt(ap['afterBaseAttackPercent'])}`",
         "",

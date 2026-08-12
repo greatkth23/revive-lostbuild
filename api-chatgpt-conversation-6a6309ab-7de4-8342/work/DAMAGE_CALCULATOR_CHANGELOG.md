@@ -1,5 +1,20 @@
 # Damage calculator changelog
 
+## 2.6.0 — Armlet equipment and separate Reflux multiplier
+
+- Added explicit `완갑` tooltip parsing for main stat, flat weapon attack,
+  flat base attack, and percentage base attack.
+- Inserted the Armlet base-attack stage as
+  `(sqrt(main stat × weapon attack ÷ 6) + flat base attack) ×
+  (1 + base-attack percentages)` before flat/final attack-power effects.
+- Corrected the four Gale umbrella-skill models so `역류` is not assumed to
+  be embedded in the supplied motion coefficients.
+- Parsed each selected `역류` tooltip and applied its conditional increase as
+  an independent damage multiplier: 60% for the captured 바람송곳/몰아치기
+  setup and 95% for 칼바람/회오리 걸음.
+- Kept the new behavior behind `current-v2.6.0` so older rulesets remain
+  reproducible.
+
 ## 2.5.0 — Gale umbrella-skill models
 
 - Confirmed `공간 가르기` as an umbrella skill and regenerated both character
