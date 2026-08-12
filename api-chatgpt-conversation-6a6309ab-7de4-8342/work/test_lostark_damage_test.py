@@ -297,13 +297,52 @@ class ParserTests(unittest.TestCase):
         self.assertEqual(grid["pointEffects"]["attackPowerPercent"], Decimal("0.0135"))
         self.assertEqual(grid["pointEffects"]["additionalDamagePercent"], Decimal("0.0396"))
         self.assertEqual(grid["pointEffects"]["bossDamagePercent"], Decimal("0.0366"))
-        self.assertEqual(grid["attackPowerPercent"], Decimal("0.0255"))
-        self.assertEqual(grid["additionalDamagePercent"], Decimal("0.0596"))
-        self.assertEqual(grid["bossDamagePercent"], Decimal("0.0666"))
+        self.assertEqual(grid["attackPowerPercent"], Decimal("0.0135"))
+        self.assertEqual(grid["additionalDamagePercent"], Decimal("0.0396"))
+        self.assertEqual(grid["bossDamagePercent"], Decimal("0.0366"))
+        self.assertEqual(
+            grid["effectiveBaseEffects"]["attackPowerPercent"],
+            grid["pointEffects"]["attackPowerPercent"],
+        )
+        gem_attack_sources = [
+            item
+            for item in grid["sources"]
+            if item["label"] == "아크그리드 젬 attackPowerPercent"
+        ]
+        self.assertTrue(gem_attack_sources)
+        self.assertTrue(
+            all(item["applied"] is False for item in gem_attack_sources)
+        )
         labels = [x["label"] for x in grid["excluded"]]
         self.assertIn("비활성 아크그리드 젬", labels)
         self.assertIn("낙인력", labels)
         self.assertIn("포인트 효과", labels)
+
+    def test_enlightenment_karma_weapon_attack_uses_level(self):
+        for level, expected in (
+            (10, "0.010"),
+            (27, "0.027"),
+            (30, "0.030"),
+        ):
+            with self.subTest(level=level):
+                parsed = dut.parse_ark_passive(
+                    {
+                        "Points": [
+                            {
+                                "Name": "깨달음",
+                                "Value": 101,
+                                "Description": f"6랭크 {level}레벨",
+                            }
+                        ],
+                        "Effects": [],
+                    },
+                    [],
+                )
+                self.assertEqual(
+                    parsed["karmaWeaponAttackPercent"],
+                    Decimal(expected),
+                )
+                self.assertEqual(parsed["points"][0]["karmaLevel"], level)
 
     def test_arkgrid_core_thresholds_categories_and_skill_scope(self):
         body = {
@@ -376,7 +415,9 @@ class ParserTests(unittest.TestCase):
         self.assertEqual(
             space["coreEffects"]["attackPowerPercent"], Decimal("0.0252")
         )
-        self.assertEqual(space["coreEffects"]["skillDamagePercent"], 0)
+        self.assertEqual(
+            space["coreEffects"]["skillDamagePercent"], Decimal("0.032")
+        )
         general_factors = [
             item["value"]
             for item in space["coreDamageFactors"]
@@ -523,7 +564,7 @@ class ParserTests(unittest.TestCase):
         after = dut.calculate(self.parsed, include_arkgrid=True)
         self.assertEqual(before["inputs"]["arkGridAttackPowerPercent"], 0)
         self.assertEqual(before["inputs"]["arkGridAdditionalDamage"], 0)
-        self.assertEqual(after["inputs"]["arkGridAttackPowerPercent"], Decimal("0.0255"))
+        self.assertEqual(after["inputs"]["arkGridAttackPowerPercent"], Decimal("0.0135"))
         self.assertGreater(after["damage"]["nonCritical"], before["damage"]["nonCritical"])
         self.assertEqual(
             after["damage"]["nonCritical"],
@@ -585,6 +626,10 @@ class ParserTests(unittest.TestCase):
             [hit["constant"] for hit in result["damage"]["hits"]],
             [Decimal("6117"), Decimal("14283")],
         )
+        self.assertIn(
+            "UMBRELLA_SKILL",
+            dut.SKILL_MODELS["공간 가르기"]["tags"],
+        )
         skill_parts = {
             item["name"]: item["value"]
             for item in result["damageGroups"]["skillDamageParts"]
@@ -618,6 +663,80 @@ class ParserTests(unittest.TestCase):
                 result,
             )
         )
+
+    def test_gale_umbrella_skill_models_for_spring_flower_seed(self):
+        snapshot_path = (
+            Path(__file__).resolve().parent.parent
+            / "outputs"
+            / "봄날꽃씨_공간 가르기_current-v2.4.2_api_raw.json"
+        )
+        bundle = json.loads(snapshot_path.read_text(encoding="utf-8"))
+        responses = dut.response_from_raw_bundle(bundle)
+        cases = {
+            "바람송곳": {
+                "coefficients": [Decimal("52.20")],
+                "constants": [Decimal("7874")],
+                "criticalTripod": Decimal("0"),
+            },
+            "칼바람": {
+                "coefficients": [Decimal("48.98")],
+                "constants": [Decimal("7388.5")],
+                "criticalTripod": Decimal("2.10"),
+            },
+            "몰아치기": {
+                "coefficients": [
+                    Decimal("9.72"),
+                    Decimal("22.65"),
+                    Decimal("30.69"),
+                ],
+                "constants": [
+                    Decimal("1466.7"),
+                    Decimal("3417.1"),
+                    Decimal("4629.8"),
+                ],
+                "criticalTripod": Decimal("1.80"),
+            },
+            "회오리 걸음": {
+                "coefficients": [Decimal("22.72"), Decimal("9.75")],
+                "constants": [Decimal("3427.5"), Decimal("1470.9")],
+                "criticalTripod": Decimal("0"),
+            },
+        }
+        for skill_name, expected in cases.items():
+            with self.subTest(skill=skill_name):
+                parsed = dut.parse_all(responses, skill_name=skill_name)
+                result = dut.calculate(
+                    parsed,
+                    include_arkgrid=True,
+                    rule_version="current-v2.5.0",
+                    skill_name=skill_name,
+                )
+                self.assertIn(
+                    "UMBRELLA_SKILL",
+                    dut.SKILL_MODELS[skill_name]["tags"],
+                )
+                self.assertEqual(result["skillModel"]["missingTripods"], [])
+                self.assertEqual(
+                    [hit["coefficient"] for hit in result["damage"]["hits"]],
+                    expected["coefficients"],
+                )
+                self.assertEqual(
+                    [hit["constant"] for hit in result["damage"]["hits"]],
+                    expected["constants"],
+                )
+                self.assertEqual(
+                    result["critical"]["skillTripodCriticalDamage"],
+                    expected["criticalTripod"],
+                )
+                self.assertEqual(
+                    result["inputs"]["regularGemSkillDamagePercent"],
+                    Decimal("0.40"),
+                )
+                self.assertGreater(result["damage"]["nonCritical"], 0)
+                self.assertGreater(
+                    result["damage"]["critical"],
+                    result["damage"]["nonCritical"],
+                )
 
     def test_speed_and_sonic_breakdown(self):
         result = dut.calculate(self.parsed, include_arkgrid=True)
@@ -817,6 +936,10 @@ class ParserTests(unittest.TestCase):
         self.assertIn("비치명타 피해", report)
         self.assertNotIn("핵심 원본 데이터 발췌", report)
         self.assertNotIn("아크그리드 전체 효과 적용 전후", report)
+        self.assertIn("아크그리드 젬", report)
+        self.assertIn("아크그리드 누적 효과(Effects[])", report)
+        self.assertIn("아크그리드 코어", report)
+        self.assertIn("아크그리드 활성 젬 공격력 상세", report)
         self.assertIn("과거 스펙의 최종 피해와 회귀 비교하지 않았습니다.", report)
 
 

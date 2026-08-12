@@ -1,9 +1,9 @@
 {
-  "calculatorVersion": "2.4.1",
-  "parserVersion": "lostark-api-v2.4.1",
-  "parsedSchemaVersion": "3.2.1",
-  "defaultRuleVersion": "current-v2.4.1",
-  "dbRelease": "weather-artist-v0.3.1",
+  "calculatorVersion": "2.5.0",
+  "parserVersion": "lostark-api-v2.5.0",
+  "parsedSchemaVersion": "3.3.0",
+  "defaultRuleVersion": "current-v2.5.0",
+  "dbRelease": "weather-artist-v0.4",
   "scenarioPresetId": "max-favorable-example-boss-v1",
   "calculationMode": "ESTIMATE_WITH_FALLBACK",
   "precedence": [
@@ -230,6 +230,76 @@
     "current-v2.4.1": {
       "label": "v2.4 코어 임계 효과 + ArkGrid 연산자·등급 분기",
       "source": "current-v2.4.0 + user-confirmed additive/multiplicative core rules + relic/ancient slash resolution",
+      "attackPipeline": "workbook",
+      "intermediateFloorStages": [],
+      "useLiveEngravingDescriptions": true,
+      "includeFlatWeaponAttack": true,
+      "includeFlatAttackPower": true,
+      "includePetMainStat": true,
+      "includePetAdditionalDamage": true,
+      "levelMainStat": "477",
+      "expeditionMainStat": "680",
+      "collectionMainStat": "976",
+      "feastAttackSpeedPercent": "0.05",
+      "feastMoveSpeedPercent": "0.05",
+      "combatBlessingAttackSpeedPercent": "0.09",
+      "combatBlessingMoveSpeedPercent": "0.09",
+      "raidCaptainFallbackCoefficient": "0.48",
+      "criticalStatFallbackCoefficient": "0.0003578586",
+      "swiftnessSpeedFallbackCoefficient": "0.000171759",
+      "sonic": {
+        "1": {
+          "baseRate": "0.05",
+          "bothBonus": "0.04",
+          "overRate": "0.15",
+          "maximum": "0.12"
+        },
+        "2": {
+          "baseRate": "0.10",
+          "bothBonus": "0.08",
+          "overRate": "0.30",
+          "maximum": "0.24"
+        }
+      }
+    },
+    "current-v2.4.2": {
+      "label": "v2.4.1 ArkGrid 연산 + 깨달음 카르마 레벨 환산",
+      "source": "current-v2.4.1 + user-confirmed enlightenment karma weapon-attack rate (0.1% per level)",
+      "attackPipeline": "workbook",
+      "intermediateFloorStages": [],
+      "useLiveEngravingDescriptions": true,
+      "includeFlatWeaponAttack": true,
+      "includeFlatAttackPower": true,
+      "includePetMainStat": true,
+      "includePetAdditionalDamage": true,
+      "levelMainStat": "477",
+      "expeditionMainStat": "680",
+      "collectionMainStat": "976",
+      "feastAttackSpeedPercent": "0.05",
+      "feastMoveSpeedPercent": "0.05",
+      "combatBlessingAttackSpeedPercent": "0.09",
+      "combatBlessingMoveSpeedPercent": "0.09",
+      "raidCaptainFallbackCoefficient": "0.48",
+      "criticalStatFallbackCoefficient": "0.0003578586",
+      "swiftnessSpeedFallbackCoefficient": "0.000171759",
+      "sonic": {
+        "1": {
+          "baseRate": "0.05",
+          "bothBonus": "0.04",
+          "overRate": "0.15",
+          "maximum": "0.12"
+        },
+        "2": {
+          "baseRate": "0.10",
+          "bothBonus": "0.08",
+          "overRate": "0.30",
+          "maximum": "0.24"
+        }
+      }
+    },
+    "current-v2.5.0": {
+      "label": "v2.4.2 계산식 + 질풍노도 우산 스킬 4종",
+      "source": "current-v2.4.2 + user-provided wind-gimlet, cutting-wind, downpour, and whirlwind-step motion formulas",
       "attackPipeline": "workbook",
       "intermediateFloorStages": [],
       "useLiveEngravingDescriptions": true,

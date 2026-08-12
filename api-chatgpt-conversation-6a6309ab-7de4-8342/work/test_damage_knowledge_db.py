@@ -19,7 +19,7 @@ class DamageKnowledgeDatabaseTests(unittest.TestCase):
                 release = connection.execute(
                     "SELECT db_release FROM db_releases"
                 ).fetchone()
-                self.assertEqual(release, ("weather-artist-v0.3.1",))
+                self.assertEqual(release, ("weather-artist-v0.4",))
                 self.assertEqual(release, (calculator.DB_RELEASE,))
                 core_categories = {
                     row[0]
@@ -52,6 +52,43 @@ class DamageKnowledgeDatabaseTests(unittest.TestCase):
                 self.assertEqual(
                     space_hits,
                     [(1, "40.07", "6117"), (2, "93.50", "14283")],
+                )
+                skill_count = connection.execute(
+                    "SELECT COUNT(*) FROM skills"
+                ).fetchone()
+                self.assertEqual(skill_count, (6,))
+                downpour_hits = connection.execute(
+                    """
+                    SELECT hit_index, coefficient, constant_value
+                    FROM skill_hits
+                    WHERE variant_id = ?
+                    ORDER BY hit_index
+                    """,
+                    ("weather-artist:몰아치기:역류-우레-공간베기",),
+                ).fetchall()
+                self.assertEqual(
+                    downpour_hits,
+                    [
+                        (1, "9.72", "1466.7"),
+                        (2, "22.65", "3417.1"),
+                        (3, "30.69", "4629.8"),
+                    ],
+                )
+                whirlwind_hits = connection.execute(
+                    """
+                    SELECT hit_index, coefficient, constant_value
+                    FROM skill_hits
+                    WHERE variant_id = ?
+                    ORDER BY hit_index
+                    """,
+                    (
+                        "weather-artist:회오리 걸음:"
+                        "재빠른손놀림-역류-초고속회전",
+                    ),
+                ).fetchall()
+                self.assertEqual(
+                    whirlwind_hits,
+                    [(1, "22.72", "3427.5"), (2, "9.75", "1470.9")],
                 )
                 effects = {
                     row[0]

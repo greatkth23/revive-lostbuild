@@ -12,8 +12,8 @@ from typing import Any
 
 HERE = Path(__file__).resolve().parent
 DEFAULT_SCHEMA = HERE / "db" / "schema.sql"
-DEFAULT_SEED = HERE / "db" / "weather-artist-v0.3.1_seed.json"
-DEFAULT_OUTPUT = HERE / "db" / "weather-artist-v0.3.1.sqlite3"
+DEFAULT_SEED = HERE / "db" / "weather-artist-v0.4_seed.json"
+DEFAULT_OUTPUT = HERE / "db" / "weather-artist-v0.4.sqlite3"
 
 
 def load_json(path: Path) -> dict[str, Any]:
