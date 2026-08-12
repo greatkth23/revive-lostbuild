@@ -1,7 +1,11 @@
 {
-  "calculatorVersion": "2.1.0",
-  "parsedSchemaVersion": "2.0.0",
-  "defaultRuleVersion": "current-v2.1.0",
+  "calculatorVersion": "2.7.2",
+  "parserVersion": "lostark-api-v2.7.1",
+  "parsedSchemaVersion": "3.5.1",
+  "defaultRuleVersion": "current-v2.7.2",
+  "dbRelease": "weather-artist-v0.4",
+  "scenarioPresetId": "max-favorable-example-boss-v1",
+  "calculationMode": "ESTIMATE_WITH_FALLBACK",
   "precedence": [
     "explicit_user_rule",
     "live_api_description",
@@ -117,6 +121,370 @@
           "maximum": "0.24"
         }
       }
+    },
+    "current-v2.2.0": {
+      "label": "v2.1 확정 산식 + 데이터 출처 감사 수정",
+      "source": "current-v2.1.0 + calculator_v2.1.0_data_source_audit + explicit user corrections",
+      "attackPipeline": "workbook",
+      "intermediateFloorStages": [],
+      "useLiveEngravingDescriptions": true,
+      "includeFlatWeaponAttack": true,
+      "includeFlatAttackPower": true,
+      "includePetMainStat": true,
+      "includePetAdditionalDamage": true,
+      "levelMainStat": "477",
+      "expeditionMainStat": "680",
+      "collectionMainStat": "976",
+      "feastAttackSpeedPercent": "0.05",
+      "feastMoveSpeedPercent": "0.05",
+      "combatBlessingAttackSpeedPercent": "0.09",
+      "combatBlessingMoveSpeedPercent": "0.09",
+      "raidCaptainFallbackCoefficient": "0.48",
+      "criticalStatFallbackCoefficient": "0.0003578586",
+      "swiftnessSpeedFallbackCoefficient": "0.000171759",
+      "sonic": {
+        "1": {
+          "baseRate": "0.05",
+          "bothBonus": "0.04",
+          "overRate": "0.15",
+          "maximum": "0.12"
+        },
+        "2": {
+          "baseRate": "0.10",
+          "bothBonus": "0.08",
+          "overRate": "0.30",
+          "maximum": "0.24"
+        }
+      }
+    },
+    "current-v2.3.0": {
+      "label": "v2.2 감사 산식 + 다중 스킬·다중 타격",
+      "source": "current-v2.2.0 + user-provided space-cutting hit coefficients + explicit scope assumptions",
+      "attackPipeline": "workbook",
+      "intermediateFloorStages": [],
+      "useLiveEngravingDescriptions": true,
+      "includeFlatWeaponAttack": true,
+      "includeFlatAttackPower": true,
+      "includePetMainStat": true,
+      "includePetAdditionalDamage": true,
+      "levelMainStat": "477",
+      "expeditionMainStat": "680",
+      "collectionMainStat": "976",
+      "feastAttackSpeedPercent": "0.05",
+      "feastMoveSpeedPercent": "0.05",
+      "combatBlessingAttackSpeedPercent": "0.09",
+      "combatBlessingMoveSpeedPercent": "0.09",
+      "raidCaptainFallbackCoefficient": "0.48",
+      "criticalStatFallbackCoefficient": "0.0003578586",
+      "swiftnessSpeedFallbackCoefficient": "0.000171759",
+      "sonic": {
+        "1": {
+          "baseRate": "0.05",
+          "bothBonus": "0.04",
+          "overRate": "0.15",
+          "maximum": "0.12"
+        },
+        "2": {
+          "baseRate": "0.10",
+          "bothBonus": "0.08",
+          "overRate": "0.30",
+          "maximum": "0.24"
+        }
+      }
+    },
+    "current-v2.4.0": {
+      "label": "v2.3 다중 타격 산식 + ArkGrid 코어 임계 효과",
+      "source": "current-v2.3.0 + live ArkGrid.Slots core tooltip thresholds + user-provided weather-artist core reference",
+      "attackPipeline": "workbook",
+      "intermediateFloorStages": [],
+      "useLiveEngravingDescriptions": true,
+      "includeFlatWeaponAttack": true,
+      "includeFlatAttackPower": true,
+      "includePetMainStat": true,
+      "includePetAdditionalDamage": true,
+      "levelMainStat": "477",
+      "expeditionMainStat": "680",
+      "collectionMainStat": "976",
+      "feastAttackSpeedPercent": "0.05",
+      "feastMoveSpeedPercent": "0.05",
+      "combatBlessingAttackSpeedPercent": "0.09",
+      "combatBlessingMoveSpeedPercent": "0.09",
+      "raidCaptainFallbackCoefficient": "0.48",
+      "criticalStatFallbackCoefficient": "0.0003578586",
+      "swiftnessSpeedFallbackCoefficient": "0.000171759",
+      "sonic": {
+        "1": {
+          "baseRate": "0.05",
+          "bothBonus": "0.04",
+          "overRate": "0.15",
+          "maximum": "0.12"
+        },
+        "2": {
+          "baseRate": "0.10",
+          "bothBonus": "0.08",
+          "overRate": "0.30",
+          "maximum": "0.24"
+        }
+      }
+    },
+    "current-v2.4.1": {
+      "label": "v2.4 코어 임계 효과 + ArkGrid 연산자·등급 분기",
+      "source": "current-v2.4.0 + user-confirmed additive/multiplicative core rules + relic/ancient slash resolution",
+      "attackPipeline": "workbook",
+      "intermediateFloorStages": [],
+      "useLiveEngravingDescriptions": true,
+      "includeFlatWeaponAttack": true,
+      "includeFlatAttackPower": true,
+      "includePetMainStat": true,
+      "includePetAdditionalDamage": true,
+      "levelMainStat": "477",
+      "expeditionMainStat": "680",
+      "collectionMainStat": "976",
+      "feastAttackSpeedPercent": "0.05",
+      "feastMoveSpeedPercent": "0.05",
+      "combatBlessingAttackSpeedPercent": "0.09",
+      "combatBlessingMoveSpeedPercent": "0.09",
+      "raidCaptainFallbackCoefficient": "0.48",
+      "criticalStatFallbackCoefficient": "0.0003578586",
+      "swiftnessSpeedFallbackCoefficient": "0.000171759",
+      "sonic": {
+        "1": {
+          "baseRate": "0.05",
+          "bothBonus": "0.04",
+          "overRate": "0.15",
+          "maximum": "0.12"
+        },
+        "2": {
+          "baseRate": "0.10",
+          "bothBonus": "0.08",
+          "overRate": "0.30",
+          "maximum": "0.24"
+        }
+      }
+    },
+    "current-v2.4.2": {
+      "label": "v2.4.1 ArkGrid 연산 + 깨달음 카르마 레벨 환산",
+      "source": "current-v2.4.1 + user-confirmed enlightenment karma weapon-attack rate (0.1% per level)",
+      "attackPipeline": "workbook",
+      "intermediateFloorStages": [],
+      "useLiveEngravingDescriptions": true,
+      "includeFlatWeaponAttack": true,
+      "includeFlatAttackPower": true,
+      "includePetMainStat": true,
+      "includePetAdditionalDamage": true,
+      "levelMainStat": "477",
+      "expeditionMainStat": "680",
+      "collectionMainStat": "976",
+      "feastAttackSpeedPercent": "0.05",
+      "feastMoveSpeedPercent": "0.05",
+      "combatBlessingAttackSpeedPercent": "0.09",
+      "combatBlessingMoveSpeedPercent": "0.09",
+      "raidCaptainFallbackCoefficient": "0.48",
+      "criticalStatFallbackCoefficient": "0.0003578586",
+      "swiftnessSpeedFallbackCoefficient": "0.000171759",
+      "sonic": {
+        "1": {
+          "baseRate": "0.05",
+          "bothBonus": "0.04",
+          "overRate": "0.15",
+          "maximum": "0.12"
+        },
+        "2": {
+          "baseRate": "0.10",
+          "bothBonus": "0.08",
+          "overRate": "0.30",
+          "maximum": "0.24"
+        }
+      }
+    },
+    "current-v2.5.0": {
+      "label": "v2.4.2 계산식 + 질풍노도 우산 스킬 4종",
+      "source": "current-v2.4.2 + user-provided wind-gimlet, cutting-wind, downpour, and whirlwind-step motion formulas",
+      "attackPipeline": "workbook",
+      "intermediateFloorStages": [],
+      "useLiveEngravingDescriptions": true,
+      "includeFlatWeaponAttack": true,
+      "includeFlatAttackPower": true,
+      "includePetMainStat": true,
+      "includePetAdditionalDamage": true,
+      "levelMainStat": "477",
+      "expeditionMainStat": "680",
+      "collectionMainStat": "976",
+      "feastAttackSpeedPercent": "0.05",
+      "feastMoveSpeedPercent": "0.05",
+      "combatBlessingAttackSpeedPercent": "0.09",
+      "combatBlessingMoveSpeedPercent": "0.09",
+      "raidCaptainFallbackCoefficient": "0.48",
+      "criticalStatFallbackCoefficient": "0.0003578586",
+      "swiftnessSpeedFallbackCoefficient": "0.000171759",
+      "sonic": {
+        "1": {
+          "baseRate": "0.05",
+          "bothBonus": "0.04",
+          "overRate": "0.15",
+          "maximum": "0.12"
+        },
+        "2": {
+          "baseRate": "0.10",
+          "bothBonus": "0.08",
+          "overRate": "0.30",
+          "maximum": "0.24"
+        }
+      }
+    },
+    "current-v2.6.0": {
+      "label": "v2.5 우산 스킬 산식 + 완갑·역류 분리 적용",
+      "source": "current-v2.5.0 + Armlet equipment tooltip fields + user-confirmed Reflux exclusion from motion formulas",
+      "attackPipeline": "workbook",
+      "intermediateFloorStages": [],
+      "useLiveEngravingDescriptions": true,
+      "includeFlatWeaponAttack": true,
+      "includeFlatAttackPower": true,
+      "includePetMainStat": true,
+      "includePetAdditionalDamage": true,
+      "levelMainStat": "477",
+      "expeditionMainStat": "680",
+      "collectionMainStat": "976",
+      "feastAttackSpeedPercent": "0.05",
+      "feastMoveSpeedPercent": "0.05",
+      "combatBlessingAttackSpeedPercent": "0.09",
+      "combatBlessingMoveSpeedPercent": "0.09",
+      "raidCaptainFallbackCoefficient": "0.48",
+      "criticalStatFallbackCoefficient": "0.0003578586",
+      "swiftnessSpeedFallbackCoefficient": "0.000171759",
+      "sonic": {
+        "1": {
+          "baseRate": "0.05",
+          "bothBonus": "0.04",
+          "overRate": "0.15",
+          "maximum": "0.12"
+        },
+        "2": {
+          "baseRate": "0.10",
+          "bothBonus": "0.08",
+          "overRate": "0.30",
+          "maximum": "0.24"
+        }
+      },
+      "includeArmletBaseAttack": true,
+      "includeSeparateTripodDamage": true
+    },
+    "current-v2.7.0": {
+      "label": "v2.6 완갑 산식 + 선택 트라이포드 전체 피해 효과",
+      "source": "current-v2.6.0 + official selected-tripod tooltip damage effects + user-confirmed tripod-free motion formulas",
+      "attackPipeline": "workbook",
+      "intermediateFloorStages": [],
+      "useLiveEngravingDescriptions": true,
+      "includeFlatWeaponAttack": true,
+      "includeFlatAttackPower": true,
+      "includePetMainStat": true,
+      "includePetAdditionalDamage": true,
+      "levelMainStat": "477",
+      "expeditionMainStat": "680",
+      "collectionMainStat": "976",
+      "feastAttackSpeedPercent": "0.05",
+      "feastMoveSpeedPercent": "0.05",
+      "combatBlessingAttackSpeedPercent": "0.09",
+      "combatBlessingMoveSpeedPercent": "0.09",
+      "raidCaptainFallbackCoefficient": "0.48",
+      "criticalStatFallbackCoefficient": "0.0003578586",
+      "swiftnessSpeedFallbackCoefficient": "0.000171759",
+      "sonic": {
+        "1": {
+          "baseRate": "0.05",
+          "bothBonus": "0.04",
+          "overRate": "0.15",
+          "maximum": "0.12"
+        },
+        "2": {
+          "baseRate": "0.10",
+          "bothBonus": "0.08",
+          "overRate": "0.30",
+          "maximum": "0.24"
+        }
+      },
+      "includeArmletBaseAttack": true,
+      "includeSeparateTripodDamage": true,
+      "applyAllSelectedTripodDamage": true
+    },
+    "current-v2.7.1": {
+      "label": "v2.7 전체 트라이포드 효과 + 추가 타격 중복 방지",
+      "source": "current-v2.7.0 + motion-hit/tripod provenance linkage + embedded additional-attack deduplication",
+      "attackPipeline": "workbook",
+      "intermediateFloorStages": [],
+      "useLiveEngravingDescriptions": true,
+      "includeFlatWeaponAttack": true,
+      "includeFlatAttackPower": true,
+      "includePetMainStat": true,
+      "includePetAdditionalDamage": true,
+      "levelMainStat": "477",
+      "expeditionMainStat": "680",
+      "collectionMainStat": "976",
+      "feastAttackSpeedPercent": "0.05",
+      "feastMoveSpeedPercent": "0.05",
+      "combatBlessingAttackSpeedPercent": "0.09",
+      "combatBlessingMoveSpeedPercent": "0.09",
+      "raidCaptainFallbackCoefficient": "0.48",
+      "criticalStatFallbackCoefficient": "0.0003578586",
+      "swiftnessSpeedFallbackCoefficient": "0.000171759",
+      "sonic": {
+        "1": {
+          "baseRate": "0.05",
+          "bothBonus": "0.04",
+          "overRate": "0.15",
+          "maximum": "0.12"
+        },
+        "2": {
+          "baseRate": "0.10",
+          "bothBonus": "0.08",
+          "overRate": "0.30",
+          "maximum": "0.24"
+        }
+      },
+      "includeArmletBaseAttack": true,
+      "includeSeparateTripodDamage": true,
+      "applyAllSelectedTripodDamage": true,
+      "deduplicateEmbeddedTripodHits": true
+    },
+    "current-v2.7.2": {
+      "label": "v2.7.1 추가 타격 중복 방지 + 재구성 공격력 비교 계산",
+      "source": "current-v2.7.1 + user-requested calculated-attack override",
+      "attackPipeline": "workbook",
+      "intermediateFloorStages": [],
+      "useLiveEngravingDescriptions": true,
+      "includeFlatWeaponAttack": true,
+      "includeFlatAttackPower": true,
+      "includePetMainStat": true,
+      "includePetAdditionalDamage": true,
+      "levelMainStat": "477",
+      "expeditionMainStat": "680",
+      "collectionMainStat": "976",
+      "feastAttackSpeedPercent": "0.05",
+      "feastMoveSpeedPercent": "0.05",
+      "combatBlessingAttackSpeedPercent": "0.09",
+      "combatBlessingMoveSpeedPercent": "0.09",
+      "raidCaptainFallbackCoefficient": "0.48",
+      "criticalStatFallbackCoefficient": "0.0003578586",
+      "swiftnessSpeedFallbackCoefficient": "0.000171759",
+      "sonic": {
+        "1": {
+          "baseRate": "0.05",
+          "bothBonus": "0.04",
+          "overRate": "0.15",
+          "maximum": "0.12"
+        },
+        "2": {
+          "baseRate": "0.10",
+          "bothBonus": "0.08",
+          "overRate": "0.30",
+          "maximum": "0.24"
+        }
+      },
+      "includeArmletBaseAttack": true,
+      "includeSeparateTripodDamage": true,
+      "applyAllSelectedTripodDamage": true,
+      "deduplicateEmbeddedTripodHits": true,
+      "useCalculatedAttackForDamage": true
     }
   },
   "workbookFormulaEvidence": {

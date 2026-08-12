@@ -1,0 +1,276 @@
+{
+  "release": {
+    "db_release": "weather-artist-v0.2",
+    "patch_version": "snapshot-2026-07-26",
+    "created_at": "2026-07-27T00:00:00+09:00",
+    "verification_status": "PROVISIONAL",
+    "notes": "기상술사 우레바람과 공간 가르기 다중 타격 모델. 검증표가 없는 스킬 태그는 PROVISIONAL로 유지한다."
+  },
+  "sources": [
+    {
+      "source_document_id": "audit-v2.1.0",
+      "source_type": "USER_VERIFIED",
+      "source_locator": "outputs/계산기_v2.1.0_데이터출처_감사_및_DB전환계획.md",
+      "source_excerpt": "P0/P2 파서 및 DB 전환 요구사항",
+      "verification_status": "VERIFIED"
+    },
+    {
+      "source_document_id": "snapshot-bomnal-2026-07-26",
+      "source_type": "OFFICIAL_API",
+      "source_locator": "outputs/봄날꽃씨_우레바람_current-v2.1.0_api_raw.json",
+      "source_excerpt": "Lost Ark Open API immutable snapshot",
+      "verification_status": "VERIFIED"
+    },
+    {
+      "source_document_id": "workbook-season3",
+      "source_type": "WORKBOOK_FORMULA",
+      "source_locator": "시즌3 전용 데미지 계산기.xlsx",
+      "source_excerpt": "공격력 및 피해 그룹 계산 구조",
+      "verification_status": "PROVISIONAL"
+    },
+    {
+      "source_document_id": "user-space-cutting-coefficients-2026-07-27",
+      "source_type": "USER_VERIFIED",
+      "source_locator": "user instruction 2026-07-27",
+      "source_excerpt": "공간 가르기 1타 40.07/6117, 2타 93.50/14283",
+      "verification_status": "VERIFIED"
+    }
+  ],
+  "skills": [
+    {
+      "skill_id": "weather-artist:우레바람",
+      "class_id": "weather-artist",
+      "canonical_name": "우레바람",
+      "verification_status": "PROVISIONAL",
+      "aliases": ["우뢰바람"],
+      "tags": ["NON_DIRECTIONAL", "UMBRELLA_SKILL", "HYPER_AWAKENING_SKILL"],
+      "variant": {
+        "variant_id": "weather-artist:우레바람:max-hold",
+        "coefficient": "351.262",
+        "constant_value": "52583",
+        "hit_count": null,
+        "skill_category": "SINGLE_CAST",
+        "class_skill_category": "UMBRELLA",
+        "direction_type": "NON_DIRECTIONAL",
+        "cast_type": "MAX_HOLD",
+        "can_critical": 1,
+        "max_hold": 1,
+        "verification_status": "PROVISIONAL",
+        "source_document_id": "audit-v2.1.0"
+      }
+    },
+    {
+      "skill_id": "weather-artist:칼바람",
+      "class_id": "weather-artist",
+      "canonical_name": "칼바람",
+      "verification_status": "PROVISIONAL",
+      "aliases": [],
+      "tags": [],
+      "variant": null
+    },
+    {
+      "skill_id": "weather-artist:공간 가르기",
+      "class_id": "weather-artist",
+      "canonical_name": "공간 가르기",
+      "verification_status": "PROVISIONAL",
+      "aliases": ["공간가르기"],
+      "tags": ["NON_DIRECTIONAL", "ENLIGHTENMENT_X_SKILL"],
+      "variant": {
+        "variant_id": "weather-artist:공간 가르기:two-hit",
+        "coefficient": null,
+        "constant_value": null,
+        "hit_count": 2,
+        "skill_category": "MULTI_HIT_SINGLE_CAST",
+        "class_skill_category": "ENLIGHTENMENT_X_SKILL",
+        "direction_type": "NON_DIRECTIONAL",
+        "cast_type": "TWO_HIT",
+        "can_critical": 1,
+        "max_hold": 0,
+        "verification_status": "PROVISIONAL",
+        "source_document_id": "user-space-cutting-coefficients-2026-07-27",
+        "hits": [
+          {
+            "hit_index": 1,
+            "coefficient": "40.07",
+            "constant_value": "6117"
+          },
+          {
+            "hit_index": 2,
+            "coefficient": "93.50",
+            "constant_value": "14283"
+          }
+        ]
+      }
+    }
+  ],
+  "stacking_groups": [
+    {
+      "stacking_group": "ATTACK_POWER_PERCENT",
+      "operator": "ADD_THEN_MULTIPLY",
+      "description": "공격력 퍼센트 그룹"
+    },
+    {
+      "stacking_group": "ADDITIONAL_DAMAGE",
+      "operator": "ADD_THEN_MULTIPLY",
+      "description": "추가 피해 내부 합산 그룹"
+    },
+    {
+      "stacking_group": "DAMAGE_SUBTITLE",
+      "operator": "MULTIPLY_EACH",
+      "description": "피해 소제목 간 곱연산 그룹"
+    },
+    {
+      "stacking_group": "COOLDOWN_REDUCTION",
+      "operator": "SKILL_SCOPED",
+      "description": "로테이션/DPS 전용 재사용 대기시간 감소"
+    }
+  ],
+  "scopes": [
+    {
+      "scope_id": "all-damage-skills",
+      "description": "모든 피해 스킬",
+      "required_skill_tag": null,
+      "excluded_skill_tag": null,
+      "target_type": "ANY"
+    },
+    {
+      "scope_id": "matching-skill",
+      "description": "툴팁의 스킬 이름과 현재 계산 스킬이 일치",
+      "required_skill_tag": null,
+      "excluded_skill_tag": null,
+      "target_type": "SKILL_NAME_MATCH"
+    },
+    {
+      "scope_id": "non-directional-non-awakening",
+      "description": "백/헤드 어택이 아니며 각성기가 아닌 공격",
+      "required_skill_tag": "NON_DIRECTIONAL",
+      "excluded_skill_tag": "AWAKENING_SKILL",
+      "target_type": "SKILL_TAG"
+    },
+    {
+      "scope_id": "boss-target",
+      "description": "보스 등급 이상 몬스터",
+      "required_skill_tag": null,
+      "excluded_skill_tag": null,
+      "target_type": "BOSS"
+    }
+  ],
+  "effects": [
+    {
+      "effect_id": "arkgrid:attack-power",
+      "canonical_name": "아크그리드 공격력",
+      "system_name": "ARKGRID",
+      "verification_status": "VERIFIED",
+      "source_document_id": "snapshot-bomnal-2026-07-26",
+      "components": [
+        {
+          "target_stat": "ATTACK_POWER_PERCENT",
+          "operator": "ADD",
+          "stacking_group": "ATTACK_POWER_PERCENT",
+          "scope_id": "all-damage-skills"
+        }
+      ]
+    },
+    {
+      "effect_id": "arkgrid:additional-damage",
+      "canonical_name": "아크그리드 추가 피해",
+      "system_name": "ARKGRID",
+      "verification_status": "VERIFIED",
+      "source_document_id": "snapshot-bomnal-2026-07-26",
+      "components": [
+        {
+          "target_stat": "ADDITIONAL_DAMAGE",
+          "operator": "ADD",
+          "stacking_group": "ADDITIONAL_DAMAGE",
+          "scope_id": "all-damage-skills"
+        }
+      ]
+    },
+    {
+      "effect_id": "arkgrid:boss-damage",
+      "canonical_name": "아크그리드 보스 피해",
+      "system_name": "ARKGRID",
+      "verification_status": "VERIFIED",
+      "source_document_id": "snapshot-bomnal-2026-07-26",
+      "components": [
+        {
+          "target_stat": "BOSS_DAMAGE",
+          "operator": "MULTIPLY_SUBTITLE",
+          "stacking_group": "DAMAGE_SUBTITLE",
+          "scope_id": "boss-target"
+        }
+      ]
+    },
+    {
+      "effect_id": "regular-gem:skill-damage",
+      "canonical_name": "일반 보석 스킬 피해",
+      "system_name": "REGULAR_GEM",
+      "verification_status": "VERIFIED",
+      "source_document_id": "snapshot-bomnal-2026-07-26",
+      "components": [
+        {
+          "target_stat": "SKILL_DAMAGE",
+          "operator": "MULTIPLY_SUBTITLE",
+          "stacking_group": "DAMAGE_SUBTITLE",
+          "scope_id": "matching-skill"
+        }
+      ]
+    },
+    {
+      "effect_id": "regular-gem:cooldown",
+      "canonical_name": "일반 보석 재사용 대기시간 감소",
+      "system_name": "REGULAR_GEM",
+      "verification_status": "VERIFIED",
+      "source_document_id": "snapshot-bomnal-2026-07-26",
+      "components": [
+        {
+          "target_stat": "COOLDOWN_REDUCTION",
+          "operator": "REDUCE",
+          "stacking_group": "COOLDOWN_REDUCTION",
+          "scope_id": "matching-skill"
+        }
+      ]
+    },
+    {
+      "effect_id": "engraving:hit-master",
+      "canonical_name": "타격의 대가",
+      "system_name": "ENGRAVING",
+      "verification_status": "VERIFIED",
+      "source_document_id": "snapshot-bomnal-2026-07-26",
+      "components": [
+        {
+          "target_stat": "GENERAL_DAMAGE",
+          "operator": "MULTIPLY_SUBTITLE",
+          "stacking_group": "DAMAGE_SUBTITLE",
+          "scope_id": "non-directional-non-awakening"
+        }
+      ]
+    }
+  ],
+  "boss": {
+    "boss_id": "example-boss-v1",
+    "canonical_name": "예시 보스",
+    "species": "악마",
+    "defense": "5850",
+    "damage_taken_multiplier": "0.76",
+    "verification_status": "PROVISIONAL",
+    "source_document_id": "audit-v2.1.0"
+  },
+  "scenario": {
+    "scenario_preset_id": "max-favorable-example-boss-v1",
+    "boss_id": "example-boss-v1",
+    "calculation_mode": "ESTIMATE_WITH_FALLBACK",
+    "verification_status": "PROVISIONAL",
+    "source_document_id": "audit-v2.1.0",
+    "payload": {
+      "most_favorable_conditions": true,
+      "single_cast": true,
+      "external_buffs": {
+        "feast_attack_speed": "0.05",
+        "feast_move_speed": "0.05",
+        "combat_blessing_attack_speed": "0.09",
+        "combat_blessing_move_speed": "0.09"
+      }
+    }
+  }
+}
