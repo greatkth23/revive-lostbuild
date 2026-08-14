@@ -51,6 +51,16 @@ def fixture_responses():
                 ),
             },
             {
+                "Type": "완갑",
+                "Name": "+21 테스트 완갑",
+                "Grade": "고대",
+                "Tooltip": tip(
+                    "기본 효과<br>지능 +52,381<br>체력 +4,600<br>"
+                    "무기 공격력 +21,726<br>기본 공격력 +5,980<br>"
+                    "기본 공격력 +2.00%"
+                ),
+            },
+            {
                 "Type": "목걸이",
                 "Name": "테스트 목걸이",
                 "Grade": "고대",
@@ -269,6 +279,29 @@ class ParserTests(unittest.TestCase):
     def test_equipment_and_tooltip_values(self):
         equipment = self.parsed["equipment"]
         self.assertEqual(equipment["baseWeaponAttack"], Decimal("235480"))
+        self.assertEqual(equipment["weaponAttackFlat"], Decimal("21726"))
+        self.assertEqual(equipment["baseAttackPowerFlat"], Decimal("5980"))
+        self.assertEqual(equipment["baseAttackPowerPercent"], Decimal("0.02"))
+        current = dut.calculate(
+            self.parsed,
+            include_arkgrid=True,
+            rule_version="current-v2.6.0",
+        )
+        legacy = dut.calculate(
+            self.parsed,
+            include_arkgrid=True,
+            rule_version="current-v2.5.0",
+        )
+        self.assertEqual(
+            current["attackPower"]["subtotalBeforeBaseAttackPercent"],
+            current["attackPower"]["rootBeforeBaseAttackPercent"]
+            + Decimal("5980"),
+        )
+        self.assertEqual(
+            current["attackPower"]["baseAttackPercent"],
+            legacy["attackPower"]["baseAttackPercent"] + Decimal("0.02"),
+        )
+        self.assertEqual(legacy["attackPower"]["armletBaseAttackFlat"], Decimal("0"))
         self.assertEqual(equipment["weaponAttackPercent"], Decimal("0.06"))
         self.assertEqual(equipment["attackPowerPercent"], Decimal("0.019"))
         self.assertEqual(equipment["weaponAdditionalDamage"], Decimal("0.30"))
@@ -677,11 +710,13 @@ class ParserTests(unittest.TestCase):
                 "coefficients": [Decimal("52.20")],
                 "constants": [Decimal("7874")],
                 "criticalTripod": Decimal("0"),
+                "reflux": Decimal("0.60"),
             },
             "칼바람": {
                 "coefficients": [Decimal("48.98")],
                 "constants": [Decimal("7388.5")],
                 "criticalTripod": Decimal("2.10"),
+                "reflux": Decimal("0.95"),
             },
             "몰아치기": {
                 "coefficients": [
@@ -695,17 +730,25 @@ class ParserTests(unittest.TestCase):
                     Decimal("4629.8"),
                 ],
                 "criticalTripod": Decimal("1.80"),
+                "reflux": Decimal("0.60"),
             },
             "회오리 걸음": {
                 "coefficients": [Decimal("22.72"), Decimal("9.75")],
                 "constants": [Decimal("3427.5"), Decimal("1470.9")],
                 "criticalTripod": Decimal("0"),
+                "reflux": Decimal("0.95"),
             },
         }
         for skill_name, expected in cases.items():
             with self.subTest(skill=skill_name):
                 parsed = dut.parse_all(responses, skill_name=skill_name)
                 result = dut.calculate(
+                    parsed,
+                    include_arkgrid=True,
+                    rule_version="current-v2.6.0",
+                    skill_name=skill_name,
+                )
+                legacy_result = dut.calculate(
                     parsed,
                     include_arkgrid=True,
                     rule_version="current-v2.5.0",
@@ -727,6 +770,24 @@ class ParserTests(unittest.TestCase):
                 self.assertEqual(
                     result["critical"]["skillTripodCriticalDamage"],
                     expected["criticalTripod"],
+                )
+                self.assertEqual(
+                    result["skillModel"]["tripodDamagePercent"],
+                    expected["reflux"],
+                )
+                reflux_subtitle = next(
+                    item
+                    for item in result["damageGroups"]["subtitles"]
+                    if item["name"] == f"{skill_name} 역류"
+                )
+                self.assertEqual(reflux_subtitle["percent"], expected["reflux"])
+                self.assertLess(
+                    abs(
+                        result["damage"]["nonCriticalRaw"]
+                        - legacy_result["damage"]["nonCriticalRaw"]
+                        * (Decimal("1") + expected["reflux"])
+                    ),
+                    Decimal("1e-28"),
                 )
                 self.assertEqual(
                     result["inputs"]["regularGemSkillDamagePercent"],
@@ -848,6 +909,9 @@ class ParserTests(unittest.TestCase):
 
     def test_flat_weapon_and_attack_power_are_parsed(self):
         responses = copy.deepcopy(fixture_responses())
+        responses["equipment"] = [
+            item for item in responses["equipment"] if item["Type"] != "완갑"
+        ]
         responses["equipment"].append(
             {
                 "Type": "팔찌",

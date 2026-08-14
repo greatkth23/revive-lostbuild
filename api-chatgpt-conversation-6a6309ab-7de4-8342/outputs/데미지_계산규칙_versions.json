@@ -1,8 +1,8 @@
 {
-  "calculatorVersion": "2.5.0",
-  "parserVersion": "lostark-api-v2.5.0",
-  "parsedSchemaVersion": "3.3.0",
-  "defaultRuleVersion": "current-v2.5.0",
+  "calculatorVersion": "2.6.0",
+  "parserVersion": "lostark-api-v2.6.0",
+  "parsedSchemaVersion": "3.4.0",
+  "defaultRuleVersion": "current-v2.6.0",
   "dbRelease": "weather-artist-v0.4",
   "scenarioPresetId": "max-favorable-example-boss-v1",
   "calculationMode": "ESTIMATE_WITH_FALLBACK",
@@ -331,6 +331,43 @@
           "maximum": "0.24"
         }
       }
+    },
+    "current-v2.6.0": {
+      "label": "v2.5 우산 스킬 산식 + 완갑·역류 분리 적용",
+      "source": "current-v2.5.0 + Armlet equipment tooltip fields + user-confirmed Reflux exclusion from motion formulas",
+      "attackPipeline": "workbook",
+      "intermediateFloorStages": [],
+      "useLiveEngravingDescriptions": true,
+      "includeFlatWeaponAttack": true,
+      "includeFlatAttackPower": true,
+      "includePetMainStat": true,
+      "includePetAdditionalDamage": true,
+      "levelMainStat": "477",
+      "expeditionMainStat": "680",
+      "collectionMainStat": "976",
+      "feastAttackSpeedPercent": "0.05",
+      "feastMoveSpeedPercent": "0.05",
+      "combatBlessingAttackSpeedPercent": "0.09",
+      "combatBlessingMoveSpeedPercent": "0.09",
+      "raidCaptainFallbackCoefficient": "0.48",
+      "criticalStatFallbackCoefficient": "0.0003578586",
+      "swiftnessSpeedFallbackCoefficient": "0.000171759",
+      "sonic": {
+        "1": {
+          "baseRate": "0.05",
+          "bothBonus": "0.04",
+          "overRate": "0.15",
+          "maximum": "0.12"
+        },
+        "2": {
+          "baseRate": "0.10",
+          "bothBonus": "0.08",
+          "overRate": "0.30",
+          "maximum": "0.24"
+        }
+      },
+      "includeArmletBaseAttack": true,
+      "includeSeparateTripodDamage": true
     }
   },
   "workbookFormulaEvidence": {
