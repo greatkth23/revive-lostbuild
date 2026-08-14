@@ -34,6 +34,11 @@ WIND_GIMLET_SKILL = "바람송곳"
 CUTTING_WIND_SKILL = "칼바람"
 DOWNPOUR_SKILL = "몰아치기"
 WHIRLWIND_STEP_SKILL = "회오리 걸음"
+CELESTIAL_RAIN_SKILL = "셀레스티얼 레인"
+SERENDIPITY_SKILL = "세렌디피티"
+SECRET_GARDEN_SKILL = "시크릿 가든"
+FOUR_OF_A_KIND_SKILL = "포 카드"
+FOUR_STACK_RUIN_SKILL = "4스택 루인"
 SKILL_ALIASES = {
     "우뢰바람": CANONICAL_SKILL,
     CANONICAL_SKILL: CANONICAL_SKILL,
@@ -44,6 +49,14 @@ SKILL_ALIASES = {
     DOWNPOUR_SKILL: DOWNPOUR_SKILL,
     "회오리걸음": WHIRLWIND_STEP_SKILL,
     WHIRLWIND_STEP_SKILL: WHIRLWIND_STEP_SKILL,
+    CELESTIAL_RAIN_SKILL: CELESTIAL_RAIN_SKILL,
+    SERENDIPITY_SKILL: SERENDIPITY_SKILL,
+    SECRET_GARDEN_SKILL: SECRET_GARDEN_SKILL,
+    "시크릿가든": SECRET_GARDEN_SKILL,
+    FOUR_OF_A_KIND_SKILL: FOUR_OF_A_KIND_SKILL,
+    "포카드": FOUR_OF_A_KIND_SKILL,
+    FOUR_STACK_RUIN_SKILL: FOUR_STACK_RUIN_SKILL,
+    "4 스택 루인": FOUR_STACK_RUIN_SKILL,
 }
 CALCULATOR_VERSION = "2.7.2"
 PARSER_VERSION = "lostark-api-v2.7.1"
@@ -345,6 +358,57 @@ SKILL_MODELS = {
         },
         "criticalDamageTripod": None,
         "tagVerification": "VERIFIED_BY_SKILL_TAG",
+        "source": "USER_VERIFIED",
+    },
+    CELESTIAL_RAIN_SKILL: {
+        "displayName": CELESTIAL_RAIN_SKILL,
+        "variant": "스킬 본체 + 연결된 4스택 루인",
+        "hits": [
+            {"name": "스킬 본체", "coefficient": Decimal("4.71"), "constant": Decimal("710")},
+        ],
+        "tags": {"NON_DIRECTIONAL", "MANA_SKILL", "RUIN_SKILL"},
+        "tagVerification": "VERIFIED_BY_API_TOOLTIP",
+        "source": "USER_VERIFIED",
+    },
+    SERENDIPITY_SKILL: {
+        "displayName": SERENDIPITY_SKILL,
+        "variant": "1타+2타 + 연결된 4스택 루인",
+        "hits": [
+            {"name": "1타", "coefficient": Decimal("1.94"), "constant": Decimal("293")},
+            {"name": "2타", "coefficient": Decimal("2.89"), "constant": Decimal("436")},
+        ],
+        "tags": {"FRONTAL_ATTACK", "MANA_SKILL", "RUIN_SKILL"},
+        "tagVerification": "VERIFIED_BY_API_TOOLTIP",
+        "source": "USER_VERIFIED",
+    },
+    SECRET_GARDEN_SKILL: {
+        "displayName": SECRET_GARDEN_SKILL,
+        "variant": "스킬 본체 + 연결된 4스택 루인",
+        "hits": [
+            {"name": "스킬 본체", "coefficient": Decimal("2.00"), "constant": Decimal("301")},
+        ],
+        "tags": {"BACK_ATTACK", "MANA_SKILL", "RUIN_SKILL"},
+        "tagVerification": "VERIFIED_BY_API_TOOLTIP",
+        "source": "USER_VERIFIED",
+    },
+    FOUR_OF_A_KIND_SKILL: {
+        "displayName": FOUR_OF_A_KIND_SKILL,
+        "variant": "스킬 본체 + 연결된 4스택 루인",
+        "hits": [
+            {"name": "스킬 본체", "coefficient": Decimal("4.25"), "constant": Decimal("641")},
+        ],
+        "tags": {"BACK_ATTACK", "MANA_SKILL", "RUIN_SKILL"},
+        "tagVerification": "VERIFIED_BY_API_TOOLTIP",
+        "source": "USER_VERIFIED",
+    },
+    FOUR_STACK_RUIN_SKILL: {
+        "displayName": FOUR_STACK_RUIN_SKILL,
+        "variant": "공통 4스택 효과(트리거 스킬 보정 전)",
+        "hits": [
+            {"name": "4스택 효과", "coefficient": Decimal("15.90"), "constant": Decimal("0")},
+        ],
+        "tags": {"NON_DIRECTIONAL", "MANA_SKILL", "RUIN_EFFECT"},
+        "tagVerification": "VERIFIED_BY_CLASS_MECHANIC",
         "source": "USER_VERIFIED",
     },
 }
@@ -890,9 +954,19 @@ def parse_profile(body: dict[str, Any] | None, warnings: list[str]) -> dict[str,
     stats_by_type = {str(item.get("Type")): item for item in body.get("Stats") or []}
     critical = stats_by_type.get("치명") or {}
     swiftness = stats_by_type.get("신속") or {}
+    specialization = stats_by_type.get("특화") or {}
     attack = stats_by_type.get("공격력") or {}
     crit_text = tooltip_to_text(critical.get("Tooltip"))
     swift_text = tooltip_to_text(swiftness.get("Tooltip"))
+    specialization_text = tooltip_to_text(specialization.get("Tooltip"))
+    ruin_damage_from_specialization = max_or_zero(
+        pct(v)
+        for v in find_numbers(
+            specialization_text,
+            rf"루인\s*스킬(?:의)?\s*피해량(?:이|은)?\s*\+?{PERCENT}",
+            re.I,
+        )
+    )
 
     crit_rate = max_or_zero(
         pct(v)
@@ -953,11 +1027,26 @@ def parse_profile(body: dict[str, Any] | None, warnings: list[str]) -> dict[str,
         "combatPower": body.get("CombatPower"),
         "criticalStat": dec(critical.get("Value")),
         "swiftnessStat": dec(swiftness.get("Value")),
+        "specializationStat": dec(specialization.get("Value")),
+        "ruinDamageFromSpecialization": ruin_damage_from_specialization,
         "profileAttackPower": dec(attack.get("Value")),
         "criticalRateFromStat": crit_rate,
         "attackSpeedFromSwiftness": attack_speed,
         "moveSpeedFromSwiftness": move_speed,
         "sources": [
+            source(
+                source_type="API_FIELD",
+                path="profiles.Stats[특화]",
+                label="특화·루인 스킬 피해",
+                value=ruin_damage_from_specialization,
+                raw=specialization_text,
+                applied=bool(ruin_damage_from_specialization),
+                excluded_reason=(
+                    "루인 피해 환산 문구 없음"
+                    if not ruin_damage_from_specialization
+                    else ""
+                ),
+            ),
             source(
                 source_type="API_FIELD",
                 path="profiles.CharacterLevel",
