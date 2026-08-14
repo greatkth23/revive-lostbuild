@@ -1,5 +1,22 @@
 # Damage calculator changelog
 
+## v2.7.2 official-rule/report update
+
+- Applied the confirmed 2026-02-11 Space Cutting increase to motion
+  coefficients only: `40.07 → 51.77044` and `93.50 → 120.80200`
+  (`×1.292`). Motion constants remain `6117` and `14283`.
+- Promoted reconstructed attack power from a comparison override to the
+  official `current-v2.7.2` damage input.
+- Made raw API and parsed JSON outputs opt-in through `--emit-debug-json`.
+- Moved API call results and parsing/provenance to the bottom of calculation
+  reports and standardized report-only numeric formatting to two decimals.
+- Added explicit critical-rate, critical-damage, and on-critical multiplier
+  formulas to reports.
+- Defined `NON_DIRECTIONAL` as an authoritative non-directional skill tag.
+- Corrected the Space Cutting discrepancy hypothesis after confirming that the
+  skill has no damage gem. The leading candidate is now a supplied motion
+  formula that predates the reported 2026-02-11 29.2% skill damage increase.
+
 ## 2.7.2 — calculated-attack comparison rule
 
 - Added the user-requested comparison rule that uses reconstructed attack

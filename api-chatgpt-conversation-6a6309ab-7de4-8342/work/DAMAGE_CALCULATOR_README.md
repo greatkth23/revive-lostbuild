@@ -21,12 +21,20 @@ python lostark_damage_test.py `
   --skill "몰아치기"
 ```
 
-The parsed JSON records calculator, parser, ruleset, DB release, scenario
-preset, per-source application state, and structured fallback usage.
+The default command now writes the Markdown calculation report only. Add
+`--emit-debug-json` when raw API and normalized parser JSON are needed for
+debugging; these JSON files are not user-facing reports.
 
-`current-v2.7.2` is a comparison rule requested for 봄날꽃씨. When profile
-attack and reconstructed attack differ, it uses reconstructed attack for skill
-damage. `current-v2.7.1` retains the prior profile-attack selection behavior.
+`current-v2.7.2` is the official attack-selection rule. When profile attack and
+reconstructed attack differ, skill damage uses reconstructed attack.
+`current-v2.7.1` remains available only to reproduce the former profile-attack
+selection behavior.
+
+Markdown calculation reports format calculated numbers and percentages to two
+decimal places. Their main order is calculation, result, exclusions, validation,
+then API call results and parsing/provenance at the bottom. The critical section
+shows every critical-rate component, the additive critical-damage multiplier,
+and multiplicative on-critical damage factors.
 
 `current-v2.6.0` recognizes `Type == "완갑"` and parses its `지능`, flat
 `무기 공격력`, flat `기본 공격력`, and percentage `기본 공격력` values.
@@ -65,12 +73,33 @@ the same effect levels shown on active gem tooltips, the calculator uses
 provenance and fallback when the aggregate API field is absent.
 
 Calculation reports intentionally omit the former `핵심 원본 데이터 발췌`
-and ArkGrid before/after comparison sections. Inspect source data at:
+and ArkGrid before/after comparison sections. API/parsing provenance is placed
+at the bottom of each report. For a deeper audit, rerun with
+`--emit-debug-json` and inspect:
 
 - `outputs/*_api_raw.json` → `responses` and endpoint `rawBody`
 - `outputs/*_parsed.json` → normalized blocks and provenance
 - [ARKGRID_CORE_EFFECT_REFERENCE.md](ARKGRID_CORE_EFFECT_REFERENCE.md) →
   Weather Artist core thresholds, categories, conditions, and exclusions
+
+`NON_DIRECTIONAL` is an authoritative direction tag: a skill carrying it is
+treated as non-directional, including Hit Master eligibility when it is not an
+awakening skill.
+
+## Space Cutting discrepancy resolution
+
+Space Cutting is the only tested skill whose estimate is roughly 27% below the
+measured result. Common attack, engraving, card, defense, and ArkGrid factors
+also drive the other skills that matched measurement, so they are unlikely to
+be the cause. Space Cutting correctly has no damage gem, so gem omission is
+ruled out. The leading hypothesis is that the supplied two-hit motion formula
+predates the 2026-02-11 balance patch reported as a 29.2% Space Cutting damage
+increase. That change is close to the observed discrepancy and would not be
+visible in the character API tooltip or profile attack value. The user
+subsequently confirmed the correction for v2.7.2: multiply the two motion
+coefficients by `1.292`, producing `51.77044` and `120.80200`, while leaving
+motion constants `6117` and `14283` unchanged. A missing follow-up hit remains
+a secondary diagnostic only if the corrected estimate still misses measurement.
 
 ## Build the knowledge database
 

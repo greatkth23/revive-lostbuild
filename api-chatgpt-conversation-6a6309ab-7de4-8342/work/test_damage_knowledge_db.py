@@ -51,7 +51,10 @@ class DamageKnowledgeDatabaseTests(unittest.TestCase):
                 ).fetchall()
                 self.assertEqual(
                     space_hits,
-                    [(1, "40.07", "6117"), (2, "93.50", "14283")],
+                    [
+                        (1, "51.77044", "6117"),
+                        (2, "120.80200", "14283"),
+                    ],
                 )
                 skill_count = connection.execute(
                     "SELECT COUNT(*) FROM skills"

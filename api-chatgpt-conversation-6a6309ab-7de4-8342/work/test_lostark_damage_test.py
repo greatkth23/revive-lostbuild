@@ -633,7 +633,7 @@ class ParserTests(unittest.TestCase):
         self.assertEqual(attack["usedForDamage"], attack["final"])
         self.assertEqual(
             attack["usedForDamageSource"],
-            "CALCULATED_RULE_OVERRIDE",
+            "CALCULATED_OFFICIAL",
         )
         self.assertEqual(result["damage"]["attackPowerUsed"], attack["final"])
         self.assertEqual(
@@ -721,6 +721,26 @@ class ParserTests(unittest.TestCase):
                 ),
                 result,
             )
+        )
+
+    def test_v272_applies_space_cutting_motion_coefficient_buff_only(self):
+        result = dut.calculate(
+            self.parsed,
+            include_arkgrid=True,
+            rule_version="current-v2.7.2",
+            skill_name="공간 가르기",
+        )
+        self.assertEqual(
+            [hit["coefficient"] for hit in result["damage"]["hits"]],
+            [Decimal("51.77044"), Decimal("120.80200")],
+        )
+        self.assertEqual(
+            [hit["constant"] for hit in result["damage"]["hits"]],
+            [Decimal("6117"), Decimal("14283")],
+        )
+        self.assertEqual(
+            result["skillModel"]["motionCoefficientMultiplier"],
+            Decimal("1.292"),
         )
 
     def test_gale_umbrella_skill_models_for_spring_flower_seed(self):
@@ -1112,6 +1132,54 @@ class ParserTests(unittest.TestCase):
         self.assertIn("아크그리드 코어", report)
         self.assertIn("아크그리드 활성 젬 공격력 상세", report)
         self.assertIn("과거 스펙의 최종 피해와 회귀 비교하지 않았습니다.", report)
+        self.assertIn("원시 치명타율 = 치명 스탯", report)
+        self.assertIn("치명타 피해 배율 = 기본", report)
+        self.assertIn("치명타 시 피해 증가 배율 = 회심", report)
+        self.assertLess(report.index("## 1. 계산 과정"), report.index("## 5. API 호출 결과"))
+        self.assertLess(
+            report.index("## 5. API 호출 결과"),
+            report.index("## 6. 파싱 결과와 출처"),
+        )
+
+    def test_report_uses_two_decimal_places_and_omits_debug_links_by_default(self):
+        before = dut.calculate(self.parsed, include_arkgrid=False)
+        after = dut.calculate(self.parsed, include_arkgrid=True)
+        raw = {
+            "capturedAtKst": "2026-07-25T00:00:00+09:00",
+            "endpoints": {},
+            "responses": fixture_responses(),
+        }
+        report = dut.render_report(
+            raw, self.parsed, before, after, None, None
+        )
+        self.assertEqual(dut.fmt(Decimal("1234.567")), "1,234.57")
+        self.assertEqual(dut.pct_fmt(Decimal("0.12345")), "12.35%")
+        self.assertEqual(
+            dut.category_value_fmt(Decimal("0.0016"), "generalDamagePercent"),
+            "0.16%",
+        )
+        self.assertEqual(
+            dut.category_value_fmt(Decimal("900"), "attackPowerFlat"),
+            "900.00",
+        )
+        self.assertEqual(
+            dut.source_value_fmt(
+                Decimal("0.0016"),
+                "아크그리드 코어 현란한 공격 18P generalDamagePercent",
+            ),
+            "0.16%",
+        )
+        self.assertIn("디버그 API 원본 JSON: 기본 설정에서는 생성하지 않음", report)
+        self.assertNotIn("](_api_raw.json)", report)
+
+    def test_non_directional_tag_is_authoritative(self):
+        eligible, reason = dut.engraving_scope("타격의 대가", "공간 가르기")
+        self.assertTrue(eligible)
+        self.assertEqual(reason, "비방향성·각성기 제외 조건")
+        self.assertEqual(
+            dut.SKILL_MODELS["공간 가르기"]["tagVerification"],
+            "VERIFIED_BY_SKILL_TAG",
+        )
 
 
 if __name__ == "__main__":

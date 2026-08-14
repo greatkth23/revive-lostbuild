@@ -1,10 +1,10 @@
 {
   "release": {
     "db_release": "weather-artist-v0.4",
-    "patch_version": "snapshot-2026-07-26",
-    "created_at": "2026-07-27T00:00:00+09:00",
+    "patch_version": "snapshot-2026-08-14",
+    "created_at": "2026-08-14T00:00:00+09:00",
     "verification_status": "PROVISIONAL",
-    "notes": "ArkGrid 코어 규칙과 질풍노도 우산 스킬 4종의 사용자 제공 모션식을 보존한다. 방향 타입 검증표가 없는 스킬 태그는 PROVISIONAL로 유지한다."
+    "notes": "ArkGrid 코어 규칙과 질풍노도 우산 스킬 4종의 사용자 제공 모션식을 보존한다. NON_DIRECTIONAL 태그가 있는 스킬은 비방향성으로 확정 판정한다."
   },
   "sources": [
     {
@@ -33,6 +33,13 @@
       "source_type": "USER_VERIFIED",
       "source_locator": "user instruction 2026-07-27",
       "source_excerpt": "공간 가르기 1타 40.07/6117, 2타 93.50/14283",
+      "verification_status": "VERIFIED"
+    },
+    {
+      "source_document_id": "user-space-cutting-coefficient-buff-2026-08-14",
+      "source_type": "USER_VERIFIED",
+      "source_locator": "user instruction 2026-08-14",
+      "source_excerpt": "공간 가르기 모션계수만 29.2% 증가: 40.07→51.77044, 93.50→120.80200; 모션상수 불변",
       "verification_status": "VERIFIED"
     },
     {
@@ -114,16 +121,16 @@
         "can_critical": 1,
         "max_hold": 0,
         "verification_status": "PROVISIONAL",
-        "source_document_id": "user-space-cutting-coefficients-2026-07-27",
+        "source_document_id": "user-space-cutting-coefficient-buff-2026-08-14",
         "hits": [
           {
             "hit_index": 1,
-            "coefficient": "40.07",
+            "coefficient": "51.77044",
             "constant_value": "6117"
           },
           {
             "hit_index": 2,
-            "coefficient": "93.50",
+            "coefficient": "120.80200",
             "constant_value": "14283"
           }
         ]

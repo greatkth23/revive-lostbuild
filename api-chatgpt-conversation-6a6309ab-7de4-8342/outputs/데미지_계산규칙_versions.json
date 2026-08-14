@@ -447,8 +447,8 @@
       "deduplicateEmbeddedTripodHits": true
     },
     "current-v2.7.2": {
-      "label": "v2.7.1 추가 타격 중복 방지 + 재구성 공격력 비교 계산",
-      "source": "current-v2.7.1 + user-requested calculated-attack override",
+      "label": "공식 재구성 공격력 + 공간 가르기 모션계수 상향",
+      "source": "current-v2.7.1 + officially adopted reconstructed attack power + user-confirmed Space Cutting motion coefficient x1.292",
       "attackPipeline": "workbook",
       "intermediateFloorStages": [],
       "useLiveEngravingDescriptions": true,
@@ -484,7 +484,10 @@
       "includeSeparateTripodDamage": true,
       "applyAllSelectedTripodDamage": true,
       "deduplicateEmbeddedTripodHits": true,
-      "useCalculatedAttackForDamage": true
+      "useCalculatedAttackForDamage": true,
+      "skillMotionCoefficientMultipliers": {
+        "공간 가르기": "1.292"
+      }
     }
   },
   "workbookFormulaEvidence": {

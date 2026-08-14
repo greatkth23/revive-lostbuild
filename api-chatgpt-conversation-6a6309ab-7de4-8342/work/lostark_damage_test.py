@@ -19,7 +19,7 @@ import urllib.error
 import urllib.parse
 import urllib.request
 from collections import defaultdict
-from decimal import Decimal, ROUND_FLOOR, getcontext
+from decimal import Decimal, ROUND_FLOOR, ROUND_HALF_UP, getcontext
 from pathlib import Path
 from typing import Any, Iterable
 
@@ -217,7 +217,7 @@ SKILL_MODELS = {
             "UMBRELLA_SKILL",
             "HYPER_AWAKENING_SKILL",
         },
-        "tagVerification": "PROVISIONAL",
+        "tagVerification": "VERIFIED_BY_SKILL_TAG",
         "source": "LEGACY_EXAMPLE",
     },
     SPACE_CUTTING_SKILL: {
@@ -235,16 +235,14 @@ SKILL_MODELS = {
                 "constant": Decimal("14283"),
             },
         ],
-        # The user confirmed that Space Cutting is an umbrella skill. The API
-        # still exposes no direction-type field for this X-key Ark Passive
-        # skill, so NON_DIRECTIONAL remains an explicit estimate used only to
-        # decide Hit Master scope and is surfaced in every report.
+        # NON_DIRECTIONAL is authoritative for direction classification. It
+        # makes non-awakening skills eligible for Hit Master.
         "tags": {
             "NON_DIRECTIONAL",
             "UMBRELLA_SKILL",
             "ENLIGHTENMENT_X_SKILL",
         },
-        "tagVerification": "PROVISIONAL",
+        "tagVerification": "VERIFIED_BY_SKILL_TAG",
         "source": "USER_VERIFIED",
     },
     WIND_GIMLET_SKILL: {
@@ -264,7 +262,7 @@ SKILL_MODELS = {
             "condition": "기류 보호막 보유",
         },
         "criticalDamageTripod": None,
-        "tagVerification": "PROVISIONAL",
+        "tagVerification": "VERIFIED_BY_SKILL_TAG",
         "source": "USER_VERIFIED",
     },
     CUTTING_WIND_SKILL: {
@@ -287,7 +285,7 @@ SKILL_MODELS = {
             "name": "벼락",
             "value": Decimal("2.10"),
         },
-        "tagVerification": "PROVISIONAL",
+        "tagVerification": "VERIFIED_BY_SKILL_TAG",
         "source": "USER_VERIFIED",
     },
     DOWNPOUR_SKILL: {
@@ -321,7 +319,7 @@ SKILL_MODELS = {
             "name": "우레",
             "value": Decimal("1.80"),
         },
-        "tagVerification": "PROVISIONAL",
+        "tagVerification": "VERIFIED_BY_SKILL_TAG",
         "source": "USER_VERIFIED",
     },
     WHIRLWIND_STEP_SKILL: {
@@ -346,7 +344,7 @@ SKILL_MODELS = {
             "condition": "기류 보호막 보유",
         },
         "criticalDamageTripod": None,
-        "tagVerification": "PROVISIONAL",
+        "tagVerification": "VERIFIED_BY_SKILL_TAG",
         "source": "USER_VERIFIED",
     },
 }
@@ -432,11 +430,15 @@ RULESETS["current-v2.7.1"] = {
 }
 RULESETS["current-v2.7.2"] = {
     **RULESETS["current-v2.7.1"],
-    "label": "v2.7.1 추가 타격 중복 방지 + 재구성 공격력 비교 계산",
+    "label": "공식 재구성 공격력 + 공간 가르기 모션계수 상향",
     "source": (
-        "current-v2.7.1 + user-requested calculated-attack override"
+        "current-v2.7.1 + officially adopted reconstructed attack power "
+        "+ user-confirmed Space Cutting motion coefficient x1.292"
     ),
     "useCalculatedAttackForDamage": True,
+    "skillMotionCoefficientMultipliers": {
+        SPACE_CUTTING_SKILL: Decimal("1.292"),
+    },
 }
 
 WORKBOOK_FORMULA_EVIDENCE = {
@@ -754,6 +756,27 @@ def get_skill_model(skill_name: str) -> dict[str, Any]:
         raise CalculationError(
             f"등록되지 않은 스킬 '{skill_name}'. 지원: {supported}"
         ) from exc
+
+
+def effective_skill_hits(
+    skill_name: str, rules: dict[str, Any]
+) -> list[dict[str, Any]]:
+    """Resolve versioned motion-coefficient changes without altering constants."""
+    canonical = canonical_skill(skill_name)
+    multiplier = dec(
+        (rules.get("skillMotionCoefficientMultipliers") or {}).get(
+            canonical, Decimal("1")
+        )
+    )
+    return [
+        {
+            **hit,
+            "originalCoefficient": hit["coefficient"],
+            "coefficient": hit["coefficient"] * multiplier,
+            "coefficientMultiplier": multiplier,
+        }
+        for hit in get_skill_model(canonical)["hits"]
+    ]
 
 
 def ark_passive_skill_damage_scope(
@@ -2947,6 +2970,7 @@ def calculate(
     rules = get_rules(rule_version)
     skill_name = canonical_skill(skill_name)
     skill_model = get_skill_model(skill_name)
+    effective_hits = effective_skill_hits(skill_name, rules)
     warnings = parsed["warnings"]
     assumptions: list[dict[str, Any]] = []
     equipment = parsed["equipment"]
@@ -2963,10 +2987,15 @@ def calculate(
             value=len(skill_model["hits"]),
             raw="; ".join(
                 f"{hit['name']}={hit['coefficient']}×공격력+{hit['constant']}"
-                for hit in skill_model["hits"]
+                for hit in effective_hits
             ),
             note=(
                 (
+                    "원본 모션계수에 2026-02-11 피해 상향분 ×1.292를 "
+                    "적용하고 모션상수는 변경하지 않음"
+                    if skill_name == SPACE_CUTTING_SKILL
+                    and effective_hits[0]["coefficientMultiplier"] != 1
+                    else
                     "1·2타는 기본 타격, 3타는 공간베기 94.8% 추가 공격의 "
                     "별도 모션식으로 사용"
                     if skill_name == DOWNPOUR_SKILL
@@ -3360,8 +3389,9 @@ def calculate(
     elif calculated_attack_override and not attack_values_match:
         warn_once(
             warnings,
-            "재구성 공격력과 API 프로필 공격력이 불일치하지만 current-v2.7.2 "
-            "비교 규칙에 따라 이후 피해 계산에는 재구성 공격력을 사용했습니다.",
+            "재구성 공격력과 API 프로필 공격력이 불일치하여 공식 "
+            "current-v2.7.2 규칙에 따라 이후 피해 계산에는 재구성 "
+            "공격력을 사용했습니다.",
         )
 
     additional_damage_percent = (
@@ -3682,7 +3712,7 @@ def calculate(
 
     hit_bases = [
         hit["coefficient"] * damage_formula_attack + hit["constant"]
-        for hit in skill_model["hits"]
+        for hit in effective_hits
     ]
     skill_base = sum(hit_bases, Decimal("0"))
     enemy_defense_reduction = (
@@ -3726,13 +3756,36 @@ def calculate(
         + (grid["criticalRate"] if include_arkgrid else Decimal("0"))
     )
     critical_rate = min(Decimal("1"), max(Decimal("0"), critical_rate_raw))
+    critical_rate_components = {
+        "criticalStat": profile["criticalRateFromStat"],
+        "equipment": equipment["criticalRate"],
+        "adrenaline": adrenaline_crit,
+        "arkPassive": ark_critical_rate,
+        "exposedWeakness": exposed,
+        "arkGrid": (
+            grid["criticalRate"] if include_arkgrid else Decimal("0")
+        ),
+    }
+    ark_passive_critical_damage = sum(
+        ark["criticalDamageByName"].values(), Decimal("0")
+    )
+    arkgrid_critical_damage = (
+        grid["criticalDamage"] if include_arkgrid else Decimal("0")
+    )
     critical_damage = (
         FIXED["baseCriticalDamage"]
         + equipment["criticalDamage"]
-        + sum(ark["criticalDamageByName"].values(), Decimal("0"))
-        + (grid["criticalDamage"] if include_arkgrid else Decimal("0"))
+        + ark_passive_critical_damage
+        + arkgrid_critical_damage
         + tripod_critical_damage
     )
+    critical_damage_components = {
+        "base": FIXED["baseCriticalDamage"],
+        "equipment": equipment["criticalDamage"],
+        "arkPassive": ark_passive_critical_damage,
+        "arkGrid": arkgrid_critical_damage,
+        "skillTripod": tripod_critical_damage,
+    }
     core_critical_hit_multiplier = Decimal("1")
     for factor in active_core_factors:
         if factor["category"] == "criticalHitDamagePercent":
@@ -3750,7 +3803,7 @@ def calculate(
         + noncritical_raw * (Decimal("1") - critical_rate)
     )
     hit_results: list[dict[str, Any]] = []
-    for hit, hit_base in zip(skill_model["hits"], hit_bases):
+    for hit, hit_base in zip(effective_hits, hit_bases):
         hit_noncritical = hit_base * common_damage_multiplier
         hit_critical = (
             hit_noncritical
@@ -3765,6 +3818,8 @@ def calculate(
             {
                 "name": hit["name"],
                 "coefficient": hit["coefficient"],
+                "originalCoefficient": hit["originalCoefficient"],
+                "coefficientMultiplier": hit["coefficientMultiplier"],
                 "constant": hit["constant"],
                 "tripodSource": hit.get("tripodSource"),
                 "skillBaseRaw": hit_base,
@@ -3804,7 +3859,10 @@ def calculate(
         "skillName": skill_name,
         "skillModel": {
             "variant": skill_model["variant"],
-            "hitCount": len(skill_model["hits"]),
+            "hitCount": len(effective_hits),
+            "motionCoefficientMultiplier": effective_hits[0][
+                "coefficientMultiplier"
+            ],
             "tags": sorted(skill_model["tags"]),
             "tagVerification": skill_model["tagVerification"],
             "source": skill_model["source"],
@@ -3937,7 +3995,7 @@ def calculate(
                 "API_PROFILE"
                 if use_profile_attack
                 else (
-                    "CALCULATED_RULE_OVERRIDE"
+                    "CALCULATED_OFFICIAL"
                     if calculated_attack_override and not attack_values_match
                     else "CALCULATED"
                 )
@@ -4009,9 +4067,19 @@ def calculate(
         "critical": {
             "rateRaw": critical_rate_raw,
             "rateCapped": critical_rate,
+            "rateComponents": critical_rate_components,
             "damageMultiplier": critical_damage,
+            "damageComponents": critical_damage_components,
             "skillTripodCriticalDamage": tripod_critical_damage,
             "criticalHitDamageMultiplier": critical_hit_damage_multiplier,
+            "criticalHitDamageFactors": {
+                "master": Decimal("1") + master_critical,
+                "bracelet": (
+                    Decimal("1")
+                    + equipment["braceletCriticalHitDamage"]
+                ),
+                "arkGrid": core_critical_hit_multiplier,
+            },
             "arkGridCriticalHitDamageMultiplier": (
                 core_critical_hit_multiplier
             ),
@@ -4138,18 +4206,55 @@ def parse_all(
     return parsed
 
 
-def fmt(value: Any, places: int | None = None) -> str:
+def fmt(value: Any, places: int = 2) -> str:
+    """Format numeric values for Markdown reports only."""
     if isinstance(value, Decimal):
-        if places is not None:
-            return f"{value:.{places}f}"
-        return format(value, "f")
+        quantum = Decimal("1").scaleb(-places)
+        rounded = value.quantize(quantum, rounding=ROUND_HALF_UP)
+        return f"{rounded:,.{places}f}"
     if isinstance(value, int):
-        return f"{value:,}"
+        return f"{value:,.{places}f}"
     return str(value)
 
 
-def pct_fmt(value: Decimal, places: int = 4) -> str:
-    return f"{value * 100:.{places}f}%"
+def pct_fmt(value: Decimal, places: int = 2) -> str:
+    quantum = Decimal("1").scaleb(-places)
+    rounded = (value * 100).quantize(quantum, rounding=ROUND_HALF_UP)
+    return f"{rounded:.{places}f}%"
+
+
+def category_value_fmt(value: Decimal, category: str) -> str:
+    """Format normalized ArkGrid component values without hiding small percents."""
+    if category.endswith("Percent") or category in {
+        "attackSpeed",
+        "criticalDamage",
+        "criticalRate",
+        "moveSpeed",
+    }:
+        return pct_fmt(value)
+    return fmt(value)
+
+
+def source_value_fmt(value: Any, label: str) -> str:
+    """Format source-table fractions as percents when the label identifies one."""
+    percentage_markers = (
+        "Percent",
+        "additionalDamage",
+        "criticalDamage",
+        "criticalHitDamage",
+        "criticalRate",
+        "damageToEnemy",
+        "아바타 주스탯",
+        "어빌리티 스톤 기본 공격력",
+        "일반 보석",
+        "깨달음 카르마 무기 공격력",
+        "진화 카르마 진화형 피해",
+        "급소 노출",
+        "세상을 구하는 빛",
+    )
+    if any(marker in label for marker in percentage_markers):
+        return pct_fmt(dec(value))
+    return fmt(value)
 
 
 def report_sources(parsed: dict[str, Any]) -> list[dict[str, Any]]:
@@ -4177,8 +4282,8 @@ def render_report(
     parsed: dict[str, Any],
     without_grid: dict[str, Any],
     with_grid: dict[str, Any],
-    raw_path: Path,
-    parsed_path: Path,
+    raw_path: Path | None,
+    parsed_path: Path | None,
 ) -> str:
     p = parsed
     c = with_grid
@@ -4186,7 +4291,6 @@ def render_report(
         f"# {p['profile'].get('characterName') or p['characterName']} "
         f"{c['skillName']} API 파싱·피해 계산 보고서",
         "",
-        f"- API 스냅샷: `{raw_bundle.get('capturedAtKst')}`",
         f"- 캐릭터: `{p['profile'].get('characterName')}` / `{p['profile'].get('className')}`",
         f"- 아이템 레벨: `{p['profile'].get('itemLevel')}`",
         f"- 계산 스킬: `{c['skillName']}` / `{c['skillModel']['variant']}`",
@@ -4196,28 +4300,44 @@ def render_report(
         f"- DB 릴리스: `{c['dbRelease']}`",
         f"- 시나리오 프리셋: `{c['scenarioPresetId']}`",
         f"- 계산 모드: `{c['calculationMode']}`",
-        f"- 규칙 출처: `{c['ruleSource']}`",
         f"- 중간 버림 단계: `{', '.join(c['intermediateFloorStages']) or '없음'}`",
-        f"- API 원본: [{raw_path.name}]({raw_path.name})",
-        f"- 파싱 결과: [{parsed_path.name}]({parsed_path.name})",
         "- 과거 피해값과의 회귀검증은 수행하지 않았습니다.",
         "",
-        "## 1. API 호출 결과",
+    ]
+    source_lines: list[str] = [
+        "## 5. API 호출 결과",
+        "",
+        f"- API 스냅샷: `{raw_bundle.get('capturedAtKst')}`",
+        f"- 규칙 출처: `{c['ruleSource']}`",
+        (
+            f"- 디버그 API 원본: [{raw_path.name}]({raw_path.name})"
+            if raw_path is not None
+            else "- 디버그 API 원본 JSON: 기본 설정에서는 생성하지 않음"
+        ),
+        (
+            f"- 디버그 파싱 결과: [{parsed_path.name}]({parsed_path.name})"
+            if parsed_path is not None
+            else "- 디버그 파싱 JSON: 기본 설정에서는 생성하지 않음"
+        ),
         "",
         "| 엔드포인트 | HTTP | 호출 시각(KST) | 남은 호출량 |",
         "|---|---:|---|---:|",
     ]
     for key, meta in (raw_bundle.get("endpoints") or {}).items():
-        lines.append(
+        source_lines.append(
             f"| `{key}` | {meta.get('status')} | {meta.get('capturedAtKst')} | "
             f"{(meta.get('rateLimit') or {}).get('remaining')} |"
         )
 
-    lines += [
+    source_lines += [
         "",
-        "전체 응답 본문은 API 원본 JSON에 엔드포인트별 `rawBody`와 파싱된 `responses`로 보존했습니다. Authorization 헤더는 저장하지 않았습니다.",
+        (
+            "`--emit-debug-json`을 지정한 경우에만 전체 응답 본문을 API 원본 "
+            "JSON의 엔드포인트별 `rawBody`와 `responses`로 보존합니다. "
+            "Authorization 헤더는 저장하지 않습니다."
+        ),
         "",
-        "## 2. 파싱 결과와 출처",
+        "## 6. 파싱 결과와 출처",
         "",
         "| 값 | 정규화 결과 | 출처 | 파싱 | 적용 가능 | 실제 적용 | 제외 사유 |",
         "|---|---:|---|---|---|---|---|",
@@ -4235,14 +4355,14 @@ def render_report(
         applied = "예" if item.get("applied", True) else "아니오"
         excluded_reason = str(item.get("excludedReason") or "").replace("|", "\\|")
         value = item.get("value")
-        lines.append(
-            f"| {label} | `{fmt(value)}` | `{path}`"
+        source_lines.append(
+            f"| {label} | `{source_value_fmt(value, label)}` | `{path}`"
             f"{'<br>' + raw_short if raw_short else ''}"
             f"{'<br>' + note if note else ''} | {parsed_status} | {eligible} | "
             f"{applied} | {excluded_reason or '-'} |"
         )
 
-    lines += [
+    source_lines += [
         "",
         "### 활성 ArkGrid 코어 임계 효과",
         "",
@@ -4260,15 +4380,28 @@ def render_report(
                 if component["condition"]:
                     condition += "; " + component["condition"]
                 safe_condition = condition.replace("|", "\\|")
-                lines.append(
+                source_lines.append(
                     f"| {core['name']} ({core['grade']}) | {core['point']} | "
                     f"{option['requiredPoints']}P | `{component['category']}` | "
-                    f"{fmt(component['value'])} | `{component['operator']}` | "
+                    f"{category_value_fmt(component['value'], component['category'])} | "
+                    f"`{component['operator']}` | "
                     f"{'예' if component['applied'] else '아니오'} | "
                     f"{safe_condition} |"
                 )
     if not core_row_count:
-        lines.append("| - | - | - | - | - | - | - | 활성 수치 효과 없음 |")
+        source_lines.append("| - | - | - | - | - | - | - | 활성 수치 효과 없음 |")
+    if c["skillName"] == SPACE_CUTTING_SKILL:
+        source_lines += [
+            "",
+            "### 공간 가르기 실측 오차 조사 출처",
+            "",
+            "- [2026-02 밸런스 패치 후 공간 가르기 피해량 +29.2% 분석]"
+            "(https://vortexgaming.io/postdetail/681443)",
+            "- [공간 가르기는 피해 보석을 장착할 수 없다는 사용자 논의]"
+            "(https://www.inven.co.kr/board/lostark/5862/81961)",
+            "- 위 자료는 오차 원인 가설의 근거이며 공식 모션계수 출처는 "
+            "아닙니다.",
+        ]
 
     i = c["inputs"]
     ms = c["mainStat"]
@@ -4295,7 +4428,7 @@ def render_report(
 
     lines += [
         "",
-        "## 3. 계산 과정",
+        "## 1. 계산 과정",
         "",
         (
             "모든 중간값은 소수로 유지했습니다. 아래 세 최종 표시 피해에서만 "
@@ -4305,7 +4438,7 @@ def render_report(
             + ", ".join(c["intermediateFloorStages"])
         ),
         "",
-        "### 3.1 주스탯",
+        "### 1.1 주스탯",
         "",
         f"`기초 지능 = {fmt(i['equipmentMainStat'])} + {fmt(i['levelMainStat'])} + "
         f"{fmt(i['expeditionMainStat'])} + {fmt(i['collectionMainStat'])} = {fmt(ms['base'])}`",
@@ -4318,7 +4451,7 @@ def render_report(
         "",
         f"`규칙 적용 최종 지능 = {fmt(ms['final'])}`",
         "",
-        "### 3.2 무기 공격력",
+        "### 1.2 무기 공격력",
         "",
         f"`무기 공격력 증가 = {pct_fmt(i['equipmentWeaponAttackPercent'])} + "
         f"{pct_fmt(i['karmaWeaponAttackPercent'])} + 아크그리드 코어 "
@@ -4334,7 +4467,7 @@ def render_report(
         "",
         f"`규칙 적용 최종 무기 공격력 = {fmt(wa['final'])}`",
         "",
-        "### 3.3 기본 공격력과 최종 공격력",
+        "### 1.3 기본 공격력과 최종 공격력",
         "",
         f"`sqrt({fmt(ms['final'])} × {fmt(wa['final'])} ÷ 6) = "
         f"{fmt(ap['rootBeforeBaseAttackPercent'])}`",
@@ -4387,10 +4520,10 @@ def render_report(
             f"`{fmt(ap['usedForDamage'])}`을 사용합니다."
             if ap["usedForDamageSource"] == "API_PROFILE"
             else (
-                f"두 값은 불일치하지만 current-v2.7.2 비교 규칙에 따라 이후 "
+                f"두 값은 불일치하지만 공식 current-v2.7.2 규칙에 따라 이후 "
                 f"스킬 피해 계산에는 재구성 공격력 "
                 f"`{fmt(ap['usedForDamage'])}`을 사용합니다."
-                if ap["usedForDamageSource"] == "CALCULATED_RULE_OVERRIDE"
+                if ap["usedForDamageSource"] == "CALCULATED_OFFICIAL"
                 else f"두 값이 일치하거나 프로필 값이 없어 이후 계산에는 "
                 f"재구성 공격력 `{fmt(ap['usedForDamage'])}`을 사용합니다."
             )
@@ -4402,7 +4535,7 @@ def render_report(
             "효과를 다시 곱하지 않아 중복 적용을 방지합니다."
         ),
         "",
-        "### 3.4 공격·이동속도 및 음속 돌파",
+        "### 1.4 공격·이동속도 및 음속 돌파",
         "",
         "공격속도 구성:",
         "",
@@ -4466,7 +4599,7 @@ def render_report(
         f"- 최대값 제한 발동: "
         f"`{'예' if sonic_detail['limitedByMaximum'] else '아니오'}`",
         "",
-        "### 3.5 추가 피해",
+        "### 1.5 추가 피해",
         "",
         f"`1 + 무기 {fmt(i['weaponAdditionalDamage'])} + 목걸이 "
         f"{fmt(i['necklaceAdditionalDamage'])} + 기타 장비 "
@@ -4475,7 +4608,7 @@ def render_report(
         f"아크그리드 {fmt(i['arkGridAdditionalDamage'])} = "
         f"{fmt(dg['additionalDamageMultiplier'])}`",
         "",
-        "### 3.5.1 일반 보석 스킬 효과",
+        "### 1.5.1 일반 보석 스킬 효과",
         "",
         f"- 대상 스킬: `{regular_gem['skillName']}`",
         f"- 스킬 피해 증가: `{pct_fmt(regular_gem['damagePercent'])}` "
@@ -4485,7 +4618,7 @@ def render_report(
         f"- 쿨다운 배율: `{fmt(regular_gem['cooldownMultiplier'])}` "
         "(1회 피해에는 미적용, 로테이션/DPS 입력으로 보존)",
         "",
-        "### 3.5.2 선택 트라이포드 효과",
+        "### 1.5.2 선택 트라이포드 효과",
         "",
         "각 모션 타격은 출처를 구분합니다. 기본 타격에 없는 트라이포드 효과는 "
         "별도 배율로 적용하고, 트라이포드로 생성된 타격의 모션식이 제공된 경우 "
@@ -4541,7 +4674,7 @@ def render_report(
         "- 별도 모션식이 없는 추가 공격만 툴팁의 총 추가 피해율을 스킬 전체에 "
         "곱합니다. 별도 모션 타격이 있으면 추가 배율을 중복 적용하지 않습니다.",
         "",
-        "### 3.6 서로 곱하는 피해 소제목",
+        "### 1.6 서로 곱하는 피해 소제목",
         "",
         "| 소제목 | 증가율 | 배율 |",
         "|---|---:|---:|",
@@ -4563,7 +4696,7 @@ def render_report(
 
     lines += [
         "",
-        "### 3.7 적 보정",
+        "### 1.7 적 보정",
         "",
         f"`유효 방어력 = {fmt(enemy['defense'])} × "
         f"(1 - {fmt(enemy['defenseReductionPercent'])}) = "
@@ -4575,7 +4708,7 @@ def render_report(
         "",
         f"`적 받는 피해 배율 = {fmt(enemy['damageTakenMultiplier'])}`",
         "",
-        "### 3.8 비치명타",
+        "### 1.8 비치명타",
         "",
         "| 타격 | 모션 계수 | 모션 상수 | 사용 공격력 | 스킬 본체 |",
         "|---|---:|---:|---:|---:|",
@@ -4586,6 +4719,18 @@ def render_report(
             f"{fmt(hit['constant'])} | {fmt(ap['usedForDamage'])} "
             f"({ap['usedForDamageSource']}) | {fmt(hit['skillBaseRaw'])} |"
         )
+    coefficient_multiplier = c["skillModel"]["motionCoefficientMultiplier"]
+    if coefficient_multiplier != 1:
+        coefficient_changes = ", ".join(
+            f"{hit['name']} {fmt(hit['originalCoefficient'])} → "
+            f"{fmt(hit['coefficient'])}"
+            for hit in damage["hits"]
+        )
+        lines += [
+            "",
+            f"- 모션계수 상향: `×{fmt(coefficient_multiplier)}` "
+            f"({coefficient_changes}); 모션상수는 유지",
+        ]
     lines += [
         "",
         f"`스킬 본체 합계 = {' + '.join(fmt(hit['skillBaseRaw']) for hit in damage['hits'])} "
@@ -4599,13 +4744,38 @@ def render_report(
         "",
         f"`floor({fmt(damage['nonCriticalRaw'])}) = {fmt(damage['nonCritical'])}`",
         "",
-        "### 3.9 치명타와 기대 피해",
+        "### 1.9 치명타와 기대 피해",
+        "",
+        "치명타율 계산:",
+        "",
+        f"`원시 치명타율 = 치명 스탯 {pct_fmt(crit['rateComponents']['criticalStat'])} + "
+        f"장비 {pct_fmt(crit['rateComponents']['equipment'])} + "
+        f"아드레날린 {pct_fmt(crit['rateComponents']['adrenaline'])} + "
+        f"아크 패시브 {pct_fmt(crit['rateComponents']['arkPassive'])} + "
+        f"급소 노출 {pct_fmt(crit['rateComponents']['exposedWeakness'])} + "
+        f"아크그리드 {pct_fmt(crit['rateComponents']['arkGrid'])} = "
+        f"{pct_fmt(crit['rateRaw'])}`",
         "",
         f"- 원시 치명타율: `{pct_fmt(crit['rateRaw'])}`",
         f"- 상한 적용 치명타율: `{pct_fmt(crit['rateCapped'])}`",
+        "",
+        "치명타 피해 배율 계산:",
+        "",
+        f"`치명타 피해 배율 = 기본 {fmt(crit['damageComponents']['base'])} + "
+        f"장비 {fmt(crit['damageComponents']['equipment'])} + "
+        f"아크 패시브 {fmt(crit['damageComponents']['arkPassive'])} + "
+        f"아크그리드 {fmt(crit['damageComponents']['arkGrid'])} + "
+        f"스킬 트라이포드 {fmt(crit['damageComponents']['skillTripod'])} = "
+        f"{fmt(crit['damageMultiplier'])}`",
+        "",
         f"- 스킬 트라이포드 치명타 피해: "
         f"`{pct_fmt(crit['skillTripodCriticalDamage'])}`",
         f"- 치명타 피해 배율: `{fmt(crit['damageMultiplier'])}`",
+        f"`치명타 시 피해 증가 배율 = 회심 "
+        f"{fmt(crit['criticalHitDamageFactors']['master'])} × 팔찌 "
+        f"{fmt(crit['criticalHitDamageFactors']['bracelet'])} × 아크그리드 "
+        f"{fmt(crit['criticalHitDamageFactors']['arkGrid'])} = "
+        f"{fmt(crit['criticalHitDamageMultiplier'])}`",
         f"- 치명타 시 피해 증가 배율: `{fmt(crit['criticalHitDamageMultiplier'])}`",
         "",
         f"`치명타 원시값 = {fmt(damage['nonCriticalRaw'])} × "
@@ -4616,7 +4786,7 @@ def render_report(
         f"{fmt(crit['rateCapped'])} + {fmt(damage['nonCriticalRaw'])} × "
         f"(1 - {fmt(crit['rateCapped'])}) = {fmt(damage['expectedRaw'])}`",
         "",
-        "## 4. 계산 결과",
+        "## 2. 계산 결과",
         "",
         "| 타격 | 비치명타 | 치명타 | 기대 피해 |",
         "|---|---:|---:|---:|",
@@ -4641,6 +4811,11 @@ def render_report(
         f"- 스킬 태그: `{', '.join(c['skillModel']['tags'])}` "
         f"({c['skillModel']['tagVerification']})",
     ]
+    if "NON_DIRECTIONAL" in c["skillModel"]["tags"]:
+        lines.append(
+            "- `NON_DIRECTIONAL` 태그가 있으므로 비방향성 스킬로 "
+            "확정하여 계산했습니다."
+        )
     if c["skillScope"]:
         for item in c["skillScope"]:
             status = "적용" if item["applied"] else "제외"
@@ -4661,13 +4836,33 @@ def render_report(
             for item in dg["engravingParts"]
         ):
             lines.append(
-                "- 공식 API에 방향성 분류가 없어 `타격의 대가` 적용은 "
-                "비방향성 스킬이라는 잠정 가정입니다."
+                "- `NON_DIRECTIONAL` 태그에 따라 `타격의 대가`를 "
+                "적용했습니다."
             )
+        lines += [
+            "",
+            "### 공간 가르기 실측 오차 반영",
+            "",
+            "- 다른 스킬과 공통인 공격력·각인·카드·방어력·아크그리드 "
+            "계산은 실측과 오차 범위 내에서 맞으므로, 공통 배율보다 "
+            "공간 가르기 전용 입력을 우선 의심해야 합니다.",
+            "- 공간 가르기에는 피해 보석이 없는 것이 정상이며, 보석 누락은 "
+            "원인 후보에서 제외했습니다.",
+            "- 2026-02-11 밸런스 패치의 공간 가르기 피해량 +29.20%를 "
+            "반영하기 위해 1타·2타 모션계수만 `+29.20%` 했습니다. "
+            "모션상수는 기존 값을 유지했습니다.",
+            "- 유효 모션계수는 1타 `51.77`, 2타 `120.80`입니다.",
+            "- 두 번째 후보는 제공된 1타·2타 모션식에 포함되지 않은 추가 "
+            "타격 또는 후속 검풍입니다. 실측에서 1타·2타 피해 숫자를 각각 "
+            "기록하면 계수 노후화와 누락 타격을 구분할 수 있습니다.",
+            "- `NON_DIRECTIONAL` 태그로 타격의 대가는 이미 적용되므로 "
+            "방향성 판정 누락은 원인이 아닙니다.",
+            "- 이 보정은 `current-v2.7.2`에 공식 적용했습니다.",
+        ]
 
     lines += [
         "",
-        "## 5. 제외 및 경고",
+        "## 3. 제외 및 경고",
         "",
         "### 제외된 데이터",
         "",
@@ -4687,14 +4882,14 @@ def render_report(
         lines.append("- 없음")
     lines += [
         "",
-        "## 6. 검증 결과",
+        "## 4. 검증 결과",
         "",
         "- 과거 스펙의 최종 피해와 회귀 비교하지 않았습니다.",
         "- 원본 API 경로와 각 파싱값을 출처 표로 연결했습니다.",
         "- 초월, 비활성 아크그리드 젬, 서포터 옵션, 미지원 효과는 제외 목록에서 확인할 수 있습니다.",
         "- 아크그리드 활성 젬·누적 효과(Effects[])와 코어별 활성 임계 효과를 구조화해 검증했습니다.",
         "- 출처마다 parsed / eligible / applied / excludedReason 상태를 분리했습니다.",
-        "- fallback 사용 내역은 파싱 JSON의 `fallbacks`와 계산별 `provenance.fallbacks`에 구조화했습니다.",
+        "- fallback 사용 내역은 내부 파싱 결과의 `fallbacks`와 계산별 `provenance.fallbacks`에 구조화했습니다.",
         (
             "- `우뢰바람`은 입력 별칭으로만 허용하고 결과에는 `우레바람`을 사용했습니다."
             if c["skillName"] == CANONICAL_SKILL
@@ -4707,6 +4902,8 @@ def render_report(
         ),
         "",
     ]
+    lines += source_lines
+    lines.append("")
     return "\n".join(lines)
 
 
@@ -4794,16 +4991,17 @@ def validate(parsed: dict[str, Any], without_grid: dict[str, Any], with_grid: di
     if with_grid["damage"]["attackPowerUsed"] != expected_damage_attack:
         failures.append("프로필/재구성 공격력 선택 규칙 검증 실패")
     skill_model = get_skill_model(with_grid["skillName"])
+    effective_hits = effective_skill_hits(with_grid["skillName"], rules)
     expected_skill_base = sum(
         (
             hit["coefficient"] * expected_damage_attack + hit["constant"]
-            for hit in skill_model["hits"]
+            for hit in effective_hits
         ),
         Decimal("0"),
     )
     if with_grid["damage"]["skillBaseRaw"] != expected_skill_base:
         failures.append("선택 공격력의 스킬 본체 연결 실패")
-    if with_grid["damage"]["hitCount"] != len(skill_model["hits"]):
+    if with_grid["damage"]["hitCount"] != len(effective_hits):
         failures.append("스킬 타격 수 연결 실패")
     expected_tripod_multiplier = Decimal("1")
     for effect in with_grid["skillModel"].get("tripodDamageEffects", []):
@@ -4844,7 +5042,7 @@ def validate(parsed: dict[str, Any], without_grid: dict[str, Any], with_grid: di
                     f"{effect['tripodName']} 내장 트라이포드 배율 중복 적용"
                 )
     for hit_result, hit_model in zip(
-        with_grid["damage"]["hits"], skill_model["hits"]
+        with_grid["damage"]["hits"], effective_hits
     ):
         expected_hit_base = (
             hit_model["coefficient"] * expected_damage_attack
@@ -4937,6 +5135,14 @@ def main() -> int:
         type=Path,
         help="공식 API 호출 대신 기존 raw bundle JSON을 사용",
     )
+    parser.add_argument(
+        "--emit-debug-json",
+        action="store_true",
+        help=(
+            "사용자용 보고서와 별도로 *_api_raw.json 및 *_parsed.json "
+            "디버그 산출물을 생성"
+        ),
+    )
     args = parser.parse_args()
     raw_path, parsed_path, report_path = make_paths(
         args.output_dir, args.character, args.rules_version, args.skill
@@ -4949,7 +5155,8 @@ def main() -> int:
     if args.snapshot:
         raw_bundle = json.loads(args.snapshot.read_text(encoding="utf-8"))
         responses = response_from_raw_bundle(raw_bundle)
-        write_json(raw_path, raw_bundle)
+        if args.emit_debug_json:
+            write_json(raw_path, raw_bundle)
     else:
         token = os.environ.get("LOSTARK_API_TOKEN", "")
         if not token.strip():
@@ -4960,7 +5167,8 @@ def main() -> int:
             )
             return 2
         raw_bundle, responses = fetch_all(token, args.character)
-        write_json(raw_path, raw_bundle)
+        if args.emit_debug_json:
+            write_json(raw_path, raw_bundle)
 
     parsed = parse_all(responses, args.character, args.skill)
     without_grid = calculate(
@@ -4986,9 +5194,15 @@ def main() -> int:
         },
     }
     parsed["validation"] = {"passed": not failures, "failures": failures}
-    write_json(parsed_path, parsed)
+    if args.emit_debug_json:
+        write_json(parsed_path, parsed)
     report = render_report(
-        raw_bundle, parsed, without_grid, with_grid, raw_path, parsed_path
+        raw_bundle,
+        parsed,
+        without_grid,
+        with_grid,
+        raw_path if args.emit_debug_json else None,
+        parsed_path if args.emit_debug_json else None,
     )
     report_path.write_text(report, encoding="utf-8", newline="\n")
 
@@ -4997,8 +5211,9 @@ def main() -> int:
         for failure in failures:
             print(f"- {failure}")
         return 1
-    print(f"API 원본: {raw_path.resolve()}")
-    print(f"파싱 결과: {parsed_path.resolve()}")
+    if args.emit_debug_json:
+        print(f"디버그 API 원본: {raw_path.resolve()}")
+        print(f"디버그 파싱 결과: {parsed_path.resolve()}")
     print(f"계산 보고서: {report_path.resolve()}")
     print(
         "결과: "
