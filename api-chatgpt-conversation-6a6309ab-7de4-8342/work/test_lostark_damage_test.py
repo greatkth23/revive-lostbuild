@@ -1181,6 +1181,75 @@ class ParserTests(unittest.TestCase):
             "VERIFIED_BY_SKILL_TAG",
         )
 
+    def test_directional_attack_bonus_rules(self):
+        head = dut.directional_attack_bonus({"FRONTAL_ATTACK"})
+        back = dut.directional_attack_bonus({"BACK_ATTACK"})
+        missed = dut.directional_attack_bonus(
+            {"BACK_ATTACK"}, success=False
+        )
+        authoritative_non_directional = dut.directional_attack_bonus(
+            {"NON_DIRECTIONAL", "BACK_ATTACK"}
+        )
+        self.assertEqual(head["damagePercent"], Decimal("0.20"))
+        self.assertEqual(head["criticalRate"], Decimal("0"))
+        self.assertEqual(back["damagePercent"], Decimal("0.05"))
+        self.assertEqual(back["criticalRate"], Decimal("0.10"))
+        self.assertFalse(missed["applied"])
+        self.assertEqual(missed["damagePercent"], Decimal("0"))
+        self.assertEqual(
+            authoritative_non_directional["tag"], "NON_DIRECTIONAL"
+        )
+        self.assertEqual(
+            authoritative_non_directional["damagePercent"], Decimal("0")
+        )
+
+    def test_every_registered_skill_has_one_direction_classification(self):
+        for skill, model in dut.SKILL_MODELS.items():
+            with self.subTest(skill=skill):
+                tags = set(model["tags"]) & dut.DIRECTION_TAGS
+                self.assertEqual(len(tags), 1)
+
+    def test_common_calculator_applies_head_and_back_attack(self):
+        back_hit = dut.calculate(
+            self.parsed,
+            skill_name="포카드",
+            directional_success=True,
+        )
+        back_miss = dut.calculate(
+            self.parsed,
+            skill_name="포카드",
+            directional_success=False,
+        )
+        head_hit = dut.calculate(
+            self.parsed,
+            skill_name="세렌디피티",
+            directional_success=True,
+        )
+        head_miss = dut.calculate(
+            self.parsed,
+            skill_name="세렌디피티",
+            directional_success=False,
+        )
+        self.assertEqual(
+            back_hit["damage"]["nonCriticalRaw"]
+            / back_miss["damage"]["nonCriticalRaw"],
+            Decimal("1.05"),
+        )
+        self.assertEqual(
+            back_hit["critical"]["rateRaw"]
+            - back_miss["critical"]["rateRaw"],
+            Decimal("0.10"),
+        )
+        self.assertEqual(
+            head_hit["damage"]["nonCriticalRaw"]
+            / head_miss["damage"]["nonCriticalRaw"],
+            Decimal("1.20"),
+        )
+        self.assertEqual(
+            head_hit["critical"]["rateRaw"],
+            head_miss["critical"]["rateRaw"],
+        )
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -17,6 +17,22 @@ class ArcanaModelTests(unittest.TestCase):
         self.assertEqual(ruin["hits"][0]["coefficient"], Decimal("15.90"))
         self.assertIn("BACK_ATTACK", base.get_skill_model("포카드")["tags"])
 
+    def test_arcana_direction_is_component_specific(self):
+        four_of_a_kind = base.directional_attack_bonus(
+            base.get_skill_model("포카드")["tags"]
+        )
+        serendipity = base.directional_attack_bonus(
+            base.get_skill_model("세렌디피티")["tags"]
+        )
+        linked_ruin = base.directional_attack_bonus(
+            base.get_skill_model("4스택 루인")["tags"]
+        )
+        self.assertEqual(four_of_a_kind["damagePercent"], Decimal("0.05"))
+        self.assertEqual(four_of_a_kind["criticalRate"], Decimal("0.10"))
+        self.assertEqual(serendipity["damagePercent"], Decimal("0.20"))
+        self.assertEqual(linked_ruin["tag"], "NON_DIRECTIONAL")
+        self.assertFalse(linked_ruin["applied"])
+
     def test_specialization_ruin_damage_is_parsed(self):
         profile = base.parse_profile(
             {
@@ -150,6 +166,31 @@ class ArcanaMechanicTests(unittest.TestCase):
         self.assertEqual(effect["ruinCriticalDamageBonus"], Decimal("5.04"))
         self.assertEqual(effect["directFactors"], [("연속된 어둠", Decimal("0.708"))])
 
+    def test_secret_garden_complete_secret_is_ruin_factor(self):
+        self.parsed["combatSkills"]["selectedTripods"].extend(
+            [
+                {
+                    "skill": "시크릿 가든",
+                    "name": "완전한 비밀",
+                    "tooltipText": "4스택인 적에게 적중 시 80.0% 증가된 피해를 준다.",
+                },
+                {
+                    "skill": "시크릿 가든",
+                    "name": "시크릿 찬스",
+                    "tooltipText": "스택트 피해 효과가 95.0% 증가한다.",
+                },
+            ]
+        )
+        effect = arcana.skill_tripod_mechanics(self.parsed, "시크릿 가든")
+        self.assertEqual(effect["directFactors"], [])
+        self.assertEqual(
+            effect["ruinFactors"],
+            [
+                ("완전한 비밀 4스택", Decimal("0.80")),
+                ("시크릿 찬스", Decimal("0.95")),
+            ],
+        )
+
     def test_serendipity_critical_proc_is_ruin_only(self):
         self.test_serendipity_four_stack_probability()
         mechanics = arcana.extract_arcana_mechanics(self.parsed)
@@ -212,8 +253,45 @@ class ArcanaMechanicTests(unittest.TestCase):
             defense_ignore_probability=True,
             ruin_critical_probability=True,
         )
+        guaranteed_pierce = arcana.component_damage(
+            name="꿰뚫는 일격 확정",
+            hit_bases=[("루인", Decimal("100"))],
+            seed=seed,
+            parsed=parsed,
+            mechanics=mechanics,
+            tripod_data=effect,
+            scenario=scenario,
+            factors=[],
+            defense_ignore_probability=True,
+            defense_ignore_chance_override=Decimal("1"),
+        )
+        guaranteed_lucky = arcana.component_damage(
+            name="우연한 일격 확정",
+            hit_bases=[("루인", Decimal("100"))],
+            seed=seed,
+            parsed=parsed,
+            mechanics=mechanics,
+            tripod_data=effect,
+            scenario=scenario,
+            factors=[],
+            ruin_critical_probability=True,
+            ruin_critical_chance_override=Decimal("1"),
+        )
         self.assertEqual(direct["criticalDamageExpected"], Decimal("2.048"))
         self.assertEqual(ruin["criticalDamageExpected"], Decimal("6.080"))
+        self.assertEqual(
+            guaranteed_pierce["defenseIgnoreChanceUsed"], Decimal("1")
+        )
+        self.assertEqual(
+            guaranteed_pierce["defenseMultiplierExpected"],
+            guaranteed_pierce["defenseMultiplierIgnored"],
+        )
+        self.assertEqual(
+            guaranteed_lucky["ruinCriticalBonusChanceUsed"], Decimal("1")
+        )
+        self.assertEqual(
+            guaranteed_lucky["criticalDamageExpected"], Decimal("7.088")
+        )
 
 
 if __name__ == "__main__":

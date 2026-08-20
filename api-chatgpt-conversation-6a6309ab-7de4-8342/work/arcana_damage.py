@@ -20,8 +20,8 @@ from typing import Any
 import lostark_damage_test as base
 
 
-CALCULATOR_VERSION = "2.8.0"
-RULE_VERSION = "arcana-current-v2.8.0"
+CALCULATOR_VERSION = "2.8.1"
+RULE_VERSION = "arcana-current-v2.8.1"
 CHARACTER_NAME = "나츠노소라"
 RUIN_COEFFICIENT = Decimal("15.90")
 RUIN_CONSTANT = Decimal("0")
@@ -46,6 +46,19 @@ SCENARIOS = {
     },
 }
 PRIMARY_SCENARIO = "rotation-ready"
+
+MEASURED_DAMAGE = {
+    base.CELESTIAL_RAIN_SKILL: Decimal("644.9") * Decimal("1000000"),
+    base.SERENDIPITY_SKILL: Decimal("267.8") * Decimal("1000000"),
+    base.SECRET_GARDEN_SKILL: Decimal("437.4") * Decimal("1000000"),
+    base.FOUR_OF_A_KIND_SKILL: Decimal("359.3") * Decimal("1000000"),
+}
+MEASUREMENT_DIRECTIONAL_SUCCESS = {
+    base.CELESTIAL_RAIN_SKILL: False,
+    base.SERENDIPITY_SKILL: False,
+    base.SECRET_GARDEN_SKILL: True,
+    base.FOUR_OF_A_KIND_SKILL: True,
+}
 
 
 def D(value: Any) -> Decimal:
@@ -187,8 +200,9 @@ def skill_tripod_mechanics(parsed: dict[str, Any], skill: str) -> dict[str, Any]
         chance = first_percent(
             tripod_text(parsed, skill, "시크릿 찬스"), r"스택트\s*피해\s*효과가\s*([0-9.]+)\s*%"
         )
-        result["directFactors"].append(("완전한 비밀 4스택 추가 본체", complete))
-        result["ruinFactors"].append(("시크릿 찬스", chance))
+        result["ruinFactors"].extend(
+            (("완전한 비밀 4스택", complete), ("시크릿 찬스", chance))
+        )
     elif skill == base.SERENDIPITY_SKILL:
         pierce = tripod_text(parsed, skill, "꿰뚫는 일격")
         result["defenseIgnoreChance"] = first_percent(pierce, r"([0-9.]+)\s*%\s*확률")
@@ -272,7 +286,9 @@ def component_damage(
     directional_damage: Decimal = Decimal("0"),
     directional_critical: Decimal = Decimal("0"),
     defense_ignore_probability: bool = False,
+    defense_ignore_chance_override: Decimal | None = None,
     ruin_critical_probability: bool = False,
+    ruin_critical_chance_override: Decimal | None = None,
 ) -> dict[str, Any]:
     crit = critical_state(
         seed, mechanics, tripod_data, scenario,
@@ -295,11 +311,20 @@ def component_damage(
 
     defense = D(seed["enemy"]["defenseMultiplier"])
     defense_expected = defense
-    if defense_ignore_probability and tripod_data["defenseIgnoreChance"]:
+    defense_ignore_chance = Decimal("0")
+    if defense_ignore_probability:
+        defense_ignore_chance = (
+            D(defense_ignore_chance_override)
+            if defense_ignore_chance_override is not None
+            else D(tripod_data["defenseIgnoreChance"])
+        )
+    if defense_ignore_chance:
         ignored_defense = D(seed["enemy"]["effectiveDefense"]) * (Decimal("1") - D(tripod_data["defenseIgnoreRate"]))
         ignored_multiplier = D(seed["enemy"]["defenseConstant"]) / (D(seed["enemy"]["defenseConstant"]) + ignored_defense)
-        chance = D(tripod_data["defenseIgnoreChance"])
-        defense_expected = defense * (Decimal("1") - chance) + ignored_multiplier * chance
+        defense_expected = (
+            defense * (Decimal("1") - defense_ignore_chance)
+            + ignored_multiplier * defense_ignore_chance
+        )
     else:
         ignored_multiplier = defense
 
@@ -319,9 +344,16 @@ def component_damage(
         critical_damage += D(mechanics["darkFateCriticalDamage"])
     critical_hit_multiplier = D(seed["critical"]["criticalHitDamageMultiplier"])
     critical_damage_expected = critical_damage
-    if ruin_critical_probability and tripod_data["ruinCriticalBonusChance"]:
+    ruin_critical_bonus_chance = Decimal("0")
+    if ruin_critical_probability:
+        ruin_critical_bonus_chance = (
+            D(ruin_critical_chance_override)
+            if ruin_critical_chance_override is not None
+            else D(tripod_data["ruinCriticalBonusChance"])
+        )
+    if ruin_critical_bonus_chance:
         critical_damage_expected += (
-            D(tripod_data["ruinCriticalBonusChance"])
+            ruin_critical_bonus_chance
             * D(tripod_data["ruinCriticalDamageBonus"])
         )
 
@@ -347,6 +379,7 @@ def component_damage(
         "critical": crit,
         "criticalDamage": critical_damage,
         "criticalDamageExpected": critical_damage_expected,
+        "ruinCriticalBonusChanceUsed": ruin_critical_bonus_chance,
         "criticalHitMultiplier": critical_hit_multiplier,
         "evolutionBase": evolution_base,
         "raidCaptain": raid,
@@ -354,6 +387,7 @@ def component_damage(
         "defenseMultiplierExpected": defense_expected,
         "defenseMultiplierNormal": defense,
         "defenseMultiplierIgnored": ignored_multiplier,
+        "defenseIgnoreChanceUsed": defense_ignore_chance,
         "factors": all_factors,
     }
 
@@ -363,10 +397,32 @@ def calculate_skill(
     skill: str,
     mechanics: dict[str, Any],
     scenario_name: str,
+    *,
+    directional_success: bool | None = None,
+    serendipity_lucky_strike: bool = True,
+    serendipity_lucky_strike_chance: Decimal | None = None,
+    serendipity_piercing_strike_chance: Decimal | None = None,
 ) -> dict[str, Any]:
     scenario = {**SCENARIOS[scenario_name], "mechanics": mechanics}
-    seed = base.calculate(parsed, True, base.DEFAULT_RULE_VERSION, skill)
+    if directional_success is not None:
+        scenario["directionalSuccess"] = directional_success
+    # The adapter applies direction per independently dealt component below.
+    # Suppress the common calculator's direct-skill application in this seed.
+    seed = base.calculate(
+        parsed,
+        True,
+        base.DEFAULT_RULE_VERSION,
+        skill,
+        directional_success=False,
+    )
     model = base.get_skill_model(skill)
+    direct_direction = base.directional_attack_bonus(
+        model["tags"], success=scenario["directionalSuccess"]
+    )
+    ruin_direction = base.directional_attack_bonus(
+        base.get_skill_model(base.FOUR_STACK_RUIN_SKILL)["tags"],
+        success=scenario["directionalSuccess"],
+    )
     tripod_data = skill_tripod_mechanics(parsed, skill)
     attack = D(seed["attackPower"]["usedForDamage"])
     direct_bases = [
@@ -380,13 +436,6 @@ def calculate_skill(
         *tripod_data["directFactors"],
         *((f"아크그리드 {skill}", value) for value in rain_core),
     ]
-    direction_damage = Decimal("0")
-    direction_crit = Decimal("0")
-    if scenario["directionalSuccess"] and "BACK_ATTACK" in model["tags"]:
-        direction_damage, direction_crit = Decimal("0.05"), Decimal("0.10")
-    elif scenario["directionalSuccess"] and "FRONTAL_ATTACK" in model["tags"]:
-        direction_damage = Decimal("0.20")
-
     direct = component_damage(
         name="스킬 본체",
         hit_bases=direct_bases,
@@ -396,9 +445,14 @@ def calculate_skill(
         tripod_data=tripod_data,
         scenario=scenario,
         factors=direct_factors,
-        directional_damage=direction_damage,
-        directional_critical=direction_crit,
+        directional_damage=direct_direction["damagePercent"],
+        directional_critical=direct_direction["criticalRate"],
         defense_ignore_probability=skill == base.SERENDIPITY_SKILL,
+        defense_ignore_chance_override=(
+            serendipity_piercing_strike_chance
+            if skill == base.SERENDIPITY_SKILL
+            else None
+        ),
     )
 
     ruin_factors: list[tuple[str, Decimal]] = [
@@ -422,8 +476,22 @@ def calculate_skill(
         tripod_data=tripod_data,
         scenario=scenario,
         factors=ruin_factors,
+        directional_damage=ruin_direction["damagePercent"],
+        directional_critical=ruin_direction["criticalRate"],
         defense_ignore_probability=skill == base.SERENDIPITY_SKILL,
-        ruin_critical_probability=skill == base.SERENDIPITY_SKILL,
+        defense_ignore_chance_override=(
+            serendipity_piercing_strike_chance
+            if skill == base.SERENDIPITY_SKILL
+            else None
+        ),
+        ruin_critical_probability=(
+            skill == base.SERENDIPITY_SKILL and serendipity_lucky_strike
+        ),
+        ruin_critical_chance_override=(
+            serendipity_lucky_strike_chance
+            if skill == base.SERENDIPITY_SKILL
+            else None
+        ),
     )
     return {
         "skill": skill,
@@ -431,6 +499,10 @@ def calculate_skill(
         "scenarioLabel": scenario["label"],
         "seed": seed,
         "tripod": tripod_data,
+        "directionalAttack": {
+            "direct": direct_direction,
+            "ruin": ruin_direction,
+        },
         "direct": direct,
         "ruin": ruin,
         "total": {
@@ -444,7 +516,13 @@ def calculate_standalone_ruin(
     parsed: dict[str, Any], mechanics: dict[str, Any], scenario_name: str
 ) -> dict[str, Any]:
     scenario = {**SCENARIOS[scenario_name], "mechanics": mechanics}
-    seed = base.calculate(parsed, True, base.DEFAULT_RULE_VERSION, base.FOUR_STACK_RUIN_SKILL)
+    seed = base.calculate(
+        parsed,
+        True,
+        base.DEFAULT_RULE_VERSION,
+        base.FOUR_STACK_RUIN_SKILL,
+        directional_success=False,
+    )
     attack = D(seed["attackPower"]["usedForDamage"])
     neutral_tripod = skill_tripod_mechanics(parsed, base.FOUR_STACK_RUIN_SKILL)
     factors = [
@@ -495,10 +573,28 @@ def calculate_suite(parsed: dict[str, Any]) -> dict[str, Any]:
         calculations[scenario][base.FOUR_STACK_RUIN_SKILL] = calculate_standalone_ruin(
             parsed, mechanics, scenario
         )
+    measurement = {
+        skill: calculate_skill(
+            parsed,
+            skill,
+            mechanics,
+            PRIMARY_SCENARIO,
+            directional_success=MEASUREMENT_DIRECTIONAL_SUCCESS[skill],
+            serendipity_lucky_strike=True,
+            serendipity_lucky_strike_chance=(
+                Decimal("1") if skill == base.SERENDIPITY_SKILL else None
+            ),
+            serendipity_piercing_strike_chance=(
+                Decimal("0") if skill == base.SERENDIPITY_SKILL else None
+            ),
+        )
+        for skill in ARCANA_SKILLS
+    }
     return {
         "mechanics": mechanics,
         "primaryScenario": PRIMARY_SCENARIO,
         "calculations": calculations,
+        "measurementCalculations": measurement,
     }
 
 
@@ -521,6 +617,7 @@ def factor_text(factors: list[tuple[str, Decimal]]) -> str:
 def render_report(raw: dict[str, Any], parsed: dict[str, Any], suite: dict[str, Any]) -> str:
     mechanics = suite["mechanics"]
     ready = suite["calculations"][suite["primaryScenario"]]
+    measurement = suite["measurementCalculations"]
     seed = ready[base.CELESTIAL_RAIN_SKILL]["seed"]
     ap = seed["attackPower"]
     lines = [
@@ -561,6 +658,34 @@ def render_report(raw: dict[str, Any], parsed: dict[str, Any], suite: dict[str, 
         lines.append(
             f"| {skill} | {fmt(result_int(r['total']['nonCriticalRaw']))} | {fmt(result_int(r['total']['criticalRaw']))} | {fmt(result_int(r['total']['expectedRaw']))} |"
         )
+
+    lines += [
+        "",
+        "### 제공된 실측 조건에 맞춘 치명타 비교",
+        "",
+        "실측값은 스킬 본체와 4스택 루인의 합산값으로 비교했습니다. 백어택 스킬은 백어택 성공, 세렌디피티는 헤드어택 실패·`우연한 일격` 발동·`꿰뚫는 일격` 미발동 조건입니다.",
+        "",
+        "| 스킬 | 실측 방향 조건 | 계산 치명타 합산 | 실측 | 계산 오차 |",
+        "|---|---|---:|---:|---:|",
+    ]
+    measurement_labels = {
+        base.CELESTIAL_RAIN_SKILL: "비방향성",
+        base.SERENDIPITY_SKILL: "헤드 실패·우연한 일격 발동·꿰뚫는 일격 미발동",
+        base.SECRET_GARDEN_SKILL: "백어택 성공",
+        base.FOUR_OF_A_KIND_SKILL: "백어택 성공",
+    }
+    for skill in ARCANA_SKILLS:
+        calculated = measurement[skill]["total"]["criticalRaw"]
+        measured = MEASURED_DAMAGE[skill]
+        error = calculated / measured - Decimal("1")
+        lines.append(
+            f"| {skill} | {measurement_labels[skill]} | "
+            f"{fmt(result_int(calculated))} | {fmt(measured)} | {pfmt(error)} |"
+        )
+    lines += [
+        "",
+        "- 실측 `더 데빌 2,241.40백만`은 사용자 요청 범위의 모션계수·모션상수가 없어 계산 비교에서 제외했습니다.",
+    ]
 
     lines += [
         "",
@@ -616,19 +741,22 @@ def render_report(raw: dict[str, Any], parsed: dict[str, Any], suite: dict[str, 
         f"- 준비 완료에서는 엣지 콤보 17P `×{fmt(1 + mechanics['edgeComboConditionalRuinDamage'])}`, 다크니스 엣지 치명 `+{pfmt(mechanics['streamCriticalRate'])}`, 별 코어 치명타 피해 `+{pfmt(mechanics['streamCoreCriticalDamage'])}`, 어두운 운명 치명타 피해 `+{pfmt(mechanics['darkFateCriticalDamage'])}`를 적용했습니다.",
         "- 일반 보석 피해는 해당 스킬 본체와 그 스킬로 발동한 스택트/루인 효과에 한 번씩 적용했습니다.",
         "- 마나 효율 증가는 네 루인 스킬과 그 스킬로 발동하는 루인 효과에 `×1.16`으로 적용했습니다.",
+        "- 방향성은 각 독립 피해 요소의 태그로 판정합니다. 헤드어택 본체는 피해 `×1.20`, 백어택 본체는 피해 `×1.05`와 치명타율 `+10.00%`를 적용합니다. 연결된 4스택 루인은 `NON_DIRECTIONAL`이므로 본체의 방향성 보너스를 상속하지 않습니다.",
         "- 세렌디피티 `꿰뚫는 일격`은 방어력 80.00% 무시가 50.00% 확률로 발동하는 두 방어 상태의 기대값으로 계산했습니다. `우연한 일격`은 4스택에서 80.00% 확률로 루인 치명타 피해 +504.00%가 발동하는 기대값으로 계산했습니다.",
         "- 셀레스티얼 레인: 급소 타격 +45.00%, 강화된 일격 ×1.60, 4스택 약점 포착 ×2.76, 질서 별 코어 ×1.08 ×1.008.",
-        "- 포 카드: 풀 하우스 치명 +44.00%, 카드 강화 ×1.75, 풀 하우스 보스 조건 ×1.36. 준비 완료 본체에만 백어택 피해 ×1.05와 치명 +10.00%를 적용했습니다.",
-        "- 시크릿 가든: 급소 타격 +40.00%, 완전한 비밀은 4스택 대상 본체 ×1.80, 시크릿 찬스는 루인 효과 ×1.95. 준비 완료 본체에만 백어택 보너스를 적용했습니다.",
-        "- 세렌디피티: 연속된 어둠은 본체 ×1.708. 준비 완료 본체에만 헤드어택 피해 ×1.20을 적용했으며 루인 효과에는 방향성 보너스를 적용하지 않았습니다.",
+        "- 포 카드: 풀 하우스 치명 +44.00%, 카드 강화 ×1.75, 풀 하우스 보스 조건 ×1.36. 준비 완료 본체에 백어택 피해 ×1.05와 치명 +10.00%를 적용했습니다.",
+        "- 시크릿 가든: 급소 타격 +40.00%, 완전한 비밀은 4스택 루인 효과 ×1.80, 시크릿 찬스는 루인 효과 ×1.95. 준비 완료 본체에 백어택 피해 ×1.05와 치명 +10.00%를 적용했습니다.",
+        "- 세렌디피티: 연속된 어둠은 본체 ×1.708. 일반 준비 완료 결과에는 본체 헤드어택 피해 ×1.20, 우연한 일격 80.00% 기대값, 꿰뚫는 일격 50.00% 기대값을 적용했습니다. 실측 비교에서는 헤드어택과 꿰뚫는 일격을 제외하고 우연한 일격의 루인 치명타 피해 +504.00%를 확정 적용했습니다.",
         "",
         "### 세렌디피티 확률 계산 확인",
         "",
     ]
     seren = ready[base.SERENDIPITY_SKILL]
+    measured_seren = measurement[base.SERENDIPITY_SKILL]
     lines += [
         f"- 정상 방어 배율 `{fmt(seren['ruin']['defenseMultiplierNormal'])}`, 방어 80.00% 무시 배율 `{fmt(seren['ruin']['defenseMultiplierIgnored'])}`, 50.00% 기대 방어 배율 `{fmt(seren['ruin']['defenseMultiplierExpected'])}`.",
         f"- 준비 완료 기본 치명타 피해 `{fmt(seren['ruin']['criticalDamage'])}`에 우연한 일격 기대 증가 `0.80 × 5.04 = 4.03`을 더해 기대 치명타 피해 `{fmt(seren['ruin']['criticalDamageExpected'])}`로 계산했습니다.",
+        f"- 실측 비교는 우연한 일격 발동 확률을 `{pfmt(measured_seren['ruin']['ruinCriticalBonusChanceUsed'])}`, 꿰뚫는 일격 발동 확률을 `{pfmt(measured_seren['ruin']['defenseIgnoreChanceUsed'])}`로 고정했습니다. 루인 치명타 피해 배율은 `{fmt(measured_seren['ruin']['criticalDamageExpected'])}`, 방어 배율은 `{fmt(measured_seren['ruin']['defenseMultiplierExpected'])}`입니다.",
         "",
         "## 5. 의도적으로 제외한 조건",
         "",
@@ -642,8 +770,8 @@ def render_report(raw: dict[str, Any], parsed: dict[str, Any], suite: dict[str, 
         "",
         "- API 툴팁은 본체를 `스킬 피해`, 스택 폭발을 `스택트 효과/루인 피해`로 구분합니다. 계산기도 두 부분을 분리했습니다.",
         "- 커뮤니티 직업 가이드로 루인 피해 자체에는 헤드/백 보너스가 적용되지 않는다는 점을 교차 확인했습니다.",
-        "- 완전한 비밀은 API 문구와 스킬 설명 자료가 모두 4스택 대상에게 스킬 피해가 증가한다고 설명하므로 본체 ×1.80으로 적용했습니다.",
-        "- 실측값이 제공되지 않아 이번 결과는 산식·파싱 검증이며 수치 회귀검증은 수행하지 않았습니다.",
+        "- 완전한 비밀 ×1.80은 이전 실측 교정에서 확인한 대로 4스택 루인 효과에 적용했습니다. 본체에 적용하면 현재 실측 대비 약 -45.89%로 벌어지는 반면, 루인에 적용하면 현재 특화 1,646 기준 약 -5.42%입니다.",
+        "- 사용자 제공 실측치는 위 표에서 각 스킬의 실제 방향 적중 조건과 세렌디피티 우연한 일격 발동·꿰뚫는 일격 미발동 조건을 맞춰 회귀 비교했습니다.",
         "",
         "## 7. API 호출 결과와 출처",
         "",

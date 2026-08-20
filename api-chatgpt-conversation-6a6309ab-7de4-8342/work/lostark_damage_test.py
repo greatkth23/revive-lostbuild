@@ -58,9 +58,9 @@ SKILL_ALIASES = {
     FOUR_STACK_RUIN_SKILL: FOUR_STACK_RUIN_SKILL,
     "4 스택 루인": FOUR_STACK_RUIN_SKILL,
 }
-CALCULATOR_VERSION = "2.7.2"
+CALCULATOR_VERSION = "2.8.1"
 PARSER_VERSION = "lostark-api-v2.7.1"
-PARSED_SCHEMA_VERSION = "3.5.1"
+PARSED_SCHEMA_VERSION = "3.6.0"
 DEFAULT_RULE_VERSION = "current-v2.7.2"
 DB_RELEASE = "weather-artist-v0.4"
 SCENARIO_PRESET_ID = "max-favorable-example-boss-v1"
@@ -97,6 +97,25 @@ FIXED = {
     "combatBlessingMoveSpeedPercent": Decimal("0.09"),
     "baseCriticalDamage": Decimal("2.0"),
     "speedCap": Decimal("1.4"),
+}
+
+DIRECTION_TAGS = frozenset({"NON_DIRECTIONAL", "FRONTAL_ATTACK", "BACK_ATTACK"})
+DIRECTIONAL_ATTACK_BONUSES = {
+    "FRONTAL_ATTACK": {
+        "label": "헤드 어택",
+        "damagePercent": Decimal("0.20"),
+        "criticalRate": Decimal("0"),
+    },
+    "BACK_ATTACK": {
+        "label": "백 어택",
+        "damagePercent": Decimal("0.05"),
+        "criticalRate": Decimal("0.10"),
+    },
+    "NON_DIRECTIONAL": {
+        "label": "비방향성",
+        "damagePercent": Decimal("0"),
+        "criticalRate": Decimal("0"),
+    },
 }
 
 # Versioned rules preserve the old result model while allowing the spreadsheet
@@ -820,6 +839,38 @@ def get_skill_model(skill_name: str) -> dict[str, Any]:
         raise CalculationError(
             f"등록되지 않은 스킬 '{skill_name}'. 지원: {supported}"
         ) from exc
+
+
+def directional_attack_bonus(
+    tags: Iterable[str], *, success: bool = True
+) -> dict[str, Any]:
+    """Resolve the positional bonus for one independently dealt damage part.
+
+    Every damage component is classified by its own tags. In particular, a
+    linked effect tagged ``NON_DIRECTIONAL`` does not inherit the triggering
+    skill's head/back tag. This keeps the rule reusable for future class
+    adapters with multi-component skills.
+    """
+    tag_set = set(tags)
+    if "NON_DIRECTIONAL" in tag_set:
+        direction = "NON_DIRECTIONAL"
+    else:
+        directional = sorted(tag_set & (DIRECTION_TAGS - {"NON_DIRECTIONAL"}))
+        if len(directional) > 1:
+            raise CalculationError(
+                "한 피해 요소에 헤드 어택과 백 어택 태그를 동시에 지정할 수 없습니다."
+            )
+        direction = directional[0] if directional else "NON_DIRECTIONAL"
+    rule = DIRECTIONAL_ATTACK_BONUSES[direction]
+    applied = success and direction != "NON_DIRECTIONAL"
+    return {
+        "tag": direction,
+        "label": rule["label"],
+        "success": bool(success),
+        "applied": applied,
+        "damagePercent": rule["damagePercent"] if applied else Decimal("0"),
+        "criticalRate": rule["criticalRate"] if applied else Decimal("0"),
+    }
 
 
 def effective_skill_hits(
@@ -3055,6 +3106,7 @@ def calculate(
     include_arkgrid: bool = True,
     rule_version: str = DEFAULT_RULE_VERSION,
     skill_name: str = CANONICAL_SKILL,
+    directional_success: bool = True,
 ) -> dict[str, Any]:
     rules = get_rules(rule_version)
     skill_name = canonical_skill(skill_name)
@@ -3067,6 +3119,28 @@ def calculate(
     engravings = parsed["engravings"]
     ark = parsed["arkPassive"]
     grid = parsed["arkGrid"]
+    direction = directional_attack_bonus(
+        skill_model["tags"], success=directional_success
+    )
+
+    if direction["tag"] != "NON_DIRECTIONAL":
+        assumptions.append(
+            source(
+                source_type="USER_VERIFIED_RULE",
+                path=f"skillModels.{skill_name}.tags.{direction['tag']}",
+                label=f"{direction['label']} 보너스",
+                value=direction["damagePercent"],
+                raw="헤드 어택: 피해 +20%; 백 어택: 피해 +5%, 치명타율 +10%",
+                eligible=True,
+                applied=direction["applied"],
+                excluded_reason=(
+                    "방향성 적중 실패 시나리오"
+                    if not direction["applied"]
+                    else ""
+                ),
+                note="무력화 피해 보너스는 1회 피해 계산 범위에서 제외",
+            )
+        )
 
     assumptions.append(
         source(
@@ -3791,6 +3865,7 @@ def calculate(
         *core_subtitle_parts,
         *tripod_damage_parts,
         (f"일반 보석 {skill_name} 피해", regular_gem_skill_damage),
+        (direction["label"], direction["damagePercent"]),
     ]
     subtitle_multipliers = [
         (name, Decimal("1") + value) for name, value in subtitle_percentages
@@ -3843,6 +3918,7 @@ def calculate(
         + ark_critical_rate
         + exposed
         + (grid["criticalRate"] if include_arkgrid else Decimal("0"))
+        + direction["criticalRate"]
     )
     critical_rate = min(Decimal("1"), max(Decimal("0"), critical_rate_raw))
     critical_rate_components = {
@@ -3854,6 +3930,7 @@ def calculate(
         "arkGrid": (
             grid["criticalRate"] if include_arkgrid else Decimal("0")
         ),
+        "directionalAttack": direction["criticalRate"],
     }
     ark_passive_critical_damage = sum(
         ark["criticalDamageByName"].values(), Decimal("0")
@@ -3964,6 +4041,7 @@ def calculate(
             "tripodDamageEffects": tripod_damage_effects,
             "embeddedTripodDamageEffects": embedded_tripod_damage_effects,
             "tripodDamageMultiplier": tripod_damage_multiplier,
+            "directionalAttack": direction,
         },
         "skillScope": skill_damage_scope,
         "ruleVersion": rule_version,
@@ -4033,6 +4111,8 @@ def calculate(
             "regularGemCooldownReductionPercent": regular_gem_effect[
                 "cooldownReductionPercent"
             ],
+            "directionalDamagePercent": direction["damagePercent"],
+            "directionalCriticalRate": direction["criticalRate"],
             "weaponAdditionalDamage": equipment["weaponAdditionalDamage"],
             "necklaceAdditionalDamage": equipment["necklaceAdditionalDamage"],
             "otherAdditionalDamage": equipment["otherAdditionalDamage"],
@@ -4152,6 +4232,7 @@ def calculate(
             ],
             "totalSubtitleMultiplier": total_damage_multiplier,
             "arkGridCoreFactors": active_core_factors,
+            "directionalAttack": direction,
         },
         "critical": {
             "rateRaw": critical_rate_raw,
@@ -4842,7 +4923,8 @@ def render_report(
         f"아드레날린 {pct_fmt(crit['rateComponents']['adrenaline'])} + "
         f"아크 패시브 {pct_fmt(crit['rateComponents']['arkPassive'])} + "
         f"급소 노출 {pct_fmt(crit['rateComponents']['exposedWeakness'])} + "
-        f"아크그리드 {pct_fmt(crit['rateComponents']['arkGrid'])} = "
+        f"아크그리드 {pct_fmt(crit['rateComponents']['arkGrid'])} + "
+        f"방향성 적중 {pct_fmt(crit['rateComponents']['directionalAttack'])} = "
         f"{pct_fmt(crit['rateRaw'])}`",
         "",
         f"- 원시 치명타율: `{pct_fmt(crit['rateRaw'])}`",
@@ -4905,6 +4987,24 @@ def render_report(
             "- `NON_DIRECTIONAL` 태그가 있으므로 비방향성 스킬로 "
             "확정하여 계산했습니다."
         )
+    else:
+        direction = c["skillModel"]["directionalAttack"]
+        if direction["applied"]:
+            direction_detail = (
+                f", 치명타율 `+{pct_fmt(direction['criticalRate'])}`"
+                if direction["criticalRate"]
+                else ""
+            )
+            lines.append(
+                f"- `{direction['tag']}` 태그와 방향 적중 성공 조건에 따라 "
+                f"{direction['label']} 피해 `+{pct_fmt(direction['damagePercent'])}`"
+                f"{direction_detail}를 적용했습니다."
+            )
+        else:
+            lines.append(
+                f"- `{direction['tag']}` 태그가 있지만 방향 적중 실패 조건이므로 "
+                f"{direction['label']} 보너스를 적용하지 않았습니다."
+            )
     if c["skillScope"]:
         for item in c["skillScope"]:
             status = "적용" if item["applied"] else "제외"
@@ -5232,6 +5332,11 @@ def main() -> int:
             "디버그 산출물을 생성"
         ),
     )
+    parser.add_argument(
+        "--directional-miss",
+        action="store_true",
+        help="헤드/백 어택 스킬을 방향 적중 실패 조건으로 계산",
+    )
     args = parser.parse_args()
     raw_path, parsed_path, report_path = make_paths(
         args.output_dir, args.character, args.rules_version, args.skill
@@ -5265,12 +5370,14 @@ def main() -> int:
         include_arkgrid=False,
         rule_version=args.rules_version,
         skill_name=args.skill,
+        directional_success=not args.directional_miss,
     )
     with_grid = calculate(
         parsed,
         include_arkgrid=True,
         rule_version=args.rules_version,
         skill_name=args.skill,
+        directional_success=not args.directional_miss,
     )
     failures = validate(parsed, without_grid, with_grid)
     parsed["calculations"] = {
