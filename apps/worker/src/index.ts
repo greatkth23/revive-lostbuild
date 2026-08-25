@@ -15,6 +15,7 @@ import {
   type BuildPatch,
   type BuildSnapshot
 } from '@weather-artist/contracts';
+import { applyBuildPatches } from './patches.js';
 
 const SNAPSHOT_TTL_MS = 300_000;
 const MAX_BODY_BYTES = 16_384;
@@ -63,6 +64,15 @@ export interface BudgetService {
   grant(endpointCalls: number): Promise<RateLimitResult>;
 }
 
+export interface CharacterLoadCoordinator {
+  coordinate<T>(
+    characterKey: string,
+    characterName: string,
+    forceRefresh: boolean,
+    task: () => Promise<T>
+  ): Promise<T>;
+}
+
 export interface SafeLogEntry {
   requestId: string;
   route: string;
@@ -85,12 +95,15 @@ export interface WorkerDependencies {
   token: string;
   now: () => number;
   randomUUID: () => string;
+  characterLoads: CharacterLoadCoordinator;
   turnstileEnabled: boolean;
   verifyTurnstile?: (token: string) => Promise<boolean>;
   assets?: Fetcher;
   log: (entry: SafeLogEntry) => void;
-  inflight?: Map<string, Promise<LoadResult>>;
 }
+
+type FreshLoadDependencies = Pick<WorkerDependencies,
+  'storage' | 'budget' | 'upstreamFetch' | 'token' | 'now' | 'randomUUID'>;
 
 interface LoadResult {
   snapshot: BuildSnapshot;
@@ -112,7 +125,7 @@ class HttpError extends Error {
     readonly status: number,
     readonly code: string,
     message: string,
-    readonly retryAfterSeconds?: number
+    readonly retryAfter?: number | string
   ) {
     super(message);
   }
@@ -124,9 +137,9 @@ function withSecurityHeaders(response: Response): Response {
   return secured;
 }
 
-function json(data: unknown, status = 200, retryAfterSeconds?: number): Response {
+function json(data: unknown, status = 200, retryAfter?: number | string): Response {
   const headers = new Headers(SECURITY_HEADERS);
-  if (retryAfterSeconds !== undefined) headers.set('retry-after', String(retryAfterSeconds));
+  if (retryAfter !== undefined) headers.set('retry-after', String(retryAfter));
   return Response.json(data, { status, headers });
 }
 
@@ -139,7 +152,7 @@ function failure(error: HttpError, requestId: string): Response {
     schemaVersion: '1',
     ok: false,
     error: { code: error.code, message: error.message, requestId }
-  }, error.status, error.retryAfterSeconds);
+  }, error.status, error.retryAfter);
 }
 
 async function readJson(request: Request): Promise<Record<string, unknown>> {
@@ -150,10 +163,32 @@ async function readJson(request: Request): Promise<Record<string, unknown>> {
   if (!request.headers.get('content-type')?.toLowerCase().startsWith('application/json')) {
     throw new HttpError(415, 'UNSUPPORTED_MEDIA_TYPE', 'Content-Type must be application/json');
   }
-  const text = await request.text();
-  if (new TextEncoder().encode(text).byteLength > MAX_BODY_BYTES) {
-    throw new HttpError(413, 'PAYLOAD_TOO_LARGE', 'Request body exceeds 16 KiB');
+  const chunks: Uint8Array[] = [];
+  let totalBytes = 0;
+  if (request.body) {
+    const reader = request.body.getReader();
+    try {
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        totalBytes += value.byteLength;
+        if (totalBytes > MAX_BODY_BYTES) {
+          await reader.cancel('Request body exceeds 16 KiB');
+          throw new HttpError(413, 'PAYLOAD_TOO_LARGE', 'Request body exceeds 16 KiB');
+        }
+        chunks.push(value);
+      }
+    } finally {
+      reader.releaseLock();
+    }
   }
+  const bytes = new Uint8Array(totalBytes);
+  let offset = 0;
+  for (const chunk of chunks) {
+    bytes.set(chunk, offset);
+    offset += chunk.byteLength;
+  }
+  const text = new TextDecoder().decode(bytes);
   try {
     const parsed: unknown = JSON.parse(text);
     if (parsed === null || typeof parsed !== 'object' || Array.isArray(parsed)) throw new Error('object required');
@@ -205,7 +240,7 @@ async function verifyTurnstile(body: Record<string, unknown>, dependencies: Work
 
 async function fetchOfficialBundle(
   characterName: string,
-  dependencies: WorkerDependencies
+  dependencies: FreshLoadDependencies
 ): Promise<Record<string, unknown>> {
   const grant = await dependencies.budget.grant(ENDPOINT_SOURCES.length);
   if (!grant.allowed) {
@@ -238,8 +273,11 @@ async function fetchOfficialBundle(
   }
   const throttled = outcomes.find((outcome) => outcome.status === 429);
   if (throttled) {
-    const parsed = Number('retryAfter' in throttled ? throttled.retryAfter ?? 60 : 60);
-    const retryAfter = Number.isFinite(parsed) && parsed > 0 ? Math.ceil(parsed) : 60;
+    const rawRetryAfter = 'retryAfter' in throttled ? throttled.retryAfter : null;
+    const parsed = Number(rawRetryAfter);
+    const retryAfter = Number.isFinite(parsed) && parsed > 0
+      ? Math.ceil(parsed)
+      : rawRetryAfter && Number.isFinite(Date.parse(rawRetryAfter)) ? rawRetryAfter : 60;
     throw new HttpError(429, 'UPSTREAM_RATE_LIMITED', 'Official API rate limit exceeded', retryAfter);
   }
   if (outcomes.some((outcome) => outcome.status !== 200 || !('data' in outcome))) {
@@ -257,8 +295,36 @@ function validateSupportedSnapshot(snapshot: BuildSnapshot): void {
   }
 }
 
+async function loadFresh(
+  name: { display: string; key: string },
+  dependencies: FreshLoadDependencies
+): Promise<LoadResult> {
+  const responses = await fetchOfficialBundle(name.display, dependencies);
+  let parsed: BuildSnapshot;
+  try {
+    parsed = parseBuildSnapshot({
+      characterName: name.display,
+      capturedAtKst: new Date(dependencies.now()).toISOString(),
+      responses
+    });
+  } catch (error) {
+    if (error instanceof HttpError) throw error;
+    throw new HttpError(503, 'UPSTREAM_INVALID_PAYLOAD', 'Official API response could not be normalized');
+  }
+  const snapshot: BuildSnapshot = { ...parsed, snapshotId: dependencies.randomUUID() };
+  if (!buildSnapshotSchema.safeParse(snapshot).success) {
+    throw new HttpError(503, 'UPSTREAM_INVALID_PAYLOAD', 'Normalized snapshot failed contract validation');
+  }
+  validateSupportedSnapshot(snapshot);
+  const baseline = calculateAllSkillDamage(snapshot);
+  await dependencies.storage.putSnapshot(name.key, {
+    snapshot,
+    expiresAt: dependencies.now() + SNAPSHOT_TTL_MS
+  });
+  return { snapshot, baseline, cacheHit: false };
+}
+
 function createLoader(dependencies: WorkerDependencies) {
-  const inflight = dependencies.inflight ?? new Map<string, Promise<LoadResult>>();
 
   return async (body: Record<string, unknown>, anonymousId: string): Promise<LoadResult> => {
     const name = normalizedCharacterName(body.characterName);
@@ -281,47 +347,28 @@ function createLoader(dependencies: WorkerDependencies) {
     }
     await enforceRateLimit(dependencies.rateLimits, `miss:${anonymousId}`, 3, 60_000, now, 'CACHE_MISS_RATE_LIMITED');
 
-    const existing = inflight.get(name.key);
-    if (existing) return existing;
-    const load = (async (): Promise<LoadResult> => {
-      const responses = await fetchOfficialBundle(name.display, dependencies);
-      let parsed: BuildSnapshot;
-      try {
-        parsed = parseBuildSnapshot({
-          characterName: name.display,
-          capturedAtKst: new Date(dependencies.now()).toISOString(),
-          responses
-        });
-      } catch (error) {
-        if (error instanceof HttpError) throw error;
-        throw new HttpError(503, 'UPSTREAM_INVALID_PAYLOAD', 'Official API response could not be normalized');
-      }
-      const snapshot: BuildSnapshot = { ...parsed, snapshotId: dependencies.randomUUID() };
-      if (!buildSnapshotSchema.safeParse(snapshot).success) {
-        throw new HttpError(503, 'UPSTREAM_INVALID_PAYLOAD', 'Normalized snapshot failed contract validation');
-      }
-      validateSupportedSnapshot(snapshot);
-      const baseline = calculateAllSkillDamage(snapshot);
-      await dependencies.storage.putSnapshot(name.key, {
-        snapshot,
-        expiresAt: dependencies.now() + SNAPSHOT_TTL_MS
-      });
-      return { snapshot, baseline, cacheHit: false };
-    })();
-    inflight.set(name.key, load);
-    try {
-      return await load;
-    } finally {
-      if (inflight.get(name.key) === load) inflight.delete(name.key);
-    }
+    return dependencies.characterLoads.coordinate(
+      name.key,
+      name.display,
+      forceRefresh,
+      () => loadFresh(name, dependencies)
+    );
   };
 }
 
 function validatePatch(patch: BuildPatch): void {
+  const section = 'sectionId' in patch
+    ? weatherArtistCatalog.editableSections.find((candidate) => candidate.id === patch.sectionId)
+    : undefined;
   if (patch.kind === 'reset-section') {
-    if (!weatherArtistCatalog.editableSections.some((section) => section.id === patch.sectionId)) {
+    if (!section) {
       throw new HttpError(422, 'INVALID_PATCH', 'Patch references an unknown section');
     }
+    return;
+  }
+  if (patch.kind === 'set-section-enabled') {
+    if (!section) throw new HttpError(422, 'INVALID_PATCH', 'Patch references an unknown section');
+    if (!section.editable) throw new HttpError(422, 'INVALID_PATCH', 'Patch references a locked section');
     return;
   }
   if ('skillId' in patch && !weatherArtistCatalog.skills.some((skill) => skill.id === patch.skillId)) {
@@ -380,10 +427,11 @@ async function simulate(body: Record<string, unknown>, dependencies: WorkerDepen
     }
   }
   const baseline = calculateAllSkillDamage(stored.snapshot);
-  const simulated = calculateAllSkillDamage(stored.snapshot, {
+  const candidateSnapshot = applyBuildPatches(stored.snapshot, patches);
+  const candidate = calculateAllSkillDamage(candidateSnapshot, {
     directionalSuccessBySkill: directional as Record<string, boolean>
   });
-  return success({ snapshotId: body.snapshotId, patches, baseline, simulated }, stored.snapshot.warnings);
+  return success({ snapshotId: body.snapshotId, patches, baseline, candidate }, stored.snapshot.warnings);
 }
 
 export function createWorkerApp(dependencies: WorkerDependencies): { fetch(request: Request): Promise<Response> } {
@@ -411,7 +459,7 @@ export function createWorkerApp(dependencies: WorkerDependencies): { fetch(reque
           loggedRoute = '/api/v1/simulations';
           clientId(request);
           response = await simulate(await readJson(request), dependencies);
-        } else if (!pathname.startsWith('/api/') && dependencies.assets) {
+        } else if (pathname !== '/api' && !pathname.startsWith('/api/') && dependencies.assets) {
           loggedRoute = 'static-assets';
           response = withSecurityHeaders(await dependencies.assets.fetch(request));
         } else {
@@ -493,12 +541,34 @@ class DurableObjectRateLimitStore implements RateLimitStore {
   }
 }
 
+class DurableObjectCharacterLoadCoordinator implements CharacterLoadCoordinator {
+  constructor(private readonly namespace: DurableObjectNamespace) {}
+
+  async coordinate<T>(
+    characterKey: string,
+    characterName: string,
+    forceRefresh: boolean,
+    _task: () => Promise<T>
+  ): Promise<T> {
+    const id = this.namespace.idFromName(`character:${await digest(characterKey)}`);
+    const response = await this.namespace.get(id).fetch('https://budget.internal/character/load', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ characterName, forceRefresh })
+    });
+    const body = await response.json() as LoadResult | { error: { code: string; message: string } };
+    if (!response.ok) {
+      const error = 'error' in body ? body.error : { code: 'INTERNAL_ERROR', message: 'Character load coordination failed' };
+      throw new HttpError(response.status, error.code, error.message, response.headers.get('retry-after') ?? undefined);
+    }
+    return body as T;
+  }
+}
+
 async function digest(value: string): Promise<string> {
   const bytes = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(value));
   return [...new Uint8Array(bytes)].map((byte) => byte.toString(16).padStart(2, '0')).join('');
 }
-
-const defaultInflight = new Map<string, Promise<LoadResult>>();
 
 function dependenciesFromEnv(env: Env): WorkerDependencies {
   const storage = new KVSnapshotStorage(env.SNAPSHOTS);
@@ -510,10 +580,10 @@ function dependenciesFromEnv(env: Env): WorkerDependencies {
     upstreamFetch: fetch,
     token: env.LOSTARK_API_TOKEN,
     now: Date.now,
-    randomUUID: crypto.randomUUID,
+    randomUUID: () => crypto.randomUUID(),
+    characterLoads: new DurableObjectCharacterLoadCoordinator(env.UPSTREAM_BUDGET),
     turnstileEnabled,
-    log: (entry) => console.log(JSON.stringify(entry)),
-    inflight: defaultInflight
+    log: (entry) => console.log(JSON.stringify(entry))
   };
   if (env.ASSETS) dependencies.assets = env.ASSETS;
   if (turnstileEnabled && env.TURNSTILE_SECRET) {
@@ -546,13 +616,61 @@ const defaultWorker = {
 } satisfies ExportedHandler<Env>;
 
 export class UpstreamBudget implements DurableObject {
-  constructor(private readonly state: DurableObjectState) {}
+  private characterInflight: Promise<LoadResult> | undefined;
+
+  constructor(private readonly state: DurableObjectState, private readonly env?: Env) {}
 
   async fetch(request: Request): Promise<Response> {
     if (request.method !== 'POST') {
       return new Response('Not found', { status: 404 });
     }
     const path = new URL(request.url).pathname;
+    if (path === '/character/load') {
+      if (!this.env) return Response.json({ error: { code: 'WORKER_NOT_CONFIGURED', message: 'Worker bindings are not configured' } }, { status: 503 });
+      let body: { characterName?: unknown; forceRefresh?: unknown };
+      try {
+        body = await request.json<typeof body>();
+      } catch {
+        return Response.json({ error: { code: 'INVALID_JSON', message: 'Invalid internal request' } }, { status: 400 });
+      }
+      let name: { display: string; key: string };
+      try {
+        name = normalizedCharacterName(body.characterName);
+      } catch (error) {
+        const safeError = error instanceof HttpError ? error : new HttpError(400, 'INVALID_CHARACTER_NAME', 'Invalid character name');
+        return Response.json({ error: { code: safeError.code, message: safeError.message } }, { status: safeError.status });
+      }
+      const forceRefresh = body.forceRefresh === true;
+      const storage = new KVSnapshotStorage(this.env.SNAPSHOTS);
+      if (!forceRefresh) {
+        const cachedId = await storage.getCharacterSnapshotId(name.key);
+        const cached = cachedId ? await storage.getSnapshot(cachedId) : null;
+        if (cached && cached.expiresAt > Date.now()) {
+          return Response.json({ snapshot: cached.snapshot, baseline: calculateAllSkillDamage(cached.snapshot), cacheHit: true });
+        }
+      }
+      if (!this.characterInflight) {
+        this.characterInflight = loadFresh(name, {
+          storage,
+          budget: new DurableObjectBudgetService(this.env.UPSTREAM_BUDGET),
+          upstreamFetch: fetch,
+          token: this.env.LOSTARK_API_TOKEN,
+          now: Date.now,
+          randomUUID: () => crypto.randomUUID()
+        });
+      }
+      const pending = this.characterInflight;
+      try {
+        return Response.json(await pending);
+      } catch (error) {
+        const safeError = error instanceof HttpError ? error : new HttpError(500, 'INTERNAL_ERROR', 'Character load failed');
+        const init: ResponseInit = { status: safeError.status };
+        if (safeError.retryAfter !== undefined) init.headers = { 'retry-after': String(safeError.retryAfter) };
+        return Response.json({ error: { code: safeError.code, message: safeError.message } }, init);
+      } finally {
+        if (this.characterInflight === pending) this.characterInflight = undefined;
+      }
+    }
     if (path === '/consume') {
       let limit: number;
       let windowMs: number;
@@ -592,15 +710,16 @@ export class UpstreamBudget implements DurableObject {
     }
     const now = Date.now();
     return this.state.storage.transaction(async (transaction) => {
-      const previous = await transaction.get<{ windowStartedAt: number; endpointCalls: number }>('budget');
-      const budget = !previous || now - previous.windowStartedAt >= 60_000
-        ? { windowStartedAt: now, endpointCalls: 0 }
-        : previous;
-      if (budget.endpointCalls + endpointCalls > 90) {
-        const retryAfter = Math.max(1, Math.ceil((budget.windowStartedAt + 60_000 - now) / 1000));
+      const prior = await transaction.get<number[]>('budget') ?? [];
+      const active = prior.filter((time) => time > now - 60_000);
+      if (active.length + endpointCalls > 90) {
+        const callsThatMustExpire = active.length + endpointCalls - 90;
+        const retryAt = active[callsThatMustExpire - 1]! + 60_000;
+        const retryAfter = Math.max(1, Math.ceil((retryAt - now) / 1000));
         return new Response('Rate limited', { status: 429, headers: { 'retry-after': String(retryAfter) } });
       }
-      await transaction.put('budget', { ...budget, endpointCalls: budget.endpointCalls + endpointCalls });
+      active.push(...Array.from({ length: endpointCalls }, () => now));
+      await transaction.put('budget', active);
       return new Response(null, { status: 204 });
     });
   }

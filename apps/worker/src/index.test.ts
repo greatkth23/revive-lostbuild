@@ -4,6 +4,7 @@ import worker, {
   createWorkerApp,
   UpstreamBudget,
   type BudgetService,
+  type CharacterLoadCoordinator,
   type RateLimitStore,
   type SafeLogEntry,
   type SnapshotStorage,
@@ -54,6 +55,22 @@ class MemoryRateLimits implements RateLimitStore {
   }
 }
 
+class MemoryCharacterLoads implements CharacterLoadCoordinator {
+  readonly inflight = new Map<string, Promise<any>>();
+
+  async coordinate<T>(characterKey: string, _characterName: string, _forceRefresh: boolean, task: () => Promise<T>): Promise<T> {
+    const existing = this.inflight.get(characterKey) as Promise<T> | undefined;
+    if (existing) return existing;
+    const pending = task();
+    this.inflight.set(characterKey, pending);
+    try {
+      return await pending;
+    } finally {
+      if (this.inflight.get(characterKey) === pending) this.inflight.delete(characterKey);
+    }
+  }
+}
+
 interface HarnessOptions {
   mutate?: (raw: RawBundle) => void;
   endpointStatus?: Partial<Record<string, number>>;
@@ -61,6 +78,7 @@ interface HarnessOptions {
   endpointDelay?: Partial<Record<string, number>>;
   budget?: BudgetService;
   assets?: Fetcher;
+  characterLoads?: CharacterLoadCoordinator;
 }
 
 function makeHarness(options: HarnessOptions = {}) {
@@ -108,6 +126,7 @@ function makeHarness(options: HarnessOptions = {}) {
     token: 'Bearer secret-jwt-value',
     now: () => now,
     randomUUID: () => `00000000-0000-4000-8000-${String(++sequence).padStart(12, '0')}`,
+    characterLoads: options.characterLoads ?? new MemoryCharacterLoads(),
     turnstileEnabled: false,
     log: (entry) => { logs.push(entry); }
   };
@@ -139,7 +158,7 @@ function simulationRequest(snapshotId: string, overrides: Record<string, unknown
       snapshotId,
       calculatorVersion: 'current-v2.7.2',
       parserVersion: 'lostark-api-ts-v1',
-      catalogVersion: 'weather-artist-v0.4',
+      catalogVersion: 'weather-artist-v0.5',
       patches: [],
       scenario: { schemaVersion: '1', id: 'best', bossConditionId: 'boss', directionalSuccessBySkill: {} },
       ...overrides
@@ -148,6 +167,24 @@ function simulationRequest(snapshotId: string, overrides: Record<string, unknown
 }
 
 describe('Weather Artist Worker routes', () => {
+  test('binds the runtime crypto receiver in the default handler', async () => {
+    // Break caught: storing crypto.randomUUID bare invokes it with WorkerDependencies as `this` before route error handling.
+    const randomUUID = vi.spyOn(crypto, 'randomUUID').mockImplementation(function (this: Crypto) {
+      if (this !== crypto) throw new TypeError('Illegal invocation');
+      return '00000000-0000-4000-8000-000000000001';
+    });
+    const consoleLog = vi.spyOn(console, 'log').mockImplementation(() => undefined);
+    const env = {
+      SNAPSHOTS: {} as KVNamespace,
+      UPSTREAM_BUDGET: {} as DurableObjectNamespace,
+      LOSTARK_API_TOKEN: 'runtime-secret'
+    };
+
+    await expect(worker.fetch(new Request('https://example.test/api'), env as never)).resolves.toMatchObject({ status: 404 });
+    randomUUID.mockRestore();
+    consoleLog.mockRestore();
+  });
+
   test('serves the versioned Weather Artist catalog with security headers', async () => {
     // Break caught: the fixed catalog route falls through to a placeholder/static response.
     const response = await worker.fetch(
@@ -163,7 +200,7 @@ describe('Weather Artist Worker routes', () => {
       ok: true,
       data: {
         schemaVersion: '1',
-        version: 'weather-artist-v0.4',
+        version: 'weather-artist-v0.5',
         equipmentGrowth: { editingLocked: true }
       }
     });
@@ -179,6 +216,19 @@ describe('Weather Artist Worker routes', () => {
     expect(response.status).toBe(200);
     expect(response.headers.get('content-security-policy')).toContain("script-src 'self'");
     expect(await response.text()).toContain('/assets/app.js');
+  });
+
+  test('reserves the exact /api path instead of serving the SPA fallback', async () => {
+    // Break caught: only /api/ descendants are reserved, so /api itself leaks through static assets.
+    let assetCalls = 0;
+    const assets = { fetch: async () => {
+      assetCalls += 1;
+      return new Response('SPA');
+    } } as unknown as Fetcher;
+
+    const response = await makeHarness({ assets }).app.fetch(new Request('https://example.test/api'));
+    expect(response.status).toBe(404);
+    expect(assetCalls).toBe(0);
   });
 
   test('loads nine official endpoints concurrently and stores an opaque normalized snapshot', async () => {
@@ -223,7 +273,7 @@ describe('Weather Artist Worker routes', () => {
         schema: '1',
         calculator: 'current-v2.7.2',
         parser: 'lostark-api-ts-v1',
-        catalog: 'weather-artist-v0.4'
+        catalog: 'weather-artist-v0.5'
       }
     });
     const unknown = await harness.app.fetch(new Request('https://example.test/api/봄날꽃씨/private'));
@@ -257,6 +307,23 @@ describe('Weather Artist Worker routes', () => {
     expect(first.status).toBe(200);
     expect(second.status).toBe(200);
     expect(harness.calls).toHaveLength(9);
+    expect((await first.json() as any).data.snapshot.snapshotId).toBe((await second.json() as any).data.snapshot.snapshotId);
+  });
+
+  test('coalesces same-character misses across distinct Worker app instances', async () => {
+    // Break caught: a module Map coordinates only requests that land in the same Worker isolate.
+    const characterLoads = new MemoryCharacterLoads();
+    const firstHarness = makeHarness({ characterLoads, endpointDelay: { profiles: 10 } });
+    const secondHarness = makeHarness({ characterLoads, endpointDelay: { profiles: 10 } });
+
+    const [first, second] = await Promise.all([
+      firstHarness.app.fetch(loadRequest()),
+      secondHarness.app.fetch(loadRequest())
+    ]);
+
+    expect(first.status).toBe(200);
+    expect(second.status).toBe(200);
+    expect(firstHarness.calls.length + secondHarness.calls.length).toBe(9);
     expect((await first.json() as any).data.snapshot.snapshotId).toBe((await second.json() as any).data.snapshot.snapshotId);
   });
 
@@ -317,6 +384,32 @@ describe('Weather Artist Worker routes', () => {
     expect(refreshHarness.calls).toHaveLength(18);
   });
 
+  test('cancels a chunked request body immediately after crossing 16 KiB', async () => {
+    // Break caught: request.text() buffers an unbounded chunked upload before applying the payload limit.
+    let pulls = 0;
+    let cancelled = false;
+    const chunk = new TextEncoder().encode('x'.repeat(4_096));
+    const body = new ReadableStream<Uint8Array>({
+      pull(controller) {
+        pulls += 1;
+        if (pulls <= 100) controller.enqueue(chunk);
+        else controller.close();
+      },
+      cancel() { cancelled = true; }
+    });
+    const request = new Request('https://example.test/api/v1/characters/load', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json', 'x-anonymous-client-id': 'client_12345678' },
+      body,
+      duplex: 'half'
+    } as RequestInit & { duplex: 'half' });
+
+    const response = await makeHarness().app.fetch(request);
+    expect(response.status).toBe(413);
+    expect(cancelled).toBe(true);
+    expect(pulls).toBeLessThan(10);
+  });
+
   test('propagates global upstream-budget retry information before making endpoint calls', async () => {
     // Break caught: all nine calls launch before the Durable Object budget grant.
     const harness = makeHarness({ budget: { grant: async () => ({ allowed: false, retryAfterSeconds: 41 }) } });
@@ -326,6 +419,16 @@ describe('Weather Artist Worker routes', () => {
     expect(response.headers.get('retry-after')).toBe('41');
     expect((await response.json() as any).error.code).toBe('GLOBAL_UPSTREAM_RATE_LIMITED');
     expect(harness.calls).toHaveLength(0);
+  });
+
+  test('preserves an upstream HTTP-date Retry-After value', async () => {
+    // Break caught: numeric parsing replaces a valid HTTP-date with an unrelated 60-second delay.
+    const retryAt = 'Wed, 26 Aug 2026 10:00:00 GMT';
+    const harness = makeHarness({ endpointStatus: { gems: 429 }, endpointRetryAfter: { gems: retryAt } });
+
+    const response = await harness.app.fetch(loadRequest());
+    expect(response.status).toBe(429);
+    expect(response.headers.get('retry-after')).toBe(retryAt);
   });
 
   test('simulates a live snapshot and rejects expiry, version mismatch, and invalid patches', async () => {
@@ -365,6 +468,34 @@ describe('Weather Artist Worker routes', () => {
     expect((await expired.json() as any).error.code).toBe('SNAPSHOT_EXPIRED');
   });
 
+  test('applies gem and engraving section toggles to candidate damage and restores baseline state', async () => {
+    // Break caught: validated patches are echoed but both result arrays calculate the unchanged snapshot.
+    const harness = makeHarness();
+    const loaded = await harness.app.fetch(loadRequest());
+    const snapshotId = (await loaded.json() as any).data.snapshot.snapshotId as string;
+    const disableGems = { schemaVersion: '1', kind: 'set-section-enabled', sectionId: 'gems', enabled: false };
+    const disableEngravings = { schemaVersion: '1', kind: 'set-section-enabled', sectionId: 'engravings', enabled: false };
+
+    for (const patch of [disableGems, disableEngravings]) {
+      const response = await harness.app.fetch(simulationRequest(snapshotId, { patches: [patch] }));
+      const data = (await response.json() as any).data;
+      expect(response.status, patch.sectionId).toBe(200);
+      expect(data.candidate, patch.sectionId).toHaveLength(6);
+      expect(data.candidate.find((skill: any) => skill.skillId === 'piercing-wind').expectedDamage)
+        .not.toBe(data.baseline.find((skill: any) => skill.skillId === 'piercing-wind').expectedDamage);
+    }
+
+    for (const restoration of [
+      { schemaVersion: '1', kind: 'set-section-enabled', sectionId: 'gems', enabled: true },
+      { schemaVersion: '1', kind: 'reset-section', sectionId: 'gems' }
+    ]) {
+      const response = await harness.app.fetch(simulationRequest(snapshotId, { patches: [disableGems, restoration] }));
+      const data = (await response.json() as any).data;
+      expect(response.status).toBe(200);
+      expect(data.candidate).toEqual(data.baseline);
+    }
+  });
+
   test('the global Durable Object grants at most 90 endpoint calls per minute', async () => {
     // Break caught: the budget counts character loads rather than their nine official endpoint calls.
     const values = new Map<string, unknown>();
@@ -395,6 +526,36 @@ describe('Weather Artist Worker routes', () => {
 
     now += 60_000;
     expect((await budget.fetch(request())).status).toBe(204);
+    vi.restoreAllMocks();
+  });
+
+  test('the global budget rejects a fixed-window boundary burst inside rolling 60 seconds', async () => {
+    // Break caught: resetting a fixed window permits nearly two full budgets one second apart.
+    const values = new Map<string, unknown>();
+    const transaction = {
+      get: async <T>(key: string) => values.get(key) as T | undefined,
+      put: async (key: string, value: unknown) => { values.set(key, value); }
+    };
+    const state = { storage: {
+      transaction: async (callback: (storage: typeof transaction) => Promise<Response>) => callback(transaction)
+    } } as unknown as DurableObjectState;
+    const budget = new UpstreamBudget(state);
+    let now = Date.UTC(2026, 7, 25, 10, 0, 0);
+    vi.spyOn(Date, 'now').mockImplementation(() => now);
+    const request = () => new Request('https://budget.internal/grant', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ endpointCalls: 9 })
+    });
+
+    expect((await budget.fetch(request())).status).toBe(204);
+    now += 59_000;
+    for (let index = 0; index < 9; index += 1) expect((await budget.fetch(request())).status).toBe(204);
+    now += 1_000;
+    expect((await budget.fetch(request())).status).toBe(204);
+    const limited = await budget.fetch(request());
+    expect(limited.status).toBe(429);
+    expect(limited.headers.get('retry-after')).toBe('59');
     vi.restoreAllMocks();
   });
 

@@ -294,6 +294,7 @@ export const buildPatchSchema = z.discriminatedUnion('kind', [
   z.object({ schemaVersion: contractSchemaVersion, kind: z.literal('set-engraving-level'), engravingId: catalogId, level: z.number().int().min(0).max(3) }),
   z.object({ schemaVersion: contractSchemaVersion, kind: z.literal('set-ark-passive-level'), nodeId: catalogId, level: z.number().int().min(0) }),
   z.object({ schemaVersion: contractSchemaVersion, kind: z.literal('set-ark-grid-gem-level'), gemId: catalogId, level: z.number().int().min(0) }),
+  z.object({ schemaVersion: contractSchemaVersion, kind: z.literal('set-section-enabled'), sectionId: catalogId, enabled: z.boolean() }),
   z.object({ schemaVersion: contractSchemaVersion, kind: z.literal('reset-section'), sectionId: catalogId })
 ]);
 export type BuildPatch = z.infer<typeof buildPatchSchema>;

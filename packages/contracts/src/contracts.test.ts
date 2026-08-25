@@ -12,6 +12,14 @@ import {
 } from './index.js';
 
 describe('build patch contract', () => {
+  it('accepts a catalog-backed section enabled state', () => {
+    // Break caught: simulations cannot represent a validated nonnumeric setting change.
+    const patch = { schemaVersion: '1', kind: 'set-section-enabled', sectionId: 'gems', enabled: false };
+
+    expect(buildPatchSchema.parse(patch)).toEqual(patch);
+    expect(() => buildPatchSchema.parse({ ...patch, enabled: 'false' })).toThrow();
+  });
+
   it('accepts a catalog-targeted patch and rejects an unknown command shape', () => {
     const validPatch = {
       schemaVersion: '1',

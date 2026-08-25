@@ -4,7 +4,7 @@ import type {
   SkillCatalogEntry
 } from '@weather-artist/contracts';
 
-export const WEATHER_ARTIST_CATALOG_VERSION = 'weather-artist-v0.4';
+export const WEATHER_ARTIST_CATALOG_VERSION = 'weather-artist-v0.5';
 
 const nonDirectional = 'NON_DIRECTIONAL' as const;
 
@@ -71,7 +71,7 @@ const skills: SkillCatalogEntry[] = [
 
 export const editableSections: EditableSectionDescriptor[] = [
   { id: 'equipment', label: '장비·완갑', editable: false, lockReason: '검증된 장비 성장 데이터셋이 없습니다.' },
-  { id: 'accessories', label: '액세서리·팔찌', editable: true },
+  { id: 'accessories', label: '액세서리·팔찌', editable: false, lockReason: '정규화된 합산 장비 수치에서 액세서리 기여분을 안전하게 분리할 수 없습니다.' },
   { id: 'gems', label: '보석', editable: true },
   { id: 'engravings', label: '각인·어빌리티 스톤', editable: true },
   { id: 'ark-passive', label: '아크패시브', editable: true },
