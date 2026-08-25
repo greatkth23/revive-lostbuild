@@ -1080,6 +1080,18 @@ function snapshotId(bundle: JsonObject, characterName: string): string {
   return `${characterName}:${captured}`;
 }
 
+function validateObjectArray(value: unknown, path: string): JsonObject[] {
+  if (!Array.isArray(value)) {
+    throw new Error(`Malformed Lost Ark endpoint payload: ${path} must be an array`);
+  }
+  return value.map((member, index) => {
+    if (member === null || typeof member !== 'object' || Array.isArray(member)) {
+      throw new Error(`Malformed Lost Ark endpoint payload: ${path}[${index}] must be an object`);
+    }
+    return member as JsonObject;
+  });
+}
+
 function validateEndpointPayloads(bundle: JsonObject): JsonObject {
   if (bundle.responses === null || typeof bundle.responses !== 'object' || Array.isArray(bundle.responses)) {
     throw new Error('Malformed Lost Ark endpoint payload: responses must be an object');
@@ -1102,22 +1114,41 @@ function validateEndpointPayloads(bundle: JsonObject): JsonObject {
     }
   }
 
-  const requiredArrays: Array<[typeof objectEndpoints[number], string]> = [
-    ['profiles', 'Stats'],
-    ['engravings', 'ArkPassiveEffects'],
-    ['cards', 'Cards'],
-    ['cards', 'Effects'],
-    ['gems', 'Gems'],
-    ['arkPassive', 'Points'],
-    ['arkPassive', 'Effects'],
-    ['arkGrid', 'Slots'],
-    ['arkGrid', 'Effects']
-  ];
-  for (const [endpoint, property] of requiredArrays) {
-    if (!Array.isArray((responses[endpoint] as JsonObject)[property])) {
-      throw new Error(`Malformed Lost Ark endpoint payload: responses.${endpoint}.${property} must be an array`);
-    }
+  const profiles = responses.profiles as JsonObject;
+  const engravings = responses.engravings as JsonObject;
+  const cards = responses.cards as JsonObject;
+  const gems = responses.gems as JsonObject;
+  const arkPassive = responses.arkPassive as JsonObject;
+  const arkGrid = responses.arkGrid as JsonObject;
+
+  validateObjectArray(profiles.Stats, 'responses.profiles.Stats');
+  validateObjectArray(responses.equipment, 'responses.equipment');
+  validateObjectArray(responses.avatars, 'responses.avatars');
+  const combatSkills = validateObjectArray(responses.combatSkills, 'responses.combatSkills');
+  for (const [skillIndex, skill] of combatSkills.entries()) {
+    validateObjectArray(skill.Tripods, `responses.combatSkills[${skillIndex}].Tripods`);
   }
+  const arkPassiveEngravings = engravings.ArkPassiveEffects;
+  if (Array.isArray(arkPassiveEngravings) && arkPassiveEngravings.length > 0) {
+    validateObjectArray(arkPassiveEngravings, 'responses.engravings.ArkPassiveEffects');
+  } else if (arkPassiveEngravings === undefined || arkPassiveEngravings === null || Array.isArray(arkPassiveEngravings)) {
+    validateObjectArray(engravings.Effects, 'responses.engravings.Effects');
+  } else {
+    throw new Error('Malformed Lost Ark endpoint payload: responses.engravings.ArkPassiveEffects must be an array, null, or absent');
+  }
+  validateObjectArray(cards.Cards, 'responses.cards.Cards');
+  const cardEffects = validateObjectArray(cards.Effects, 'responses.cards.Effects');
+  for (const [effectIndex, effect] of cardEffects.entries()) {
+    validateObjectArray(effect.Items, `responses.cards.Effects[${effectIndex}].Items`);
+  }
+  validateObjectArray(gems.Gems, 'responses.gems.Gems');
+  validateObjectArray(arkPassive.Points, 'responses.arkPassive.Points');
+  validateObjectArray(arkPassive.Effects, 'responses.arkPassive.Effects');
+  const arkGridSlots = validateObjectArray(arkGrid.Slots, 'responses.arkGrid.Slots');
+  for (const [slotIndex, slot] of arkGridSlots.entries()) {
+    validateObjectArray(slot.Gems, `responses.arkGrid.Slots[${slotIndex}].Gems`);
+  }
+  validateObjectArray(arkGrid.Effects, 'responses.arkGrid.Effects');
   return responses;
 }
 

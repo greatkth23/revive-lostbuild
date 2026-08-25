@@ -662,3 +662,133 @@ Vite 26 modules built; Wrangler dry run exited; calculator/catalog/contracts Typ
 
 - The real fixture's active `불타는 일격` 10P burn option has no single-cast tick/coefficient model. It is now surfaced as an incomplete `UNPARSED_DAMAGE_TOOLTIP` warning rather than silently contributing zero.
 - Endpoint validation intentionally targets the current nine-endpoint API shapes. A future API envelope change will fail fast with a precise path and will require an explicit parser update.
+
+---
+
+# Task 2 review fix round 2/5
+
+## Changes
+
+- Added a shared object-array validator for every endpoint collection the parser iterates: profile stats, equipment, avatars, skills/tripods, the selected engraving collection, cards/effect items, gems, Ark Passive points/effects, and Ark Grid slots/gems/effects.
+- A null, array, or primitive member now fails before normalization with its exact `responses...array[index]` path.
+- Restored the parser's supported engraving compatibility rule: a non-empty `ArkPassiveEffects` array is preferred; when that field is missing, null, or empty, a valid `Effects` array is required and used. A malformed non-empty preferred collection still fails instead of falling through.
+- The deferred 싹쓸바람 replacement behavior was not changed.
+
+## TDD RED/GREEN evidence
+
+### Endpoint array member validation
+
+RED command:
+
+```text
+npm test -- --run packages/calculator/src/parser.test.ts -t "rejects non-object members"
+```
+
+RED output (exit 1):
+
+```text
+× rejects non-object members from every endpoint array the parser consumes
+responses.profiles.Stats[0]: expected [Function] to throw an error
+Test Files  1 failed (1)
+Tests       1 failed | 14 skipped (15)
+```
+
+The table starts with the requested `profiles.Stats[0]` and `equipment[0]` regressions and also exercises every other direct or nested collection consumed by `array(...)`.
+
+GREEN command was identical. GREEN output (exit 0):
+
+```text
+✓ packages/calculator/src/parser.test.ts (15 tests | 14 skipped) 120ms
+Test Files  1 passed (1)
+Tests       1 passed | 14 skipped (15)
+```
+
+### Legacy engraving Effects fallback
+
+RED command:
+
+```text
+npm test -- --run packages/calculator/src/parser.test.ts -t "accepts legacy engraving"
+```
+
+RED output (exit 1):
+
+```text
+× accepts legacy engraving Effects fallback and rejects payloads with neither valid collection
+Malformed Lost Ark endpoint payload: responses.engravings.ArkPassiveEffects must be an array
+Test Files  1 failed (1)
+Tests       1 failed | 15 skipped (16)
+```
+
+GREEN command was identical. GREEN output (exit 0):
+
+```text
+✓ packages/calculator/src/parser.test.ts (16 tests | 15 skipped) 94ms
+Test Files  1 passed (1)
+Tests       1 passed | 15 skipped (16)
+```
+
+The regression independently covers missing, null, and empty `ArkPassiveEffects` with a valid legacy `Effects` array. It also rejects null/missing fallback collections and a null legacy member with the precise `Effects[0]` path.
+
+## Files changed in this fix round
+
+- `packages/calculator/src/parser.ts`
+- `packages/calculator/src/parser.test.ts`
+- `.superpowers/sdd/2026-08-25-weather-artist-web-simulator/task-2-report.md`
+
+## Focused evidence
+
+Command:
+
+```text
+npm test -- --run packages/contracts/src/contracts.test.ts packages/calculator/src/parser.test.ts packages/calculator/src/calculator.test.ts
+```
+
+Output (exit 0):
+
+```text
+✓ packages/contracts/src/contracts.test.ts (4 tests) 9ms
+✓ packages/calculator/src/calculator.test.ts (15 tests) 256ms
+✓ packages/calculator/src/parser.test.ts (16 tests) 515ms
+Test Files  3 passed (3)
+Tests       35 passed (35)
+```
+
+Focused calculator TypeScript check also exited 0:
+
+```text
+npm run typecheck --workspace @weather-artist/calculator
+```
+
+## Self-review
+
+- Compared every `array(...)` parser loop with validation coverage; every consumed endpoint array and each nested array now validates member object shape before the permissive parsing helpers run.
+- Confirmed current API engraving payloads still accept a valid non-empty `ArkPassiveEffects` array even though their legacy `Effects` field is null.
+- Confirmed legacy entries are actually parsed into the same five engraving names, stone level total `5`, and stone base attack `0.015`, rather than merely passing validation.
+- Confirmed invalid preferred collection members do not silently fall back and invalid legacy members carry an indexed error path.
+- Confirmed no calculator math, catalog IDs/tags, schema/decimal serialization, equipment growth, Arcana behavior, or 싹쓸바람 logic changed.
+
+## Concerns
+
+- No new unresolved implementation concern. Validation remains intentionally structural: endpoint array members must be non-null objects, while the existing field parsers continue to handle optional API fields.
+
+## Final verification
+
+Fresh Python/full npm/typecheck/build results after the final source change (all exit 0):
+
+```text
+python -m unittest discover -s api-chatgpt-conversation-6a6309ab-7de4-8342/work -p 'test_*.py' -v
+Ran 36 tests in 0.730s
+OK
+
+npm test
+✓ catalog 3, contracts 4, calculator 15, parser 16
+Test Files  4 passed (4)
+Tests       38 passed (38)
+
+npm run typecheck
+web, worker, calculator, catalog, contracts all exited 0
+
+npm run build
+Vite transformed 26 modules; Wrangler dry run exited; calculator/catalog/contracts TypeScript builds exited 0
+```

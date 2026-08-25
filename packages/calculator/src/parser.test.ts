@@ -45,6 +45,66 @@ describe('Weather Artist raw endpoint parser', () => {
     expect(() => parseBuildSnapshot(nameless)).toThrow('profiles.CharacterName');
   });
 
+  test('rejects non-object members from every endpoint array the parser consumes', () => {
+    // Break caught: valid containers with null members were normalized into zero-valued records.
+    const cases: Array<[string, (responses: Record<string, any>) => void]> = [
+      ['responses.profiles.Stats[0]', (responses) => { responses.profiles.Stats[0] = null; }],
+      ['responses.equipment[0]', (responses) => { responses.equipment[0] = null; }],
+      ['responses.avatars[0]', (responses) => { responses.avatars[0] = null; }],
+      ['responses.combatSkills[0]', (responses) => { responses.combatSkills[0] = null; }],
+      ['responses.combatSkills[0].Tripods[0]', (responses) => { responses.combatSkills[0].Tripods[0] = null; }],
+      ['responses.engravings.ArkPassiveEffects[0]', (responses) => { responses.engravings.ArkPassiveEffects[0] = null; }],
+      ['responses.cards.Cards[0]', (responses) => { responses.cards.Cards[0] = null; }],
+      ['responses.cards.Effects[0]', (responses) => { responses.cards.Effects[0] = null; }],
+      ['responses.cards.Effects[0].Items[0]', (responses) => { responses.cards.Effects[0].Items[0] = null; }],
+      ['responses.gems.Gems[0]', (responses) => { responses.gems.Gems[0] = null; }],
+      ['responses.arkPassive.Points[0]', (responses) => { responses.arkPassive.Points[0] = null; }],
+      ['responses.arkPassive.Effects[0]', (responses) => { responses.arkPassive.Effects[0] = null; }],
+      ['responses.arkGrid.Slots[0]', (responses) => { responses.arkGrid.Slots[0] = null; }],
+      ['responses.arkGrid.Slots[0].Gems[0]', (responses) => { responses.arkGrid.Slots[0].Gems[0] = null; }],
+      ['responses.arkGrid.Effects[0]', (responses) => { responses.arkGrid.Effects[0] = null; }]
+    ];
+
+    for (const [path, mutate] of cases) {
+      const raw = structuredClone(loadRawFixture()) as { responses: Record<string, any> };
+      mutate(raw.responses);
+      expect(() => parseBuildSnapshot(raw), path).toThrow(path);
+    }
+  });
+
+  test('accepts legacy engraving Effects fallback and rejects payloads with neither valid collection', () => {
+    // Break caught: validation rejected shapes that parseEngravings intentionally supports.
+    for (const arkPassiveShape of ['missing', 'null', 'empty'] as const) {
+      const raw = structuredClone(loadRawFixture()) as {
+        responses: { engravings: { ArkPassiveEffects?: unknown; Effects?: unknown } };
+      };
+      const engravings = raw.responses.engravings;
+      engravings.Effects = engravings.ArkPassiveEffects;
+      if (arkPassiveShape === 'missing') delete engravings.ArkPassiveEffects;
+      else engravings.ArkPassiveEffects = arkPassiveShape === 'null' ? null : [];
+
+      expect(parseBuildSnapshot(raw).build.engravings).toMatchObject({
+        names: ['돌격대장', '아드레날린', '원한', '질량 증가', '타격의 대가'],
+        stoneLevelTotal: 5,
+        stoneBaseAttackPercent: '0.015'
+      });
+    }
+
+    const invalidCases: Array<[unknown, unknown, string]> = [
+      [null, null, 'responses.engravings.Effects'],
+      [[], undefined, 'responses.engravings.Effects'],
+      [null, [null], 'responses.engravings.Effects[0]']
+    ];
+    for (const [arkPassiveEffects, effects, expectedPath] of invalidCases) {
+      const raw = structuredClone(loadRawFixture()) as {
+        responses: { engravings: { ArkPassiveEffects?: unknown; Effects?: unknown } };
+      };
+      raw.responses.engravings.ArkPassiveEffects = arkPassiveEffects;
+      raw.responses.engravings.Effects = effects;
+      expect(() => parseBuildSnapshot(raw), expectedPath).toThrow(expectedPath);
+    }
+  });
+
   test('normalizes all nine endpoint payloads into the versioned snapshot contract', () => {
     // Break caught: omitting one endpoint or leaking numeric values as JS numbers.
     const snapshot = parseBuildSnapshot(loadRawFixture());
