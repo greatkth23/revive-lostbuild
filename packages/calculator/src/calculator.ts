@@ -251,8 +251,7 @@ export function calculateSkillDamage(
   const raidCaptain = raidCaptainEffect
     ? Decimal.max(0, Decimal.min(rawMoveSpeed, FIXED.speedCap).minus(1)).times(raidCaptainCoefficient)
     : new Decimal(0);
-  const arkGridBossDamage = dec(build.arkGrid.gemEffects.bossDamagePercent)
-    .plus(build.arkGrid.aggregateEffects.bossDamagePercent);
+  const arkGridBossDamage = dec(build.arkGrid.effectiveBaseEffects.bossDamagePercent);
 
   const subtitlePercentages: Decimal[] = [
     ...generalEngravingParts,

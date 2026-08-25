@@ -376,3 +376,289 @@ Output (exit 0): Vite built 26 modules, Wrangler completed the Worker dry run, a
 
 - The authoritative Python `calculate()` currently forms the Ark Grid boss subtitle from both `gemEffects.bossDamagePercent` and `pointEffects.bossDamagePercent`, even though parser provenance marks matching individual gem categories as superseded by `Effects[]`. TypeScript deliberately reproduces that current Python path to meet the required fresh golden totals, while its normalized `effectiveBaseEffects` and attack/additional categories preserve the explicit dedupe model. If the Python boss path is later corrected to use `effectiveBaseEffects`, the six golden totals must be regenerated and this port updated in lockstep.
 - Pet and collection scenario bonuses remain the verified `current-v2.7.2` fixed values because the nine endpoint payloads expose no separate editable pet endpoint. They are explicitly labeled as fixed-scenario provenance rather than presented as parsed API fields.
+
+---
+
+# Task 2 review fix round 1/5
+
+This section supersedes the original boss-damage concern and all original six-skill damage literals above. The binding duplicate-elimination ruling was applied to the authoritative Python engine first, and the TypeScript implementation was then brought back to corrected Python parity.
+
+## Corrected behavior
+
+- Python and TypeScript now take the Ark Grid base boss category exclusively from `effectiveBaseEffects.bossDamagePercent`. Active-gem and aggregate `Effects[]` values remain separately serialized for audit, while core factors remain independently multiplicative.
+- Raw endpoint payloads are validated for the expected top-level object/array shape, required nested arrays, and a non-empty character name before normalization. Malformed values fail with a path-bearing error instead of silently becoming zero.
+- Ark Grid core parsing now covers combined and individual attack/move speed, percent-plus-flat and direct flat weapon attack, and multiplicative incoming critical-hit damage.
+- An activated, damage-relevant Ark Grid option with no recognized component emits an `UNPARSED_DAMAGE_TOOLTIP` incomplete warning.
+- Ark Grid `REPLACE` aggregation no longer pre-adds the replacement. Normalized totals and the effective factor now both equal the replacement value.
+- Ark Passive node provenance now marks nodes without a one-cast calculator component ineligible/unapplied. Numeric fallback use emits an `ARK_PASSIVE_EFFECT_FALLBACK` warning and separate `VERIFIED_FALLBACK`, `parsed: false` provenance.
+
+## TDD evidence
+
+### Python Ark Grid boss duplicate
+
+RED command (working directory `api-chatgpt-conversation-6a6309ab-7de4-8342/work`):
+
+```text
+python -m unittest test_lostark_damage_test.ParserTests.test_calculation_uses_aggregate_arkgrid_boss_damage_without_gem_duplicate -v
+```
+
+RED output (exit 1):
+
+```text
+test_calculation_uses_aggregate_arkgrid_boss_damage_without_gem_duplicate (...) ... FAIL
+AssertionError: 404934344 != 769398033
+Ran 1 test in 0.016s
+FAILED (failures=1)
+```
+
+GREEN command was identical. GREEN output (exit 0):
+
+```text
+test_calculation_uses_aggregate_arkgrid_boss_damage_without_gem_duplicate (...) ... ok
+Ran 1 test in 0.014s
+OK
+```
+
+### Corrected six-skill TypeScript parity
+
+After regenerating the literals from the corrected Python engine, RED command:
+
+```text
+npm test -- --run packages/calculator/src/calculator.test.ts
+```
+
+RED output (exit 1):
+
+```text
+❯ packages/calculator/src/calculator.test.ts (14 tests | 6 failed) 237ms
+Test Files  1 failed (1)
+Tests       6 failed | 8 passed (14)
+
+thunderstorm example:
+Expected nonCriticalDamage 561355853, received 583971628
+Expected criticalDamage 1694349020, received 1762610564
+Expected expectedDamage 1646989906, received 1713343456
+```
+
+GREEN command was identical after changing the calculator to `effectiveBaseEffects`. GREEN output (exit 0):
+
+```text
+✓ packages/calculator/src/calculator.test.ts (14 tests) 221ms
+Test Files  1 passed (1)
+Tests       14 passed (14)
+```
+
+A direct mutation regression was then retained: changing `gemEffects` and `aggregateEffects` while leaving `effectiveBaseEffects` unchanged does not change any damage total.
+
+### Endpoint shape validation
+
+RED command:
+
+```text
+npm test -- --run packages/calculator/src/parser.test.ts -t "rejects present-but-null"
+```
+
+RED output (exit 1):
+
+```text
+× rejects present-but-null or wrong-shaped endpoint payloads and an empty character name
+profiles: expected [Function] to throw an error
+Test Files  1 failed (1)
+Tests       1 failed | 9 skipped (10)
+```
+
+GREEN command was identical. GREEN output (exit 0):
+
+```text
+✓ packages/calculator/src/parser.test.ts (10 tests | 9 skipped) 82ms
+Test Files  1 passed (1)
+Tests       1 passed | 9 skipped (10)
+```
+
+### Ark Grid missing categories and activated-option warning
+
+RED command:
+
+```text
+npm test -- --run packages/calculator/src/parser.test.ts -t "calculator-connected Ark Grid|activated Ark Grid core"
+```
+
+RED output (exit 1):
+
+```text
+× parses calculator-connected Ark Grid speed, flat weapon attack, and incoming critical-hit damage
+received attackSpeed 0, moveSpeed 0, weaponAttackFlat 0, criticalHitDamagePercent 0
+× warns when an activated Ark Grid core damage option has no recognized component
+expected UNPARSED_DAMAGE_TOOLTIP at arkGrid.Slots[0].Tooltip.options[0]
+Test Files  1 failed (1)
+Tests       2 failed | 10 skipped (12)
+```
+
+GREEN command was identical. GREEN output (exit 0):
+
+```text
+✓ packages/calculator/src/parser.test.ts (12 tests | 10 skipped) 45ms
+Test Files  1 passed (1)
+Tests       2 passed | 10 skipped (12)
+```
+
+The Python-compatible percent-plus-flat weapon-attack wording was separately tightened with a real RED/GREEN:
+
+```text
+npm test -- --run packages/calculator/src/parser.test.ts -t "calculator-connected Ark Grid"
+
+RED: expected weaponAttackFlat "1000", received "0" (1 failed, 13 skipped)
+GREEN: 1 passed, 13 skipped
+```
+
+### Ark Grid REPLACE aggregation
+
+RED command:
+
+```text
+npm test -- --run packages/calculator/src/parser.test.ts -t "replaces an Ark Grid factor once"
+```
+
+RED output (exit 1):
+
+```text
+expected '0.4' to be '0.2'
+Test Files  1 failed (1)
+Tests       1 failed | 12 skipped (13)
+```
+
+GREEN command was identical. GREEN output (exit 0):
+
+```text
+✓ packages/calculator/src/parser.test.ts (13 tests | 12 skipped) 29ms
+Test Files  1 passed (1)
+Tests       1 passed | 12 skipped (13)
+```
+
+### Ark Passive eligibility and fallback audit
+
+RED command:
+
+```text
+npm test -- --run packages/calculator/src/parser.test.ts -t "marks ignored Ark Passive"
+```
+
+RED output (exit 1):
+
+```text
+expected provenance for 환기 with eligible false, applied false, and a one-cast exclusion reason
+received arkPassive.Effects[0] with eligible true and applied true
+Test Files  1 failed (1)
+Tests       1 failed | 13 skipped (14)
+```
+
+GREEN command was identical. GREEN output (exit 0):
+
+```text
+✓ packages/calculator/src/parser.test.ts (14 tests | 13 skipped) 35ms
+Test Files  1 passed (1)
+Tests       1 passed | 13 skipped (14)
+```
+
+The retained test also checks the real fixture's `환기`, `치명`, `신속`, `잠재력 해방`, and `즉각적인 주문` nodes as ineligible/unapplied, plus path-bearing fallback warning/provenance.
+
+## Corrected Python-derived parity checkpoints
+
+The same shared raw file was loaded in place and no copy was made. Attack power remains `258720.5038308918678085116909739914291229`, critical rate remains `0.9582`, and critical multipliers remain unchanged.
+
+| Stable ID | Skill | Non-critical | Critical | Expected |
+|---|---|---:|---:|---:|
+| `thunderstorm` | 우레바람 | 561355853 | 1694349020 | 1646989906 |
+| `space-cutting` | 공간 가르기 | 411065534 | 1240725435 | 1206045651 |
+| `piercing-wind` | 바람송곳 | 304183416 | 918121491 | 892458879 |
+| `raging-blizzard` | 칼바람 | 161663454 | 880255170 | 850218036 |
+| `sweeping-strike` | 몰아치기 | 153270514 | 781421879 | 755165152 |
+| `tornado-walk` | 회오리 걸음 | 259003186 | 781753307 | 759902352 |
+
+Per-hit checkpoints `(non-critical / critical / expected)`:
+
+```text
+우레바람 최대 홀딩: 561355853 / 1694349020 / 1646989906
+공간 가르기 1타:    123316556 / 372208262 / 361804589
+공간 가르기 2타:    287748977 / 868517172 / 844241062
+바람송곳 전체:       304183416 / 918121491 / 892458879
+칼바람 전체:         161663454 / 880255170 / 850218036
+몰아치기 1타:         23624953 / 120447534 / 116400350
+몰아치기 2타:         55051968 / 280672463 / 271241526
+몰아치기 3타:         74593592 / 380301881 / 367523275
+회오리 걸음 1타:     181230439 / 547010627 / 531721016
+회오리 걸음 2타:      77772746 / 234742679 / 228181336
+```
+
+## Files changed in this fix round
+
+- `api-chatgpt-conversation-6a6309ab-7de4-8342/work/lostark_damage_test.py`
+- `api-chatgpt-conversation-6a6309ab-7de4-8342/work/test_lostark_damage_test.py`
+- `packages/calculator/src/calculator.ts`
+- `packages/calculator/src/calculator.test.ts`
+- `packages/calculator/src/parser.ts`
+- `packages/calculator/src/parser.test.ts`
+- `.superpowers/sdd/2026-08-25-weather-artist-web-simulator/task-2-report.md`
+
+## Focused and full verification
+
+Focused calculator/contracts command:
+
+```text
+npm test -- --run packages/contracts/src/contracts.test.ts packages/calculator/src/parser.test.ts packages/calculator/src/calculator.test.ts
+```
+
+Python full-suite command:
+
+```text
+python -m unittest discover -s api-chatgpt-conversation-6a6309ab-7de4-8342/work -p 'test_*.py' -v
+```
+
+Latest Python output before commit:
+
+```text
+Ran 36 tests in 0.733s
+OK
+```
+
+Full npm commands:
+
+```text
+npm test
+npm run typecheck
+npm run build
+```
+
+Final fresh output after the last source change (all exit 0):
+
+```text
+Focused calculator/contracts:
+✓ contracts 4, calculator 15, parser 14
+Test Files  3 passed (3)
+Tests       33 passed (33)
+
+npm test:
+✓ catalog 3, contracts 4, calculator 15, parser 14
+Test Files  4 passed (4)
+Tests       36 passed (36)
+
+npm run typecheck:
+web, worker, calculator, catalog, contracts all exited 0
+
+npm run build:
+Vite 26 modules built; Wrangler dry run exited; calculator/catalog/contracts TypeScript builds exited 0
+```
+
+## Self-review
+
+- Confirmed the Python and TypeScript boss multiplier paths use only the effective base category; core boss factors remain separate.
+- Confirmed the six corrected literals and all ten independently floored hit rows came from the corrected Python engine using the single existing raw fixture.
+- Confirmed validation happens before any permissive `object()`/`array()` normalization and prevents an invalid empty-name snapshot.
+- Confirmed REPLACE changes totals from prior `p` to replacement `r` exactly once, while ADD and ADD_TO_PREVIOUS preserve prior behavior.
+- Confirmed Ark Passive fallback numerics are no longer represented as parsed official values and ignored nodes carry an exclusion reason.
+- Confirmed no Arcana behavior, equipment-growth editing, filesystem/HTTP access in pure modules, stable IDs, schema version, or decimal serialization was changed.
+
+## Concerns after fix round
+
+- The real fixture's active `불타는 일격` 10P burn option has no single-cast tick/coefficient model. It is now surfaced as an incomplete `UNPARSED_DAMAGE_TOOLTIP` warning rather than silently contributing zero.
+- Endpoint validation intentionally targets the current nine-endpoint API shapes. A future API envelope change will fail fast with a precise path and will require an explicit parser update.

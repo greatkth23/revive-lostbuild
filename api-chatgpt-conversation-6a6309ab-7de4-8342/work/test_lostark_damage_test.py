@@ -605,6 +605,28 @@ class ParserTests(unittest.TestCase):
         )
         self.assertFalse(dut.validate(self.parsed, before, after))
 
+    def test_calculation_uses_aggregate_arkgrid_boss_damage_without_gem_duplicate(self):
+        baseline = copy.deepcopy(self.parsed)
+        changed_gem = copy.deepcopy(self.parsed)
+        changed_gem["arkGrid"]["gemEffects"]["bossDamagePercent"] = Decimal("0.99")
+
+        baseline_result = dut.calculate(baseline, include_arkgrid=True)
+        changed_result = dut.calculate(changed_gem, include_arkgrid=True)
+
+        self.assertEqual(
+            baseline_result["damage"]["nonCritical"],
+            changed_result["damage"]["nonCritical"],
+        )
+        boss_subtitle = next(
+            item
+            for item in baseline_result["damageGroups"]["subtitles"]
+            if item["name"] == "아크그리드 보스 피해"
+        )
+        self.assertEqual(
+            boss_subtitle["percent"],
+            baseline["arkGrid"]["effectiveBaseEffects"]["bossDamagePercent"],
+        )
+
     def test_profile_attack_is_used_after_reconstruction_mismatch(self):
         result = dut.calculate(
             self.parsed,

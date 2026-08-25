@@ -20,43 +20,43 @@ function snapshot() {
 
 const pythonGolden = {
   thunderstorm: {
-    nonCriticalDamage: '583971628', criticalDamage: '1762610564', expectedDamage: '1713343456',
+    nonCriticalDamage: '561355853', criticalDamage: '1694349020', expectedDamage: '1646989906',
     criticalMultiplier: '3.0183154064',
-    hits: [['최대 홀딩', '583971628', '1762610564', '1713343456']]
+    hits: [['최대 홀딩', '561355853', '1694349020', '1646989906']]
   },
   'space-cutting': {
-    nonCriticalDamage: '427626447', criticalDamage: '1290711496', expectedDamage: '1254634541',
+    nonCriticalDamage: '411065534', criticalDamage: '1240725435', expectedDamage: '1206045651',
     criticalMultiplier: '3.0183154064',
     hits: [
-      ['1타', '128284705', '387203703', '376380889'],
-      ['2타', '299341742', '903507792', '878253651']
+      ['1타', '123316556', '372208262', '361804589'],
+      ['2타', '287748977', '868517172', '844241062']
     ]
   },
   'piercing-wind': {
-    nonCriticalDamage: '316438287', criticalDamage: '955110558', expectedDamage: '928414057',
+    nonCriticalDamage: '304183416', criticalDamage: '918121491', expectedDamage: '892458879',
     criticalMultiplier: '3.0183154064',
-    hits: [['전체 타격', '316438287', '955110558', '928414057']]
+    hits: [['전체 타격', '304183416', '918121491', '892458879']]
   },
   'raging-blizzard': {
-    nonCriticalDamage: '168176514', criticalDamage: '915718688', expectedDamage: '884471425',
+    nonCriticalDamage: '161663454', criticalDamage: '880255170', expectedDamage: '850218036',
     criticalMultiplier: '5.4449855264',
-    hits: [['전체 타격', '168176514', '915718688', '884471425']]
+    hits: [['전체 타격', '161663454', '880255170', '850218036']]
   },
   'sweeping-strike': {
-    nonCriticalDamage: '159445441', criticalDamage: '812903623', expectedDamage: '785589071',
+    nonCriticalDamage: '153270514', criticalDamage: '781421879', expectedDamage: '755165152',
     criticalMultiplier: '5.0983183664',
     hits: [
-      ['1타', '24576750', '125300096', '121089861'],
-      ['2타', '57269889', '291980130', '282169242'],
-      ['3타(공간베기)', '77598801', '395623396', '382329968']
+      ['1타', '23624953', '120447534', '116400350'],
+      ['2타', '55051968', '280672463', '271241526'],
+      ['3타(공간베기)', '74593592', '380301881', '367523275']
     ]
   },
   'tornado-walk': {
-    nonCriticalDamage: '269437847', criticalDamage: '813248405', expectedDamage: '790517123',
+    nonCriticalDamage: '259003186', criticalDamage: '781753307', expectedDamage: '759902352',
     criticalMultiplier: '3.0183154064',
     hits: [
-      ['1타', '188531809', '569048466', '553142869'],
-      ['2타', '80906037', '244199939', '237374253']
+      ['1타', '181230439', '547010627', '531721016'],
+      ['2타', '77772746', '234742679', '228181336']
     ]
   }
 } as const;
@@ -96,6 +96,20 @@ describe('current-v2.7.2 damage parity', () => {
       hit.criticalDamage,
       hit.expectedDamage
     ])).toEqual(golden.hits);
+  });
+
+  test('uses only the effective Ark Grid base boss category in calculation', () => {
+    // Break caught: active gem boss damage was added to the superseding Effects[] aggregate a second time.
+    const parsed = snapshot();
+    const baseline = calculateSkillDamage(parsed, 'thunderstorm');
+    parsed.build.arkGrid.gemEffects.bossDamagePercent = '0.99';
+    parsed.build.arkGrid.aggregateEffects.bossDamagePercent = '0.88';
+
+    expect(calculateSkillDamage(parsed, 'thunderstorm')).toMatchObject({
+      nonCriticalDamage: baseline.nonCriticalDamage,
+      criticalDamage: baseline.criticalDamage,
+      expectedDamage: baseline.expectedDamage
+    });
   });
 
   test('applies regular damage gems only to their own skill and retains cooldown as non-cast provenance', () => {

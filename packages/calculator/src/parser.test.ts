@@ -17,6 +17,34 @@ function loadRawFixture(): unknown {
 }
 
 describe('Weather Artist raw endpoint parser', () => {
+  test('rejects present-but-null or wrong-shaped endpoint payloads and an empty character name', () => {
+    // Break caught: object()/array() coercion silently turning malformed endpoint responses into zero stats.
+    const malformed: Array<[string, unknown]> = [
+      ['profiles', null],
+      ['equipment', {}],
+      ['avatars', {}],
+      ['combatSkills', {}],
+      ['engravings', []],
+      ['cards', []],
+      ['gems', []],
+      ['arkPassive', []],
+      ['arkGrid', []]
+    ];
+    for (const [endpoint, value] of malformed) {
+      const raw = structuredClone(loadRawFixture()) as { responses: Record<string, unknown> };
+      raw.responses[endpoint] = value;
+      expect(() => parseBuildSnapshot(raw), endpoint).toThrow(`responses.${endpoint}`);
+    }
+
+    const nameless = structuredClone(loadRawFixture()) as {
+      characterName?: string;
+      responses: { profiles: { CharacterName?: string } };
+    };
+    nameless.characterName = '';
+    nameless.responses.profiles.CharacterName = '';
+    expect(() => parseBuildSnapshot(nameless)).toThrow('profiles.CharacterName');
+  });
+
   test('normalizes all nine endpoint payloads into the versioned snapshot contract', () => {
     // Break caught: omitting one endpoint or leaking numeric values as JS numbers.
     const snapshot = parseBuildSnapshot(loadRawFixture());
@@ -134,6 +162,94 @@ describe('Weather Artist raw endpoint parser', () => {
     expect(repeated.map((factor) => factor.requiredPoints)).toEqual([18, 19, 20]);
   });
 
+  test('parses calculator-connected Ark Grid speed, flat weapon attack, and incoming critical-hit damage', () => {
+    // Break caught: activated core categories present in Python becoming silent zeroes in TypeScript.
+    const raw = structuredClone(loadRawFixture()) as { responses: { arkGrid: unknown } };
+    raw.responses.arkGrid = {
+      Slots: [{
+        Index: 0,
+        Name: '혼돈의 별 코어 : 회심',
+        Grade: '고대',
+        Point: 10,
+        Tooltip: JSON.stringify({ Element_000: { value: [
+          '코어 옵션',
+          '[10P] 공격 및 이동 속도가 3.0% 증가한다. 무기 공격력이 2.25% 증가하고, 추가로 1,000 증가한다. 입는 치명타 피해량을 2.0% 증가시킨다.',
+          '분해불가'
+        ].join('<BR>') } }),
+        Gems: []
+      }],
+      Effects: []
+    };
+
+    const { arkGrid } = parseBuildSnapshot(raw).build;
+    expect(arkGrid.coreEffects).toMatchObject({
+      attackSpeed: '0.03',
+      moveSpeed: '0.03',
+      weaponAttackFlat: '1000',
+      weaponAttackPercent: '0.0225',
+      criticalHitDamagePercent: '0.02'
+    });
+    expect(arkGrid.coreDamageFactors).toContainEqual(expect.objectContaining({
+      category: 'criticalHitDamagePercent',
+      value: '0.02'
+    }));
+  });
+
+  test('warns when an activated Ark Grid core damage option has no recognized component', () => {
+    // Break caught: [nP] was found, so an unrecognized active damage option disappeared without warning.
+    const raw = structuredClone(loadRawFixture()) as { responses: { arkGrid: unknown } };
+    raw.responses.arkGrid = {
+      Slots: [{
+        Index: 0,
+        Name: '알 수 없는 코어',
+        Grade: '고대',
+        Point: 10,
+        Tooltip: JSON.stringify({ Element_000: { value: '코어 옵션<BR>[10P] 미지의 공격 피해가 7.0% 증가한다.<BR>분해불가' } }),
+        Gems: []
+      }],
+      Effects: []
+    };
+
+    expect(parseBuildSnapshot(raw).warnings).toContainEqual(expect.objectContaining({
+      code: 'UNPARSED_DAMAGE_TOOLTIP',
+      severity: 'incomplete',
+      path: 'arkGrid.Slots[0].Tooltip.options[0]'
+    }));
+  });
+
+  test('replaces an Ark Grid factor once in both factors and normalized core totals', () => {
+    // Break caught: pre-adding the replacement made normalized coreEffects equal 2r while the factor was r.
+    const raw = structuredClone(loadRawFixture()) as { responses: { arkGrid: unknown } };
+    raw.responses.arkGrid = {
+      Slots: [{
+        Index: 0,
+        Name: '질서의 해 코어 : 바람의 칼날',
+        Grade: '고대',
+        Point: 14,
+        Tooltip: JSON.stringify({ Element_000: { value: [
+          '코어 옵션',
+          '[10P] 칼바람의 피해량이 10.0% 증가한다.',
+          "[14P] '운명: 바람의 칼날' 효과의 피해 증가량을 20.0%로 변경한다.",
+          '분해불가'
+        ].join('<BR>') } }),
+        Gems: []
+      }],
+      Effects: []
+    };
+
+    const { arkGrid } = parseBuildSnapshot(raw).build;
+    expect(arkGrid.coreEffects.skillDamagePercent).toBe('0.2');
+    expect(arkGrid.coreDamageFactors).toContainEqual(expect.objectContaining({
+      category: 'skillDamagePercent',
+      scopeValue: ['칼바람'],
+      value: '0.2',
+      contributionPaths: [
+        'arkGrid.Slots[0].Tooltip.options[0]',
+        'arkGrid.Slots[0].Tooltip.options[1]'
+      ]
+    }));
+  });
+
   test('retains selected tripod effects and marks the additional Space Slash hit as embedded provenance', () => {
     // Break caught: dropping the official tooltip or later multiplying the 94.8% embedded hit again.
     const selected = parseBuildSnapshot(loadRawFixture()).build.combatSkills.selectedTripods;
@@ -173,7 +289,9 @@ describe('Weather Artist raw endpoint parser', () => {
     // Break caught: dropping Python fallback/mismatch warnings while normalizing the snapshot.
     const parsed = parseBuildSnapshot(loadRawFixture());
     expect(parsed.warnings.map(({ code, path }) => ({ code, path }))).toEqual([
+      { code: 'ARK_PASSIVE_EFFECT_FALLBACK', path: 'arkPassive.Effects[2]' },
       { code: 'KARMA_EVOLUTION_FALLBACK', path: 'arkPassive.Points[0]' },
+      { code: 'UNPARSED_DAMAGE_TOOLTIP', path: 'arkGrid.Slots[4].Tooltip.options[0]' },
       { code: 'FIXED_EXPEDITION_STAT_MISMATCH', path: 'profiles.ExpeditionLevel' },
       { code: 'CALCULATED_ATTACK_POWER_OVERRIDE', path: 'profiles.Stats[공격력]' }
     ]);
@@ -182,6 +300,51 @@ describe('Weather Artist raw endpoint parser', () => {
       value: '0.028',
       applied: true
     }));
+  });
+
+  test('marks ignored Ark Passive nodes ineligible and identifies verified numeric fallbacks', () => {
+    // Break caught: all nodes and fallback-derived numbers were attributed as applied official API values.
+    const raw = structuredClone(loadRawFixture()) as {
+      responses: { arkPassive: { Effects: unknown[] } };
+    };
+    raw.responses.arkPassive.Effects = [
+      { Name: '깨달음', Description: '깨달음 2티어 환기 Lv.3', ToolTip: '' },
+      { Name: '진화', Description: '진화 2티어 한계 돌파 Lv.3', ToolTip: '' }
+    ];
+
+    const parsed = parseBuildSnapshot(raw);
+    expect(parsed.build.provenance).toContainEqual(expect.objectContaining({
+      path: 'arkPassive.Effects[0]',
+      label: '환기',
+      sourceType: 'OFFICIAL_API',
+      eligible: false,
+      applied: false,
+      excludedReason: expect.stringContaining('1회 피해')
+    }));
+    expect(parsed.warnings).toContainEqual(expect.objectContaining({
+      code: 'ARK_PASSIVE_EFFECT_FALLBACK',
+      severity: 'warning',
+      path: 'arkPassive.Effects[1]'
+    }));
+    expect(parsed.build.provenance).toContainEqual(expect.objectContaining({
+      path: 'arkPassive.Effects[1].fallback.evolutionDamage',
+      label: '한계 돌파 evolutionDamage fallback',
+      value: '0.3',
+      sourceType: 'VERIFIED_FALLBACK',
+      parsed: false,
+      eligible: true,
+      applied: true
+    }));
+
+    const currentNodeProvenance = parseBuildSnapshot(loadRawFixture()).build.provenance
+      .filter((item) => /^arkPassive\.Effects\[\d+\]$/.test(item.path));
+    for (const ignoredName of ['환기', '치명', '신속', '잠재력 해방', '즉각적인 주문']) {
+      expect(currentNodeProvenance).toContainEqual(expect.objectContaining({
+        label: ignoredName,
+        eligible: false,
+        applied: false
+      }));
+    }
   });
 
   test('flattens official JSON tooltips without repeating adjacent wrapper values', () => {

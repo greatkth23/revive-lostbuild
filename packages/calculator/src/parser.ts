@@ -595,16 +595,21 @@ function parseArkPassive(bodyValue: unknown, context: ParseContext): NormalizedB
       ? max(percentMatches(description, new RegExp(`치명타로\\s*적중\\s*시[^%\\n]{0,35}?피해(?:가|량이)?\\s*\\+?${PERCENT_NUMBER}`, 'g')))
       : ZERO;
     let criticalDamage = ZERO;
+    const fallbackComponents: Array<{ category: string; value: Decimal }> = [];
     if (name === '기민함') {
       criticalRate = new Decimal('0.12');
       criticalDamage = new Decimal('0.48');
+      fallbackComponents.push(
+        { category: 'criticalRate', value: criticalRate },
+        { category: 'criticalDamage', value: criticalDamage }
+      );
     }
     const fallback = EFFECT_FALLBACKS[name] ?? {};
-    if (evolution.isZero() && fallback.evolutionDamage) evolution = dec(fallback.evolutionDamage);
-    if (skillDamage.isZero() && fallback.skillDamage) skillDamage = dec(fallback.skillDamage);
-    if (criticalRate.isZero() && fallback.criticalRate) criticalRate = dec(fallback.criticalRate);
-    if (criticalDamage.isZero() && fallback.criticalDamage) criticalDamage = dec(fallback.criticalDamage);
-    if (criticalHitDamage.isZero() && fallback.criticalHitDamage) criticalHitDamage = dec(fallback.criticalHitDamage);
+    if (evolution.isZero() && fallback.evolutionDamage) { evolution = dec(fallback.evolutionDamage); fallbackComponents.push({ category: 'evolutionDamage', value: evolution }); }
+    if (skillDamage.isZero() && fallback.skillDamage) { skillDamage = dec(fallback.skillDamage); fallbackComponents.push({ category: 'skillDamage', value: skillDamage }); }
+    if (criticalRate.isZero() && fallback.criticalRate) { criticalRate = dec(fallback.criticalRate); fallbackComponents.push({ category: 'criticalRate', value: criticalRate }); }
+    if (criticalDamage.isZero() && fallback.criticalDamage) { criticalDamage = dec(fallback.criticalDamage); fallbackComponents.push({ category: 'criticalDamage', value: criticalDamage }); }
+    if (criticalHitDamage.isZero() && fallback.criticalHitDamage) { criticalHitDamage = dec(fallback.criticalHitDamage); fallbackComponents.push({ category: 'criticalHitDamage', value: criticalHitDamage }); }
     if (!evolution.isZero()) evolutionDamageByName[name] = decimalString(evolution);
     if (!skillDamage.isZero()) skillDamageByName[name] = decimalString(skillDamage);
     if (!criticalRate.isZero()) criticalRateByName[name] = decimalString(criticalRate);
@@ -612,7 +617,36 @@ function parseArkPassive(bodyValue: unknown, context: ParseContext): NormalizedB
     if (!criticalHitDamage.isZero()) criticalHitDamageByName[name] = decimalString(criticalHitDamage);
     if (!combinedSpeed.isZero()) speedByName[name] = { attackSpeed: decimalString(combinedSpeed), moveSpeed: decimalString(combinedSpeed) };
     effects.push({ name, rawName, level, description });
-    provenance(context, `arkPassive.Effects[${index}]`, name, level ?? 0, { sourceType: 'OFFICIAL_API' });
+    const hasCalculatorComponent = !evolution.isZero()
+      || !skillDamage.isZero()
+      || !criticalRate.isZero()
+      || !criticalDamage.isZero()
+      || !criticalHitDamage.isZero()
+      || !combinedSpeed.isZero()
+      || name === '음속 돌파';
+    provenance(context, `arkPassive.Effects[${index}]`, name, level ?? 0, {
+      sourceType: name === '음속 돌파' ? 'OFFICIAL_API+VERIFIED_RULE' : 'OFFICIAL_API',
+      eligible: hasCalculatorComponent,
+      applied: hasCalculatorComponent,
+      excludedReason: hasCalculatorComponent ? '' : '1회 피해 계산에 연결되지 않은 스탯·자원·시전 속도·재사용 대기시간 노드',
+      note: name === '음속 돌파' ? '노드 레벨을 음속 돌파 계산 규칙에 사용' : ''
+    });
+    if (fallbackComponents.length > 0) {
+      warning(
+        context,
+        'ARK_PASSIVE_EFFECT_FALLBACK',
+        'warning',
+        `arkPassive.Effects[${index}]`,
+        `'${name}'의 ${fallbackComponents.map(({ category }) => category).join(', ')} 수치에 current-v2.7.2 검증 fallback을 사용했습니다.`
+      );
+      for (const component of fallbackComponents) {
+        provenance(context, `arkPassive.Effects[${index}].fallback.${component.category}`, `${name} ${component.category} fallback`, component.value, {
+          sourceType: 'VERIFIED_FALLBACK',
+          parsed: false,
+          note: '공식 API 노드 선택·레벨과 current-v2.7.2 검증 규칙으로 보완'
+        });
+      }
+    }
   }
 
   let karmaWeaponAttack = ZERO;
@@ -819,8 +853,19 @@ function parseArkGridComponents(rawText: string, coreName: string, coreGrade: st
   addPattern('additionalDamagePercent', new RegExp(`추가\\s*피해(?:가|량이)?\\s*${PERCENT_NUMBER}`, 'g'));
   addPattern('criticalRate', new RegExp(`치명타\\s*적중률(?:이)?\\s*${PERCENT_NUMBER}`, 'g'));
   addPattern('criticalDamage', new RegExp(`(?<!입는\\s)치명타\\s*피해(?:가|량이)?\\s*${PERCENT_NUMBER}`, 'g'));
+  addPattern('criticalHitDamagePercent', new RegExp(`입는\\s*치명타\\s*피해(?:가|량이|량을)?\\s*${PERCENT_NUMBER}`, 'g'), 'ALL', '', true);
   addPattern('enemyDefenseReductionPercent', new RegExp(`모든\\s*방어력을\\s*${PERCENT_NUMBER}\\s*감소`, 'g'), 'ALL', '', true);
   addPattern('weaponAttackPercent', new RegExp(`무기\\s*공격력이\\s*${PERCENT_NUMBER}`, 'g'));
+  const combinedSpeedPattern = new RegExp(`공격\\s*및\\s*이동\\s*속도(?:가|는)?\\s*${PERCENT_NUMBER}`, 'g');
+  addPattern('attackSpeed', combinedSpeedPattern);
+  addPattern('moveSpeed', combinedSpeedPattern);
+  addPattern('attackSpeed', new RegExp(`(?<!및\\s)공격\\s*속도(?:가|는)?\\s*${PERCENT_NUMBER}`, 'g'));
+  addPattern('moveSpeed', new RegExp(`(?<!및\\s)이동\\s*속도(?:가|는)?\\s*${PERCENT_NUMBER}`, 'g'));
+  const noPercentWeaponAttackText = value.replace(new RegExp(`무기\\s*공격력이\\s*${PERCENT_NUMBER}`, 'g'), '');
+  for (const match of noPercentWeaponAttackText.matchAll(new RegExp(`무기\\s*공격력이\\s*${PLAIN_NUMBER}\\s*(?:추가로\\s*)?증가`, 'g'))) add('weaponAttackFlat', dec(match[1] ?? 0));
+  if (value.includes('무기 공격력')) {
+    for (const match of noPercentWeaponAttackText.matchAll(new RegExp(`추가로\\s*${PLAIN_NUMBER}\\s*증가`, 'g'))) add('weaponAttackFlat', dec(match[1] ?? 0));
+  }
   const attackText = value.replace(/무기\s*공격력/g, '');
   addPattern('attackPowerPercent', new RegExp(`(?<!아군\\s)공격력이\\s*${PERCENT_NUMBER}`, 'g'), 'ALL', '', false, attackText);
   const noPercentAttackText = attackText.replace(new RegExp(PERCENT_NUMBER, 'g'), '');
@@ -857,9 +902,12 @@ function parseArkGrid(bodyValue: unknown, context: ParseContext): NormalizedBuil
       const path = `${corePath}.Tooltip.options[${optionIndex}]`;
       const activated = point >= option.requiredPoints;
       const components = activated ? parseArkGridComponents(option.text, coreName, coreGrade) : [];
+      if (activated && components.length === 0 && /(?:피해|공격력|치명타|재사용|방어력|공격\s*(?:및\s*이동\s*)?속도|이동\s*속도)/.test(option.text)) {
+        warning(context, 'UNPARSED_DAMAGE_TOOLTIP', 'incomplete', path, `'${coreName}'의 활성 ${option.requiredPoints}P 옵션을 분류하지 못했습니다.`);
+      }
       for (const component of components) {
-        coreTotals[component.category] = (coreTotals[component.category] ?? ZERO).plus(component.value);
         if (!ARKGRID_MULTIPLICATIVE.has(component.category)) {
+          coreTotals[component.category] = (coreTotals[component.category] ?? ZERO).plus(component.value);
           provenance(context, path, `${coreName} ${component.category}`, component.value, { sourceType: 'OFFICIAL_TOOLTIP+DERIVED' });
           continue;
         }
@@ -876,6 +924,7 @@ function parseArkGrid(bodyValue: unknown, context: ParseContext): NormalizedBuil
         }
         if (component.operator === 'ADD_TO_PREVIOUS' && matchingIndex >= 0) {
           const prior = factors[matchingIndex]!;
+          coreTotals[component.category] = (coreTotals[component.category] ?? ZERO).plus(component.value);
           prior.value = decimalString(dec(prior.value).plus(component.value));
           prior.contributionPaths.push(path);
         } else if (component.operator === 'REPLACE' && matchingIndex >= 0) {
@@ -884,6 +933,7 @@ function parseArkGrid(bodyValue: unknown, context: ParseContext): NormalizedBuil
           prior.value = decimalString(component.value);
           prior.contributionPaths.push(path);
         } else {
+          coreTotals[component.category] = (coreTotals[component.category] ?? ZERO).plus(component.value);
           factors.push({
             factorId: `${corePath}:${component.category}:${factors.length + 1}`,
             corePath,
@@ -1030,14 +1080,56 @@ function snapshotId(bundle: JsonObject, characterName: string): string {
   return `${characterName}:${captured}`;
 }
 
-export function parseBuildSnapshot(rawBundle: unknown): ParsedBuildSnapshot {
-  const bundle = object(rawBundle);
-  const responses = object(bundle.responses);
+function validateEndpointPayloads(bundle: JsonObject): JsonObject {
+  if (bundle.responses === null || typeof bundle.responses !== 'object' || Array.isArray(bundle.responses)) {
+    throw new Error('Malformed Lost Ark endpoint payload: responses must be an object');
+  }
+  const responses = bundle.responses as JsonObject;
   const missing = ENDPOINT_SOURCES.filter((key) => !(key in responses));
   if (missing.length > 0) throw new Error(`Missing Lost Ark endpoint payloads: ${missing.join(', ')}`);
+
+  const arrayEndpoints = ['equipment', 'avatars', 'combatSkills'] as const;
+  for (const endpoint of arrayEndpoints) {
+    if (!Array.isArray(responses[endpoint])) {
+      throw new Error(`Malformed Lost Ark endpoint payload: responses.${endpoint} must be an array`);
+    }
+  }
+  const objectEndpoints = ['profiles', 'engravings', 'cards', 'gems', 'arkPassive', 'arkGrid'] as const;
+  for (const endpoint of objectEndpoints) {
+    const value = responses[endpoint];
+    if (value === null || typeof value !== 'object' || Array.isArray(value)) {
+      throw new Error(`Malformed Lost Ark endpoint payload: responses.${endpoint} must be an object`);
+    }
+  }
+
+  const requiredArrays: Array<[typeof objectEndpoints[number], string]> = [
+    ['profiles', 'Stats'],
+    ['engravings', 'ArkPassiveEffects'],
+    ['cards', 'Cards'],
+    ['cards', 'Effects'],
+    ['gems', 'Gems'],
+    ['arkPassive', 'Points'],
+    ['arkPassive', 'Effects'],
+    ['arkGrid', 'Slots'],
+    ['arkGrid', 'Effects']
+  ];
+  for (const [endpoint, property] of requiredArrays) {
+    if (!Array.isArray((responses[endpoint] as JsonObject)[property])) {
+      throw new Error(`Malformed Lost Ark endpoint payload: responses.${endpoint}.${property} must be an array`);
+    }
+  }
+  return responses;
+}
+
+export function parseBuildSnapshot(rawBundle: unknown): ParsedBuildSnapshot {
+  const bundle = object(rawBundle);
+  const responses = validateEndpointPayloads(bundle);
   const context: ParseContext = { warnings: [], provenance: [] };
   const profileBody = object(responses.profiles);
   const characterName = text(bundle.characterName) || text(profileBody.CharacterName);
+  if (!characterName.trim()) {
+    throw new Error('Malformed Lost Ark endpoint payload: responses.profiles.CharacterName must be a non-empty string');
+  }
   const build: NormalizedBuild = {
     endpointSources: [...ENDPOINT_SOURCES],
     profile: parseProfile(responses.profiles, context),

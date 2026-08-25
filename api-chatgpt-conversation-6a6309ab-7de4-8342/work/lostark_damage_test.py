@@ -3800,8 +3800,7 @@ def calculate(
     )
     card_damage = parsed["cards"]["damagePercent"]
     boss_damage = (
-        grid["gemEffects"]["bossDamagePercent"]
-        + grid["pointEffects"]["bossDamagePercent"]
+        grid["effectiveBaseEffects"]["bossDamagePercent"]
         if include_arkgrid
         else Decimal("0")
     )
