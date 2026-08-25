@@ -3,13 +3,16 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "exports": { ".": "./src/index.ts" },
+  "exports": {
+    ".": "./src/index.ts"
+  },
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "typecheck": "tsc -p tsconfig.json --noEmit"
   },
   "dependencies": {
     "@weather-artist/catalog": "*",
-    "@weather-artist/contracts": "*"
+    "@weather-artist/contracts": "*",
+    "decimal.js": "^10.6.0"
   }
 }

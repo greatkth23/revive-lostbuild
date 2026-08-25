@@ -4,6 +4,7 @@ import {
   apiEnvelopeSchema,
   buildPatchSchema,
   buildSnapshotSchema,
+  decimalStringSchema,
   skillDamageResultSchema,
   warningSchema,
   type BuildSnapshot,
@@ -51,7 +52,12 @@ describe('decimal-string contracts', () => {
   it('keeps calculated numeric boundaries as strings and rejects JSON numbers', () => {
     expectTypeOf<BuildSnapshot['calculatedAttackPower']>().toEqualTypeOf<DecimalString>();
 
-    const snapshot = {
+    expect(decimalStringSchema.parse('123456.789')).toBe('123456.789');
+    expect(() => decimalStringSchema.parse(123456.789)).toThrow();
+  });
+
+  it('requires normalized endpoint sections on a serialized build snapshot', () => {
+    const headerOnlySnapshot = {
       schemaVersion: '1',
       snapshotId: 'snapshot-1',
       characterName: '봄날꽃씨',
@@ -63,7 +69,6 @@ describe('decimal-string contracts', () => {
       warnings: []
     };
 
-    expect(buildSnapshotSchema.parse(snapshot).calculatedAttackPower).toBe('123456.789');
-    expect(() => buildSnapshotSchema.parse({ ...snapshot, calculatedAttackPower: 123456.789 })).toThrow();
+    expect(() => buildSnapshotSchema.parse(headerOnlySnapshot)).toThrow();
   });
 });
