@@ -121,3 +121,88 @@ Tests  5 passed (5)
 - Confirmed equipment growth has no editable patch operation and is explicitly represented as locked due to the missing verified dataset.
 - Confirmed generated directories (`node_modules`, `dist`, `.wrangler`) are ignored; the existing Python calculator tree was not modified.
 - No blocking concerns. Task 2 will need to expand `BuildSnapshot` with parser-normalized source data while retaining its exported decimal-string boundary fields.
+
+## Review fix round 1 — versioned serialized contracts
+
+### Implementation
+
+- Made `schemaVersion: '1'` mandatory on every `BuildPatch` variant, so persisted patch arrays can be validated and migrated when their command schema changes.
+- Added mandatory version fields to serialized warnings, hit/skill damage results, and both API envelope variants. `BuildSnapshot` now uses the same literal version contract, while `Scenario` is explicitly typed as version `'1'`.
+- Added `skillDamageResultSchema`, `hitDamageResultSchema`, and generic `apiEnvelopeSchema(dataSchema)` validators for the externally serialized result/envelope forms.
+
+### TDD RED
+
+Command:
+
+```text
+npm test -- packages/contracts/src/contracts.test.ts
+```
+
+Output (exit 1):
+
+```text
+× build patch contract > requires a contract version on every persisted patch and serialized response type
+→ expected { kind: 'set-skill-level', …(2) } to deeply equal { schemaVersion: '1', …(3) }
+
+- Expected
++ Received
+
+  {
+    "kind": "set-skill-level",
+    "level": 12,
+-   "schemaVersion": "1",
+    "skillId": "space-cutting",
+  }
+
+Test Files  1 failed (1)
+Tests  1 failed | 2 passed (3)
+```
+
+The current schema silently stripped the supplied version, proving persisted patches could not retain a migration boundary.
+
+### TDD GREEN
+
+Command:
+
+```text
+npm test -- packages/contracts/src/contracts.test.ts
+```
+
+Output (exit 0):
+
+```text
+✓ packages/contracts/src/contracts.test.ts (3 tests) 13ms
+
+Test Files  1 passed (1)
+Tests  3 passed (3)
+```
+
+### Full verification
+
+```text
+npm run typecheck
+```
+
+Exit 0 for all five workspaces.
+
+```text
+npm run build
+```
+
+Exit 0: Vite built 26 modules, Wrangler completed a Worker dry run, and calculator/catalog/contracts completed TypeScript builds.
+
+```text
+npm test
+```
+
+Output (exit 0):
+
+```text
+✓ packages/catalog/src/catalog.test.ts (3 tests) 4ms
+✓ packages/contracts/src/contracts.test.ts (3 tests) 7ms
+
+Test Files  2 passed (2)
+Tests  6 passed (6)
+```
+
+`git diff --check` also exited 0. The separately ledgered TypeScript configuration issue was not changed in this round.
