@@ -1,11 +1,12 @@
 import { useEffect, useMemo, useRef, useState, type KeyboardEvent } from 'react';
-import { buildPatchSchema, type BuildPatch } from '@weather-artist/contracts';
+import { apiEnvelopeSchema, buildPatchSchema, characterLoadDataSchema, simulationDataSchema, weatherArtistCatalogSchema, type BuildPatch } from '@weather-artist/contracts';
+import type { z, ZodTypeAny } from 'zod';
 import './app.css';
 
 type Warning = { code: string; severity: string; path: string; message: string };
 type Result = { skillId: string; nonCriticalDamage: string; criticalDamage: string; expectedDamage: string; criticalRate: string; criticalMultiplier: string; hits: Array<{ hitName: string; nonCriticalDamage: string; criticalDamage: string; expectedDamage: string }>; rationale: string[] };
-type Snapshot = { schemaVersion: string; snapshotId: string; characterName: string; calculatorVersion: string; parserVersion: string; catalogVersion: string; calculatedAttackPower: string; warnings: Warning[]; build: { profile: { className: string; characterLevel: number; expeditionLevel: number; criticalStat: string; swiftnessStat: string; specializationStat: string; profileAttackPower: string }; equipment: { items: Array<{ name: string; type: string; iconUrl?: string }> }; avatars: { items: Array<{ name: string; type: string; iconUrl?: string }> }; gems: { items: Array<{ name: string; level: number; iconUrl?: string }> }; engravings: { names: string[] }; arkPassive: { effects: Array<{ name: string; level: number | null }> }; combatSkills: { selectedTripods: Array<{ skillName: string; name: string }> }; arkGrid: { cores: Array<{ name: string; point: number }> }; provenance: Array<{ label: string; value: string; applied: boolean }> } };
-type Section = { id: string; label: string; editable: boolean; lockReason?: string };
+type Snapshot = { schemaVersion: string; snapshotId: string; characterName: string; calculatorVersion: string; parserVersion: string; catalogVersion: string; calculatedAttackPower: string; warnings: Warning[]; build: { profile: { className: string; characterLevel: number; expeditionLevel: number; criticalStat: string; swiftnessStat: string; specializationStat: string; profileAttackPower: string }; equipment: { items: Array<{ name: string; type: string; iconUrl?: string | undefined }> }; avatars: { items: Array<{ name: string; type: string; iconUrl?: string | undefined }> }; gems: { items: Array<{ name: string; level: number; iconUrl?: string | undefined }> }; engravings: { names: string[] }; arkPassive: { effects: Array<{ name: string; level: number | null }> }; combatSkills: { selectedTripods: Array<{ skillName: string; name: string }> }; arkGrid: { cores: Array<{ name: string; point: number }> }; provenance: Array<{ label: string; value: string; applied: boolean }> } };
+type Section = { id: string; label: string; editable: boolean; lockReason?: string | undefined };
 type Skill = { id: string; displayName: string; directionTag: 'NON_DIRECTIONAL' | 'FRONTAL_ATTACK' | 'BACK_ATTACK'; hits: Array<{ name: string }> };
 type Catalog = { schemaVersion: string; version: string; editableSections: Section[]; skills: Skill[]; equipmentGrowth: { editingLocked: boolean; reason: string; requiredDataset: string } };
 type LoadData = { snapshot: Snapshot; baseline: Result[]; cacheHit: boolean };
@@ -87,19 +88,15 @@ function storedPatchCandidates(snapshot: Snapshot): { raw: unknown[]; discarded:
   return predecessor ? { raw: predecessor.envelope.patches, discarded: 0, rebased: true } : { raw: [], discarded: 0, rebased: false };
 }
 
-function object(value: unknown): Record<string, unknown> | null { return value && typeof value === 'object' && !Array.isArray(value) ? value as Record<string, unknown> : null; }
-function decimal(value: unknown): value is string { return typeof value === 'string' && /^-?\d+(?:\.\d+)?$/.test(value); }
-function isResult(value: unknown): value is Result { const item = object(value); return Boolean(item && typeof item.skillId === 'string' && decimal(item.nonCriticalDamage) && decimal(item.criticalDamage) && decimal(item.expectedDamage) && decimal(item.criticalRate) && decimal(item.criticalMultiplier) && Array.isArray(item.hits) && item.hits.every((hit) => { const entry = object(hit); return entry && typeof entry.hitName === 'string' && decimal(entry.nonCriticalDamage) && decimal(entry.criticalDamage) && decimal(entry.expectedDamage); }) && Array.isArray(item.rationale) && item.rationale.every((reason) => typeof reason === 'string')); }
-function isCatalog(value: unknown): value is Catalog { const item = object(value); return Boolean(item && typeof item.version === 'string' && Array.isArray(item.skills) && Array.isArray(item.editableSections)); }
-function isLoadData(value: unknown): value is LoadData { const item = object(value); const snapshot = object(item?.snapshot); const profile = object(object(snapshot?.build)?.profile); return Boolean(item && snapshot && typeof snapshot.snapshotId === 'string' && typeof snapshot.characterName === 'string' && typeof snapshot.calculatorVersion === 'string' && typeof snapshot.parserVersion === 'string' && typeof snapshot.catalogVersion === 'string' && profile && typeof profile.className === 'string' && typeof profile.characterLevel === 'number' && Array.isArray(item.baseline) && item.baseline.every(isResult)); }
-function isSimulationData(value: unknown): value is SimulationData { const item = object(value); return Boolean(item && typeof item.snapshotId === 'string' && Array.isArray(item.baseline) && item.baseline.every(isResult) && Array.isArray(item.candidate) && item.candidate.every(isResult)); }
-
-async function request<T>(path: string, init: RequestInit | undefined, validate: (data: unknown) => data is T): Promise<T> {
+async function request<T extends ZodTypeAny>(path: string, init: RequestInit | undefined, schema: T): Promise<z.infer<T>> {
   const response = await fetch(`${API}${path}`, init);
-  let envelope: Envelope<T>;
-  try { envelope = await response.json() as Envelope<T>; } catch { throw new Error('서버 응답을 읽을 수 없습니다.'); }
-  if (!response.ok || !envelope.ok) throw new Error(envelope.ok ? '요청에 실패했습니다.' : envelope.error.message);
-  if (!validate(envelope.data)) throw new Error('응답 데이터가 완전하지 않습니다.');
+  let raw: unknown;
+  try { raw = await response.json(); } catch { throw new Error('서버 응답을 읽을 수 없습니다.'); }
+  const parsed = apiEnvelopeSchema(schema).safeParse(raw);
+  if (!parsed.success) throw new Error('응답 데이터가 완전하지 않습니다.');
+  const envelope = parsed.data as Envelope<z.infer<T>>;
+  if (envelope.ok === false) throw new Error(envelope.error.message);
+  if (!response.ok) throw new Error('요청에 실패했습니다.');
   return envelope.data;
 }
 
@@ -148,12 +145,14 @@ export default function App() {
   const [retry, setRetry] = useState(0);
   const [notice, setNotice] = useState('');
   const hasLoadedRef = useRef(false);
+  const loadGenerationRef = useRef(0);
+  const loadAbortRef = useRef<AbortController | null>(null);
   const generationRef = useRef(0);
   const simulationAbortRef = useRef<AbortController | null>(null);
   const loadedSnapshotRef = useRef<string | null>(null);
   const tabRefs = useRef<Array<HTMLButtonElement | null>>([]);
 
-  useEffect(() => { request<Catalog>('/catalog/weather-artist', undefined, isCatalog).then(setCatalog).catch((reason: Error) => setError(reason.message)); }, []);
+  useEffect(() => { request('/catalog/weather-artist', undefined, weatherArtistCatalogSchema).then((value) => setCatalog(value)).catch((reason: Error) => setError(reason.message)); }, []);
   useEffect(() => {
     if (!loaded || !hasLoadedRef.current) return;
     const generation = ++generationRef.current;
@@ -164,7 +163,7 @@ export default function App() {
     setSimulationError(null);
     const timer = window.setTimeout(() => {
       const snapshot = loaded.snapshot;
-      request<SimulationData>('/simulations', { method: 'POST', signal: controller.signal, headers: { 'content-type': 'application/json', 'X-Anonymous-Client-Id': clientId() }, body: JSON.stringify({ schemaVersion: '1', snapshotId: snapshot.snapshotId, calculatorVersion: snapshot.calculatorVersion, parserVersion: snapshot.parserVersion, catalogVersion: snapshot.catalogVersion, patches, scenario: { schemaVersion: '1', id: 'default', bossConditionId: 'default', directionalSuccessBySkill: Object.fromEntries((catalog?.skills ?? []).map((skill) => [skill.id, false])) } }) }, isSimulationData)
+      request('/simulations', { method: 'POST', signal: controller.signal, headers: { 'content-type': 'application/json', 'X-Anonymous-Client-Id': clientId() }, body: JSON.stringify({ schemaVersion: '1', snapshotId: snapshot.snapshotId, calculatorVersion: snapshot.calculatorVersion, parserVersion: snapshot.parserVersion, catalogVersion: snapshot.catalogVersion, patches, scenario: { schemaVersion: '1', id: 'default', bossConditionId: 'default', directionalSuccessBySkill: Object.fromEntries((catalog?.skills ?? []).map((skill) => [skill.id, false])) } }) }, simulationDataSchema)
         .then((data) => {
           if (generation !== generationRef.current || data.snapshotId !== snapshot.snapshotId || loadedSnapshotRef.current !== snapshot.snapshotId) return;
           if ((catalog?.skills ?? []).some((skill) => !data.baseline.some((result) => result.skillId === skill.id) || !data.candidate.some((result) => result.skillId === skill.id))) throw new Error('응답에 필요한 스킬 결과가 없습니다.');
@@ -186,10 +185,15 @@ export default function App() {
   async function load(forceRefresh = false) {
     const name = characterName.normalize('NFKC').trim().replace(/\s+/g, ' ');
     if (!name) { setError('캐릭터 이름을 입력하세요.'); return; }
+    const loadGeneration = ++loadGenerationRef.current;
+    loadAbortRef.current?.abort();
+    const controller = new AbortController();
+    loadAbortRef.current = controller;
     generationRef.current += 1; simulationAbortRef.current?.abort(); loadedSnapshotRef.current = null;
     setBusy(true); setError(null); setNotice(''); hasLoadedRef.current = false;
     try {
-      const [activeCatalog, data] = await Promise.all([catalog ? Promise.resolve(catalog) : request<Catalog>('/catalog/weather-artist', undefined, isCatalog), request<LoadData>('/characters/load', { method: 'POST', headers: { 'content-type': 'application/json', 'X-Anonymous-Client-Id': clientId() }, body: JSON.stringify({ characterName: name, forceRefresh }) }, isLoadData)]);
+      const [activeCatalog, data] = await Promise.all([catalog ? Promise.resolve(catalog) : request('/catalog/weather-artist', undefined, weatherArtistCatalogSchema), request('/characters/load', { method: 'POST', signal: controller.signal, headers: { 'content-type': 'application/json', 'X-Anonymous-Client-Id': clientId() }, body: JSON.stringify({ characterName: name, forceRefresh }) }, characterLoadDataSchema)]);
+      if (controller.signal.aborted || loadGeneration !== loadGenerationRef.current || normalizedName(data.snapshot.characterName) !== normalizedName(name)) return;
       setCatalog(activeCatalog);
       const saved = storedPatchCandidates(data.snapshot);
       const restored = supportedPatches(saved.raw, activeCatalog.editableSections);
@@ -197,8 +201,9 @@ export default function App() {
       const discarded = saved.discarded + restored.discarded;
       if (saved.rebased) setNotice(`저장 조정을 새 카탈로그에 맞게 다시 적용했습니다.${discarded ? ` 지원하지 않는 저장 조정 ${discarded}개를 버렸습니다.` : ''}`);
       else if (discarded) setNotice(`지원하지 않는 저장 조정 ${discarded}개를 버렸습니다.`);
-    } catch (reason) { setError(reason instanceof Error ? reason.message : '불러오기에 실패했습니다.'); }
-    finally { setBusy(false); }
+    } catch (reason) {
+      if (!controller.signal.aborted && loadGeneration === loadGenerationRef.current) setError(reason instanceof Error ? reason.message : '불러오기에 실패했습니다.');
+    } finally { if (loadGeneration === loadGenerationRef.current) setBusy(false); }
   }
 
   function changeSection(section: Section, enabled: boolean) {
@@ -227,6 +232,6 @@ export default function App() {
     {!loaded && !error && <section className="empty"><h2>캐릭터를 불러오세요</h2><p>지원 빌드의 공식 API 스냅샷을 기준으로 계산합니다.</p></section>}
     {loaded && <div className="workspace"><aside className="summary-rail"><section className="summary-card"><p className="eyebrow">API BASELINE {loaded.cacheHit ? '· CACHE' : '· LIVE'}</p><h2>{loaded.snapshot.characterName}</h2><p>{loaded.snapshot.build.profile.className} · Lv.{loaded.snapshot.build.profile.characterLevel}</p><dl><div><dt>계산 공격력</dt><dd>{display(loaded.snapshot.calculatedAttackPower)}</dd></div><div><dt>치명 / 신속</dt><dd>{display(loaded.snapshot.build.profile.criticalStat)} / {display(loaded.snapshot.build.profile.swiftnessStat)}</dd></div><div><dt>원정대</dt><dd>Lv.{loaded.snapshot.build.profile.expeditionLevel}</dd></div></dl></section><section className="summary-card"><h2>데이터 상태</h2><p>스키마 {loaded.snapshot.schemaVersion} · 카탈로그 {loaded.snapshot.catalogVersion}</p>{loaded.snapshot.warnings.length ? <ul>{loaded.snapshot.warnings.map((warning) => <li key={`${warning.code}${warning.path}`}>{warning.message}</li>)}</ul> : <p>현재 경고가 없습니다.</p>}</section></aside>
       <section className="main-panel"><div role="tablist" aria-label="시뮬레이터 보기" className="tabs"><button ref={(node) => { tabRefs.current[0] = node; }} id="tab-editor" role="tab" tabIndex={tab === 'editor' ? 0 : -1} aria-controls="panel-editor" aria-selected={tab === 'editor'} onKeyDown={(event) => tabKeyDown(event, 0)} onClick={() => selectTab('editor')}>세팅 조정</button><button ref={(node) => { tabRefs.current[1] = node; }} id="tab-results" role="tab" tabIndex={tab === 'results' ? 0 : -1} aria-controls="panel-results" aria-selected={tab === 'results'} onKeyDown={(event) => tabKeyDown(event, 1)} onClick={() => selectTab('results')}>스킬 피해 결과</button></div>
-      {tab === 'editor' ? <section id="panel-editor" role="tabpanel" aria-labelledby="tab-editor"><div className="panel-heading"><div><h2>세팅 조정</h2><p>현재 MVP에서는 카탈로그가 허용한 섹션 사용 여부만 변경할 수 있습니다.</p></div><button type="button" className="quiet" onClick={() => setPatches([])}>전체 초기화</button></div><div className="section-grid">{sections.map((section) => <SectionCard key={section.id} section={section} enabled={Boolean(enabledBySection[section.id])} onToggle={(enabled) => changeSection(section, enabled)} onReset={() => resetSection(section)} />)}</div><section className="source-card"><h3>API 데이터 요약</h3><div className="source-columns"><p><strong>각인</strong>{loaded.snapshot.build.engravings.names.join(' · ') || '데이터 없음'}</p><p><strong>아크패시브</strong>{loaded.snapshot.build.arkPassive.effects.map((effect) => `${effect.name}${effect.level ? ` Lv.${effect.level}` : ''}`).join(' · ') || '데이터 없음'}</p><p><strong>아크그리드</strong>{loaded.snapshot.build.arkGrid.cores.map((core) => `${core.name} ${core.point}P`).join(' · ') || '데이터 없음'}</p></div><div className="api-items">{loaded.snapshot.build.gems.items.slice(0, 8).map((item) => <span key={`gem-${item.name}`}><ApiIcon url={item.iconUrl} label={item.name} />{item.name}</span>)}{loaded.snapshot.build.equipment.items.slice(0, 4).map((item) => <span key={`equipment-${item.name}`}><ApiIcon url={item.iconUrl} label={item.name} />{item.name}</span>)}{loaded.snapshot.build.avatars.items.slice(0, 4).map((item) => <span key={`avatar-${item.name}`}><ApiIcon url={item.iconUrl} label={item.name} />{item.name}</span>)}</div></section></section> : <section id="panel-results" role="tabpanel" aria-labelledby="tab-results" className={simulationStatus === 'fresh' ? '' : 'results-stale'}><div className="panel-heading"><div><h2>스킬 피해 결과</h2><p>모든 표시는 반올림된 두 자리이며, 계산용 소수 문자열은 변경하지 않습니다.</p></div>{simulationStatus !== 'fresh' && <p role="status">{simulationStatus === 'pending' ? '계산 반영 중' : '이전 결과 표시 중'}</p>}</div><div className="result-grid">{(catalog?.skills ?? []).map((skill) => <ResultCard key={skill.id} skill={skill} baseline={loaded.baseline.find((item) => item.skillId === skill.id)} candidate={results.find((item) => item.skillId === skill.id)} />)}</div></section>}</section></div>}
+      {tab === 'editor' ? <section id="panel-editor" role="tabpanel" aria-labelledby="tab-editor"><div className="panel-heading"><div><h2>세팅 조정</h2><p>현재 MVP에서는 카탈로그가 허용한 섹션 사용 여부만 변경할 수 있습니다.</p></div><button type="button" className="quiet" onClick={() => setPatches([])}>전체 초기화</button></div><div className="section-grid">{sections.map((section) => <SectionCard key={section.id} section={section} enabled={Boolean(enabledBySection[section.id])} onToggle={(enabled) => changeSection(section, enabled)} onReset={() => resetSection(section)} />)}</div><section className="source-card"><h3>API 데이터 요약</h3><div className="source-columns"><p><strong>각인</strong>{loaded.snapshot.build.engravings.names.join(' · ') || '데이터 없음'}</p><p><strong>아크패시브</strong>{loaded.snapshot.build.arkPassive.effects.map((effect) => `${effect.name}${effect.level ? ` Lv.${effect.level}` : ''}`).join(' · ') || '데이터 없음'}</p><p><strong>아크그리드</strong>{loaded.snapshot.build.arkGrid.cores.map((core) => `${core.name} ${core.point}P`).join(' · ') || '데이터 없음'}</p></div><div className="api-items">{loaded.snapshot.build.gems.items.slice(0, 8).map((item, index) => <span key={`gem-${index}`}><ApiIcon url={item.iconUrl} label={item.name} />{item.name}</span>)}{loaded.snapshot.build.equipment.items.slice(0, 4).map((item, index) => <span key={`equipment-${index}`}><ApiIcon url={item.iconUrl} label={item.name} />{item.name}</span>)}{loaded.snapshot.build.avatars.items.slice(0, 4).map((item, index) => <span key={`avatar-${index}`}><ApiIcon url={item.iconUrl} label={item.name} />{item.name}</span>)}</div></section></section> : <section id="panel-results" role="tabpanel" aria-labelledby="tab-results" className={simulationStatus === 'fresh' ? '' : 'results-stale'}><div className="panel-heading"><div><h2>스킬 피해 결과</h2><p>모든 표시는 반올림된 두 자리이며, 계산용 소수 문자열은 변경하지 않습니다.</p></div></div><div className="result-grid">{(catalog?.skills ?? []).map((skill) => <ResultCard key={skill.id} skill={skill} baseline={loaded.baseline.find((item) => item.skillId === skill.id)} candidate={results.find((item) => item.skillId === skill.id)} />)}</div></section>}</section></div>}
   </main>;
 }

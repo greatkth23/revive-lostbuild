@@ -431,7 +431,7 @@ async function simulate(body: Record<string, unknown>, dependencies: WorkerDepen
   const candidate = calculateAllSkillDamage(candidateSnapshot, {
     directionalSuccessBySkill: directional as Record<string, boolean>
   });
-  return success({ snapshotId: body.snapshotId, patches, baseline, candidate }, stored.snapshot.warnings);
+  return success({ schemaVersion: '1', snapshotId: body.snapshotId, patches, baseline, candidate }, stored.snapshot.warnings);
 }
 
 export function createWorkerApp(dependencies: WorkerDependencies): { fetch(request: Request): Promise<Response> } {

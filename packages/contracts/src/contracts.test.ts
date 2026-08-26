@@ -4,8 +4,11 @@ import {
   apiEnvelopeSchema,
   buildPatchSchema,
   buildSnapshotSchema,
+  characterLoadDataSchema,
   decimalStringSchema,
   skillDamageResultSchema,
+  simulationDataSchema,
+  weatherArtistCatalogSchema,
   warningSchema,
   type BuildSnapshot,
   type DecimalString
@@ -78,5 +81,14 @@ describe('decimal-string contracts', () => {
     };
 
     expect(() => buildSnapshotSchema.parse(headerOnlySnapshot)).toThrow();
+  });
+});
+
+describe('web response contracts', () => {
+  it('rejects incomplete catalog, load, and simulation success data before a client dereferences it', () => {
+    // Break caught: fragment guards let malformed 200 responses crash the editor or silently format missing values as zero.
+    expect(() => weatherArtistCatalogSchema.parse({ schemaVersion: '1', version: 'v', skills: [{ id: 'x' }], editableSections: [], equipmentGrowth: {} })).toThrow();
+    expect(() => characterLoadDataSchema.parse({ cacheHit: 'false', snapshot: {}, baseline: [] })).toThrow();
+    expect(() => simulationDataSchema.parse({ schemaVersion: '1', snapshotId: 'id', patches: [{ kind: 'reset-section' }], baseline: [], candidate: [] })).toThrow();
   });
 });

@@ -369,6 +369,23 @@ export const skillDamageResultSchema = z.object({
   rationale: z.array(z.string())
 });
 
+export const directionTagSchema = z.enum(['NON_DIRECTIONAL', 'FRONTAL_ATTACK', 'BACK_ATTACK']);
+export const skillCatalogEntrySchema = z.object({
+  id: z.string().min(1),
+  displayName: z.string().min(1),
+  directionTag: directionTagSchema,
+  tags: z.array(z.string()),
+  hitMotionCoefficient: decimalStringSchema,
+  hits: z.array(z.object({
+    name: z.string().min(1), coefficient: decimalStringSchema, constant: decimalStringSchema, tripodSource: z.string().min(1).optional()
+  }))
+});
+export const editableSectionSchema = z.object({ id: z.string().min(1), label: z.string().min(1), editable: z.boolean(), lockReason: z.string().min(1).optional() });
+export const equipmentGrowthSchema = z.object({ editingLocked: z.literal(true), reason: z.literal('NO_VERIFIED_DATASET'), requiredDataset: z.string().min(1) });
+export const weatherArtistCatalogSchema = z.object({ schemaVersion: contractSchemaVersion, version: z.string().min(1), skills: z.array(skillCatalogEntrySchema), editableSections: z.array(editableSectionSchema), equipmentGrowth: equipmentGrowthSchema });
+export const characterLoadDataSchema = z.object({ snapshot: buildSnapshotSchema, baseline: z.array(skillDamageResultSchema), cacheHit: z.boolean() });
+export const simulationDataSchema = z.object({ schemaVersion: contractSchemaVersion, snapshotId: z.string().min(1), patches: z.array(buildPatchSchema), baseline: z.array(skillDamageResultSchema), candidate: z.array(skillDamageResultSchema) });
+
 export const apiEnvelopeSchema = <T extends z.ZodTypeAny>(dataSchema: T) => z.discriminatedUnion('ok', [
   z.object({ schemaVersion: contractSchemaVersion, ok: z.literal(true), data: dataSchema, warnings: z.array(warningSchema) }),
   z.object({

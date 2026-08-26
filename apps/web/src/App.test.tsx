@@ -1,7 +1,10 @@
 // @vitest-environment jsdom
+import { readFileSync } from 'node:fs';
+import { resolve } from 'node:path';
 import { act, cleanup, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { afterEach, describe, expect, test, vi } from 'vitest';
+import { parseBuildSnapshot } from '@weather-artist/calculator';
 import App from './App.js';
 
 const catalog = {
@@ -22,11 +25,8 @@ const catalog = {
   ]
 } as const;
 
-const snapshot = {
-  schemaVersion: '1', snapshotId: '00000000-0000-4000-8000-000000000001', characterName: '봄날꽃씨', classId: 'weather-artist',
-  calculatorVersion: 'current-v2.7.2', parserVersion: 'lostark-api-ts-v1', catalogVersion: 'weather-artist-v0.5', calculatedAttackPower: '123456.789', warnings: [],
-  build: { profile: { className: '기상술사', characterLevel: 70, expeditionLevel: 100, criticalStat: '1200', swiftnessStat: '1800', specializationStat: '0', profileAttackPower: '123456.789' }, equipment: { items: [] }, avatars: { items: [] }, gems: { items: [] }, engravings: { names: ['원한'] }, arkPassive: { effects: [] }, combatSkills: { selectedTripods: [] }, arkGrid: { cores: [] }, provenance: [] }
-} as const;
+const rawFixturePath = resolve(process.cwd(), 'api-chatgpt-conversation-6a6309ab-7de4-8342/outputs/봄날꽃씨_우레바람_current-v2.7.2_api_raw.json');
+const snapshot = parseBuildSnapshot(JSON.parse(readFileSync(rawFixturePath, 'utf8')));
 
 function result(skillId: string, expectedDamage = '1000.125'): Record<string, unknown> {
   return { schemaVersion: '1', skillId, nonCriticalDamage: '900.125', criticalDamage: '1800.125', expectedDamage, criticalRate: '0.5', criticalMultiplier: '2', hits: [{ schemaVersion: '1', hitName: '1타', nonCriticalDamage: '900.125', criticalDamage: '1800.125', expectedDamage }], rationale: ['공식 API 장비 수치 적용'] };
@@ -38,7 +38,10 @@ function stored(patches: unknown[], savedAt = '2026-08-25T12:00:00.000Z') {
 }
 
 function response(data: unknown): Response {
-  return new Response(JSON.stringify({ schemaVersion: '1', ok: true, data, warnings: [] }), { status: 200, headers: { 'content-type': 'application/json' } });
+  const completeData = data && typeof data === 'object' && 'snapshotId' in data && 'baseline' in data && 'candidate' in data
+    ? { schemaVersion: '1', ...data }
+    : data;
+  return new Response(JSON.stringify({ schemaVersion: '1', ok: true, data: completeData, warnings: [] }), { status: 200, headers: { 'content-type': 'application/json' } });
 }
 
 function installFetch(candidateExpected = '800.125') {
@@ -73,9 +76,10 @@ describe('Weather Artist simulator editor', () => {
     // Break caught: a client bypasses the versioned Worker route or renders values before a successful API envelope.
     const fetcher = installFetch();
     await loadCharacter();
-    expect(screen.getByText('123,456.79')).toBeTruthy();
+    expect(screen.getByText('258,720.50')).toBeTruthy();
     const request = fetcher.mock.calls.find(([url]) => String(url).endsWith('/characters/load'));
-    expect(request?.[1]).toMatchObject({ method: 'POST', headers: expect.objectContaining({ 'X-Anonymous-Client-Id': expect.stringMatching(/^[A-Za-z0-9_-]{8,128}$/) }) });
+    expect(request?.[1]).toMatchObject({ method: 'POST', headers: { 'content-type': 'application/json', 'X-Anonymous-Client-Id': expect.stringMatching(/^[A-Za-z0-9_-]{8,128}$/) } });
+    expect(JSON.parse(String(request?.[1]?.body))).toEqual({ characterName: '봄날꽃씨', forceRefresh: false });
   });
 
   test('sends a catalog-backed section toggle after 250ms and updates the visible candidate value', async () => {
@@ -85,7 +89,14 @@ describe('Weather Artist simulator editor', () => {
     vi.useFakeTimers();
     fireEvent.click(screen.getByRole('checkbox', { name: '보석 사용' }));
     await act(async () => { await vi.advanceTimersByTimeAsync(250); });
-    expect(fetcher.mock.calls.filter(([url]) => String(url).endsWith('/simulations'))).toHaveLength(1);
+    const simulations = fetcher.mock.calls.filter(([url]) => String(url).endsWith('/simulations'));
+    expect(simulations).toHaveLength(1);
+    expect(simulations[0]?.[1]?.headers).toEqual({ 'content-type': 'application/json', 'X-Anonymous-Client-Id': expect.stringMatching(/^[A-Za-z0-9_-]{8,128}$/) });
+    expect(JSON.parse(String(simulations[0]?.[1]?.body))).toEqual({
+      schemaVersion: '1', snapshotId: snapshot.snapshotId, calculatorVersion: snapshot.calculatorVersion, parserVersion: snapshot.parserVersion, catalogVersion: snapshot.catalogVersion,
+      patches: [{ schemaVersion: '1', kind: 'set-section-enabled', sectionId: 'gems', enabled: false }],
+      scenario: { schemaVersion: '1', id: 'default', bossConditionId: 'default', directionalSuccessBySkill: Object.fromEntries(catalog.skills.map((skill) => [skill.id, false])) }
+    });
     fireEvent.click(screen.getByRole('tab', { name: '스킬 피해 결과' }));
     expect(screen.getAllByText('800.13').length).toBeGreaterThan(0);
   });
@@ -292,11 +303,16 @@ describe('Weather Artist simulator editor', () => {
   test('renders official equipment icons and an accessible fallback for unavailable avatar icons', async () => {
     // Break caught: UI copies assets or leaves an unlabeled blank square when an official icon is unavailable.
     const withIcons = structuredClone(snapshot) as any;
-    withIcons.build.equipment.items = [{ name: '장비 아이콘', type: '무기', iconUrl: 'https://cdn.example.test/equipment.png' }];
-    withIcons.build.avatars.items = [{ name: '아바타 없음', type: '상의' }];
+    withIcons.build.equipment.items = [{ ...withIcons.build.equipment.items[0], name: '장비 아이콘', iconUrl: 'https://cdn.example.test/equipment.png' }];
+    const { iconUrl: _iconUrl, ...avatarWithoutIcon } = withIcons.build.avatars.items[0];
+    withIcons.build.avatars.items = [{ ...avatarWithoutIcon, name: '아바타 없음' }];
     vi.stubGlobal('fetch', vi.fn(async (url: string) => url.endsWith('/catalog/weather-artist') ? response(catalog) : response({ snapshot: withIcons, baseline, cacheHit: false })));
     await loadCharacter();
-    expect(document.querySelector('img')?.getAttribute('src')).toBe('https://cdn.example.test/equipment.png');
+    const image = Array.from(document.querySelectorAll('img')).find((element) => element.getAttribute('src') === 'https://cdn.example.test/equipment.png');
+    expect(image).toBeTruthy();
+    fireEvent.error(image!);
+    expect(document.querySelector('img[src="https://cdn.example.test/equipment.png"]')).toBeNull();
+    expect(screen.getByLabelText('장비 아이콘 아이콘 없음')).toBeTruthy();
     expect(screen.getByLabelText('아바타 없음 아이콘 없음')).toBeTruthy();
   });
 
@@ -310,5 +326,72 @@ describe('Weather Artist simulator editor', () => {
     fireEvent.click(screen.getByRole('button', { name: '불러오기' }));
     await screen.findByText('잠시 후 다시 시도하세요.');
     expect(screen.getByRole('button', { name: '다시 시도' })).toBeTruthy();
+  });
+
+  test('rejects malformed catalog and character-load success envelopes before rendering nested values', async () => {
+    // Break caught: a 200 response with malformed catalog/load data crashes during nested rendering or becomes fake zero data.
+    vi.stubGlobal('fetch', vi.fn(async (url: string) => url.endsWith('/catalog/weather-artist')
+      ? response({ ...catalog, skills: [{ ...catalog.skills[0], hits: [{ name: 'broken' }] }] })
+      : response({ snapshot, baseline, cacheHit: false })));
+    render(<App />);
+    await screen.findByText('응답 데이터가 완전하지 않습니다.');
+
+    cleanup();
+    vi.stubGlobal('fetch', vi.fn(async (url: string) => url.endsWith('/catalog/weather-artist')
+      ? response(catalog)
+      : response({ snapshot: { ...snapshot, warnings: [{}] }, baseline, cacheHit: false })));
+    render(<App />);
+    fireEvent.change(screen.getByLabelText('캐릭터 이름'), { target: { value: '봄날꽃씨' } });
+    fireEvent.click(screen.getByRole('button', { name: '불러오기' }));
+    await screen.findByText('응답 데이터가 완전하지 않습니다.');
+    expect(screen.queryByText('0.00')).toBeNull();
+  });
+
+  test('keeps prior valid results and exposes retry when a simulation success envelope is malformed', async () => {
+    // Break caught: malformed result decimals are dereferenced and formatted as 0.00 instead of becoming a retryable stale state.
+    vi.stubGlobal('fetch', vi.fn(async (url: string, init?: RequestInit) => {
+      if (url.endsWith('/catalog/weather-artist')) return response(catalog);
+      if (url.endsWith('/characters/load')) return response({ snapshot, baseline, cacheHit: false });
+      return response({ snapshotId: snapshot.snapshotId, patches: JSON.parse(String(init?.body)).patches, baseline, candidate: baseline.map((item, index) => index === 0 ? { ...item, criticalRate: 'not-a-decimal' } : item) });
+    }));
+    await loadCharacter();
+    vi.useFakeTimers();
+    fireEvent.click(screen.getByRole('checkbox', { name: '보석 사용' }));
+    await act(async () => { await vi.advanceTimersByTimeAsync(250); });
+    expect(screen.getByRole('alert').textContent).toContain('응답 데이터가 완전하지 않습니다.');
+    expect(screen.getByRole('button', { name: '계산 다시 시도' })).toBeTruthy();
+    expect(screen.queryByText('0.00')).toBeNull();
+  });
+
+  test('does not commit an older overlapping character load after a newer submitted character wins', async () => {
+    // Break caught: an ignored AbortSignal still allows an older load response to replace a newer character snapshot.
+    const responders: Array<(value: Response) => void> = [];
+    const first = { ...snapshot, characterName: '첫번째' };
+    const second = { ...snapshot, characterName: '두번째', snapshotId: '00000000-0000-4000-8000-000000000002' };
+    vi.stubGlobal('fetch', vi.fn((url: string) => {
+      if (url.endsWith('/catalog/weather-artist')) return Promise.resolve(response(catalog));
+      return new Promise<Response>((resolve) => responders.push(resolve));
+    }));
+    render(<App />);
+    const input = screen.getByLabelText('캐릭터 이름');
+    const form = input.closest('form')!;
+    fireEvent.change(input, { target: { value: '첫번째' } });
+    fireEvent.submit(form);
+    fireEvent.change(input, { target: { value: '두번째' } });
+    fireEvent.submit(form);
+    responders[1]?.(response({ snapshot: second, baseline, cacheHit: false }));
+    await screen.findByRole('heading', { name: '두번째' });
+    responders[0]?.(response({ snapshot: first, baseline, cacheHit: false }));
+    await act(async () => { await Promise.resolve(); });
+    expect(screen.getByRole('heading', { name: '두번째' })).toBeTruthy();
+    expect(screen.queryByRole('heading', { name: '첫번째' })).toBeNull();
+  });
+
+  test('announces a pending calculation once when the results tab is open', async () => {
+    // Break caught: the same pending/failed state is announced by both the global and results-panel live regions.
+    installFetch();
+    await loadCharacter();
+    fireEvent.click(screen.getByRole('tab', { name: '스킬 피해 결과' }));
+    expect(screen.getAllByRole('status').filter((node) => node.textContent === '계산 반영 중')).toHaveLength(1);
   });
 });
