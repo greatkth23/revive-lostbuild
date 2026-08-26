@@ -6,14 +6,19 @@ import { characterLoadDataSchema, simulationDataSchema, weatherArtistCatalogSche
 
 const raw = JSON.parse(readFileSync(resolve('api-chatgpt-conversation-6a6309ab-7de4-8342/outputs/봄날꽃씨_우레바람_current-v2.7.2_api_raw.json'), 'utf8'));
 const snapshot = parseBuildSnapshot(raw);
+const snapshotId = '00000000-0000-4000-8000-000000000001';
+const workerSnapshotId = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+if (!workerSnapshotId.test(snapshotId)) throw new Error('E2E snapshot ID must be a Worker-compatible UUID');
+snapshot.snapshotId = snapshotId;
 const result = (skillId, value) => ({ schemaVersion: '1', skillId, nonCriticalDamage: value, criticalDamage: value, expectedDamage: value, criticalRate: '0.5', criticalMultiplier: '2', hits: [{ schemaVersion: '1', hitName: '1타', nonCriticalDamage: value, criticalDamage: value, expectedDamage: value }], rationale: ['E2E mocked calculation'] });
-const baseline = weatherArtistCatalog.skills.map((skill) => result(skill.id, '1000.125'));
-const candidate = weatherArtistCatalog.skills.map((skill) => result(skill.id, '800.125'));
+const baseline = weatherArtistCatalog.skills.map((skill) => result(skill.id, '1000000000.125'));
+const candidate = weatherArtistCatalog.skills.map((skill) => result(skill.id, '800000000.125'));
 const load = { snapshot, baseline, cacheHit: false };
-const simulation = { schemaVersion: '1', snapshotId: snapshot.snapshotId, patches: [], baseline, candidate };
+const simulation = { schemaVersion: '1', snapshotId, patches: [], baseline, candidate };
 weatherArtistCatalogSchema.parse(weatherArtistCatalog);
 characterLoadDataSchema.parse(load);
 simulationDataSchema.parse(simulation);
+if (load.snapshot.snapshotId !== simulation.snapshotId) throw new Error('E2E envelopes must use one snapshot UUID');
 const output = resolve('scripts/fixtures/weather-artist-e2e.json');
 mkdirSync(dirname(output), { recursive: true });
 writeFileSync(output, `${JSON.stringify({ catalog: weatherArtistCatalog, load, simulation }, null, 2)}\n`);

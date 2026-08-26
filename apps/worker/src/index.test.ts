@@ -207,6 +207,35 @@ describe('Weather Artist Worker routes', () => {
     });
   });
 
+  test('rejects valid character loads when the runtime token is missing or blank', async () => {
+    // Break caught: configured storage bindings let an undefined token reach token.startsWith().
+    for (const token of [undefined, '   ']) {
+      const env = {
+        SNAPSHOTS: {} as KVNamespace,
+        UPSTREAM_BUDGET: {} as DurableObjectNamespace,
+        ...(token === undefined ? {} : { LOSTARK_API_TOKEN: token })
+      };
+
+      const response = await worker.fetch(loadRequest(), env as never);
+      expect(response.status).toBe(503);
+      expect(response.headers.get('x-content-type-options')).toBe('nosniff');
+      expect(await response.json()).toMatchObject({
+        schemaVersion: '1',
+        ok: false,
+        error: { code: 'WORKER_NOT_CONFIGURED' }
+      });
+    }
+
+    const staticResponse = await worker.fetch(new Request('https://example.test/'), {
+      SNAPSHOTS: {} as KVNamespace,
+      UPSTREAM_BUDGET: {} as DurableObjectNamespace,
+      LOSTARK_API_TOKEN: ' ',
+      ASSETS: { fetch: async () => new Response('<main id="root"></main>') } as unknown as Fetcher
+    } as never);
+    expect(staticResponse.status).toBe(200);
+    expect(await staticResponse.text()).toContain('id="root"');
+  });
+
   test('serves static assets with a CSP that permits the same-origin application bundle', async () => {
     // Break caught: an API-only default-src 'none' policy prevents the configured Vite bundle from running.
     const assets = { fetch: async () => new Response('<script src="/assets/app.js"></script>', {
@@ -478,6 +507,32 @@ describe('Weather Artist Worker routes', () => {
     const expired = await harness.app.fetch(simulationRequest(snapshotId));
     expect(expired.status).toBe(410);
     expect((await expired.json() as any).error.code).toBe('SNAPSHOT_EXPIRED');
+  });
+
+  test('accepts the complete six-skill scenario emitted by the browser release flow', async () => {
+    const harness = makeHarness();
+    const loaded = await harness.app.fetch(loadRequest());
+    const snapshotId = (await loaded.json() as any).data.snapshot.snapshotId as string;
+    const directionalSuccessBySkill = Object.fromEntries([
+      'thunderstorm',
+      'space-cutting',
+      'piercing-wind',
+      'raging-blizzard',
+      'sweeping-strike',
+      'tornado-walk'
+    ].map((skillId) => [skillId, false]));
+
+    const response = await harness.app.fetch(simulationRequest(snapshotId, {
+      scenario: {
+        schemaVersion: '1',
+        id: 'default',
+        bossConditionId: 'default',
+        directionalSuccessBySkill
+      }
+    }));
+
+    expect(response.status).toBe(200);
+    expect((await response.json() as any).data.snapshotId).toBe(snapshotId);
   });
 
   test('applies gem and engraving section toggles to candidate damage and restores baseline state', async () => {

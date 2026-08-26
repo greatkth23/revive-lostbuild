@@ -10,6 +10,7 @@
   "scripts": {
     "build": "npm run build --workspaces --if-present",
     "typecheck": "npm run typecheck --workspaces --if-present",
+    "types:check": "npm run types:check --workspace @weather-artist/worker",
     "test": "vitest run",
     "secret:scan": "node scripts/secret-scan.mjs",
     "smoke:worker": "python scripts/worker_smoke.py",

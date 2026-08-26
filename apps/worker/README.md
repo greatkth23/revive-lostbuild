@@ -29,9 +29,10 @@ Store credentials only as Worker secrets:
 npx wrangler secret put LOSTARK_API_TOKEN
 ```
 
-Do not add the token to `vars`, `.dev.vars`, source files, logs, responses, or
-static assets. For local development, an untracked `.dev.vars` may contain
-`LOSTARK_API_TOKEN=...`.
+Do not add the token to `vars`, tracked configuration, source files, logs,
+responses, or static assets. For local development only, Wrangler supports an
+untracked `.dev.vars` containing `LOSTARK_API_TOKEN=...`; that file is ignored
+by Git and must never be committed.
 
 Turnstile is off by default. To enable it, set `TURNSTILE_ENABLED` to `true`
 and add the secret separately:

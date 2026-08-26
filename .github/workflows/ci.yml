@@ -11,10 +11,11 @@ jobs:
         with: { python-version: '3.12' }
       - run: pip install -r requirements-e2e.txt && python -m playwright install --with-deps chromium
       - run: npm ci
+      - run: npm run types:check
       - run: npm run typecheck
       - run: npm test
       - run: npm run build
-      - run: node scripts/secret-scan.mjs
+      - run: npm run secret:scan
       - run: npm run smoke:worker
       - run: python -m unittest discover -s api-chatgpt-conversation-6a6309ab-7de4-8342/work -p 'test_*.py'
       - name: Run browser release flow against Vite

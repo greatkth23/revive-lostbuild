@@ -598,10 +598,14 @@ function dependenciesFromEnv(env: RuntimeEnv): WorkerDependencies {
 
 const defaultWorker = {
   async fetch(request: Request, env: Env): Promise<Response> {
-    if (!env?.SNAPSHOTS || !env.UPSTREAM_BUDGET) {
-      const { pathname } = new URL(request.url);
+    const { pathname } = new URL(request.url);
+    const tokenConfigured = typeof env?.LOSTARK_API_TOKEN === 'string' && env.LOSTARK_API_TOKEN.trim().length > 0;
+    if (!env?.SNAPSHOTS || !env.UPSTREAM_BUDGET || !tokenConfigured) {
       if (request.method === 'GET' && pathname === '/api/v1/catalog/weather-artist') {
         return withSecurityHeaders(success(weatherArtistCatalog));
+      }
+      if (request.method === 'GET' && pathname !== '/api' && !pathname.startsWith('/api/') && env?.ASSETS) {
+        return withSecurityHeaders(await env.ASSETS.fetch(request));
       }
       return failure(new HttpError(503, 'WORKER_NOT_CONFIGURED', 'Worker bindings are not configured'), crypto.randomUUID());
     }

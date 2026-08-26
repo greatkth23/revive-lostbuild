@@ -182,7 +182,7 @@
   "load": {
     "snapshot": {
       "schemaVersion": "1",
-      "snapshotId": "봄날꽃씨:2026-08-12T15:57:51.515373+09:00",
+      "snapshotId": "00000000-0000-4000-8000-000000000001",
       "characterName": "봄날꽃씨",
       "classId": "weather-artist",
       "calculatorVersion": "current-v2.7.2",
@@ -4635,18 +4635,18 @@
       {
         "schemaVersion": "1",
         "skillId": "thunderstorm",
-        "nonCriticalDamage": "1000.125",
-        "criticalDamage": "1000.125",
-        "expectedDamage": "1000.125",
+        "nonCriticalDamage": "1000000000.125",
+        "criticalDamage": "1000000000.125",
+        "expectedDamage": "1000000000.125",
         "criticalRate": "0.5",
         "criticalMultiplier": "2",
         "hits": [
           {
             "schemaVersion": "1",
             "hitName": "1타",
-            "nonCriticalDamage": "1000.125",
-            "criticalDamage": "1000.125",
-            "expectedDamage": "1000.125"
+            "nonCriticalDamage": "1000000000.125",
+            "criticalDamage": "1000000000.125",
+            "expectedDamage": "1000000000.125"
           }
         ],
         "rationale": [
@@ -4656,18 +4656,18 @@
       {
         "schemaVersion": "1",
         "skillId": "space-cutting",
-        "nonCriticalDamage": "1000.125",
-        "criticalDamage": "1000.125",
-        "expectedDamage": "1000.125",
+        "nonCriticalDamage": "1000000000.125",
+        "criticalDamage": "1000000000.125",
+        "expectedDamage": "1000000000.125",
         "criticalRate": "0.5",
         "criticalMultiplier": "2",
         "hits": [
           {
             "schemaVersion": "1",
             "hitName": "1타",
-            "nonCriticalDamage": "1000.125",
-            "criticalDamage": "1000.125",
-            "expectedDamage": "1000.125"
+            "nonCriticalDamage": "1000000000.125",
+            "criticalDamage": "1000000000.125",
+            "expectedDamage": "1000000000.125"
           }
         ],
         "rationale": [
@@ -4677,18 +4677,18 @@
       {
         "schemaVersion": "1",
         "skillId": "piercing-wind",
-        "nonCriticalDamage": "1000.125",
-        "criticalDamage": "1000.125",
-        "expectedDamage": "1000.125",
+        "nonCriticalDamage": "1000000000.125",
+        "criticalDamage": "1000000000.125",
+        "expectedDamage": "1000000000.125",
         "criticalRate": "0.5",
         "criticalMultiplier": "2",
         "hits": [
           {
             "schemaVersion": "1",
             "hitName": "1타",
-            "nonCriticalDamage": "1000.125",
-            "criticalDamage": "1000.125",
-            "expectedDamage": "1000.125"
+            "nonCriticalDamage": "1000000000.125",
+            "criticalDamage": "1000000000.125",
+            "expectedDamage": "1000000000.125"
           }
         ],
         "rationale": [
@@ -4698,18 +4698,18 @@
       {
         "schemaVersion": "1",
         "skillId": "raging-blizzard",
-        "nonCriticalDamage": "1000.125",
-        "criticalDamage": "1000.125",
-        "expectedDamage": "1000.125",
+        "nonCriticalDamage": "1000000000.125",
+        "criticalDamage": "1000000000.125",
+        "expectedDamage": "1000000000.125",
         "criticalRate": "0.5",
         "criticalMultiplier": "2",
         "hits": [
           {
             "schemaVersion": "1",
             "hitName": "1타",
-            "nonCriticalDamage": "1000.125",
-            "criticalDamage": "1000.125",
-            "expectedDamage": "1000.125"
+            "nonCriticalDamage": "1000000000.125",
+            "criticalDamage": "1000000000.125",
+            "expectedDamage": "1000000000.125"
           }
         ],
         "rationale": [
@@ -4719,18 +4719,18 @@
       {
         "schemaVersion": "1",
         "skillId": "sweeping-strike",
-        "nonCriticalDamage": "1000.125",
-        "criticalDamage": "1000.125",
-        "expectedDamage": "1000.125",
+        "nonCriticalDamage": "1000000000.125",
+        "criticalDamage": "1000000000.125",
+        "expectedDamage": "1000000000.125",
         "criticalRate": "0.5",
         "criticalMultiplier": "2",
         "hits": [
           {
             "schemaVersion": "1",
             "hitName": "1타",
-            "nonCriticalDamage": "1000.125",
-            "criticalDamage": "1000.125",
-            "expectedDamage": "1000.125"
+            "nonCriticalDamage": "1000000000.125",
+            "criticalDamage": "1000000000.125",
+            "expectedDamage": "1000000000.125"
           }
         ],
         "rationale": [
@@ -4740,18 +4740,18 @@
       {
         "schemaVersion": "1",
         "skillId": "tornado-walk",
-        "nonCriticalDamage": "1000.125",
-        "criticalDamage": "1000.125",
-        "expectedDamage": "1000.125",
+        "nonCriticalDamage": "1000000000.125",
+        "criticalDamage": "1000000000.125",
+        "expectedDamage": "1000000000.125",
         "criticalRate": "0.5",
         "criticalMultiplier": "2",
         "hits": [
           {
             "schemaVersion": "1",
             "hitName": "1타",
-            "nonCriticalDamage": "1000.125",
-            "criticalDamage": "1000.125",
-            "expectedDamage": "1000.125"
+            "nonCriticalDamage": "1000000000.125",
+            "criticalDamage": "1000000000.125",
+            "expectedDamage": "1000000000.125"
           }
         ],
         "rationale": [
@@ -4763,24 +4763,24 @@
   },
   "simulation": {
     "schemaVersion": "1",
-    "snapshotId": "봄날꽃씨:2026-08-12T15:57:51.515373+09:00",
+    "snapshotId": "00000000-0000-4000-8000-000000000001",
     "patches": [],
     "baseline": [
       {
         "schemaVersion": "1",
         "skillId": "thunderstorm",
-        "nonCriticalDamage": "1000.125",
-        "criticalDamage": "1000.125",
-        "expectedDamage": "1000.125",
+        "nonCriticalDamage": "1000000000.125",
+        "criticalDamage": "1000000000.125",
+        "expectedDamage": "1000000000.125",
         "criticalRate": "0.5",
         "criticalMultiplier": "2",
         "hits": [
           {
             "schemaVersion": "1",
             "hitName": "1타",
-            "nonCriticalDamage": "1000.125",
-            "criticalDamage": "1000.125",
-            "expectedDamage": "1000.125"
+            "nonCriticalDamage": "1000000000.125",
+            "criticalDamage": "1000000000.125",
+            "expectedDamage": "1000000000.125"
           }
         ],
         "rationale": [
@@ -4790,18 +4790,18 @@
       {
         "schemaVersion": "1",
         "skillId": "space-cutting",
-        "nonCriticalDamage": "1000.125",
-        "criticalDamage": "1000.125",
-        "expectedDamage": "1000.125",
+        "nonCriticalDamage": "1000000000.125",
+        "criticalDamage": "1000000000.125",
+        "expectedDamage": "1000000000.125",
         "criticalRate": "0.5",
         "criticalMultiplier": "2",
         "hits": [
           {
             "schemaVersion": "1",
             "hitName": "1타",
-            "nonCriticalDamage": "1000.125",
-            "criticalDamage": "1000.125",
-            "expectedDamage": "1000.125"
+            "nonCriticalDamage": "1000000000.125",
+            "criticalDamage": "1000000000.125",
+            "expectedDamage": "1000000000.125"
           }
         ],
         "rationale": [
@@ -4811,18 +4811,18 @@
       {
         "schemaVersion": "1",
         "skillId": "piercing-wind",
-        "nonCriticalDamage": "1000.125",
-        "criticalDamage": "1000.125",
-        "expectedDamage": "1000.125",
+        "nonCriticalDamage": "1000000000.125",
+        "criticalDamage": "1000000000.125",
+        "expectedDamage": "1000000000.125",
         "criticalRate": "0.5",
         "criticalMultiplier": "2",
         "hits": [
           {
             "schemaVersion": "1",
             "hitName": "1타",
-            "nonCriticalDamage": "1000.125",
-            "criticalDamage": "1000.125",
-            "expectedDamage": "1000.125"
+            "nonCriticalDamage": "1000000000.125",
+            "criticalDamage": "1000000000.125",
+            "expectedDamage": "1000000000.125"
           }
         ],
         "rationale": [
@@ -4832,18 +4832,18 @@
       {
         "schemaVersion": "1",
         "skillId": "raging-blizzard",
-        "nonCriticalDamage": "1000.125",
-        "criticalDamage": "1000.125",
-        "expectedDamage": "1000.125",
+        "nonCriticalDamage": "1000000000.125",
+        "criticalDamage": "1000000000.125",
+        "expectedDamage": "1000000000.125",
         "criticalRate": "0.5",
         "criticalMultiplier": "2",
         "hits": [
           {
             "schemaVersion": "1",
             "hitName": "1타",
-            "nonCriticalDamage": "1000.125",
-            "criticalDamage": "1000.125",
-            "expectedDamage": "1000.125"
+            "nonCriticalDamage": "1000000000.125",
+            "criticalDamage": "1000000000.125",
+            "expectedDamage": "1000000000.125"
           }
         ],
         "rationale": [
@@ -4853,18 +4853,18 @@
       {
         "schemaVersion": "1",
         "skillId": "sweeping-strike",
-        "nonCriticalDamage": "1000.125",
-        "criticalDamage": "1000.125",
-        "expectedDamage": "1000.125",
+        "nonCriticalDamage": "1000000000.125",
+        "criticalDamage": "1000000000.125",
+        "expectedDamage": "1000000000.125",
         "criticalRate": "0.5",
         "criticalMultiplier": "2",
         "hits": [
           {
             "schemaVersion": "1",
             "hitName": "1타",
-            "nonCriticalDamage": "1000.125",
-            "criticalDamage": "1000.125",
-            "expectedDamage": "1000.125"
+            "nonCriticalDamage": "1000000000.125",
+            "criticalDamage": "1000000000.125",
+            "expectedDamage": "1000000000.125"
           }
         ],
         "rationale": [
@@ -4874,18 +4874,18 @@
       {
         "schemaVersion": "1",
         "skillId": "tornado-walk",
-        "nonCriticalDamage": "1000.125",
-        "criticalDamage": "1000.125",
-        "expectedDamage": "1000.125",
+        "nonCriticalDamage": "1000000000.125",
+        "criticalDamage": "1000000000.125",
+        "expectedDamage": "1000000000.125",
         "criticalRate": "0.5",
         "criticalMultiplier": "2",
         "hits": [
           {
             "schemaVersion": "1",
             "hitName": "1타",
-            "nonCriticalDamage": "1000.125",
-            "criticalDamage": "1000.125",
-            "expectedDamage": "1000.125"
+            "nonCriticalDamage": "1000000000.125",
+            "criticalDamage": "1000000000.125",
+            "expectedDamage": "1000000000.125"
           }
         ],
         "rationale": [
@@ -4897,18 +4897,18 @@
       {
         "schemaVersion": "1",
         "skillId": "thunderstorm",
-        "nonCriticalDamage": "800.125",
-        "criticalDamage": "800.125",
-        "expectedDamage": "800.125",
+        "nonCriticalDamage": "800000000.125",
+        "criticalDamage": "800000000.125",
+        "expectedDamage": "800000000.125",
         "criticalRate": "0.5",
         "criticalMultiplier": "2",
         "hits": [
           {
             "schemaVersion": "1",
             "hitName": "1타",
-            "nonCriticalDamage": "800.125",
-            "criticalDamage": "800.125",
-            "expectedDamage": "800.125"
+            "nonCriticalDamage": "800000000.125",
+            "criticalDamage": "800000000.125",
+            "expectedDamage": "800000000.125"
           }
         ],
         "rationale": [
@@ -4918,18 +4918,18 @@
       {
         "schemaVersion": "1",
         "skillId": "space-cutting",
-        "nonCriticalDamage": "800.125",
-        "criticalDamage": "800.125",
-        "expectedDamage": "800.125",
+        "nonCriticalDamage": "800000000.125",
+        "criticalDamage": "800000000.125",
+        "expectedDamage": "800000000.125",
         "criticalRate": "0.5",
         "criticalMultiplier": "2",
         "hits": [
           {
             "schemaVersion": "1",
             "hitName": "1타",
-            "nonCriticalDamage": "800.125",
-            "criticalDamage": "800.125",
-            "expectedDamage": "800.125"
+            "nonCriticalDamage": "800000000.125",
+            "criticalDamage": "800000000.125",
+            "expectedDamage": "800000000.125"
           }
         ],
         "rationale": [
@@ -4939,18 +4939,18 @@
       {
         "schemaVersion": "1",
         "skillId": "piercing-wind",
-        "nonCriticalDamage": "800.125",
-        "criticalDamage": "800.125",
-        "expectedDamage": "800.125",
+        "nonCriticalDamage": "800000000.125",
+        "criticalDamage": "800000000.125",
+        "expectedDamage": "800000000.125",
         "criticalRate": "0.5",
         "criticalMultiplier": "2",
         "hits": [
           {
             "schemaVersion": "1",
             "hitName": "1타",
-            "nonCriticalDamage": "800.125",
-            "criticalDamage": "800.125",
-            "expectedDamage": "800.125"
+            "nonCriticalDamage": "800000000.125",
+            "criticalDamage": "800000000.125",
+            "expectedDamage": "800000000.125"
           }
         ],
         "rationale": [
@@ -4960,18 +4960,18 @@
       {
         "schemaVersion": "1",
         "skillId": "raging-blizzard",
-        "nonCriticalDamage": "800.125",
-        "criticalDamage": "800.125",
-        "expectedDamage": "800.125",
+        "nonCriticalDamage": "800000000.125",
+        "criticalDamage": "800000000.125",
+        "expectedDamage": "800000000.125",
         "criticalRate": "0.5",
         "criticalMultiplier": "2",
         "hits": [
           {
             "schemaVersion": "1",
             "hitName": "1타",
-            "nonCriticalDamage": "800.125",
-            "criticalDamage": "800.125",
-            "expectedDamage": "800.125"
+            "nonCriticalDamage": "800000000.125",
+            "criticalDamage": "800000000.125",
+            "expectedDamage": "800000000.125"
           }
         ],
         "rationale": [
@@ -4981,18 +4981,18 @@
       {
         "schemaVersion": "1",
         "skillId": "sweeping-strike",
-        "nonCriticalDamage": "800.125",
-        "criticalDamage": "800.125",
-        "expectedDamage": "800.125",
+        "nonCriticalDamage": "800000000.125",
+        "criticalDamage": "800000000.125",
+        "expectedDamage": "800000000.125",
         "criticalRate": "0.5",
         "criticalMultiplier": "2",
         "hits": [
           {
             "schemaVersion": "1",
             "hitName": "1타",
-            "nonCriticalDamage": "800.125",
-            "criticalDamage": "800.125",
-            "expectedDamage": "800.125"
+            "nonCriticalDamage": "800000000.125",
+            "criticalDamage": "800000000.125",
+            "expectedDamage": "800000000.125"
           }
         ],
         "rationale": [
@@ -5002,18 +5002,18 @@
       {
         "schemaVersion": "1",
         "skillId": "tornado-walk",
-        "nonCriticalDamage": "800.125",
-        "criticalDamage": "800.125",
-        "expectedDamage": "800.125",
+        "nonCriticalDamage": "800000000.125",
+        "criticalDamage": "800000000.125",
+        "expectedDamage": "800000000.125",
         "criticalRate": "0.5",
         "criticalMultiplier": "2",
         "hits": [
           {
             "schemaVersion": "1",
             "hitName": "1타",
-            "nonCriticalDamage": "800.125",
-            "criticalDamage": "800.125",
-            "expectedDamage": "800.125"
+            "nonCriticalDamage": "800000000.125",
+            "criticalDamage": "800000000.125",
+            "expectedDamage": "800000000.125"
           }
         ],
         "rationale": [

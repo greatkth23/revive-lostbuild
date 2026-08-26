@@ -5,6 +5,7 @@ __pycache__/
 node_modules/
 dist/
 .wrangler/
+.secret-scan-worker/
 *.dev.vars
 wrangler.preview.json
 wrangler.production.json
