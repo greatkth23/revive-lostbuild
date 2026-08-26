@@ -147,6 +147,23 @@ describe('Weather Artist raw endpoint parser', () => {
     });
   });
 
+  test('preserves only safe HTTPS API icon URLs for equipment, avatars, and gems', () => {
+    // Break caught: UI receives normalized data without official image URLs and must either copy assets or show blank cards.
+    const raw = structuredClone(loadRawFixture()) as { responses: { equipment: Array<Record<string, unknown>>; avatars: Array<Record<string, unknown>>; gems: { Gems: Array<Record<string, unknown>> } } };
+    raw.responses.equipment[0]!.Icon = 'https://cdn.example.test/equipment.png';
+    raw.responses.avatars[0]!.Icon = 'http://unsafe.example.test/avatar.png';
+    raw.responses.gems.Gems[0]!.Icon = 'https://cdn.example.test/gem.png';
+    const build = parseBuildSnapshot(raw).build as typeof parseBuildSnapshot extends never ? never : {
+      equipment: { items: Array<{ iconUrl?: string }> };
+      avatars: { items: Array<{ iconUrl?: string }> };
+      gems: { items: Array<{ iconUrl?: string }> };
+    };
+
+    expect(build.equipment.items[0]?.iconUrl).toBe('https://cdn.example.test/equipment.png');
+    expect(build.avatars.items[0]?.iconUrl).toBeUndefined();
+    expect(build.gems.items[0]?.iconUrl).toBe('https://cdn.example.test/gem.png');
+  });
+
   test('parses equipment, armlet, accessory, avatar, pet, engraving, stone, and card checkpoints', () => {
     // Break caught: collapsing armlet base attack into final attack or skipping non-skill sections.
     const { build } = parseBuildSnapshot(loadRawFixture());

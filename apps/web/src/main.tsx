@@ -1,3 +1,4 @@
 import { createRoot } from 'react-dom/client';
+import App from './App.js';
 
-createRoot(document.getElementById('root')!).render(<h1>기상술사 데미지 시뮬레이터</h1>);
+createRoot(document.getElementById('root')!).render(<App />);

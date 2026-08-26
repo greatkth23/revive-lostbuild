@@ -105,6 +105,16 @@ function text(value: unknown): string {
   return typeof value === 'string' ? value : '';
 }
 
+function safeHttpsIcon(value: unknown): string | undefined {
+  const candidate = text(value);
+  try {
+    const parsed = new URL(candidate);
+    return parsed.protocol === 'https:' ? parsed.toString() : undefined;
+  } catch {
+    return undefined;
+  }
+}
+
 function integer(value: unknown): number {
   const parsed = Number(value ?? 0);
   return Number.isFinite(parsed) ? Math.trunc(parsed) : 0;
@@ -359,7 +369,8 @@ function parseEquipment(bodyValue: unknown, context: ParseContext): NormalizedBu
       criticalHitDamage: type === '팔찌' ? decimalString(conditionalCritical) : '0',
       nonDirectionalDamage: type === '팔찌' ? decimalString(nonDirectionalDamage) : '0'
     };
-    items.push({ type, name: text(item.Name), grade: text(item.Grade), tooltipText, values });
+    const iconUrl = safeHttpsIcon(item.Icon);
+    items.push({ type, name: text(item.Name), grade: text(item.Grade), ...(iconUrl ? { iconUrl } : {}), tooltipText, values });
 
     totals.mainStat = totals.mainStat!.plus(mainStat);
     if (type === '무기') totals.baseWeaponAttack = Decimal.max(totals.baseWeaponAttack!, weaponAttackNumber);
@@ -442,10 +453,12 @@ function parseAvatars(bodyValue: unknown, context: ParseContext): NormalizedBuil
       eligible: applied,
       excludedReason: applied ? '' : '부위별 효과 아바타 하나만 선택'
     });
+    const iconUrl = safeHttpsIcon(item.Icon);
     return {
       type,
       name: text(item.Name),
       grade: text(item.Grade),
+      ...(iconUrl ? { iconUrl } : {}),
       isInner: item.IsInner === true,
       applied,
       mainStatPercent: decimalString(value)
@@ -540,11 +553,13 @@ function parseGems(bodyValue: unknown, context: ParseContext): NormalizedBuild['
       skillEffects.push(effect);
       provenance(context, `gems.Gems[${index}].Tooltip`, `일반 보석 ${skillName} 재사용 대기시간 감소`, effect.value, { sourceType: 'OFFICIAL_TOOLTIP', eligible: false, applied: false, excludedReason: '1회 피해에는 영향 없음' });
     }
+    const iconUrl = safeHttpsIcon(gem.Icon);
     items.push({
       slot: gem.Slot === null || gem.Slot === undefined ? null : integer(gem.Slot),
       name: text(gem.Name),
       level: integer(gem.Level),
       grade: text(gem.Grade),
+      ...(iconUrl ? { iconUrl } : {}),
       baseAttackPercent: decimalString(baseValue),
       tooltipText,
       skillEffects: itemEffects

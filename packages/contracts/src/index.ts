@@ -59,6 +59,7 @@ const normalizedEquipmentSchema = equipmentValuesSchema.extend({
     type: z.string(),
     name: z.string(),
     grade: z.string(),
+    iconUrl: z.string().url().regex(/^https:\/\//, 'Expected an HTTPS icon URL').optional(),
     tooltipText: z.string(),
     values: equipmentValuesSchema
   }))
@@ -134,6 +135,7 @@ export const normalizedBuildSchema = z.object({
       type: z.string(),
       name: z.string(),
       grade: z.string(),
+      iconUrl: z.string().url().regex(/^https:\/\//, 'Expected an HTTPS icon URL').optional(),
       isInner: z.boolean(),
       applied: z.boolean(),
       mainStatPercent: decimalStringSchema
@@ -159,6 +161,7 @@ export const normalizedBuildSchema = z.object({
       name: z.string(),
       level: z.number().int().nonnegative(),
       grade: z.string(),
+      iconUrl: z.string().url().regex(/^https:\/\//, 'Expected an HTTPS icon URL').optional(),
       baseAttackPercent: decimalStringSchema,
       tooltipText: z.string(),
       skillEffects: z.array(skillGemEffectSchema)
