@@ -23,8 +23,40 @@ jobs:
           LOSTARK_API_TOKEN: ${{ secrets.LOSTARK_API_TOKEN }}
           TARGET: ${{ inputs.target }}
           KV_NAMESPACE_ID: ${{ vars.KV_NAMESPACE_ID }}
+        shell: bash
         run: |
-          test -n "$CLOUDFLARE_ACCOUNT_ID" && test -n "$KV_NAMESPACE_ID" && test -n "$LOSTARK_API_TOKEN"
-          node scripts/render-wrangler-config.mjs "apps/worker/wrangler.$TARGET.json"
-          npx wrangler secret put LOSTARK_API_TOKEN --config "apps/worker/wrangler.$TARGET.json" <<< "$LOSTARK_API_TOKEN"
-          npx wrangler deploy --config "apps/worker/wrangler.$TARGET.json"
+          set -euo pipefail
+          : "${CLOUDFLARE_API_TOKEN:?CLOUDFLARE_API_TOKEN is required}"
+          : "${CLOUDFLARE_ACCOUNT_ID:?CLOUDFLARE_ACCOUNT_ID is required}"
+          : "${LOSTARK_API_TOKEN:?LOSTARK_API_TOKEN is required}"
+          : "${KV_NAMESPACE_ID:?KV_NAMESPACE_ID is required}"
+          : "${TARGET:?TARGET is required}"
+          case "$TARGET" in
+            preview|production) ;;
+            *) echo "TARGET must be preview or production" >&2; exit 1 ;;
+          esac
+
+          config_path="apps/worker/wrangler.$TARGET.json"
+          secrets_path="$RUNNER_TEMP/wrangler-secrets.json"
+          cleanup() {
+            rm -f -- "$config_path" "$secrets_path"
+          }
+          trap cleanup EXIT
+
+          export WRANGLER_SECRETS_PATH="$secrets_path"
+          node <<'NODE'
+          const { writeFileSync } = require('node:fs');
+          const output = process.env.WRANGLER_SECRETS_PATH;
+          const token = process.env.LOSTARK_API_TOKEN;
+          if (!output || !token) throw new Error('Deployment secret inputs are missing');
+          writeFileSync(output, `${JSON.stringify({ LOSTARK_API_TOKEN: token })}\n`, {
+            encoding: 'utf8',
+            flag: 'wx',
+            mode: 0o600,
+          });
+          NODE
+          chmod 600 "$secrets_path"
+
+          rendered_path="$(node scripts/render-wrangler-config.mjs)"
+          test "$rendered_path" = "$config_path"
+          npx wrangler deploy --config "$config_path" --secrets-file "$secrets_path"
