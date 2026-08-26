@@ -33,6 +33,10 @@ function result(skillId: string, expectedDamage = '1000.125'): Record<string, un
 }
 const baseline = catalog.skills.map((skill) => result(skill.id));
 
+function stored(patches: unknown[], savedAt = '2026-08-25T12:00:00.000Z') {
+  return JSON.stringify({ savedAt, patches });
+}
+
 function response(data: unknown): Response {
   return new Response(JSON.stringify({ schemaVersion: '1', ok: true, data, warnings: [] }), { status: 200, headers: { 'content-type': 'application/json' } });
 }
@@ -109,19 +113,19 @@ describe('Weather Artist simulator editor', () => {
 
   test('rebases only supported saved patches and announces discarded stale patches', async () => {
     // Break caught: a catalog change replays an unknown local patch and produces an opaque server error.
-    localStorage.setItem('weather-artist:patches:봄날꽃씨:1:current-v2.7.2:lostark-api-ts-v1:weather-artist-v0.5', JSON.stringify([
+    localStorage.setItem('weather-artist:patches:봄날꽃씨:1:current-v2.7.2:lostark-api-ts-v1:weather-artist-v0.5', stored([
       { schemaVersion: '1', kind: 'set-section-enabled', sectionId: 'gems', enabled: false },
       { schemaVersion: '1', kind: 'set-section-enabled', sectionId: 'obsolete', enabled: false }
     ]));
     installFetch();
     await loadCharacter();
-    expect(screen.getByRole('status').textContent).toContain('지원하지 않는 저장 조정 1개를 버렸습니다');
+    expect(screen.getByText(/지원하지 않는 저장 조정 1개를 버렸습니다/)).toBeTruthy();
     expect(screen.getByRole('checkbox', { name: '보석 사용' })).toHaveProperty('checked', false);
   });
 
   test('rebases patches from an older catalog key when a new catalog baseline arrives', async () => {
     // Break caught: versioned storage makes every catalog update silently abandon otherwise supported saved section choices.
-    localStorage.setItem('weather-artist:patches:봄날꽃씨:1:current-v2.7.2:lostark-api-ts-v1:weather-artist-v0.5', JSON.stringify([
+    localStorage.setItem('weather-artist:patches:봄날꽃씨:1:current-v2.7.2:lostark-api-ts-v1:weather-artist-v0.5', stored([
       { schemaVersion: '1', kind: 'set-section-enabled', sectionId: 'gems', enabled: false }
     ]));
     const newerCatalog = { ...catalog, version: 'weather-artist-v0.6' };
@@ -134,6 +138,36 @@ describe('Weather Artist simulator editor', () => {
     expect(screen.getByRole('checkbox', { name: '보석 사용' })).toHaveProperty('checked', false);
   });
 
+  test('uses the most recent compatible predecessor envelope and announces the catalog rebase', async () => {
+    // Break caught: old histories are concatenated or an incompatible ruleset is accidentally replayed.
+    localStorage.setItem('weather-artist:patches:봄날꽃씨:1:old-rules:lostark-api-ts-v1:weather-artist-v0.4', stored([{ schemaVersion: '1', kind: 'set-section-enabled', sectionId: 'gems', enabled: false }], '2026-08-25T12:00:00.000Z'));
+    localStorage.setItem('weather-artist:patches:봄날꽃씨:1:current-v2.7.2:lostark-api-ts-v1:weather-artist-v0.4', stored([{ schemaVersion: '1', kind: 'set-section-enabled', sectionId: 'gems', enabled: false }], '2026-08-25T13:00:00.000Z'));
+    localStorage.setItem('weather-artist:patches:봄날꽃씨:1:current-v2.7.2:lostark-api-ts-v1:weather-artist-v0.5', stored([{ schemaVersion: '1', kind: 'set-section-enabled', sectionId: 'gems', enabled: true }], '2026-08-25T14:00:00.000Z'));
+    const newerCatalog = { ...catalog, version: 'weather-artist-v0.6' };
+    const newerSnapshot = { ...snapshot, catalogVersion: 'weather-artist-v0.6' };
+    vi.stubGlobal('fetch', vi.fn(async (url: string) => url.endsWith('/catalog/weather-artist') ? response(newerCatalog) : response({ snapshot: newerSnapshot, baseline, cacheHit: false })));
+    await loadCharacter();
+    expect(screen.getByRole('checkbox', { name: '보석 사용' })).toHaveProperty('checked', true);
+    expect(screen.getByText(/저장 조정을 새 카탈로그에 맞게 다시 적용했습니다/)).toBeTruthy();
+  });
+
+  test('discards malformed saved patch envelopes before they reach the simulation API', async () => {
+    // Break caught: a malformed persisted boolean becomes an invalid Worker payload instead of a safely discarded local entry.
+    localStorage.setItem('weather-artist:patches:봄날꽃씨:1:current-v2.7.2:lostark-api-ts-v1:weather-artist-v0.5', stored([
+      { schemaVersion: '1', kind: 'set-section-enabled', sectionId: 'gems', enabled: false },
+      { schemaVersion: 'wrong', kind: 'set-section-enabled', sectionId: 'gems', enabled: 'false' }
+    ]));
+    const fetcher = installFetch();
+    await loadCharacter();
+    vi.useFakeTimers();
+    fireEvent.click(screen.getByRole('checkbox', { name: '보석 사용' }));
+    fireEvent.click(screen.getByRole('checkbox', { name: '보석 사용' }));
+    await act(async () => { await vi.advanceTimersByTimeAsync(250); });
+    const simulation = fetcher.mock.calls.find(([url]) => String(url).endsWith('/simulations'));
+    expect(JSON.parse(String(simulation?.[1]?.body)).patches).toEqual([{ schemaVersion: '1', kind: 'set-section-enabled', sectionId: 'gems', enabled: false }]);
+    expect(screen.getByText(/버렸습니다/)).toBeTruthy();
+  });
+
   test('expands a result card to disclose individual hits and source rationale', async () => {
     // Break caught: aggregate damage hides the per-hit and provenance information needed to audit a result.
     installFetch();
@@ -144,7 +178,126 @@ describe('Weather Artist simulator editor', () => {
     await userEvent.setup().click(card);
     const panel = screen.getByLabelText('우레바람 상세 결과');
     expect(within(panel).getByText('1타')).toBeTruthy();
-    expect(within(panel).getByText('공식 API 장비 수치 적용')).toBeTruthy();
+    expect(within(panel).getAllByText('공식 API 장비 수치 적용')).toHaveLength(2);
+  });
+
+  test('exposes a keyboard-operable tablist with linked tab panels', async () => {
+    // Break caught: tab buttons look selectable but cannot be discovered or operated as tabs by keyboard users.
+    installFetch();
+    await loadCharacter();
+    const editor = screen.getByRole('tab', { name: '세팅 조정' });
+    const results = screen.getByRole('tab', { name: '스킬 피해 결과' });
+    expect(editor.getAttribute('aria-controls')).toBe('panel-editor');
+    fireEvent.keyDown(editor, { key: 'ArrowRight' });
+    expect(results.getAttribute('aria-selected')).toBe('true');
+    expect(screen.getByRole('tabpanel').getAttribute('aria-labelledby')).toBe('tab-results');
+    fireEvent.keyDown(results, { key: 'Home' });
+    expect(editor.getAttribute('aria-selected')).toBe('true');
+  });
+
+  test('keeps prior candidate visible as stale after a simulation failure and retries without reload', async () => {
+    // Break caught: a transient simulation error erases the comparison or forces a fresh character load to recover.
+    let simulationAttempts = 0;
+    vi.stubGlobal('fetch', vi.fn(async (url: string, init?: RequestInit) => {
+      if (url.endsWith('/catalog/weather-artist')) return response(catalog);
+      if (url.endsWith('/characters/load')) return response({ snapshot, baseline, cacheHit: false });
+      simulationAttempts += 1;
+      if (simulationAttempts === 1) return new Response(JSON.stringify({ schemaVersion: '1', ok: false, error: { code: 'TEMPORARY', message: '계산 서버 오류', requestId: 's1' } }), { status: 503, headers: { 'content-type': 'application/json' } });
+      return response({ snapshotId: snapshot.snapshotId, patches: JSON.parse(String(init?.body)).patches, baseline, candidate: catalog.skills.map((skill) => result(skill.id, '850.125')) });
+    }));
+    await loadCharacter();
+    vi.useFakeTimers();
+    fireEvent.click(screen.getByRole('checkbox', { name: '보석 사용' }));
+    await act(async () => { await vi.advanceTimersByTimeAsync(250); });
+    expect(screen.getByRole('alert').textContent).toContain('계산 서버 오류');
+    expect(screen.getByText('이전 결과 표시 중')).toBeTruthy();
+    fireEvent.click(screen.getByRole('button', { name: '계산 다시 시도' }));
+    await act(async () => { await vi.advanceTimersByTimeAsync(250); });
+    fireEvent.click(screen.getByRole('tab', { name: '스킬 피해 결과' }));
+    expect(screen.getAllByText('850.13').length).toBeGreaterThan(0);
+  });
+
+  test('ignores an out-of-order older simulation response after a newer patch generation', async () => {
+    // Break caught: a slow, aborted request resolves late and overwrites the more recent candidate comparison.
+    const responders: Array<(value: Response) => void> = [];
+    vi.stubGlobal('fetch', vi.fn((url: string) => {
+      if (url.endsWith('/catalog/weather-artist')) return Promise.resolve(response(catalog));
+      if (url.endsWith('/characters/load')) return Promise.resolve(response({ snapshot, baseline, cacheHit: false }));
+      return new Promise<Response>((resolve) => responders.push(resolve));
+    }));
+    await loadCharacter();
+    vi.useFakeTimers();
+    fireEvent.click(screen.getByRole('checkbox', { name: '보석 사용' }));
+    await act(async () => { await vi.advanceTimersByTimeAsync(250); });
+    fireEvent.click(screen.getByRole('checkbox', { name: '보석 사용' }));
+    await act(async () => { await vi.advanceTimersByTimeAsync(250); });
+    responders[1]?.(response({ snapshotId: snapshot.snapshotId, patches: [], baseline, candidate: catalog.skills.map((skill) => result(skill.id, '1200.125')) }));
+    await act(async () => { await Promise.resolve(); });
+    fireEvent.click(screen.getByRole('tab', { name: '스킬 피해 결과' }));
+    expect(screen.getAllByText('1,200.13').length).toBeGreaterThan(0);
+    responders[0]?.(response({ snapshotId: snapshot.snapshotId, patches: [], baseline, candidate: catalog.skills.map((skill) => result(skill.id, '800.125')) }));
+    await act(async () => { await Promise.resolve(); });
+    expect(screen.getAllByText('1,200.13').length).toBeGreaterThan(0);
+  });
+
+  test('makes refresh supersede an in-flight simulation from the previous snapshot', async () => {
+    // Break caught: a late result from snapshot A overwrites the baseline that was just refreshed as snapshot B.
+    let loads = 0;
+    let respondSimulation: ((value: Response) => void) | undefined;
+    const refreshed = { ...snapshot, snapshotId: '00000000-0000-4000-8000-000000000002' };
+    vi.stubGlobal('fetch', vi.fn((url: string) => {
+      if (url.endsWith('/catalog/weather-artist')) return Promise.resolve(response(catalog));
+      if (url.endsWith('/characters/load')) return Promise.resolve(response({ snapshot: loads++ === 0 ? snapshot : refreshed, baseline, cacheHit: false }));
+      return new Promise<Response>((resolve) => { respondSimulation = resolve; });
+    }));
+    await loadCharacter();
+    vi.useFakeTimers();
+    fireEvent.click(screen.getByRole('checkbox', { name: '보석 사용' }));
+    await act(async () => { await vi.advanceTimersByTimeAsync(250); });
+    fireEvent.click(screen.getByRole('button', { name: '새로고침' }));
+    await act(async () => { await Promise.resolve(); });
+    respondSimulation?.(response({ snapshotId: snapshot.snapshotId, patches: [], baseline, candidate: catalog.skills.map((skill) => result(skill.id, '800.125')) }));
+    await act(async () => { await Promise.resolve(); });
+    fireEvent.click(screen.getByRole('tab', { name: '스킬 피해 결과' }));
+    expect(screen.queryByText('800.13')).toBeNull();
+    expect(screen.getAllByText('1,000.13').length).toBeGreaterThan(0);
+  });
+
+  test('clears every patch when all reset is selected', async () => {
+    // Break caught: all reset clears checkboxes cosmetically but leaves a section patch in the next simulation payload.
+    const fetcher = installFetch();
+    await loadCharacter();
+    vi.useFakeTimers();
+    fireEvent.click(screen.getByRole('checkbox', { name: '보석 사용' }));
+    fireEvent.click(screen.getByRole('button', { name: '전체 초기화' }));
+    await act(async () => { await vi.advanceTimersByTimeAsync(250); });
+    const simulation = fetcher.mock.calls.filter(([url]) => String(url).endsWith('/simulations')).at(-1);
+    expect(JSON.parse(String(simulation?.[1]?.body)).patches).toEqual([]);
+  });
+
+  test('marks a response missing a catalog skill unavailable instead of rendering zero damage', async () => {
+    // Break caught: partial simulation output is silently formatted as 0.00 and looks like a valid damage result.
+    vi.stubGlobal('fetch', vi.fn(async (url: string, init?: RequestInit) => {
+      if (url.endsWith('/catalog/weather-artist')) return response(catalog);
+      if (url.endsWith('/characters/load')) return response({ snapshot, baseline, cacheHit: false });
+      return response({ snapshotId: snapshot.snapshotId, patches: JSON.parse(String(init?.body)).patches, baseline, candidate: baseline.slice(0, 5) });
+    }));
+    await loadCharacter();
+    vi.useFakeTimers();
+    fireEvent.click(screen.getByRole('checkbox', { name: '보석 사용' }));
+    await act(async () => { await vi.advanceTimersByTimeAsync(250); });
+    expect(screen.getByRole('alert').textContent).toContain('필요한 스킬 결과');
+  });
+
+  test('renders official equipment icons and an accessible fallback for unavailable avatar icons', async () => {
+    // Break caught: UI copies assets or leaves an unlabeled blank square when an official icon is unavailable.
+    const withIcons = structuredClone(snapshot) as any;
+    withIcons.build.equipment.items = [{ name: '장비 아이콘', type: '무기', iconUrl: 'https://cdn.example.test/equipment.png' }];
+    withIcons.build.avatars.items = [{ name: '아바타 없음', type: '상의' }];
+    vi.stubGlobal('fetch', vi.fn(async (url: string) => url.endsWith('/catalog/weather-artist') ? response(catalog) : response({ snapshot: withIcons, baseline, cacheHit: false })));
+    await loadCharacter();
+    expect(document.querySelector('img')?.getAttribute('src')).toBe('https://cdn.example.test/equipment.png');
+    expect(screen.getByLabelText('아바타 없음 아이콘 없음')).toBeTruthy();
   });
 
   test('recovers from a failed load without hiding the retryable search control', async () => {
