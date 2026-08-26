@@ -1,5 +1,6 @@
 import json
 import os
+import re
 import time
 from pathlib import Path
 
@@ -71,8 +72,21 @@ with sync_playwright() as playwright:
             errors = []
             loads = []
             simulations = []
+            anonymous_client_ids = []
             page.on('console', lambda message: errors.append(message.text) if message.type == 'error' else None)
             page.on('pageerror', lambda error: errors.append(str(error)))
+
+            def assert_post_headers(request):
+                headers = {key.lower(): value for key, value in request.headers.items()}
+                assert headers.get('content-type') == 'application/json', headers
+                anonymous_client_id = headers.get('x-anonymous-client-id', '')
+                assert re.fullmatch(r'[A-Za-z0-9_-]{8,128}', anonymous_client_id), headers
+                if anonymous_client_ids:
+                    assert anonymous_client_id == anonymous_client_ids[0], (
+                        'anonymous client ID changed during one browser flow'
+                    )
+                else:
+                    anonymous_client_ids.append(anonymous_client_id)
 
             def api(route):
                 request = route.request
@@ -82,6 +96,7 @@ with sync_playwright() as playwright:
                     return
                 if request.url.endswith('/characters/load'):
                     assert request.method == 'POST'
+                    assert_post_headers(request)
                     body = json.loads(request.post_data or '{}')
                     assert set(body) == {'characterName', 'forceRefresh'}
                     assert body['characterName'] == '봄날꽃씨'
@@ -91,6 +106,7 @@ with sync_playwright() as playwright:
                     return
                 if request.url.endswith('/simulations'):
                     assert request.method == 'POST'
+                    assert_post_headers(request)
                     body = json.loads(request.post_data or '{}')
                     assert_simulation_contract(body)
                     simulations.append(body)

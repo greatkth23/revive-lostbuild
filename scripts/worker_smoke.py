@@ -26,15 +26,16 @@ popen_options = (
     if sys.platform == "win32"
     else {"start_new_session": True}
 )
-process = subprocess.Popen(
-    [npx, "wrangler", "dev", "--local", "--port", str(port), "--env-file", empty_env_path],
-    cwd=ROOT,
-    stdout=subprocess.DEVNULL,
-    stderr=subprocess.DEVNULL,
-    env=worker_env,
-    **popen_options,
-)
+process = None
 try:
+    process = subprocess.Popen(
+        [npx, "wrangler", "dev", "--local", "--port", str(port), "--env-file", empty_env_path],
+        cwd=ROOT,
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL,
+        env=worker_env,
+        **popen_options,
+    )
     for _ in range(50):
         try:
             with urlopen(f"{BASE}/api/v1/catalog/weather-artist", timeout=1) as response:
@@ -69,7 +70,7 @@ try:
         assert "LOSTARK_API_TOKEN_SENTINEL_NEVER_SHIP" not in json.dumps(body)
     print("worker smoke passed")
 finally:
-    if process.poll() is None:
+    if process is not None and process.poll() is None:
         if sys.platform == "win32":
             subprocess.run(
                 ["taskkill", "/PID", str(process.pid), "/T", "/F"],
@@ -87,4 +88,5 @@ finally:
             else:
                 os.killpg(process.pid, signal.SIGKILL)
             process.wait(timeout=5)
-    os.unlink(empty_env_path)
+    if os.path.exists(empty_env_path):
+        os.unlink(empty_env_path)
