@@ -1,0 +1,20 @@
+import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { dirname, resolve } from 'node:path';
+import { parseBuildSnapshot } from '../packages/calculator/dist/index.js';
+import { weatherArtistCatalog } from '../packages/catalog/dist/index.js';
+import { characterLoadDataSchema, simulationDataSchema, weatherArtistCatalogSchema } from '../packages/contracts/dist/index.js';
+
+const raw = JSON.parse(readFileSync(resolve('api-chatgpt-conversation-6a6309ab-7de4-8342/outputs/봄날꽃씨_우레바람_current-v2.7.2_api_raw.json'), 'utf8'));
+const snapshot = parseBuildSnapshot(raw);
+const result = (skillId, value) => ({ schemaVersion: '1', skillId, nonCriticalDamage: value, criticalDamage: value, expectedDamage: value, criticalRate: '0.5', criticalMultiplier: '2', hits: [{ schemaVersion: '1', hitName: '1타', nonCriticalDamage: value, criticalDamage: value, expectedDamage: value }], rationale: ['E2E mocked calculation'] });
+const baseline = weatherArtistCatalog.skills.map((skill) => result(skill.id, '1000.125'));
+const candidate = weatherArtistCatalog.skills.map((skill) => result(skill.id, '800.125'));
+const load = { snapshot, baseline, cacheHit: false };
+const simulation = { schemaVersion: '1', snapshotId: snapshot.snapshotId, patches: [], baseline, candidate };
+weatherArtistCatalogSchema.parse(weatherArtistCatalog);
+characterLoadDataSchema.parse(load);
+simulationDataSchema.parse(simulation);
+const output = resolve('scripts/fixtures/weather-artist-e2e.json');
+mkdirSync(dirname(output), { recursive: true });
+writeFileSync(output, `${JSON.stringify({ catalog: weatherArtistCatalog, load, simulation }, null, 2)}\n`);
+console.log(`generated ${output}`);
