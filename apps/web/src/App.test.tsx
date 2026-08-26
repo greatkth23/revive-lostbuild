@@ -4,7 +4,7 @@ import { resolve } from 'node:path';
 import { act, cleanup, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { afterEach, describe, expect, test, vi } from 'vitest';
-import { parseBuildSnapshot } from '@weather-artist/calculator';
+import { calculateAllSkillDamage, parseBuildSnapshot } from '@weather-artist/calculator';
 import App from './App.js';
 
 const catalog = {
@@ -238,6 +238,31 @@ describe('Weather Artist simulator editor', () => {
     for (const column of ['기준 비치명', '변경 비치명', '기준 치명', '변경 치명', '기준 기대', '변경 기대']) {
       expect(within(table).getByRole('columnheader', { name: column })).toBeTruthy();
     }
+  });
+
+  test('shows every tripod effect application, aggregate multiplier, embedded hit, and scoped repeat label', async () => {
+    // Break caught: the detail view collapses 큰 센바람/집중 공격/공간베기 into misleading top-level zeroes.
+    const calculated = calculateAllSkillDamage(snapshot, {
+      directionalSuccessBySkill: Object.fromEntries(catalog.skills.map((skill) => [skill.id, false]))
+    });
+    vi.stubGlobal('fetch', vi.fn(async (url: string) => url.endsWith('/catalog/weather-artist')
+      ? response(catalog)
+      : response({ snapshot, baseline: calculated, cacheHit: false })));
+    await loadCharacter();
+    fireEvent.click(screen.getByRole('tab', { name: '스킬 피해 결과' }));
+
+    fireEvent.click(screen.getByRole('button', { name: '바람송곳 상세' }));
+    const wind = screen.getByRole('region', { name: '바람송곳 상세 결과' });
+    expect(within(wind).getAllByText('큰 센바람 · 추가 공격 피해 60.00% · 배율 곱연산')).toHaveLength(2);
+    expect(within(wind).getAllByText('집중 공격 · 피해 증가 95.00% · 배율 곱연산')).toHaveLength(2);
+    expect(within(wind).getAllByText('전체 트라이포드 피해 배율 ×4.99')).toHaveLength(2);
+    expect(within(wind).getAllByText(/우산의 춤 18–20P 반복 배율 ×1\.01/)).toHaveLength(2);
+
+    fireEvent.click(screen.getByRole('button', { name: '몰아치기 상세' }));
+    const sweeping = screen.getByRole('region', { name: '몰아치기 상세 결과' });
+    expect(within(sweeping).getAllByText('공간베기 · 추가 공격 피해 94.80% · 모션 타격에 포함')).toHaveLength(2);
+    expect(within(sweeping).getAllByText('전체 트라이포드 피해 배율 ×1.60')).toHaveLength(2);
+    expect(within(sweeping).getAllByText('공간베기 · 추가 공격 피해 94.80% · 모션 타격에 포함됨')).toHaveLength(2);
   });
 
   test('prominently labels incomplete inputs and describes the baseline as API plus verified inputs', async () => {

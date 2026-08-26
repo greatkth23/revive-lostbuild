@@ -209,6 +209,44 @@ function percentMatches(textValue: string, pattern: RegExp): Decimal[] {
   return matches(textValue, pattern).map((value) => value.div(100));
 }
 
+interface TextSpan {
+  start: number;
+  end: number;
+}
+
+function matchSpans(textValue: string, pattern: RegExp): TextSpan[] {
+  const flags = pattern.flags.includes('g') ? pattern.flags : `${pattern.flags}g`;
+  return [...textValue.matchAll(new RegExp(pattern.source, flags))].flatMap((match) => match.index === undefined
+    ? []
+    : [{ start: match.index, end: match.index + match[0].length }]);
+}
+
+function tooltipField(
+  source: JsonObject,
+  keys: ReadonlyArray<'ToolTip' | 'Tooltip'>
+): { key: 'ToolTip' | 'Tooltip'; text: string } | undefined {
+  for (const key of keys) {
+    if (source[key] === undefined || source[key] === null) continue;
+    const value = tooltipToText(source[key]);
+    if (value) return { key, text: value };
+  }
+  return undefined;
+}
+
+function hasUnconsumedDamageValue(textValue: string, consumedSpans: TextSpan[]): boolean {
+  // RegExp match indexes are UTF-16 code-unit offsets, so preserve those offsets
+  // even when a tooltip contains a surrogate pair (for example, an emoji).
+  const residual = textValue.split('');
+  for (const span of consumedSpans) {
+    for (let index = Math.max(0, span.start); index < Math.min(residual.length, span.end); index += 1) {
+      residual[index] = ' ';
+    }
+  }
+  const remaining = residual.join('');
+  return new RegExp(`(?:주는\\s*피해|피해량|치명타\\s*피해|진화형\\s*피해)[^.!?\\n%]{0,80}${PERCENT_NUMBER}`, 'g').test(remaining)
+    || new RegExp(`${PERCENT_NUMBER}[^.!?\\n%]{0,80}(?:추가\\s*)?피해(?:량|를|가)?`, 'g').test(remaining);
+}
+
 function warning(
   context: ParseContext,
   code: string,
@@ -534,7 +572,9 @@ function parseGems(bodyValue: unknown, context: ParseContext): NormalizedBuild['
   let baseAttackPercent = ZERO;
   for (const [index, rawGem] of array(body.Gems).entries()) {
     const gem = object(rawGem);
-    const tooltipText = tooltipToText(gem.Tooltip);
+    const tooltip = tooltipField(gem, ['Tooltip', 'ToolTip']);
+    const tooltipText = tooltip?.text ?? '';
+    const tooltipPath = `gems.Gems[${index}].${tooltip?.key ?? 'Tooltip'}`;
     const baseValues = [
       ...percentMatches(tooltipText, new RegExp(`기본\\s*공격력(?:이)?\\s*(?:\\+|증가\\s*)?${PERCENT_NUMBER}`, 'gi')),
       ...percentMatches(tooltipText, new RegExp(`${PERCENT_NUMBER}[^%\\n]{0,20}기본\\s*공격력\\s*증가`, 'gi'))
@@ -542,14 +582,16 @@ function parseGems(bodyValue: unknown, context: ParseContext): NormalizedBuild['
     const baseValue = max(baseValues);
     baseAttackPercent = baseAttackPercent.plus(baseValue);
     const itemEffects: NormalizedBuild['gems']['skillEffects'] = [];
+    const consumedDamageSpans: TextSpan[] = [];
     const damagePattern = new RegExp(`(?:\\[[^\\]\\n]+\\]\\s*)?([가-힣A-Za-z0-9·' ]+?)\\s+피해(?:량)?(?:이|가)?\\s*\\+?${PERCENT_NUMBER}\\s*증가`, 'gi');
     for (const match of tooltipText.matchAll(damagePattern)) {
       const skillName = canonicalSkill(match[1] ?? '');
       if (['추가', '기본 공격력'].includes(skillName)) continue;
+      if (match.index !== undefined) consumedDamageSpans.push({ start: match.index, end: match.index + match[0].length });
       const effect = { skillName, effectType: 'damage' as const, value: decimalString(percent(match[2] ?? 0)), sourceGemIndex: index };
       itemEffects.push(effect);
       skillEffects.push(effect);
-      provenance(context, `gems.Gems[${index}].Tooltip`, `일반 보석 ${skillName} 피해`, effect.value, { sourceType: 'OFFICIAL_TOOLTIP' });
+      provenance(context, tooltipPath, `일반 보석 ${skillName} 피해`, effect.value, { sourceType: 'OFFICIAL_TOOLTIP' });
     }
     const cooldownPattern = new RegExp(`(?:\\[[^\\]\\n]+\\]\\s*)?([가-힣A-Za-z0-9·' ]+?)\\s+재사용\\s*대기시간(?:이|가)?\\s*\\+?${PERCENT_NUMBER}\\s*감소`, 'gi');
     for (const match of tooltipText.matchAll(cooldownPattern)) {
@@ -557,7 +599,7 @@ function parseGems(bodyValue: unknown, context: ParseContext): NormalizedBuild['
       const effect = { skillName, effectType: 'cooldownReduction' as const, value: decimalString(percent(match[2] ?? 0)), sourceGemIndex: index };
       itemEffects.push(effect);
       skillEffects.push(effect);
-      provenance(context, `gems.Gems[${index}].Tooltip`, `일반 보석 ${skillName} 재사용 대기시간 감소`, effect.value, { sourceType: 'OFFICIAL_TOOLTIP', eligible: false, applied: false, excludedReason: '1회 피해에는 영향 없음' });
+      provenance(context, tooltipPath, `일반 보석 ${skillName} 재사용 대기시간 감소`, effect.value, { sourceType: 'OFFICIAL_TOOLTIP', eligible: false, applied: false, excludedReason: '1회 피해에는 영향 없음' });
     }
     const iconUrl = safeHttpsIcon(gem.Icon);
     items.push({
@@ -570,11 +612,10 @@ function parseGems(bodyValue: unknown, context: ParseContext): NormalizedBuild['
       tooltipText,
       skillEffects: itemEffects
     });
-    const hasDamageBearingValue = /(?:피해량?|피해를|피해가)[^%\n]{0,50}?[0-9]+(?:\.[0-9]+)?\s*%|[0-9]+(?:\.[0-9]+)?\s*%[^\n]{0,50}?(?:피해량?|피해를|피해가)/.test(tooltipText);
-    if (hasDamageBearingValue && !itemEffects.some((effect) => effect.effectType === 'damage')) {
-      warning(context, 'UNPARSED_DAMAGE_TOOLTIP', 'incomplete', `gems.Gems[${index}].Tooltip`, '일반 보석의 스킬 피해 문구를 분류하지 못했습니다.', tooltipText);
+    if (hasUnconsumedDamageValue(tooltipText, consumedDamageSpans)) {
+      warning(context, 'UNPARSED_DAMAGE_TOOLTIP', 'incomplete', tooltipPath, '일반 보석의 스킬 피해 문구를 분류하지 못했습니다.', tooltipText);
     }
-    if (!baseValue.isZero()) provenance(context, `gems.Gems[${index}].Tooltip`, `${text(gem.Name)} 기본 공격력`, baseValue, { sourceType: 'OFFICIAL_TOOLTIP' });
+    if (!baseValue.isZero()) provenance(context, tooltipPath, `${text(gem.Name)} 기본 공격력`, baseValue, { sourceType: 'OFFICIAL_TOOLTIP' });
   }
   return { baseAttackPercent: decimalString(baseAttackPercent), items, skillEffects };
 }
@@ -604,21 +645,39 @@ function parseArkPassive(bodyValue: unknown, context: ParseContext): NormalizedB
     const effect = object(rawEffect);
     const rawName = text(effect.Name);
     const summary = tooltipToText(effect.Description);
-    const detail = tooltipToText(effect.ToolTip ?? effect.Tooltip);
+    const detailField = tooltipField(effect, ['ToolTip', 'Tooltip']);
+    const detail = detailField?.text ?? '';
     const description = [summary, detail].filter(Boolean).join('\n');
     const name = effectName(summary, rawName);
     const levelText = `${summary} ${description}`.match(/(?:Lv\.?\s*|레벨\s*)(\d+)/)?.[1];
     const level = levelText === undefined ? null : integer(levelText);
-    let evolution = max(percentMatches(description, new RegExp(`진화형\\s*피해(?:가|량이)?\\s*\\+?${PERCENT_NUMBER}`, 'g')));
+    const evolutionPattern = new RegExp(`진화형\\s*피해(?:가|량이)?\\s*\\+?${PERCENT_NUMBER}`, 'g');
+    const skillDamagePattern = new RegExp(`(?:피해량|주는\\s*피해)(?:이|가)?\\s*\\+?${PERCENT_NUMBER}`, 'g');
+    const criticalHitDamagePattern = new RegExp(`치명타로\\s*적중\\s*시[^%\\n]{0,35}?피해(?:가|량이)?\\s*\\+?${PERCENT_NUMBER}`, 'g');
+    const recognizedDamagePatterns: RegExp[] = [evolutionPattern];
+    if (name === '기민함') {
+      recognizedDamagePatterns.push(new RegExp(`${PERCENT_NUMBER}\\s*만큼\\s*치명타\\s*피해량이\\s*증가`, 'g'));
+    }
+    if (name === '음속 돌파') {
+      recognizedDamagePatterns.push(
+        new RegExp(`공격\\s*적중\\s*시[^.!?\\n]{0,100}?${PERCENT_NUMBER}\\s*만큼\\s*진화형\\s*피해가\\s*증가`, 'g'),
+        new RegExp(`진화형\\s*피해가\\s*추가로\\s*${PERCENT_NUMBER}\\s*증가`, 'g'),
+        new RegExp(`${PERCENT_NUMBER}\\s*만큼\\s*적중\\s*시\\s*진화형\\s*피해가\\s*증가`, 'g'),
+        new RegExp(`진화형\\s*피해는\\s*최대\\s*${PERCENT_NUMBER}\\s*까지\\s*적용`, 'g')
+      );
+    }
+    let evolution = max(percentMatches(description, evolutionPattern));
     let criticalRate = max(percentMatches(description, new RegExp(`치명타\\s*적중률(?:이|은)?\\s*\\+?${PERCENT_NUMBER}`, 'g')));
     const combinedSpeed = max(percentMatches(description, new RegExp(`공격\\s*및\\s*이동\\s*속도(?:가|는)?\\s*\\+?${PERCENT_NUMBER}`, 'g')));
     let skillDamage = ZERO;
     if (['바람의 길', '풀려난 힘', '단련된 가르기', '공간 가르기'].includes(name)) {
-      skillDamage = max(percentMatches(description, new RegExp(`(?:피해량|주는\\s*피해)(?:이|가)?\\s*\\+?${PERCENT_NUMBER}`, 'g')));
+      skillDamage = max(percentMatches(description, skillDamagePattern));
+      recognizedDamagePatterns.push(skillDamagePattern);
     }
     let criticalHitDamage = name === '회심'
-      ? max(percentMatches(description, new RegExp(`치명타로\\s*적중\\s*시[^%\\n]{0,35}?피해(?:가|량이)?\\s*\\+?${PERCENT_NUMBER}`, 'g')))
+      ? max(percentMatches(description, criticalHitDamagePattern))
       : ZERO;
+    if (name === '회심') recognizedDamagePatterns.push(criticalHitDamagePattern);
     let criticalDamage = ZERO;
     const fallbackComponents: Array<{ category: string; value: Decimal }> = [];
     if (name === '기민함') {
@@ -649,16 +708,22 @@ function parseArkPassive(bodyValue: unknown, context: ParseContext): NormalizedB
       || !criticalHitDamage.isZero()
       || !combinedSpeed.isZero()
       || name === '음속 돌파';
-    const hasDamageBearingValue = /(?:주는\s*피해|피해량?|치명타\s*피해)[^%\n]{0,50}?[0-9]+(?:\.[0-9]+)?\s*%|[0-9]+(?:\.[0-9]+)?\s*%[^\n]{0,50}?(?:주는\s*피해|피해량?|치명타\s*피해)/.test(description);
-    if (hasDamageBearingValue && !hasCalculatorComponent) {
-      warning(
-        context,
-        'UNPARSED_DAMAGE_TOOLTIP',
-        'incomplete',
-        `arkPassive.Effects[${index}].${detail ? 'ToolTip' : 'Description'}`,
-        `'${name}' 아크패시브 효과의 피해 수치를 분류하지 못했습니다.`,
-        detail || description
-      );
+    const damageSources = [
+      ...(summary ? [{ key: 'Description', text: summary }] : []),
+      ...(detailField ? [detailField] : [])
+    ];
+    for (const source of damageSources) {
+      const consumedSpans = recognizedDamagePatterns.flatMap((pattern) => matchSpans(source.text, pattern));
+      if (hasUnconsumedDamageValue(source.text, consumedSpans)) {
+        warning(
+          context,
+          'UNPARSED_DAMAGE_TOOLTIP',
+          'incomplete',
+          `arkPassive.Effects[${index}].${source.key}`,
+          `'${name}' 아크패시브 효과의 피해 수치를 분류하지 못했습니다.`,
+          source.text
+        );
+      }
     }
     provenance(context, `arkPassive.Effects[${index}]`, name, level ?? 0, {
       sourceType: name === '음속 돌파' ? 'OFFICIAL_API+VERIFIED_RULE' : 'OFFICIAL_API',
@@ -730,33 +795,35 @@ function parseArkPassive(bodyValue: unknown, context: ParseContext): NormalizedB
   };
 }
 
-function parseTripodDamageEffects(tooltipText: string): Array<{
+function parseTripodDamageEffects(tooltipText: string): { effects: Array<{
   type: 'DAMAGE_INCREASE' | 'ADDITIONAL_ATTACK' | 'INCREASED_TOTAL_DAMAGE';
   label: string;
   percent: string;
   multiplier: string;
-}> {
+}>; consumedSpans: TextSpan[] } {
   const output: Array<{
     type: 'DAMAGE_INCREASE' | 'ADDITIONAL_ATTACK' | 'INCREASED_TOTAL_DAMAGE';
     label: string;
     percent: string;
     multiplier: string;
   }> = [];
+  const consumedSpans: TextSpan[] = [];
   const patterns: Array<[typeof output[number]['type'], string, RegExp]> = [
-    ['DAMAGE_INCREASE', '피해 증가', new RegExp(`적에게\\s*주는\\s*피해(?:가|를|량이)?\\s*\\+?${PERCENT_NUMBER}\\s*(?:증가|증가시킨다)`, 'g')],
+    ['DAMAGE_INCREASE', '피해 증가', new RegExp(`(?:적에게\\s*)?(?:[^.!?\\n]{0,80}?\\s)?주는\\s*피해(?:가|를|량이)?\\s*\\+?${PERCENT_NUMBER}\\s*(?:증가|증가시킨다)`, 'g')],
     ['ADDITIONAL_ATTACK', '추가 공격 피해', new RegExp(`(?:적에게\\s*)?(?:총\\s*)?\\+?${PERCENT_NUMBER}\\s*추가\\s*피해`, 'g')],
     ['INCREASED_TOTAL_DAMAGE', '총 증가 피해', new RegExp(`총\\s*\\+?${PERCENT_NUMBER}\\s*(?:의\\s*)?증가된\\s*피해`, 'g')]
   ];
   for (const [type, label, pattern] of patterns) {
     const seen = new Set<string>();
-    for (const value of matches(tooltipText, pattern)) {
-      const valueText = decimalString(value.div(100));
+    for (const match of tooltipText.matchAll(pattern)) {
+      if (match.index !== undefined) consumedSpans.push({ start: match.index, end: match.index + match[0].length });
+      const valueText = decimalString(dec(match[1] ?? 0).div(100));
       if (seen.has(valueText)) continue;
       seen.add(valueText);
-      output.push({ type, label, percent: valueText, multiplier: decimalString(ONE.plus(value.div(100))) });
+      output.push({ type, label, percent: valueText, multiplier: decimalString(ONE.plus(valueText)) });
     }
   }
-  return output;
+  return { effects: output, consumedSpans };
 }
 
 function parseCombatSkills(bodyValue: unknown, context: ParseContext): NormalizedBuild['combatSkills'] {
@@ -792,8 +859,11 @@ function parseCombatSkills(bodyValue: unknown, context: ParseContext): Normalize
       const tripod = object(rawTripod);
       if (tripod.IsSelected !== true) continue;
       const name = text(tripod.Name);
-      const tooltipText = tooltipToText(tripod.Tooltip);
-      const rawEffects = parseTripodDamageEffects(tooltipText);
+      const tooltip = tooltipField(tripod, ['Tooltip', 'ToolTip']);
+      const tooltipText = tooltip?.text ?? '';
+      const tooltipPath = `combatSkills[${skillIndex}].Tripods[${tripodIndex}].${tooltip?.key ?? 'Tooltip'}`;
+      const parsedDamage = parseTripodDamageEffects(tooltipText);
+      const rawEffects = parsedDamage.effects;
       const damageEffects = rawEffects.map((effect) => ({
         ...effect,
         applicationMode: effect.type === 'ADDITIONAL_ATTACK' && skillName === '몰아치기' && name === '공간베기'
@@ -803,15 +873,15 @@ function parseCombatSkills(bodyValue: unknown, context: ParseContext): Normalize
       const damagePercent = name === '역류'
         ? sum(damageEffects.filter((effect) => effect.type === 'DAMAGE_INCREASE').map((effect) => effect.percent))
         : ZERO;
-      const criticalDamage = sumUnique(percentMatches(tooltipText, new RegExp(`치명타\\s*피해(?:가|량이)?\\s*\\+?${PERCENT_NUMBER}\\s*(?:증가|증가시킨다)`, 'g')));
-      const hasUnparsedDamageClause = /(?:총\s*)?피해량의\s*[0-9]+(?:\.[0-9]+)?\s*%\s*에\s*해당하는[^.\n]*피해/.test(tooltipText)
-        || /[0-9]+(?:\.[0-9]+)?\s*%[^.\n]{0,50}(?:추가\s*)?피해(?:를|가|량)/.test(tooltipText);
-      if (hasUnparsedDamageClause && damageEffects.length === 0 && criticalDamage.isZero()) {
+      const criticalDamagePattern = new RegExp(`치명타\\s*피해(?:가|량이)?\\s*\\+?${PERCENT_NUMBER}\\s*(?:증가|증가시킨다)`, 'g');
+      const criticalDamage = sumUnique(percentMatches(tooltipText, criticalDamagePattern));
+      const consumedDamageSpans = [...parsedDamage.consumedSpans, ...matchSpans(tooltipText, criticalDamagePattern)];
+      if (hasUnconsumedDamageValue(tooltipText, consumedDamageSpans)) {
         warning(
           context,
           'UNPARSED_DAMAGE_TOOLTIP',
           'incomplete',
-          `combatSkills[${skillIndex}].Tripods[${tripodIndex}].Tooltip`,
+          tooltipPath,
           `'${name}' 선택 트라이포드의 피해 문구를 분류하지 못했습니다.`,
           tooltipText
         );

@@ -300,6 +300,23 @@ describe('Weather Artist raw endpoint parser', () => {
     }));
   });
 
+  test('warns when a regular gem mixes a recognized effect with an unclassified damage clause', () => {
+    // Break caught: one parsed gem damage span suppresses a warning for a second unknown damage-bearing span.
+    const raw = structuredClone(loadRawFixture()) as {
+      responses: { gems: { Gems: Array<Record<string, unknown>> } };
+    };
+    const tooltip = '바람송곳 피해량이 40.0% 증가한다. 적에게 총 피해량의 77.0%에 해당하는 폭풍 피해를 준다.';
+    delete raw.responses.gems.Gems[0]!.Tooltip;
+    raw.responses.gems.Gems[0]!.ToolTip = tooltip;
+
+    expect(parseBuildSnapshot(raw).warnings).toContainEqual(expect.objectContaining({
+      code: 'UNPARSED_DAMAGE_TOOLTIP',
+      severity: 'incomplete',
+      path: 'gems.Gems[0].ToolTip',
+      rawValue: tooltip
+    }));
+  });
+
   test('warns when an Ark Passive effect has an unclassified damage value', () => {
     // Break caught: an unknown active Ark Passive damage node is labelled ineligible instead of incomplete.
     const raw = structuredClone(loadRawFixture()) as {
@@ -313,6 +330,27 @@ describe('Weather Artist raw endpoint parser', () => {
       code: 'UNPARSED_DAMAGE_TOOLTIP',
       severity: 'incomplete',
       path: `arkPassive.Effects[${index}].ToolTip`,
+      rawValue: tooltip
+    }));
+  });
+
+  test('warns on the exact Ark Passive field when parsed and unclassified damage clauses coexist', () => {
+    // Break caught: a parsed 바람의 길 value suppresses an unknown clause and the warning always claims ToolTip.
+    const raw = structuredClone(loadRawFixture()) as {
+      responses: { arkPassive: { Effects: Array<Record<string, unknown>> } };
+    };
+    const tooltip = '피해량이 2.4% 증가한다. 적에게 총 피해량의 77.0%에 해당하는 폭풍 피해를 준다.';
+    raw.responses.arkPassive.Effects.push({
+      Name: '바람의 길',
+      Description: '깨달음 3티어 바람의 길 Lv.2',
+      Tooltip: tooltip
+    });
+    const index = raw.responses.arkPassive.Effects.length - 1;
+
+    expect(parseBuildSnapshot(raw).warnings).toContainEqual(expect.objectContaining({
+      code: 'UNPARSED_DAMAGE_TOOLTIP',
+      severity: 'incomplete',
+      path: `arkPassive.Effects[${index}].Tooltip`,
       rawValue: tooltip
     }));
   });
@@ -474,6 +512,29 @@ describe('Weather Artist raw endpoint parser', () => {
     }));
   });
 
+  test('warns when a selected tripod mixes a recognized multiplier with an unclassified damage clause', () => {
+    // Break caught: one parsed tripod multiplier suppresses a warning for a second unknown damage-bearing span.
+    const raw = structuredClone(loadRawFixture()) as {
+      responses: { combatSkills: Array<{ Tripods: Array<Record<string, unknown>> }> };
+    };
+    const skillIndex = 0;
+    const tripodIndex = raw.responses.combatSkills[skillIndex]!.Tripods.length;
+    const tooltip = '적에게 주는 피해가 60.0% 증가한다. 적에게 총 피해량의 77.0%에 해당하는 폭풍 피해를 준다.';
+    raw.responses.combatSkills[skillIndex]!.Tripods.push({
+      Name: '부분 파싱 폭풍',
+      Tier: 3,
+      IsSelected: true,
+      ToolTip: tooltip
+    });
+
+    expect(parseBuildSnapshot(raw).warnings).toContainEqual(expect.objectContaining({
+      code: 'UNPARSED_DAMAGE_TOOLTIP',
+      severity: 'incomplete',
+      path: `combatSkills[${skillIndex}].Tripods[${tripodIndex}].ToolTip`,
+      rawValue: tooltip
+    }));
+  });
+
   test('returns a path-bearing incomplete warning for an active damage tooltip it cannot classify', () => {
     // Break caught: silently treating an unknown damage tooltip as a zero-valued effect.
     const raw = structuredClone(loadRawFixture()) as {
@@ -501,6 +562,7 @@ describe('Weather Artist raw endpoint parser', () => {
     expect(parsed.warnings.map(({ code, path }) => ({ code, path }))).toEqual([
       { code: 'ARK_PASSIVE_EFFECT_FALLBACK', path: 'arkPassive.Effects[2]' },
       { code: 'KARMA_EVOLUTION_FALLBACK', path: 'arkPassive.Points[0]' },
+      { code: 'UNPARSED_DAMAGE_TOOLTIP', path: 'combatSkills[14].Tripods[6].Tooltip' },
       { code: 'UNPARSED_DAMAGE_TOOLTIP', path: 'arkGrid.Slots[4].Tooltip.options[0]' },
       { code: 'CALCULATED_ATTACK_POWER_OVERRIDE', path: 'profiles.Stats[공격력]' }
     ]);
