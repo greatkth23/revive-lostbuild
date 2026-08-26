@@ -1,0 +1,55 @@
+name: CI
+on: [push, pull_request]
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22, cache: npm }
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.12' }
+      - run: pip install -r requirements-e2e.txt && python -m playwright install --with-deps chromium
+      - run: npm ci
+      - run: npm run types:check
+      - run: npm run typecheck
+      - run: npm test
+      - run: npm run build
+      - run: npm run secret:scan
+      - run: npm run smoke:worker
+      - run: python -m unittest discover -s api-chatgpt-conversation-6a6309ab-7de4-8342/work -p 'test_*.py'
+      - name: Run browser release flow against Vite
+        shell: bash
+        run: |
+          set -euo pipefail
+          vite_log="$RUNNER_TEMP/weather-artist-vite.log"
+          npm run dev --workspace @weather-artist/web -- --host 127.0.0.1 --port 5173 --strictPort >"$vite_log" 2>&1 &
+          vite_pid=$!
+          cleanup() {
+            status=$?
+            trap - EXIT
+            kill "$vite_pid" 2>/dev/null || true
+            wait "$vite_pid" 2>/dev/null || true
+            if [ "$status" -ne 0 ]; then
+              sed -n '1,200p' "$vite_log" >&2
+            fi
+            exit "$status"
+          }
+          trap cleanup EXIT
+          python - <<'PY'
+          import time
+          from urllib.error import URLError
+          from urllib.request import urlopen
+
+          deadline = time.monotonic() + 30
+          while time.monotonic() < deadline:
+              try:
+                  with urlopen('http://127.0.0.1:5173', timeout=1) as response:
+                      if response.status == 200:
+                          break
+              except (OSError, URLError):
+                  time.sleep(0.25)
+          else:
+              raise SystemExit('Vite did not become ready within 30 seconds')
+          PY
+          python scripts/e2e_playwright.py

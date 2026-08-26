@@ -1,0 +1,32 @@
+{
+  "name": "weather-artist-simulator",
+  "private": true,
+  "version": "0.1.0",
+  "packageManager": "npm@10.9.2",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "build": "npm run build --workspaces --if-present",
+    "typecheck": "npm run typecheck --workspaces --if-present",
+    "types:check": "npm run types:check --workspace @weather-artist/worker",
+    "test": "vitest run",
+    "secret:scan": "node scripts/secret-scan.mjs",
+    "smoke:worker": "python scripts/worker_smoke.py",
+    "fixture:e2e": "node scripts/generate-e2e-fixture.mjs",
+    "preview:local": "npm run build --workspace @weather-artist/web && vite-node scripts/local-preview.ts"
+  },
+  "devDependencies": {
+    "@types/node": "^22.15.3",
+    "@types/react": "^19.1.0",
+    "@types/react-dom": "^19.1.0",
+    "@vitejs/plugin-react": "^5.0.2",
+    "typescript": "^5.8.3",
+    "vite": "^7.0.0",
+    "vitest": "^3.2.4",
+    "wrangler": "^4.30.0",
+    "yaml": "^2.8.1",
+    "zod": "^3.24.3"
+  }
+}

@@ -1,5 +1,51 @@
 # Damage calculator changelog
 
+## 2.8.1 — common directional-attack rules
+
+- Added a shared direction resolver for every current and future skill model:
+  head attacks gain 20% damage, while back attacks gain 5% damage and 10%
+  critical rate on successful positional hits.
+- Made `NON_DIRECTIONAL` authoritative per independently dealt damage
+  component and added a required one-of-three direction-tag regression test.
+- Replaced Arcana's local numeric direction checks with the shared resolver.
+  Four of a Kind and Secret Garden bodies receive back-attack bonuses and
+  Serendipity receives the head-attack bonus; linked four-stack Ruin remains a
+  separate non-directional component.
+- Added `--directional-miss` to the common calculator for explicit failed-hit
+  scenarios.
+- Bumped the parsed calculation schema to 3.6.0 for the new directional input,
+  component, and critical-rate fields.
+- Persisted the prior Secret Garden measurement correction by moving Complete
+  Secret's four-stack multiplier from the direct body to the linked Ruin
+  component. The regenerated report separately explains the remaining change
+  caused by specialization moving from 1,806 to 1,646.
+- Added a measurement-condition comparison using successful back attacks for
+  the supplied Four of a Kind/Secret Garden values. The corrected Serendipity
+  measurement state uses a failed head attack, guaranteed Lucky Strike proc,
+  and no Piercing Strike proc instead of averaging either tooltip probability.
+
+## 2.8.0 — Arcana class adapter
+
+- Added user-provided motion models for Celestial Rain, both Serendipity hits,
+  Secret Garden, Four of a Kind, and the four-stack Ruin effect.
+- Added specialization parsing for the official `Ruin skill damage` profile
+  conversion and a class adapter that separates skill-body and Ruin damage.
+- Parsed and applied each equipped skill's selected critical-rate and damage
+  tripods, regular damage gem, current Empress enlightenment nodes, and Arcana
+  order-core effects.
+- Implemented per-skill Blunt Spike critical-cap/excess conversion, including
+  separate direct-hit and Ruin critical rates for back attacks.
+- Implemented Serendipity's 50% defense-ignore expectation and four-stack 80%
+  chance of +504% Ruin critical damage without double counting the generic
+  tripod parser.
+- Added explicit baseline and rotation-ready scenarios. Random Balance/Cull/
+  Judgment states and party synergies are excluded instead of assumed.
+- Added an integrated `나츠노소라` report and six Arcana-specific regression
+  tests. Existing Weather Artist behavior remains on official v2.7.2.
+- Made `rotation-ready` plus skill-body/4-stack combined expected damage the
+  report's primary and mandatory result; baseline remains internal diagnostic
+  data only.
+
 ## v2.7.2 official-rule/report update
 
 - Applied the confirmed 2026-02-11 Space Cutting increase to motion

@@ -605,6 +605,28 @@ class ParserTests(unittest.TestCase):
         )
         self.assertFalse(dut.validate(self.parsed, before, after))
 
+    def test_calculation_uses_aggregate_arkgrid_boss_damage_without_gem_duplicate(self):
+        baseline = copy.deepcopy(self.parsed)
+        changed_gem = copy.deepcopy(self.parsed)
+        changed_gem["arkGrid"]["gemEffects"]["bossDamagePercent"] = Decimal("0.99")
+
+        baseline_result = dut.calculate(baseline, include_arkgrid=True)
+        changed_result = dut.calculate(changed_gem, include_arkgrid=True)
+
+        self.assertEqual(
+            baseline_result["damage"]["nonCritical"],
+            changed_result["damage"]["nonCritical"],
+        )
+        boss_subtitle = next(
+            item
+            for item in baseline_result["damageGroups"]["subtitles"]
+            if item["name"] == "아크그리드 보스 피해"
+        )
+        self.assertEqual(
+            boss_subtitle["percent"],
+            baseline["arkGrid"]["effectiveBaseEffects"]["bossDamagePercent"],
+        )
+
     def test_profile_attack_is_used_after_reconstruction_mismatch(self):
         result = dut.calculate(
             self.parsed,
@@ -1179,6 +1201,75 @@ class ParserTests(unittest.TestCase):
         self.assertEqual(
             dut.SKILL_MODELS["공간 가르기"]["tagVerification"],
             "VERIFIED_BY_SKILL_TAG",
+        )
+
+    def test_directional_attack_bonus_rules(self):
+        head = dut.directional_attack_bonus({"FRONTAL_ATTACK"})
+        back = dut.directional_attack_bonus({"BACK_ATTACK"})
+        missed = dut.directional_attack_bonus(
+            {"BACK_ATTACK"}, success=False
+        )
+        authoritative_non_directional = dut.directional_attack_bonus(
+            {"NON_DIRECTIONAL", "BACK_ATTACK"}
+        )
+        self.assertEqual(head["damagePercent"], Decimal("0.20"))
+        self.assertEqual(head["criticalRate"], Decimal("0"))
+        self.assertEqual(back["damagePercent"], Decimal("0.05"))
+        self.assertEqual(back["criticalRate"], Decimal("0.10"))
+        self.assertFalse(missed["applied"])
+        self.assertEqual(missed["damagePercent"], Decimal("0"))
+        self.assertEqual(
+            authoritative_non_directional["tag"], "NON_DIRECTIONAL"
+        )
+        self.assertEqual(
+            authoritative_non_directional["damagePercent"], Decimal("0")
+        )
+
+    def test_every_registered_skill_has_one_direction_classification(self):
+        for skill, model in dut.SKILL_MODELS.items():
+            with self.subTest(skill=skill):
+                tags = set(model["tags"]) & dut.DIRECTION_TAGS
+                self.assertEqual(len(tags), 1)
+
+    def test_common_calculator_applies_head_and_back_attack(self):
+        back_hit = dut.calculate(
+            self.parsed,
+            skill_name="포카드",
+            directional_success=True,
+        )
+        back_miss = dut.calculate(
+            self.parsed,
+            skill_name="포카드",
+            directional_success=False,
+        )
+        head_hit = dut.calculate(
+            self.parsed,
+            skill_name="세렌디피티",
+            directional_success=True,
+        )
+        head_miss = dut.calculate(
+            self.parsed,
+            skill_name="세렌디피티",
+            directional_success=False,
+        )
+        self.assertEqual(
+            back_hit["damage"]["nonCriticalRaw"]
+            / back_miss["damage"]["nonCriticalRaw"],
+            Decimal("1.05"),
+        )
+        self.assertEqual(
+            back_hit["critical"]["rateRaw"]
+            - back_miss["critical"]["rateRaw"],
+            Decimal("0.10"),
+        )
+        self.assertEqual(
+            head_hit["damage"]["nonCriticalRaw"]
+            / head_miss["damage"]["nonCriticalRaw"],
+            Decimal("1.20"),
+        )
+        self.assertEqual(
+            head_hit["critical"]["rateRaw"],
+            head_miss["critical"]["rateRaw"],
         )
 
 

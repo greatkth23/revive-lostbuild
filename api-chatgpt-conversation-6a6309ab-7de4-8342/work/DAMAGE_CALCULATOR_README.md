@@ -1,5 +1,49 @@
 # Damage calculator
 
+## Arcana adapter (v2.8.1)
+
+`arcana_damage.py` expands the common API/equipment/attack parser to Empress
+Arcana without changing the established Weather Artist v2.7.2 behavior. It
+supports Celestial Rain, Serendipity (two hits), Secret Garden, Four of a Kind,
+and the standalone four-stack Ruin formula supplied by the user.
+
+```powershell
+python arcana_damage.py `
+  --character "나츠노소라" `
+  --output-dir ..\outputs
+```
+
+The adapter writes one user-facing integrated Markdown report and does not
+write raw/parsed JSON. The report always uses `rotation-ready` as its primary
+result and always adds the linked four-stack Ruin effect to each skill. A
+second scenario is retained only as an internal comparison for debugging.
+
+The two explicit scenarios are:
+
+- baseline: no Stream of Edge/Safety Device/Dark Fate/Edge Combo 17P and no
+  head/back success;
+- rotation-ready (primary): maximum Darkness Edge stacks, Safety Device move speed,
+  Dark Fate critical-damage debuff, Edge Combo 17P, and successful positional
+  direct hits.
+
+The skill body and the non-directional four-stack Ruin explosion are evaluated
+separately. Head/back bonuses follow each independently dealt component's own
+direction tag, so Four of a Kind and Secret Garden bodies receive successful
+back-attack damage `+5%` and critical rate `+10%`, while a successful
+Serendipity body receives head-attack damage `+20%`. The linked four-stack Ruin
+component remains `NON_DIRECTIONAL` and does not inherit the body's bonus.
+Skill gems and tripods that explicitly say `skill and stack effect` apply to
+both; specialization and Empress Ruin nodes apply to the Ruin part.
+Blunt Spike converts excess critical rate independently for every skill part.
+Serendipity's defense ignore and Ruin critical-damage proc are expected values,
+not guaranteed multipliers. Random identity cards and party synergies remain
+excluded unless a future scenario names them.
+
+Secret Garden's `Complete Secret` four-stack multiplier belongs to the linked
+Ruin component, not the small direct body. This preserves the measurement
+correction established with the former specialization 1,806 snapshot; current
+API specialization changes can still move the resulting measurement error.
+
 ## Offline regression tests
 
 Run from this directory:
@@ -86,6 +130,17 @@ at the bottom of each report. For a deeper audit, rerun with
 treated as non-directional, including Hit Master eligibility when it is not an
 awakening skill.
 
+Every registered skill model must carry exactly one of `NON_DIRECTIONAL`,
+`FRONTAL_ATTACK`, or `BACK_ATTACK`. The common calculator applies successful
+head/back bonuses by default, and `--directional-miss` explicitly calculates a
+failed positional hit. Class adapters must call `directional_attack_bonus()`
+for each independently dealt component rather than copying numeric bonuses.
+The v2.8.1 Arcana measurement comparison therefore uses successful back attacks
+for Four of a Kind and Secret Garden. The supplied Serendipity measurement uses
+a failed head attack, a guaranteed Lucky Strike critical-damage proc, and no
+Piercing Strike defense-ignore proc. The ordinary rotation-ready result still
+uses their tooltip probabilities of 80% and 50%, respectively.
+
 ## Space Cutting discrepancy resolution
 
 Space Cutting is the only tested skill whose estimate is roughly 27% below the
@@ -110,7 +165,7 @@ python build_damage_db.py
 This creates `db/weather-artist-v0.4.sqlite3`. Existing files are preserved by
 default; use `--force` only when intentionally rebuilding that exact database.
 
-The first release is intentionally narrow:
+The first database release remains intentionally narrow:
 
 - class: 기상술사
 - skills registered: 우레바람, 공간 가르기, 바람송곳, 칼바람, 몰아치기,

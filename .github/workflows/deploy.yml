@@ -1,0 +1,119 @@
+name: Deploy Worker
+on:
+  workflow_dispatch:
+    inputs:
+      target:
+        description: Deployment target
+        type: choice
+        required: true
+        options: [preview, production]
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Reject production deployment outside main
+        if: ${{ inputs.target == 'production' && github.ref != 'refs/heads/main' }}
+        shell: bash
+        run: |
+          echo "Production deployment is restricted to refs/heads/main" >&2
+          exit 1
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22, cache: npm }
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.12' }
+      - run: pip install -r requirements-e2e.txt && python -m playwright install --with-deps chromium
+      - run: npm ci
+      - run: npm run types:check
+      - run: npm run typecheck
+      - run: npm test
+      - run: python -m unittest discover -s api-chatgpt-conversation-6a6309ab-7de4-8342/work -p 'test_*.py'
+      - run: npm run build
+      - run: npm run secret:scan
+      - run: npm run smoke:worker
+      - name: Run browser release flow against strict Vite
+        shell: bash
+        run: |
+          set -euo pipefail
+          vite_log="$RUNNER_TEMP/weather-artist-vite.log"
+          npm run dev --workspace @weather-artist/web -- --host 127.0.0.1 --port 5173 --strictPort >"$vite_log" 2>&1 &
+          vite_pid=$!
+          cleanup() {
+            status=$?
+            trap - EXIT
+            kill "$vite_pid" 2>/dev/null || true
+            wait "$vite_pid" 2>/dev/null || true
+            if [ "$status" -ne 0 ]; then sed -n '1,200p' "$vite_log" >&2; fi
+            exit "$status"
+          }
+          trap cleanup EXIT
+          python - <<'PY'
+          import time
+          from urllib.error import URLError
+          from urllib.request import urlopen
+
+          deadline = time.monotonic() + 30
+          while time.monotonic() < deadline:
+              try:
+                  with urlopen('http://127.0.0.1:5173', timeout=1) as response:
+                      if response.status == 200:
+                          break
+              except (OSError, URLError):
+                  time.sleep(0.25)
+          else:
+              raise SystemExit('Vite did not become ready within 30 seconds')
+          PY
+          python scripts/e2e_playwright.py
+  deploy:
+    needs: verify
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.target }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22, cache: npm }
+      - run: npm ci && npm run build
+      - name: Deploy distinct target binding
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          LOSTARK_API_TOKEN: ${{ secrets.LOSTARK_API_TOKEN }}
+          TARGET: ${{ inputs.target }}
+          KV_NAMESPACE_ID: ${{ vars.KV_NAMESPACE_ID }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          : "${CLOUDFLARE_API_TOKEN:?CLOUDFLARE_API_TOKEN is required}"
+          : "${CLOUDFLARE_ACCOUNT_ID:?CLOUDFLARE_ACCOUNT_ID is required}"
+          : "${LOSTARK_API_TOKEN:?LOSTARK_API_TOKEN is required}"
+          : "${KV_NAMESPACE_ID:?KV_NAMESPACE_ID is required}"
+          : "${TARGET:?TARGET is required}"
+          case "$TARGET" in
+            preview|production) ;;
+            *) echo "TARGET must be preview or production" >&2; exit 1 ;;
+          esac
+
+          config_path="apps/worker/wrangler.$TARGET.json"
+          secrets_path="$RUNNER_TEMP/wrangler-secrets.json"
+          cleanup() {
+            rm -f -- "$config_path" "$secrets_path"
+          }
+          trap cleanup EXIT
+
+          export WRANGLER_SECRETS_PATH="$secrets_path"
+          node <<'NODE'
+          const { writeFileSync } = require('node:fs');
+          const output = process.env.WRANGLER_SECRETS_PATH;
+          const token = process.env.LOSTARK_API_TOKEN;
+          if (!output || !token) throw new Error('Deployment secret inputs are missing');
+          writeFileSync(output, `${JSON.stringify({ LOSTARK_API_TOKEN: token })}\n`, {
+            encoding: 'utf8',
+            flag: 'wx',
+            mode: 0o600,
+          });
+          NODE
+          chmod 600 "$secrets_path"
+
+          rendered_path="$(node scripts/render-wrangler-config.mjs)"
+          test "$rendered_path" = "$config_path"
+          npx wrangler deploy --config "$config_path" --secrets-file "$secrets_path"

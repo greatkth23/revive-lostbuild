@@ -1,0 +1,32 @@
+{
+  "$schema": "../../node_modules/wrangler/config-schema.json",
+  "name": "weather-artist-simulator",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-08-26",
+  "compatibility_flags": ["nodejs_compat"],
+  "observability": {
+    "enabled": true,
+    "head_sampling_rate": 1
+  },
+  "secrets": { "required": ["LOSTARK_API_TOKEN"] },
+  "assets": {
+    "directory": "../web/dist",
+    "binding": "ASSETS",
+    "not_found_handling": "single-page-application",
+    "run_worker_first": ["/api", "/api/*"]
+  },
+  "kv_namespaces": [
+    { "binding": "SNAPSHOTS" }
+  ],
+  "durable_objects": {
+    "bindings": [
+      { "name": "UPSTREAM_BUDGET", "class_name": "UpstreamBudget" }
+    ]
+  },
+  "migrations": [
+    { "tag": "v1", "new_sqlite_classes": ["UpstreamBudget"] }
+  ],
+  "vars": {
+    "TURNSTILE_ENABLED": "false"
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "name": "@weather-artist/worker",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "wrangler deploy --dry-run",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "types:generate": "wrangler types worker-configuration.d.ts --config wrangler.jsonc --include-runtime false",
+    "types:check": "wrangler types worker-configuration.d.ts --config wrangler.jsonc --check --include-runtime false",
+    "dev": "wrangler dev"
+  },
+  "dependencies": {
+    "@weather-artist/calculator": "*",
+    "@weather-artist/catalog": "*",
+    "@weather-artist/contracts": "*"
+  },
+  "devDependencies": { "@cloudflare/workers-types": "^5.20260825.1", "wrangler": "^4.30.0" }
+}
