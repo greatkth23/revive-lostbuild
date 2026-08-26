@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState, type KeyboardEvent } from 'react';
+import { useEffect, useMemo, useRef, useState, type KeyboardEvent, type ReactNode } from 'react';
 import {
   apiEnvelopeSchema,
   buildPatchSchema,
@@ -26,6 +26,7 @@ type PatchEnvelope = { savedAt: string; patches: unknown[] };
 const API = '/api/v1';
 const CLIENT_ID_KEY = 'weather-artist:anonymous-client-id';
 const PATCH_PREFIX = 'weather-artist:patches';
+export const SIMULATOR_UI_ENABLED = false;
 
 function normalizedName(value: string): string {
   return value.normalize('NFKC').trim().replace(/\s+/g, ' ').toLocaleLowerCase('ko-KR');
@@ -119,6 +120,113 @@ function ApiIcon({ url, label }: { url: string | undefined; label: string }) {
   return <img className="api-icon" src={url} alt="" onError={() => setFailed(true)} />;
 }
 
+function cleanApiName(value: string): string {
+  return value.replace(/<[^>]+>/g, '').replace(/&nbsp;/gi, ' ').replace(/&amp;/gi, '&').trim();
+}
+
+function SettingCard({ title, className = '', children }: { title: string; className?: string; children: ReactNode }) {
+  return <section className={`setting-card ${className}`.trim()}><div className="setting-card-title"><h2>{title}</h2></div>{children}</section>;
+}
+
+type EquipmentItem = Snapshot['build']['equipment']['items'][number];
+
+function ItemRows({ items, empty = '표시할 항목이 없습니다.' }: { items: EquipmentItem[]; empty?: string }) {
+  if (items.length === 0) return <p className="muted empty-row">{empty}</p>;
+  return <div className="item-rows">{items.map((item, index) => <article className="item-row" key={`${item.type}-${item.name}-${index}`}>
+    <ApiIcon url={item.iconUrl} label={item.name} />
+    <div><strong>{item.name}</strong><span>{item.type} · {item.grade || '등급 정보 없음'}</span></div>
+  </article>)}</div>;
+}
+
+function CharacterHero({ loaded }: { loaded: LoadData }) {
+  const profile = loaded.snapshot.build.profile;
+  return <section className="character-hero" aria-labelledby="character-name">
+    <div className="hero-content">
+      <div className="hero-tags"><span>{profile.serverName || '서버 정보 없음'}</span><span>{profile.className}</span><span>질풍노도</span></div>
+      <p className="hero-title">{profile.title || '칭호 정보 없음'}</p>
+      <h2 id="character-name">{loaded.snapshot.characterName}</h2>
+      <p className="hero-level">아이템 레벨 <strong>{profile.itemLevel || '데이터 없음'}</strong> · 전투 Lv.{profile.characterLevel}</p>
+      <dl className="hero-stats">
+        <div><dt>계산 공격력</dt><dd>{display(loaded.snapshot.calculatedAttackPower)}</dd></div>
+        <div><dt>치명</dt><dd>{display(profile.criticalStat)}</dd></div>
+        <div><dt>신속</dt><dd>{display(profile.swiftnessStat)}</dd></div>
+        <div><dt>원정대</dt><dd>Lv.{profile.expeditionLevel}</dd></div>
+      </dl>
+      <p className="hero-meta">길드 {profile.guildName || '정보 없음'} · 영지 {profile.townName || '정보 없음'} · {loaded.cacheHit ? '캐시된 API 세팅' : '최신 API 세팅'}</p>
+    </div>
+    {profile.characterImageUrl && <img className="character-image" src={profile.characterImageUrl} alt={`${loaded.snapshot.characterName} 캐릭터 이미지`} />}
+  </section>;
+}
+
+function CurrentSettings({ loaded }: { loaded: LoadData }) {
+  const build = loaded.snapshot.build;
+  const equipmentTypes = new Set(['무기', '투구', '상의', '하의', '장갑', '어깨', '완갑']);
+  const accessoryTypes = new Set(['목걸이', '귀걸이', '반지', '어빌리티 스톤', '팔찌']);
+  const equipment = build.equipment.items.filter((item) => equipmentTypes.has(item.type));
+  const accessories = build.equipment.items.filter((item) => accessoryTypes.has(item.type));
+  const supportItems = build.equipment.items.filter((item) => !equipmentTypes.has(item.type) && !accessoryTypes.has(item.type));
+  const incomplete = loaded.snapshot.warnings.some((warning) => warning.severity === 'incomplete');
+  return <section id="panel-setup" role="tabpanel" aria-labelledby="tab-setup" className="setup-panel">
+    <div className="setup-layout">
+      <aside className="setup-sidebar">
+        <SettingCard title="전투 특성">
+          <dl className="compact-stats">
+            <div><dt>계산 공격력</dt><dd>{display(loaded.snapshot.calculatedAttackPower)}</dd></div>
+            <div><dt>프로필 공격력</dt><dd>{display(build.profile.profileAttackPower)}</dd></div>
+            <div><dt>치명</dt><dd>{display(build.profile.criticalStat)}</dd></div>
+            <div><dt>특화</dt><dd>{display(build.profile.specializationStat)}</dd></div>
+            <div><dt>신속</dt><dd>{display(build.profile.swiftnessStat)}</dd></div>
+          </dl>
+        </SettingCard>
+        <SettingCard title="각인">
+          <ul className="chip-list">{build.engravings.names.map((name) => <li key={name}>{name}</li>)}</ul>
+          <p className="muted">어빌리티 스톤 합계 Lv.{build.engravings.stoneLevelTotal}</p>
+        </SettingCard>
+        <SettingCard title="카드·보조 장비">
+          <dl className="single-stat"><div><dt>카드 피해 보너스</dt><dd>{percentDisplay(build.cards.damagePercent)}</dd></div></dl>
+          <ItemRows items={supportItems} />
+        </SettingCard>
+        <SettingCard title="데이터 상태">
+          {incomplete && <strong className="incomplete-badge">검증 불완전</strong>}
+          <p className="muted">스키마 {loaded.snapshot.schemaVersion} · 카탈로그 {loaded.snapshot.catalogVersion}</p>
+          {loaded.snapshot.warnings.length ? <ul className="warning-list">{loaded.snapshot.warnings.map((warning) => <li className={warning.severity === 'incomplete' ? 'warning-incomplete' : ''} key={`${warning.code}${warning.path}`}>{warning.message}</li>)}</ul> : <p>현재 경고가 없습니다.</p>}
+        </SettingCard>
+      </aside>
+      <div className="setup-main">
+        <SettingCard title="보석" className="wide-card">
+          <div className="gem-strip">{build.gems.items.map((item, index) => <article className="gem-item" key={`${item.slot ?? index}-${item.name}`}>
+            <div className="gem-icon"><ApiIcon url={item.iconUrl} label={cleanApiName(item.name)} /><b>{item.level}</b></div>
+            <strong>{item.level}레벨 {item.grade} 보석</strong>
+            <span>{item.skillEffects.map((effect) => `${effect.skillName} ${effect.effectType === 'damage' ? '피해' : '재사용'} ${percentDisplay(effect.value)}`).join(' · ') || `기본 공격력 ${percentDisplay(item.baseAttackPercent)}`}</span>
+          </article>)}</div>
+        </SettingCard>
+        <div className="two-column-cards">
+          <SettingCard title="장비"><ItemRows items={equipment} /></SettingCard>
+          <SettingCard title="액세서리"><ItemRows items={accessories} /></SettingCard>
+        </div>
+        <div className="two-column-cards">
+          <SettingCard title="아크패시브">
+            <div className="passive-points">{build.arkPassive.points.map((point) => <div key={point.path}><strong>{point.name}</strong><span>{point.value}P{point.karmaLevel ? ` · 카르마 Lv.${point.karmaLevel}` : ''}</span></div>)}</div>
+            <ul className="effect-list">{build.arkPassive.effects.map((effect, index) => <li key={`${effect.name}-${index}`}><strong>{effect.name}{effect.level ? ` Lv.${effect.level}` : ''}</strong><span>{effect.description}</span></li>)}</ul>
+          </SettingCard>
+          <SettingCard title="아크그리드">
+            <div className="core-grid">{build.arkGrid.cores.map((core, index) => <article key={`${core.name}-${index}`}><span className="core-symbol">{core.name.includes('해') ? '해' : core.name.includes('달') ? '달' : '별'}</span><div><strong>{core.name.replace(/^질서의 |^혼돈의 /, '')}</strong><span>{core.grade} · {core.point}P</span></div></article>)}</div>
+          </SettingCard>
+        </div>
+        <div className="two-column-cards">
+          <SettingCard title="아바타·펫">
+            <div className="item-rows">{build.avatars.items.filter((item) => item.applied).map((item, index) => <article className="item-row" key={`${item.type}-${item.name}-${index}`}><ApiIcon url={item.iconUrl} label={item.name} /><div><strong>{item.name}</strong><span>{item.type} · 주스탯 {percentDisplay(item.mainStatPercent)}</span></div></article>)}</div>
+            <dl className="pet-stats"><div><dt>펫 주스탯</dt><dd>{percentDisplay(build.calculationInputs.pet.mainStatPercent)}</dd></div><div><dt>펫 추가 피해</dt><dd>{percentDisplay(build.calculationInputs.pet.additionalDamagePercent)}</dd></div></dl>
+          </SettingCard>
+          <SettingCard title="스킬·트라이포드">
+            <ul className="skill-list">{Object.entries(build.combatSkills.levelsByName).map(([name, level]) => <li key={name}><div><strong>{name}</strong><span>스킬 Lv.{level}</span></div><span>{build.combatSkills.selectedTripods.filter((tripod) => tripod.skillName === name).map((tripod) => `${tripod.name}${tripod.tier ? ` ${tripod.tier}티어` : ''}`).join(' · ') || '선택 트라이포드 없음'}</span></li>)}</ul>
+          </SettingCard>
+        </div>
+      </div>
+    </div>
+  </section>;
+}
+
 function SectionCard({ section, enabled, onToggle, onReset }: { section: Section; enabled: boolean; onToggle: (enabled: boolean) => void; onReset: () => void }) {
   const editable = section.editable;
   return <section className={`section-card ${editable ? '' : 'is-locked'}`} aria-labelledby={`section-${section.id}`}>
@@ -161,6 +269,37 @@ function ResultCard({ skill, baseline, candidate }: { skill: Skill; baseline: Re
   </article>;
 }
 
+function CurrentResultCard({ skill, result }: { skill: Skill; result: Result | undefined }) {
+  const [expanded, setExpanded] = useState(false);
+  if (!result) return <article className="result-card"><div className="result-head"><h3>{skill.displayName}</h3></div><p className="unavailable" role="status">결과 데이터 없음</p></article>;
+  const attack = result.checkpoints.attackPower;
+  return <article className="result-card current-result-card">
+    <div className="result-head"><div><h3>{skill.displayName}</h3><p>{result.checkpoints.directional.label} · {result.checkpoints.directional.applied ? '방향 보너스 적용' : '방향 보너스 없음'}</p></div><strong className="expected-highlight">기대 {display(result.expectedDamage)}</strong></div>
+    <dl className="damage-grid current-damage-grid">
+      <div><dt>비치명 피해</dt><dd>{display(result.nonCriticalDamage)}</dd></div>
+      <div><dt>치명타 피해</dt><dd>{display(result.criticalDamage)}</dd></div>
+      <div><dt>기대 피해</dt><dd>{display(result.expectedDamage)}</dd></div>
+      <div><dt>치명타 적중률</dt><dd>{percentDisplay(result.criticalRate)}</dd></div>
+      <div><dt>치명타 피해 배율</dt><dd>{display(result.criticalMultiplier)}배</dd></div>
+    </dl>
+    <button type="button" className="detail-toggle" aria-expanded={expanded} aria-controls={`result-${skill.id}`} aria-label={`${skill.displayName} 상세`} onClick={() => setExpanded((value) => !value)}>계산 과정 {expanded ? '접기' : '보기'}</button>
+    {expanded && <div id={`result-${skill.id}`} role="region" aria-label={`${skill.displayName} 상세 결과`} className="result-detail">
+      <h4>타격별 피해</h4><div className="table-wrap"><table><thead><tr><th scope="col">타격</th><th scope="col">비치명</th><th scope="col">치명타</th><th scope="col">기대</th></tr></thead><tbody>{result.hits.map((hit) => <tr key={hit.hitName}><td>{hit.hitName}</td><td>{display(hit.nonCriticalDamage)}</td><td>{display(hit.criticalDamage)}</td><td>{display(hit.expectedDamage)}</td></tr>)}</tbody></table></div>
+      <h4>계산 공격력</h4><dl className="calculation-list"><div><dt>주스탯</dt><dd>장비 {display(attack.equipmentMainStat)} + 계정 {display(attack.accountMainStatFlat)} → 아바타 {percentDisplay(attack.avatarMainStatPercent)} · 펫 {percentDisplay(attack.petMainStatPercent)} → {display(attack.finalMainStat)}</dd></div><div><dt>무기 공격력</dt><dd>{display(attack.weaponAttackSubtotal)} × (1 + {percentDisplay(attack.weaponAttackPercent)}) = {display(attack.finalWeaponAttack)}</dd></div><div><dt>최종 계산 공격력</dt><dd>제곱근 {display(attack.rootAttackPower)} → 기본 공격력% 적용 {display(attack.afterBaseAttackPercent)} → <strong>{display(attack.usedForDamage)}</strong></dd></div></dl>
+      <h4>치명타율</h4><p className="formula-result">{result.checkpoints.criticalRate.components.map((component) => `${component.label} ${percentDisplay(component.value)}`).join(' + ')} = <strong>{percentDisplay(result.checkpoints.criticalRate.result)}</strong></p>
+      <h4>치명타 피해 배율</h4><p className="formula-result">합연산 {result.checkpoints.criticalMultiplier.additiveComponents.map((component) => `${component.label} ${display(component.value)}`).join(' + ')} = {display(result.checkpoints.criticalMultiplier.additiveResult)}배 · 곱연산 {result.checkpoints.criticalMultiplier.multiplicativeComponents.map((component) => `${component.label} ×${display(component.value)}`).join(' · ') || '없음'} → <strong>{display(result.checkpoints.criticalMultiplier.result)}배</strong></p>
+      <h4>트라이포드</h4><ul>{result.checkpoints.selectedTripods.length ? result.checkpoints.selectedTripods.flatMap((tripod) => {
+        const entries = tripod.damageEffects.map((effect, index) => <li key={`${tripod.name}-${effect.type}-${index}`}>{tripod.name} · {effect.label} {percentDisplay(effect.percent)} · {effect.applicationMode === 'MULTIPLIER' ? '배율 곱연산' : '모션 타격 포함'}</li>);
+        if (Number(tripod.criticalDamagePercent) !== 0) entries.push(<li key={`${tripod.name}-critical`}>{tripod.name} · 치명타 피해 {percentDisplay(tripod.criticalDamagePercent)}</li>);
+        if (entries.length === 0) entries.push(<li key={`${tripod.name}-none`}>{tripod.name} · 직접 피해 배율 없음</li>);
+        return entries;
+      }) : <li>적용 없음</li>}</ul><p className="formula-result">전체 트라이포드 피해 배율 ×{display(result.checkpoints.tripodDamageMultiplier)}</p>{result.checkpoints.embeddedTripodEffects.length > 0 && <><p>모션 타격 포함 효과</p><ul>{result.checkpoints.embeddedTripodEffects.map((effect, index) => <li key={`${effect.tripodName}-${effect.type}-${index}`}>{effect.tripodName} · {effect.label} {percentDisplay(effect.percent)} · 모션 타격에 포함됨</li>)}</ul></>}
+      <div className="detail-columns"><div><h4>일반 보석·방향성</h4><p>피해 {percentDisplay(result.checkpoints.regularGem.damagePercent)} · 재사용 대기시간 감소 {percentDisplay(result.checkpoints.regularGem.cooldownReductionPercent)}</p><p>{result.checkpoints.directional.label} · 피해 {percentDisplay(result.checkpoints.directional.damagePercent)} · 치명타율 {percentDisplay(result.checkpoints.directional.criticalRate)}</p></div><div><h4>아크패시브·아크그리드</h4><ul>{result.checkpoints.arkPassive.appliedEffects.map((effect, index) => <li key={`${effect.name}-${index}`}>{effect.name} · {effect.category} · {percentDisplay(effect.value)}</li>)}{result.checkpoints.arkGrid.appliedFactors.map((factor) => <li key={factor.factorId}>{factor.coreName} · {factor.category} · {percentDisplay(factor.value)}</li>)}</ul><p>18–20P 반복 배율 ×{display(result.checkpoints.arkGrid.repeatedPointMultiplier)} · 공통 배율 ×{display(result.checkpoints.arkGrid.commonDamageMultiplier)}</p></div></div>
+      <h4>계산 근거</h4><ul>{result.rationale.map((reason) => <li key={reason}>{reason}</li>)}</ul>
+    </div>}
+  </article>;
+}
+
 export default function App() {
   const [characterName, setCharacterName] = useState('');
   const [catalog, setCatalog] = useState<Catalog | null>(null);
@@ -184,7 +323,7 @@ export default function App() {
 
   useEffect(() => { request('/catalog/weather-artist', undefined, weatherArtistCatalogSchema).then((value) => setCatalog(value)).catch((reason: Error) => setError(reason.message)); }, []);
   useEffect(() => {
-    if (!loaded || !hasLoadedRef.current) return;
+    if (!SIMULATOR_UI_ENABLED || !loaded || !hasLoadedRef.current) return;
     const generation = ++generationRef.current;
     simulationAbortRef.current?.abort();
     const controller = new AbortController();
@@ -225,12 +364,12 @@ export default function App() {
       const [activeCatalog, data] = await Promise.all([catalog ? Promise.resolve(catalog) : request('/catalog/weather-artist', undefined, weatherArtistCatalogSchema), request('/characters/load', { method: 'POST', signal: controller.signal, headers: { 'content-type': 'application/json', 'X-Anonymous-Client-Id': clientId() }, body: JSON.stringify({ characterName: name, forceRefresh }) }, characterLoadDataSchema)]);
       if (controller.signal.aborted || loadGeneration !== loadGenerationRef.current || normalizedName(data.snapshot.characterName) !== normalizedName(name)) return;
       setCatalog(activeCatalog);
-      const saved = storedPatchCandidates(data.snapshot);
-      const restored = supportedPatches(saved.raw, activeCatalog.editableSections);
+      const saved = SIMULATOR_UI_ENABLED ? storedPatchCandidates(data.snapshot) : { raw: [], discarded: 0, rebased: false };
+      const restored = SIMULATOR_UI_ENABLED ? supportedPatches(saved.raw, activeCatalog.editableSections) : { patches: [], discarded: 0 };
       setLoaded(data); setCandidate(data.baseline); setPatches(restored.patches); loadedSnapshotRef.current = data.snapshot.snapshotId; hasLoadedRef.current = true; setSimulationStatus('fresh'); setSimulationError(null);
       const discarded = saved.discarded + restored.discarded;
-      if (saved.rebased) setNotice(`저장 조정을 새 카탈로그에 맞게 다시 적용했습니다.${discarded ? ` 지원하지 않는 저장 조정 ${discarded}개를 버렸습니다.` : ''}`);
-      else if (discarded) setNotice(`지원하지 않는 저장 조정 ${discarded}개를 버렸습니다.`);
+      if (SIMULATOR_UI_ENABLED && saved.rebased) setNotice(`저장 조정을 새 카탈로그에 맞게 다시 적용했습니다.${discarded ? ` 지원하지 않는 저장 조정 ${discarded}개를 버렸습니다.` : ''}`);
+      else if (SIMULATOR_UI_ENABLED && discarded) setNotice(`지원하지 않는 저장 조정 ${discarded}개를 버렸습니다.`);
     } catch (reason) {
       if (!controller.signal.aborted && loadGeneration === loadGenerationRef.current) setError(reason instanceof Error ? reason.message : '불러오기에 실패했습니다.');
     } finally { if (loadGeneration === loadGenerationRef.current) setBusy(false); }
@@ -242,7 +381,7 @@ export default function App() {
   function resetSection(section: Section) {
     setPatches((current) => [...current.filter((patch) => patchSection(patch) !== section.id), { schemaVersion: '1', kind: 'reset-section', sectionId: section.id }]);
   }
-  useEffect(() => { if (loaded) localStorage.setItem(patchKey(loaded.snapshot), JSON.stringify({ savedAt: new Date().toISOString(), patches })); }, [patches, loaded]);
+  useEffect(() => { if (SIMULATOR_UI_ENABLED && loaded) localStorage.setItem(patchKey(loaded.snapshot), JSON.stringify({ savedAt: new Date().toISOString(), patches })); }, [patches, loaded]);
 
   function selectTab(next: 'editor' | 'results', focus = false) {
     setTab(next);
@@ -255,13 +394,23 @@ export default function App() {
   }
   const results = candidate ?? loaded?.baseline ?? [];
   const incomplete = loaded?.snapshot.warnings.some((warning) => warning.severity === 'incomplete') ?? false;
-  return <main className="app-shell"><header className="topbar"><div><p className="eyebrow">WEATHER ARTIST · VERIFIED MVP</p><h1>기상술사 피해 시뮬레이터</h1><p>공식 API + 검증 입력값을 기준으로 섹션 단위 조정을 비교합니다.</p></div><form className="search" onSubmit={(event) => { event.preventDefault(); void load(); }}><label>캐릭터 이름<input aria-label="캐릭터 이름" value={characterName} maxLength={24} onChange={(event) => setCharacterName(event.target.value)} placeholder="캐릭터명 입력" /></label><button disabled={busy} type="submit">{busy ? '불러오는 중…' : '불러오기'}</button>{loaded && <button type="button" className="quiet" onClick={() => void load(true)} disabled={busy}>새로고침</button>}</form></header>
+  if (!SIMULATOR_UI_ENABLED) return <main className="app-shell read-only-shell">
+    <header className="topbar"><div><h1>로스트아크 스킬 피해 계산기</h1><p>공식 API에서 불러온 현재 세팅과 질풍노도 기상술사 스킬 피해를 확인합니다.</p></div><form className="search" onSubmit={(event) => { event.preventDefault(); void load(); }}><label>캐릭터 이름<input aria-label="캐릭터 이름" value={characterName} maxLength={24} onChange={(event) => setCharacterName(event.target.value)} placeholder="캐릭터명 입력" /></label><button disabled={busy} type="submit">{busy ? '불러오는 중…' : '불러오기'}</button>{loaded && <button type="button" className="quiet" onClick={() => void load(true)} disabled={busy}>API 새로고침</button>}</form></header>
+    {error && <aside role="alert" className="message error">{error}<button type="button" onClick={() => void load()}>다시 시도</button></aside>}
+    {notice && <p role="status" className="message">{notice}</p>}
+    {!loaded && !error && <section className="empty"><h2>캐릭터를 불러오세요</h2><p>첫 버전은 질풍노도 기상술사를 지원합니다.</p></section>}
+    {loaded && <><CharacterHero loaded={loaded} /><section className="character-content"><div role="tablist" aria-label="캐릭터 정보 보기" className="tabs character-tabs"><button ref={(node) => { tabRefs.current[0] = node; }} id="tab-setup" role="tab" tabIndex={tab === 'editor' ? 0 : -1} aria-controls="panel-setup" aria-selected={tab === 'editor'} onKeyDown={(event) => tabKeyDown(event, 0)} onClick={() => selectTab('editor')}>현재 세팅</button><button ref={(node) => { tabRefs.current[1] = node; }} id="tab-damage" role="tab" tabIndex={tab === 'results' ? 0 : -1} aria-controls="panel-damage" aria-selected={tab === 'results'} onKeyDown={(event) => tabKeyDown(event, 1)} onClick={() => selectTab('results')}>스킬 피해</button></div>
+      {tab === 'editor' ? <CurrentSettings loaded={loaded} /> : <section id="panel-damage" role="tabpanel" aria-labelledby="tab-damage" className="damage-panel"><div className="panel-heading"><div><h2>스킬 피해</h2><p>현재 API 세팅 기준 1회 피해입니다. 화면 수치만 소수점 둘째 자리로 반올림합니다.</p></div></div><div className="result-grid">{(catalog?.skills ?? []).map((skill) => <CurrentResultCard key={skill.id} skill={skill} result={loaded.baseline.find((item) => item.skillId === skill.id)} />)}</div></section>}
+    </section></>}
+  </main>;
+
+  return <main className="app-shell"><header className="topbar"><div><h1>기상술사 피해 시뮬레이터</h1><p>공식 API + 검증 입력값을 기준으로 섹션 단위 조정을 비교합니다.</p></div><form className="search" onSubmit={(event) => { event.preventDefault(); void load(); }}><label>캐릭터 이름<input aria-label="캐릭터 이름" value={characterName} maxLength={24} onChange={(event) => setCharacterName(event.target.value)} placeholder="캐릭터명 입력" /></label><button disabled={busy} type="submit">{busy ? '불러오는 중…' : '불러오기'}</button>{loaded && <button type="button" className="quiet" onClick={() => void load(true)} disabled={busy}>새로고침</button>}</form></header>
     {error && <aside role="alert" className="message error">{error}<button type="button" onClick={() => void load()}>다시 시도</button></aside>}
     {loaded && simulationError && <aside role="alert" className="message error">{simulationError}<button type="button" onClick={() => setRetry((value) => value + 1)}>계산 다시 시도</button></aside>}
     {notice && <p role="status" className="message">{notice}</p>}
     {loaded && simulationStatus !== 'fresh' && <p role="status" className="message">{simulationStatus === 'pending' ? '계산 반영 중' : '이전 결과 표시 중'}</p>}
     {!loaded && !error && <section className="empty"><h2>캐릭터를 불러오세요</h2><p>지원 빌드의 공식 API + 검증 입력값을 기준으로 계산합니다.</p></section>}
-    {loaded && <div className="workspace"><aside className="summary-rail"><section className="summary-card"><p className="eyebrow">API + VERIFIED INPUTS {loaded.cacheHit ? '· CACHE' : '· LIVE'}</p>{incomplete && <strong className="incomplete-badge">검증 불완전</strong>}<h2>{loaded.snapshot.characterName}</h2><p>{loaded.snapshot.build.profile.className} · Lv.{loaded.snapshot.build.profile.characterLevel}</p><dl><div><dt>계산 공격력</dt><dd>{display(loaded.snapshot.calculatedAttackPower)}</dd></div><div><dt>치명 / 신속</dt><dd>{display(loaded.snapshot.build.profile.criticalStat)} / {display(loaded.snapshot.build.profile.swiftnessStat)}</dd></div><div><dt>원정대</dt><dd>Lv.{loaded.snapshot.build.profile.expeditionLevel}</dd></div></dl></section><section className="summary-card"><h2>데이터 상태</h2><p>스키마 {loaded.snapshot.schemaVersion} · 카탈로그 {loaded.snapshot.catalogVersion}</p>{loaded.snapshot.warnings.length ? <ul>{loaded.snapshot.warnings.map((warning) => <li className={warning.severity === 'incomplete' ? 'warning-incomplete' : ''} key={`${warning.code}${warning.path}`}>{warning.message}</li>)}</ul> : <p>현재 경고가 없습니다.</p>}</section></aside>
+    {loaded && <div className="workspace"><aside className="summary-rail"><section className="summary-card">{incomplete && <strong className="incomplete-badge">검증 불완전</strong>}<h2>{loaded.snapshot.characterName}</h2><p>{loaded.snapshot.build.profile.className} · Lv.{loaded.snapshot.build.profile.characterLevel}</p><dl><div><dt>계산 공격력</dt><dd>{display(loaded.snapshot.calculatedAttackPower)}</dd></div><div><dt>치명 / 신속</dt><dd>{display(loaded.snapshot.build.profile.criticalStat)} / {display(loaded.snapshot.build.profile.swiftnessStat)}</dd></div><div><dt>원정대</dt><dd>Lv.{loaded.snapshot.build.profile.expeditionLevel}</dd></div></dl></section><section className="summary-card"><h2>데이터 상태</h2><p>스키마 {loaded.snapshot.schemaVersion} · 카탈로그 {loaded.snapshot.catalogVersion}</p>{loaded.snapshot.warnings.length ? <ul>{loaded.snapshot.warnings.map((warning) => <li className={warning.severity === 'incomplete' ? 'warning-incomplete' : ''} key={`${warning.code}${warning.path}`}>{warning.message}</li>)}</ul> : <p>현재 경고가 없습니다.</p>}</section></aside>
       <section className="main-panel"><div role="tablist" aria-label="시뮬레이터 보기" className="tabs"><button ref={(node) => { tabRefs.current[0] = node; }} id="tab-editor" role="tab" tabIndex={tab === 'editor' ? 0 : -1} aria-controls="panel-editor" aria-selected={tab === 'editor'} onKeyDown={(event) => tabKeyDown(event, 0)} onClick={() => selectTab('editor')}>세팅 조정</button><button ref={(node) => { tabRefs.current[1] = node; }} id="tab-results" role="tab" tabIndex={tab === 'results' ? 0 : -1} aria-controls="panel-results" aria-selected={tab === 'results'} onKeyDown={(event) => tabKeyDown(event, 1)} onClick={() => selectTab('results')}>스킬 피해 결과</button></div>
       {tab === 'editor' ? <section id="panel-editor" role="tabpanel" aria-labelledby="tab-editor"><div className="panel-heading"><div><h2>세팅 조정</h2><p>현재 MVP에서는 카탈로그가 허용한 섹션 사용 여부만 변경할 수 있습니다.</p></div><button type="button" className="quiet" onClick={() => setPatches([])}>전체 초기화</button></div><div className="section-grid">{sections.map((section) => <SectionCard key={section.id} section={section} enabled={Boolean(enabledBySection[section.id])} onToggle={(enabled) => changeSection(section, enabled)} onReset={() => resetSection(section)} />)}</div><section className="source-card"><h3>API 데이터 요약</h3><div className="source-columns"><p><strong>각인</strong>{loaded.snapshot.build.engravings.names.join(' · ') || '데이터 없음'}</p><p><strong>아크패시브</strong>{loaded.snapshot.build.arkPassive.effects.map((effect) => `${effect.name}${effect.level ? ` Lv.${effect.level}` : ''}`).join(' · ') || '데이터 없음'}</p><p><strong>아크그리드</strong>{loaded.snapshot.build.arkGrid.cores.map((core) => `${core.name} ${core.point}P`).join(' · ') || '데이터 없음'}</p></div><div className="api-items">{loaded.snapshot.build.gems.items.slice(0, 8).map((item, index) => <span key={`gem-${index}`}><ApiIcon url={item.iconUrl} label={item.name} />{item.name}</span>)}{loaded.snapshot.build.equipment.items.slice(0, 4).map((item, index) => <span key={`equipment-${index}`}><ApiIcon url={item.iconUrl} label={item.name} />{item.name}</span>)}{loaded.snapshot.build.avatars.items.slice(0, 4).map((item, index) => <span key={`avatar-${index}`}><ApiIcon url={item.iconUrl} label={item.name} />{item.name}</span>)}</div></section></section> : <section id="panel-results" role="tabpanel" aria-labelledby="tab-results" className={simulationStatus === 'fresh' ? '' : 'results-stale'}><div className="panel-heading"><div><h2>스킬 피해 결과</h2><p>모든 표시는 반올림된 두 자리이며, 계산용 소수 문자열은 변경하지 않습니다.</p></div></div><div className="result-grid">{(catalog?.skills ?? []).map((skill) => <ResultCard key={skill.id} skill={skill} baseline={loaded.baseline.find((item) => item.skillId === skill.id)} candidate={results.find((item) => item.skillId === skill.id)} />)}</div></section>}</section></div>}
   </main>;

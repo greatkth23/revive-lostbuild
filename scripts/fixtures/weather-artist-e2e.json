@@ -241,6 +241,12 @@
         ],
         "profile": {
           "className": "기상술사",
+          "serverName": "카제로스",
+          "itemLevel": "1,785.83",
+          "title": "기부천사",
+          "guildName": "꽃가게",
+          "townName": "청암로77",
+          "characterImageUrl": "https://img.lostark.co.kr/armory/4/F2A060682F9A64C6F7CEEC8A7C02256D3A42F9E943DE5615E37C6AF5434D82B0.jpg?v=20260804183251",
           "characterLevel": 70,
           "expeditionLevel": 282,
           "criticalStat": "853",

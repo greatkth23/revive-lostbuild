@@ -18,6 +18,19 @@ function loadRawFixture(): unknown {
 }
 
 describe('Weather Artist raw endpoint parser', () => {
+  test('preserves profile metadata required by the read-only character page', () => {
+    const parsed = parseBuildSnapshot(loadRawFixture());
+
+    expect(parsed.build.profile).toMatchObject({
+      serverName: '카제로스',
+      itemLevel: '1,785.83',
+      title: '기부천사',
+      guildName: '꽃가게',
+      townName: '청암로77',
+      characterImageUrl: expect.stringMatching(/^https:\/\/img\.lostark\.co\.kr\//)
+    });
+  });
+
   test('uses verified character calculation inputs only for their catalogued character', () => {
     // Break caught: every Weather Artist silently inherits 봄날꽃씨 account and pet bonuses.
     const verified = parseBuildSnapshot(loadRawFixture());

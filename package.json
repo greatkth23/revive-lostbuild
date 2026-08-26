@@ -14,7 +14,8 @@
     "test": "vitest run",
     "secret:scan": "node scripts/secret-scan.mjs",
     "smoke:worker": "python scripts/worker_smoke.py",
-    "fixture:e2e": "node scripts/generate-e2e-fixture.mjs"
+    "fixture:e2e": "node scripts/generate-e2e-fixture.mjs",
+    "preview:local": "npm run build --workspace @weather-artist/web && vite-node scripts/local-preview.ts"
   },
   "devDependencies": {
     "@types/node": "^22.15.3",

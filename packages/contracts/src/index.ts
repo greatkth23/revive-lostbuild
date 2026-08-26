@@ -119,6 +119,12 @@ export const normalizedBuildSchema = z.object({
   ])).length(9),
   profile: z.object({
     className: z.string(),
+    serverName: z.string().optional(),
+    itemLevel: z.string().optional(),
+    title: z.string().optional(),
+    guildName: z.string().optional(),
+    townName: z.string().optional(),
+    characterImageUrl: z.string().url().regex(/^https:\/\//, 'Expected an HTTPS character image URL').optional(),
     characterLevel: z.number().int().nonnegative(),
     expeditionLevel: z.number().int().nonnegative(),
     criticalStat: decimalStringSchema,

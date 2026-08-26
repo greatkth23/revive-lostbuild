@@ -321,8 +321,15 @@ function parseProfile(bodyValue: unknown, context: ParseContext): NormalizedBuil
     warning(context, 'PROFILE_SWIFTNESS_FALLBACK', 'warning', 'profiles.Stats[신속].Tooltip', '신속 툴팁 환산값이 없어 고정 계수를 사용했습니다.');
   }
   provenance(context, 'profiles.Stats[공격력]', '프로필 공격력(검산용)', dec(attack.Value as Decimal.Value));
+  const characterImageUrl = safeHttpsIcon(body.CharacterImage);
   return {
     className: text(body.CharacterClassName),
+    serverName: text(body.ServerName),
+    itemLevel: text(body.ItemAvgLevel),
+    title: text(body.Title),
+    guildName: text(body.GuildName),
+    townName: text(body.TownName),
+    ...(characterImageUrl ? { characterImageUrl } : {}),
     characterLevel: integer(body.CharacterLevel),
     expeditionLevel: integer(body.ExpeditionLevel),
     criticalStat: decimalString(dec(critical.Value as Decimal.Value)),
