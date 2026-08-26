@@ -44,6 +44,10 @@ function response(data: unknown): Response {
   return new Response(JSON.stringify({ schemaVersion: '1', ok: true, data: completeData, warnings: [] }), { status: 200, headers: { 'content-type': 'application/json' } });
 }
 
+function normalizedHeaders(init: RequestInit | undefined): Record<string, string> {
+  return Object.fromEntries(new Headers(init?.headers).entries());
+}
+
 function installFetch(candidateExpected = '800.125') {
   const fetcher = vi.fn(async (url: string, init?: RequestInit) => {
     if (url.endsWith('/catalog/weather-artist')) return response(catalog);
@@ -78,7 +82,9 @@ describe('Weather Artist simulator editor', () => {
     await loadCharacter();
     expect(screen.getByText('258,720.50')).toBeTruthy();
     const request = fetcher.mock.calls.find(([url]) => String(url).endsWith('/characters/load'));
-    expect(request?.[1]).toMatchObject({ method: 'POST', headers: { 'content-type': 'application/json', 'X-Anonymous-Client-Id': expect.stringMatching(/^[A-Za-z0-9_-]{8,128}$/) } });
+    expect(request?.[0]).toBe('/api/v1/characters/load');
+    expect(request?.[1]?.method).toBe('POST');
+    expect(normalizedHeaders(request?.[1])).toEqual({ 'content-type': 'application/json', 'x-anonymous-client-id': expect.stringMatching(/^[A-Za-z0-9_-]{8,128}$/) });
     expect(JSON.parse(String(request?.[1]?.body))).toEqual({ characterName: '봄날꽃씨', forceRefresh: false });
   });
 
@@ -256,17 +262,23 @@ describe('Weather Artist simulator editor', () => {
     let loads = 0;
     let respondSimulation: ((value: Response) => void) | undefined;
     const refreshed = { ...snapshot, snapshotId: '00000000-0000-4000-8000-000000000002' };
-    vi.stubGlobal('fetch', vi.fn((url: string) => {
+    const fetcher = vi.fn((url: string, _init?: RequestInit) => {
       if (url.endsWith('/catalog/weather-artist')) return Promise.resolve(response(catalog));
       if (url.endsWith('/characters/load')) return Promise.resolve(response({ snapshot: loads++ === 0 ? snapshot : refreshed, baseline, cacheHit: false }));
       return new Promise<Response>((resolve) => { respondSimulation = resolve; });
-    }));
+    });
+    vi.stubGlobal('fetch', fetcher);
     await loadCharacter();
     vi.useFakeTimers();
     fireEvent.click(screen.getByRole('checkbox', { name: '보석 사용' }));
     await act(async () => { await vi.advanceTimersByTimeAsync(250); });
     fireEvent.click(screen.getByRole('button', { name: '새로고침' }));
     await act(async () => { await Promise.resolve(); });
+    const refresh = fetcher.mock.calls.filter(([url]) => url === '/api/v1/characters/load').at(-1);
+    expect(refresh?.[0]).toBe('/api/v1/characters/load');
+    expect(refresh?.[1]?.method).toBe('POST');
+    expect(normalizedHeaders(refresh?.[1])).toEqual({ 'content-type': 'application/json', 'x-anonymous-client-id': expect.stringMatching(/^[A-Za-z0-9_-]{8,128}$/) });
+    expect(JSON.parse(String(refresh?.[1]?.body))).toEqual({ characterName: '봄날꽃씨', forceRefresh: true });
     respondSimulation?.(response({ snapshotId: snapshot.snapshotId, patches: [], baseline, candidate: catalog.skills.map((skill) => result(skill.id, '800.125')) }));
     await act(async () => { await Promise.resolve(); });
     fireEvent.click(screen.getByRole('tab', { name: '스킬 피해 결과' }));
