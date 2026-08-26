@@ -6,8 +6,8 @@ import sys
 try:
     from playwright.sync_api import sync_playwright
 except ModuleNotFoundError:
-    print("Playwright is not installed; browser E2E skipped (install with: python -m playwright install chromium)")
-    raise SystemExit(0)
+    print("Playwright is required; install with: python -m pip install -r requirements-e2e.txt")
+    raise SystemExit(1)
 
 VIEWPORTS = {"desktop": {"width": 1440, "height": 1000}, "tablet": {"width": 900, "height": 1000}, "mobile": {"width": 390, "height": 844}}
 BASE_URL = os.environ.get("E2E_BASE_URL", "http://127.0.0.1:5173")

@@ -520,7 +520,7 @@ describe('Weather Artist Worker routes', () => {
         transaction: async (callback: (storage: typeof transaction) => Promise<Response>) => callback(transaction)
       }
     } as unknown as DurableObjectState;
-    const budget = new UpstreamBudget(state);
+    const budget = new UpstreamBudget(state, {} as Env);
     let now = Date.UTC(2026, 7, 25, 10, 0, 0);
     vi.spyOn(Date, 'now').mockImplementation(() => now);
     const request = () => new Request('https://budget.internal/grant', {
@@ -551,7 +551,7 @@ describe('Weather Artist Worker routes', () => {
     const state = { storage: {
       transaction: async (callback: (storage: typeof transaction) => Promise<Response>) => callback(transaction)
     } } as unknown as DurableObjectState;
-    const budget = new UpstreamBudget(state);
+    const budget = new UpstreamBudget(state, {} as Env);
     let now = Date.UTC(2026, 7, 25, 10, 0, 0);
     vi.spyOn(Date, 'now').mockImplementation(() => now);
     const request = () => new Request('https://budget.internal/grant', {
@@ -583,7 +583,7 @@ describe('Weather Artist Worker routes', () => {
         transaction: async (callback: (storage: typeof transaction) => Promise<Response>) => callback(transaction)
       }
     } as unknown as DurableObjectState;
-    const limiter = new UpstreamBudget(state);
+    const limiter = new UpstreamBudget(state, {} as Env);
     vi.spyOn(Date, 'now').mockReturnValue(Date.UTC(2026, 7, 25, 10, 0, 0));
     const request = () => new Request('https://budget.internal/consume', {
       method: 'POST',

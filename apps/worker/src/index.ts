@@ -15,6 +15,7 @@ import {
   type BuildPatch,
   type BuildSnapshot
 } from '@weather-artist/contracts';
+import { DurableObject } from 'cloudflare:workers';
 import { applyBuildPatches } from './patches.js';
 
 const SNAPSHOT_TTL_MS = 300_000;
@@ -561,7 +562,9 @@ async function digest(value: string): Promise<string> {
   return [...new Uint8Array(bytes)].map((byte) => byte.toString(16).padStart(2, '0')).join('');
 }
 
-function dependenciesFromEnv(env: Env): WorkerDependencies {
+type RuntimeEnv = Env & { TURNSTILE_SECRET?: string };
+
+function dependenciesFromEnv(env: RuntimeEnv): WorkerDependencies {
   const storage = new KVSnapshotStorage(env.SNAPSHOTS);
   const turnstileEnabled = String(env.TURNSTILE_ENABLED) === 'true';
   const dependencies: WorkerDependencies = {
@@ -606,10 +609,8 @@ const defaultWorker = {
   }
 } satisfies ExportedHandler<Env>;
 
-export class UpstreamBudget implements DurableObject {
+export class UpstreamBudget extends DurableObject<Env> {
   private characterInflight: Promise<LoadResult> | undefined;
-
-  constructor(private readonly state: DurableObjectState, private readonly env?: Env) {}
 
   async fetch(request: Request): Promise<Response> {
     if (request.method !== 'POST') {
@@ -617,7 +618,6 @@ export class UpstreamBudget implements DurableObject {
     }
     const path = new URL(request.url).pathname;
     if (path === '/character/load') {
-      if (!this.env) return Response.json({ error: { code: 'WORKER_NOT_CONFIGURED', message: 'Worker bindings are not configured' } }, { status: 503 });
       let body: { characterName?: unknown; forceRefresh?: unknown };
       try {
         body = await request.json<typeof body>();
@@ -676,7 +676,7 @@ export class UpstreamBudget implements DurableObject {
         return new Response('Invalid rate limit window', { status: 400 });
       }
       const now = Date.now();
-      return this.state.storage.transaction(async (transaction) => {
+      return this.ctx.storage.transaction(async (transaction) => {
         const prior = await transaction.get<number[]>('rate') ?? [];
         const active = prior.filter((time) => time > now - windowMs);
         if (active.length >= limit) {
@@ -700,7 +700,7 @@ export class UpstreamBudget implements DurableObject {
       return new Response('Invalid endpoint call count', { status: 400 });
     }
     const now = Date.now();
-    return this.state.storage.transaction(async (transaction) => {
+    return this.ctx.storage.transaction(async (transaction) => {
       const prior = await transaction.get<number[]>('budget') ?? [];
       const active = prior.filter((time) => time > now - 60_000);
       if (active.length + endpointCalls > 90) {

@@ -1,5 +1,5 @@
 {
   "extends": "../../tsconfig.base.json",
   "compilerOptions": { "noEmit": true },
-  "include": ["src/**/*.ts", "worker-configuration.d.ts", "worker-secrets.d.ts"]
+  "include": ["src/**/*.ts", "worker-configuration.d.ts"]
 }
