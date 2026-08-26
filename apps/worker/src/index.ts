@@ -111,15 +111,6 @@ interface LoadResult {
   cacheHit: boolean;
 }
 
-interface Env {
-  SNAPSHOTS: KVNamespace;
-  UPSTREAM_BUDGET: DurableObjectNamespace;
-  ASSETS?: Fetcher;
-  LOSTARK_API_TOKEN: string;
-  TURNSTILE_ENABLED?: string;
-  TURNSTILE_SECRET?: string;
-}
-
 class HttpError extends Error {
   constructor(
     readonly status: number,
@@ -510,7 +501,7 @@ class KVSnapshotStorage implements SnapshotStorage {
 }
 
 class DurableObjectBudgetService implements BudgetService {
-  constructor(private readonly namespace: DurableObjectNamespace) {}
+  constructor(private readonly namespace: Env['UPSTREAM_BUDGET']) {}
 
   async grant(endpointCalls: number): Promise<RateLimitResult> {
     const stub = this.namespace.get(this.namespace.idFromName('global'));
@@ -525,7 +516,7 @@ class DurableObjectBudgetService implements BudgetService {
 }
 
 class DurableObjectRateLimitStore implements RateLimitStore {
-  constructor(private readonly namespace: DurableObjectNamespace) {}
+  constructor(private readonly namespace: Env['UPSTREAM_BUDGET']) {}
 
   async consume(key: string, limit: number, windowMs: number, _now: number): Promise<RateLimitResult> {
     const id = this.namespace.idFromName(`rate:${await digest(key)}`);
@@ -542,7 +533,7 @@ class DurableObjectRateLimitStore implements RateLimitStore {
 }
 
 class DurableObjectCharacterLoadCoordinator implements CharacterLoadCoordinator {
-  constructor(private readonly namespace: DurableObjectNamespace) {}
+  constructor(private readonly namespace: Env['UPSTREAM_BUDGET']) {}
 
   async coordinate<T>(
     characterKey: string,
@@ -572,7 +563,7 @@ async function digest(value: string): Promise<string> {
 
 function dependenciesFromEnv(env: Env): WorkerDependencies {
   const storage = new KVSnapshotStorage(env.SNAPSHOTS);
-  const turnstileEnabled = env.TURNSTILE_ENABLED === 'true';
+  const turnstileEnabled = String(env.TURNSTILE_ENABLED) === 'true';
   const dependencies: WorkerDependencies = {
     storage,
     rateLimits: new DurableObjectRateLimitStore(env.UPSTREAM_BUDGET),

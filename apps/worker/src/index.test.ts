@@ -72,6 +72,7 @@ class MemoryCharacterLoads implements CharacterLoadCoordinator {
 }
 
 interface HarnessOptions {
+  token?: string;
   mutate?: (raw: RawBundle) => void;
   endpointStatus?: Partial<Record<string, number>>;
   endpointRetryAfter?: Partial<Record<string, string>>;
@@ -123,7 +124,7 @@ function makeHarness(options: HarnessOptions = {}) {
     rateLimits,
     budget: options.budget ?? { grant: async () => ({ allowed: true, retryAfterSeconds: 0 }) },
     upstreamFetch,
-    token: 'Bearer secret-jwt-value',
+    token: options.token ?? 'Bearer secret-jwt-value',
     now: () => now,
     randomUUID: () => `00000000-0000-4000-8000-${String(++sequence).padStart(12, '0')}`,
     characterLoads: options.characterLoads ?? new MemoryCharacterLoads(),
@@ -281,6 +282,17 @@ describe('Weather Artist Worker routes', () => {
     expect(harness.logs).toHaveLength(2);
     expect(harness.logs[1]?.route).toBe('unmatched');
     expect(JSON.stringify(harness.logs)).not.toMatch(/봄날꽃씨|secret-jwt-value|Tooltip|settings/i);
+  });
+
+  test('never reflects the sentinel secret in success, error, or structured logs', async () => {
+    // Break caught: an upstream credential reaches a browser envelope or log serialization.
+    const sentinel = 'LOSTARK_API_TOKEN_SENTINEL_NEVER_SHIP';
+    const harness = makeHarness({ token: sentinel });
+    const success = await harness.app.fetch(loadRequest());
+    const failure = await harness.app.fetch(new Request('https://example.test/api/v1/characters/load', { method: 'POST', headers: { 'X-Anonymous-Client-Id': 'client-id-0001', 'content-type': 'application/json' }, body: '{' }));
+    expect(await success.text()).not.toContain(sentinel);
+    expect(await failure.text()).not.toContain(sentinel);
+    expect(JSON.stringify(harness.logs)).not.toContain(sentinel);
   });
 
   test('serves normalized-name cache hits without consuming upstream or miss budget', async () => {

@@ -1,0 +1,30 @@
+name: Deploy Worker
+on:
+  workflow_dispatch:
+    inputs:
+      target:
+        description: Deployment target
+        type: choice
+        required: true
+        options: [preview, production]
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.target }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22, cache: npm }
+      - run: npm ci && npm run build
+      - name: Deploy distinct target binding
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          LOSTARK_API_TOKEN: ${{ secrets.LOSTARK_API_TOKEN }}
+          TARGET: ${{ inputs.target }}
+          KV_NAMESPACE_ID: ${{ vars.KV_NAMESPACE_ID }}
+        run: |
+          test -n "$CLOUDFLARE_ACCOUNT_ID" && test -n "$KV_NAMESPACE_ID" && test -n "$LOSTARK_API_TOKEN"
+          node scripts/render-wrangler-config.mjs "apps/worker/wrangler.$TARGET.json"
+          npx wrangler secret put LOSTARK_API_TOKEN --config "apps/worker/wrangler.$TARGET.json" <<< "$LOSTARK_API_TOKEN"
+          npx wrangler deploy --config "apps/worker/wrangler.$TARGET.json"

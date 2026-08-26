@@ -10,10 +10,11 @@
   "scripts": {
     "build": "npm run build --workspaces --if-present",
     "typecheck": "npm run typecheck --workspaces --if-present",
-    "test": "vitest run"
+    "test": "vitest run",
+    "secret:scan": "node scripts/secret-scan.mjs",
+    "smoke:worker": "python scripts/worker_smoke.py"
   },
   "devDependencies": {
-    "@cloudflare/workers-types": "^5.20260825.1",
     "@types/node": "^22.15.3",
     "@types/react": "^19.1.0",
     "@types/react-dom": "^19.1.0",
