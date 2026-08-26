@@ -29,7 +29,29 @@ const rawFixturePath = resolve(process.cwd(), 'api-chatgpt-conversation-6a6309ab
 const snapshot = parseBuildSnapshot(JSON.parse(readFileSync(rawFixturePath, 'utf8')));
 
 function result(skillId: string, expectedDamage = '1000.125'): Record<string, unknown> {
-  return { schemaVersion: '1', skillId, nonCriticalDamage: '900.125', criticalDamage: '1800.125', expectedDamage, criticalRate: '0.5', criticalMultiplier: '2', hits: [{ schemaVersion: '1', hitName: '1타', nonCriticalDamage: '900.125', criticalDamage: '1800.125', expectedDamage }], rationale: ['공식 API 장비 수치 적용'] };
+  return {
+    schemaVersion: '1', skillId, nonCriticalDamage: '900.125', criticalDamage: '1800.125', expectedDamage, criticalRate: '0.5', criticalMultiplier: '2',
+    hits: [{ schemaVersion: '1', hitName: '1타', nonCriticalDamage: '900.125', criticalDamage: '1800.125', expectedDamage }],
+    rationale: ['공식 API 장비 수치 적용'],
+    checkpoints: {
+      attackPower: {
+        equipmentMainStat: '747822', accountMainStatFlat: '2133', baseMainStat: '749955', avatarMainStatPercent: '0.08', petMainStatPercent: '0.01', finalMainStat: '817450.95',
+        baseWeaponAttack: '241367', equipmentWeaponAttackFlat: '10969', arkGridWeaponAttackFlat: '0', weaponAttackSubtotal: '252336', equipmentWeaponAttackPercent: '0.06', karmaWeaponAttackPercent: '0.028', arkGridWeaponAttackPercent: '0', weaponAttackPercent: '0.088', finalWeaponAttack: '274541.568',
+        rootAttackPower: '193402.4', armletBaseAttackFlat: '2030', gemsBaseAttackPercent: '0.104', stoneBaseAttackPercent: '0.015', equipmentBaseAttackPercent: '0', baseAttackPercent: '0.119', afterBaseAttackPercent: '218688.1',
+        equipmentAttackPowerFlat: '0', arkGridAttackPowerFlat: '900', attackPowerFlat: '900', equipmentAttackPowerPercent: '0.019', adrenalineAttackPowerPercent: '0.1038', arkGridAttackPowerPercent: '0.0411', attackPowerPercent: '0.1639',
+        profileAttackPower: '236442', final: '258720.5038', usedForDamage: '258720.5038', usedForDamageSource: 'CALCULATED_OFFICIAL'
+      },
+      motionCoefficients: ['351.262'],
+      criticalRate: { components: [{ label: '치명 스탯', value: '0.3' }, { label: '아드레날린', value: '0.2' }], result: '0.5' },
+      criticalMultiplier: { additiveComponents: [{ label: '기본 치명타 피해', value: '2' }], additiveResult: '2', multiplicativeComponents: [{ label: '회심', value: '1' }], result: '2' },
+      selectedTripods: [{ skillName: '우레바람', name: '우레', tooltipText: '피해가 증가한다', damagePercent: '0.6', criticalDamagePercent: '0', damageEffects: [{ type: 'DAMAGE_INCREASE', label: '피해 증가', percent: '0.6', multiplier: '1.6', applicationMode: 'MULTIPLIER' }] }],
+      regularGem: { damagePercent: '0', cooldownReductionPercent: '0' },
+      directional: { tag: 'NON_DIRECTIONAL', label: '비방향성', success: false, applied: false, damagePercent: '0', criticalRate: '0' },
+      arkPassive: { appliedEffects: [{ name: '바람의 길', category: 'skillDamage', value: '0.1' }] },
+      arkGrid: { appliedFactors: [{ factorId: 'umbrella-10', corePath: 'arkGrid.Slots[0]', coreName: '우산의 춤', coreGrade: '고대', category: 'skillDamagePercent', value: '0.02', scopeKind: 'SKILL_TAG', scopeValue: 'UMBRELLA_SKILL', condition: '', requiredPoints: 10, contributionPaths: ['arkGrid.Slots[0].Tooltip.options[0]'] }], repeatedPointMultiplier: '1.006', commonDamageMultiplier: '4.2' },
+      tripodDamageMultiplier: '1.6', embeddedTripodEffects: []
+    }
+  };
 }
 const baseline = catalog.skills.map((skill) => result(skill.id));
 
@@ -130,7 +152,7 @@ describe('Weather Artist simulator editor', () => {
 
   test('rebases only supported saved patches and announces discarded stale patches', async () => {
     // Break caught: a catalog change replays an unknown local patch and produces an opaque server error.
-    localStorage.setItem('weather-artist:patches:봄날꽃씨:1:current-v2.7.2:lostark-api-ts-v1:weather-artist-v0.5', stored([
+    localStorage.setItem('weather-artist:patches:봄날꽃씨:1:current-v2.7.2:lostark-api-ts-v2:weather-artist-v0.5', stored([
       { schemaVersion: '1', kind: 'set-section-enabled', sectionId: 'gems', enabled: false },
       { schemaVersion: '1', kind: 'set-section-enabled', sectionId: 'obsolete', enabled: false }
     ]));
@@ -142,7 +164,7 @@ describe('Weather Artist simulator editor', () => {
 
   test('rebases patches from an older catalog key when a new catalog baseline arrives', async () => {
     // Break caught: versioned storage makes every catalog update silently abandon otherwise supported saved section choices.
-    localStorage.setItem('weather-artist:patches:봄날꽃씨:1:current-v2.7.2:lostark-api-ts-v1:weather-artist-v0.5', stored([
+    localStorage.setItem('weather-artist:patches:봄날꽃씨:1:current-v2.7.2:lostark-api-ts-v2:weather-artist-v0.5', stored([
       { schemaVersion: '1', kind: 'set-section-enabled', sectionId: 'gems', enabled: false }
     ]));
     const newerCatalog = { ...catalog, version: 'weather-artist-v0.6' };
@@ -157,9 +179,9 @@ describe('Weather Artist simulator editor', () => {
 
   test('uses the most recent compatible predecessor envelope and announces the catalog rebase', async () => {
     // Break caught: old histories are concatenated or an incompatible ruleset is accidentally replayed.
-    localStorage.setItem('weather-artist:patches:봄날꽃씨:1:old-rules:lostark-api-ts-v1:weather-artist-v0.4', stored([{ schemaVersion: '1', kind: 'set-section-enabled', sectionId: 'gems', enabled: false }], '2026-08-25T12:00:00.000Z'));
-    localStorage.setItem('weather-artist:patches:봄날꽃씨:1:current-v2.7.2:lostark-api-ts-v1:weather-artist-v0.4', stored([{ schemaVersion: '1', kind: 'set-section-enabled', sectionId: 'gems', enabled: false }], '2026-08-25T13:00:00.000Z'));
-    localStorage.setItem('weather-artist:patches:봄날꽃씨:1:current-v2.7.2:lostark-api-ts-v1:weather-artist-v0.5', stored([{ schemaVersion: '1', kind: 'set-section-enabled', sectionId: 'gems', enabled: true }], '2026-08-25T14:00:00.000Z'));
+    localStorage.setItem('weather-artist:patches:봄날꽃씨:1:old-rules:lostark-api-ts-v2:weather-artist-v0.4', stored([{ schemaVersion: '1', kind: 'set-section-enabled', sectionId: 'gems', enabled: false }], '2026-08-25T12:00:00.000Z'));
+    localStorage.setItem('weather-artist:patches:봄날꽃씨:1:current-v2.7.2:lostark-api-ts-v2:weather-artist-v0.4', stored([{ schemaVersion: '1', kind: 'set-section-enabled', sectionId: 'gems', enabled: false }], '2026-08-25T13:00:00.000Z'));
+    localStorage.setItem('weather-artist:patches:봄날꽃씨:1:current-v2.7.2:lostark-api-ts-v2:weather-artist-v0.5', stored([{ schemaVersion: '1', kind: 'set-section-enabled', sectionId: 'gems', enabled: true }], '2026-08-25T14:00:00.000Z'));
     const newerCatalog = { ...catalog, version: 'weather-artist-v0.6' };
     const newerSnapshot = { ...snapshot, catalogVersion: 'weather-artist-v0.6' };
     vi.stubGlobal('fetch', vi.fn(async (url: string) => url.endsWith('/catalog/weather-artist') ? response(newerCatalog) : response({ snapshot: newerSnapshot, baseline, cacheHit: false })));
@@ -170,7 +192,7 @@ describe('Weather Artist simulator editor', () => {
 
   test('discards malformed saved patch envelopes before they reach the simulation API', async () => {
     // Break caught: a malformed persisted boolean becomes an invalid Worker payload instead of a safely discarded local entry.
-    localStorage.setItem('weather-artist:patches:봄날꽃씨:1:current-v2.7.2:lostark-api-ts-v1:weather-artist-v0.5', stored([
+    localStorage.setItem('weather-artist:patches:봄날꽃씨:1:current-v2.7.2:lostark-api-ts-v2:weather-artist-v0.5', stored([
       { schemaVersion: '1', kind: 'set-section-enabled', sectionId: 'gems', enabled: false },
       { schemaVersion: 'wrong', kind: 'set-section-enabled', sectionId: 'gems', enabled: 'false' }
     ]));
@@ -196,6 +218,40 @@ describe('Weather Artist simulator editor', () => {
     const panel = screen.getByLabelText('우레바람 상세 결과');
     expect(within(panel).getByText('1타')).toBeTruthy();
     expect(within(panel).getAllByText('공식 API 장비 수치 적용')).toHaveLength(2);
+  });
+
+  test('shows transported calculation checkpoints, percentage delta, and all per-hit comparison columns', async () => {
+    // Break caught: the UI receives audit data but only renders expected hit damage and an absolute change.
+    installFetch('800.125');
+    await loadCharacter();
+    vi.useFakeTimers();
+    fireEvent.click(screen.getByRole('checkbox', { name: '보석 사용' }));
+    await act(async () => { await vi.advanceTimersByTimeAsync(250); });
+    fireEvent.click(screen.getByRole('tab', { name: '스킬 피해 결과' }));
+    expect(screen.getAllByText(/-20\.00%/).length).toBeGreaterThan(0);
+    fireEvent.click(screen.getByRole('button', { name: '우레바람 상세' }));
+    const panel = screen.getByRole('region', { name: '우레바람 상세 결과' });
+    for (const heading of ['계산 공격력 과정', '치명타율 계산', '치명타 피해 배율 계산', '적용 트라이포드', '일반 보석', '방향성', '아크패시브', '아크그리드']) {
+      expect(within(panel).getByText(heading)).toBeTruthy();
+    }
+    const table = within(panel).getByRole('table');
+    for (const column of ['기준 비치명', '변경 비치명', '기준 치명', '변경 치명', '기준 기대', '변경 기대']) {
+      expect(within(table).getByRole('columnheader', { name: column })).toBeTruthy();
+    }
+  });
+
+  test('prominently labels incomplete inputs and describes the baseline as API plus verified inputs', async () => {
+    // Break caught: neutral fallback results look like a complete pure-API baseline.
+    const incompleteSnapshot = {
+      ...snapshot,
+      warnings: [...snapshot.warnings, { schemaVersion: '1', code: 'UNVERIFIED_ACCOUNT_BONUSES', severity: 'incomplete', path: 'calculationInputs.accountBonuses', message: '계정 보너스 검증 자료가 없습니다.' }]
+    };
+    vi.stubGlobal('fetch', vi.fn(async (url: string) => url.endsWith('/catalog/weather-artist')
+      ? response(catalog)
+      : response({ snapshot: incompleteSnapshot, baseline, cacheHit: false })));
+    await loadCharacter();
+    expect(screen.getByText('검증 불완전')).toBeTruthy();
+    expect(screen.getByText(/API \+ 검증 입력/)).toBeTruthy();
   });
 
   test('exposes a keyboard-operable tablist with linked tab panels', async () => {

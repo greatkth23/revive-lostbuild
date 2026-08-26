@@ -116,8 +116,8 @@ describe('current-v2.7.2 damage parity', () => {
     // Break caught: applying a gem globally, summing duplicates, or treating cooldown reduction as cast damage.
     const results = calculateAllSkillDamage(snapshot());
     expect(Object.fromEntries(results.map((result) => [result.skillId, [
-      result.checkpoints.regularGemDamagePercent,
-      result.checkpoints.regularGemCooldownReductionPercent
+      result.checkpoints.regularGem.damagePercent,
+      result.checkpoints.regularGem.cooldownReductionPercent
     ]]))).toEqual({
       thunderstorm: ['0', '0'],
       'space-cutting': ['0', '0'],
@@ -141,7 +141,9 @@ describe('current-v2.7.2 damage parity', () => {
     const results = calculateAllSkillDamage(snapshot());
     const scopes = Object.fromEntries(results.map((result) => [
       result.skillId,
-      result.checkpoints.appliedSkillDamageEffects
+      result.checkpoints.arkPassive.appliedEffects
+        .filter((effect) => effect.category === 'skillDamage')
+        .map((effect) => effect.name)
     ]));
     expect(scopes).toEqual({
       thunderstorm: ['바람의 길', '풀려난 힘', '단련된 가르기'],
@@ -166,10 +168,10 @@ describe('current-v2.7.2 damage parity', () => {
   test('applies each active 18P, 19P, and 20P Ark Grid factor as a repeated multiplier', () => {
     // Break caught: adding three 0.2% thresholds into one 0.6% multiplier.
     const result = calculateSkillDamage(snapshot(), 'thunderstorm');
-    expect(result.checkpoints.appliedArkGridFactors.filter((factor) =>
+    expect(result.checkpoints.arkGrid.appliedFactors.filter((factor) =>
       factor.coreName.includes('우산의 춤') && factor.value === '0.002'
     ).map((factor) => factor.requiredPoints)).toEqual([18, 19, 20]);
-    expect(result.checkpoints.repeatedUmbrellaPointMultiplier).toBe('1.006012008');
+    expect(result.checkpoints.arkGrid.repeatedPointMultiplier).toBe('1.006012008');
   });
 });
 

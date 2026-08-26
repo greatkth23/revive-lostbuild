@@ -2,6 +2,7 @@ import { readFileSync } from 'node:fs';
 import { describe, expect, test } from 'vitest';
 import { buildSnapshotSchema } from '@weather-artist/contracts';
 import {
+  calculateAttackPower,
   parseBuildSnapshot,
   resolveArkGridGradeValues,
   tooltipToText
@@ -17,6 +18,82 @@ function loadRawFixture(): unknown {
 }
 
 describe('Weather Artist raw endpoint parser', () => {
+  test('uses verified character calculation inputs only for their catalogued character', () => {
+    // Break caught: every Weather Artist silently inherits 봄날꽃씨 account and pet bonuses.
+    const verified = parseBuildSnapshot(loadRawFixture());
+    expect(verified.build.calculationInputs).toEqual({
+      accountBonuses: {
+        flatMainStat: '2133',
+        collectionDemonDamagePercent: '0.065',
+        source: 'current-v2.7.2-character-inputs-v1:봄날꽃씨',
+        verified: true
+      },
+      pet: {
+        mainStatPercent: '0.01',
+        additionalDamagePercent: '0.01',
+        demonDamagePercent: '0.005',
+        source: 'current-v2.7.2-character-inputs-v1:봄날꽃씨',
+        verified: true
+      }
+    });
+    expect(calculateAttackPower(verified).accountMainStatFlat).toBe('2133');
+
+    const raw = structuredClone(loadRawFixture()) as {
+      characterName: string;
+      responses: { profiles: { CharacterName: string } };
+    };
+    raw.characterName = '검증되지않은기상술사';
+    raw.responses.profiles.CharacterName = '검증되지않은기상술사';
+    const unverified = parseBuildSnapshot(raw);
+    expect(unverified.build.calculationInputs).toEqual({
+      accountBonuses: {
+        flatMainStat: '0',
+        collectionDemonDamagePercent: '0',
+        source: 'no verified character override',
+        verified: false
+      },
+      pet: {
+        mainStatPercent: '0',
+        additionalDamagePercent: '0',
+        demonDamagePercent: '0',
+        source: 'no verified character override',
+        verified: false
+      }
+    });
+    expect(calculateAttackPower(unverified).accountMainStatFlat).toBe('0');
+    expect(unverified.warnings).toEqual(expect.arrayContaining([
+      expect.objectContaining({ severity: 'incomplete', path: 'calculationInputs.accountBonuses' }),
+      expect.objectContaining({ severity: 'incomplete', path: 'calculationInputs.pet' })
+    ]));
+  });
+
+  test('records supported skill levels and warns when a verified coefficient level differs', () => {
+    // Break caught: level-14 motion coefficients are presented as verified for a differently levelled API skill.
+    const verified = parseBuildSnapshot(loadRawFixture());
+    expect(verified.build.combatSkills.levelsByName).toMatchObject({
+      '우레바람': 1,
+      '회오리 걸음': 14,
+      '몰아치기': 14,
+      '바람송곳': 14,
+      '칼바람': 14
+    });
+    expect(verified.warnings.some((item) => item.path.includes('.Level'))).toBe(false);
+
+    const raw = structuredClone(loadRawFixture()) as {
+      responses: { combatSkills: Array<{ Name: string; Level: number }> };
+    };
+    const wind = raw.responses.combatSkills.find((skill) => skill.Name === '바람송곳')!;
+    wind.Level = 13;
+    const mismatch = parseBuildSnapshot(raw);
+    const index = raw.responses.combatSkills.indexOf(wind);
+    expect(mismatch.warnings).toContainEqual(expect.objectContaining({
+      code: 'SKILL_LEVEL_COEFFICIENT_MISMATCH',
+      severity: 'incomplete',
+      path: `combatSkills[${index}].Level`
+    }));
+    expect(mismatch.warnings.some((item) => item.message.includes('공간 가르기'))).toBe(false);
+  });
+
   test('rejects present-but-null or wrong-shaped endpoint payloads and an empty character name', () => {
     // Break caught: object()/array() coercion silently turning malformed endpoint responses into zero stats.
     const malformed: Array<[string, unknown]> = [
@@ -185,7 +262,7 @@ describe('Weather Artist raw endpoint parser', () => {
     expect(build.equipment.items.find((item) => item.type === '완갑')?.values.baseAttackPowerFlat).toBe('2030');
     expect(build.equipment.items.some((item) => item.type === '팔찌')).toBe(true);
     expect(build.avatars.mainStatPercent).toBe('0.08');
-    expect(build.pet).toMatchObject({ mainStatPercent: '0.01', additionalDamagePercent: '0.01' });
+    expect(build.calculationInputs.pet).toMatchObject({ mainStatPercent: '0.01', additionalDamagePercent: '0.01' });
     expect(build.engravings.stoneLevelTotal).toBe(5);
     expect(build.engravings.stoneBaseAttackPercent).toBe('0.015');
     expect(build.engravings.effects['아드레날린']).toMatchObject({
@@ -205,6 +282,39 @@ describe('Weather Artist raw endpoint parser', () => {
       expect.objectContaining({ effectType: 'damage', value: '0.4' }),
       expect.objectContaining({ effectType: 'cooldownReduction', value: '0.22' })
     ]);
+  });
+
+  test('warns when a regular gem contains an unclassified skill-damage sentence', () => {
+    // Break caught: an unfamiliar regular-gem damage wording silently disappears while the gem remains active.
+    const raw = structuredClone(loadRawFixture()) as {
+      responses: { gems: { Gems: Array<Record<string, unknown>> } };
+    };
+    const tooltip = '[바람송곳] 피해량이 77.0%만큼 변한다';
+    raw.responses.gems.Gems[0]!.Tooltip = tooltip;
+
+    expect(parseBuildSnapshot(raw).warnings).toContainEqual(expect.objectContaining({
+      code: 'UNPARSED_DAMAGE_TOOLTIP',
+      severity: 'incomplete',
+      path: 'gems.Gems[0].Tooltip',
+      rawValue: tooltip
+    }));
+  });
+
+  test('warns when an Ark Passive effect has an unclassified damage value', () => {
+    // Break caught: an unknown active Ark Passive damage node is labelled ineligible instead of incomplete.
+    const raw = structuredClone(loadRawFixture()) as {
+      responses: { arkPassive: { Effects: Array<Record<string, unknown>> } };
+    };
+    const tooltip = '적에게 주는 피해량이 7.0%만큼 변한다';
+    raw.responses.arkPassive.Effects.push({ Name: '미분류 노드', Description: '진화 2티어 미분류 노드 Lv.1', ToolTip: tooltip });
+    const index = raw.responses.arkPassive.Effects.length - 1;
+
+    expect(parseBuildSnapshot(raw).warnings).toContainEqual(expect.objectContaining({
+      code: 'UNPARSED_DAMAGE_TOOLTIP',
+      severity: 'incomplete',
+      path: `arkPassive.Effects[${index}].ToolTip`,
+      rawValue: tooltip
+    }));
   });
 
   test('uses ArkGrid Effects aggregate values instead of adding the same active-gem effects twice', () => {
@@ -341,6 +451,29 @@ describe('Weather Artist raw endpoint parser', () => {
     });
   });
 
+  test('warns with the raw selected-tripod tooltip when a damage clause is not classified', () => {
+    // Break caught: a selected extra-hit tripod becomes a silent zero when its sentence is outside known multiplier patterns.
+    const raw = structuredClone(loadRawFixture()) as {
+      responses: { combatSkills: Array<{ Tripods: Array<Record<string, unknown>> }> };
+    };
+    const skillIndex = 0;
+    const tripodIndex = raw.responses.combatSkills[skillIndex]!.Tripods.length;
+    const tooltip = '적에게 총 피해량의 77.0%에 해당하는 폭풍 피해를 준다';
+    raw.responses.combatSkills[skillIndex]!.Tripods.push({
+      Name: '미분류 폭풍',
+      Tier: 3,
+      IsSelected: true,
+      Tooltip: tooltip
+    });
+
+    expect(parseBuildSnapshot(raw).warnings).toContainEqual(expect.objectContaining({
+      code: 'UNPARSED_DAMAGE_TOOLTIP',
+      severity: 'incomplete',
+      path: `combatSkills[${skillIndex}].Tripods[${tripodIndex}].Tooltip`,
+      rawValue: tooltip
+    }));
+  });
+
   test('returns a path-bearing incomplete warning for an active damage tooltip it cannot classify', () => {
     // Break caught: silently treating an unknown damage tooltip as a zero-valued effect.
     const raw = structuredClone(loadRawFixture()) as {
@@ -369,7 +502,6 @@ describe('Weather Artist raw endpoint parser', () => {
       { code: 'ARK_PASSIVE_EFFECT_FALLBACK', path: 'arkPassive.Effects[2]' },
       { code: 'KARMA_EVOLUTION_FALLBACK', path: 'arkPassive.Points[0]' },
       { code: 'UNPARSED_DAMAGE_TOOLTIP', path: 'arkGrid.Slots[4].Tooltip.options[0]' },
-      { code: 'FIXED_EXPEDITION_STAT_MISMATCH', path: 'profiles.ExpeditionLevel' },
       { code: 'CALCULATED_ATTACK_POWER_OVERRIDE', path: 'profiles.Stats[공격력]' }
     ]);
     expect(parsed.build.provenance).toContainEqual(expect.objectContaining({

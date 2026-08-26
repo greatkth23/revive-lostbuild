@@ -1,5 +1,6 @@
 import type {
   BuildSnapshot,
+  CalculationCheckpointsContract,
   DirectionTag,
   HitDamageResult,
   NormalizedBuild,
@@ -29,22 +30,8 @@ export interface EmbeddedTripodEffect {
   applicationMode: 'EMBEDDED_MOTION_HIT';
 }
 
-export interface CalculationCheckpoints {
-  calculatedAttackPower: string;
-  motionCoefficients: string[];
-  regularGemDamagePercent: string;
-  regularGemCooldownReductionPercent: string;
-  appliedSkillDamageEffects: string[];
-  tripodDamageMultiplier: string;
-  embeddedTripodEffects: EmbeddedTripodEffect[];
-  appliedArkGridFactors: ArkGridFactor[];
-  repeatedUmbrellaPointMultiplier: string;
-  commonDamageMultiplier: string;
-}
-
-export interface DetailedSkillDamageResult extends SkillDamageResult {
-  checkpoints: CalculationCheckpoints;
-}
+export type CalculationCheckpoints = CalculationCheckpointsContract;
+export type DetailedSkillDamageResult = SkillDamageResult;
 
 const SKILL_NAME_TO_ID: Record<string, string> = Object.fromEntries(
   weatherArtistCatalog.skills.map((skill) => [skill.displayName, skill.id])
@@ -54,7 +41,6 @@ const FIXED = {
   defenseConstant: new Decimal('6500'),
   enemyDefense: new Decimal('5850'),
   enemyDamageTakenMultiplier: new Decimal('0.76'),
-  collectionDemonDamagePercent: new Decimal('0.065'),
   baseCriticalDamage: new Decimal('2'),
   combatBlessingAttackSpeedPercent: new Decimal('0.09'),
   combatBlessingMoveSpeedPercent: new Decimal('0.09'),
@@ -221,6 +207,17 @@ export function calculateSkillDamage(
   const sonic = sonicBreakthrough(build);
   if (!sonic.isZero()) evolutionParts.push(sonic);
   const evolutionDamage = sum(evolutionParts);
+  const appliedArkPassiveEffects: CalculationCheckpoints['arkPassive']['appliedEffects'] = [
+    ...Object.entries(build.arkPassive.evolutionDamageByName)
+      .filter(([name, value]) => name !== '음속 돌파' && !dec(value).isZero())
+      .map(([name, value]) => ({ name, category: 'evolutionDamage', value })),
+    ...(!dec(build.arkPassive.karmaEvolutionDamage).isZero()
+      ? [{ name: '진화 카르마', category: 'evolutionDamage', value: build.arkPassive.karmaEvolutionDamage }]
+      : []),
+    ...(!sonic.isZero()
+      ? [{ name: '음속 돌파', category: 'evolutionDamage', value: decimalString(sonic) }]
+      : [])
+  ];
 
   const generalEngravingParts: Decimal[] = [];
   for (const engravingName of SUPPORTED_GENERAL_DAMAGE_ENGRAVINGS) {
@@ -233,6 +230,10 @@ export function calculateSkillDamage(
 
   const appliedSkillDamageEffects = Object.entries(build.arkPassive.skillDamageByName)
     .filter(([name, value]) => !dec(value).isZero() && skillDamageScope(name, skill));
+  appliedArkPassiveEffects.push(...appliedSkillDamageEffects.map(([name, value]) => ({ name, category: 'skillDamage', value })));
+  appliedArkPassiveEffects.push(...Object.entries(build.arkPassive.additionalDamageByName)
+    .filter(([, value]) => !dec(value).isZero())
+    .map(([name, value]) => ({ name, category: 'additionalDamage', value })));
   const appliedCoreFactors = build.arkGrid.coreDamageFactors.filter((factor) => arkGridFactorScope(factor, skill));
   const subtitleCoreFactors = appliedCoreFactors.filter((factor) => ['generalDamagePercent', 'bossDamagePercent', 'skillDamagePercent'].includes(factor.category));
   const gem = regularGemEffect(build, skill.displayName);
@@ -256,7 +257,7 @@ export function calculateSkillDamage(
   const subtitlePercentages: Decimal[] = [
     ...generalEngravingParts,
     evolutionDamage,
-    dec(build.pet.demonDamagePercent).plus(FIXED.collectionDemonDamagePercent),
+    dec(build.calculationInputs.pet.demonDamagePercent).plus(build.calculationInputs.accountBonuses.collectionDemonDamagePercent),
     build.cards.damagePercent,
     raidCaptain,
     ...appliedSkillDamageEffects.map(([, value]) => dec(value)),
@@ -276,7 +277,7 @@ export function calculateSkillDamage(
     .plus(build.equipment.necklaceAdditionalDamage)
     .plus(build.equipment.otherAdditionalDamage)
     .plus(sum(Object.values(build.arkPassive.additionalDamageByName)))
-    .plus(build.pet.additionalDamagePercent)
+    .plus(build.calculationInputs.pet.additionalDamagePercent)
     .plus(build.arkGrid.additionalDamagePercent);
   const defenseRetentionMultiplier = product(appliedCoreFactors
     .filter((factor) => factor.category === 'enemyDefenseReductionPercent')
@@ -290,6 +291,18 @@ export function calculateSkillDamage(
     .times(defenseMultiplier);
 
   const adrenalineCrit = dec(build.engravings.effects['아드레날린']?.criticalRate ?? 0);
+  const arkPassiveCriticalRateEntries = Object.entries(build.arkPassive.criticalRateByName)
+    .filter(([, value]) => !dec(value).isZero());
+  appliedArkPassiveEffects.push(...arkPassiveCriticalRateEntries.map(([name, value]) => ({ name, category: 'criticalRate', value })));
+  const criticalRateComponents: CalculationCheckpoints['criticalRate']['components'] = [
+    { label: '치명 스탯', value: build.profile.criticalRateFromStat },
+    { label: '장비 치명타 적중률', value: build.equipment.criticalRate },
+    { label: '아드레날린', value: decimalString(adrenalineCrit) },
+    ...arkPassiveCriticalRateEntries.map(([name, value]) => ({ label: `아크패시브 ${name}`, value })),
+    { label: '급소 노출', value: build.combatSkills.hasExposedWeakness ? '0.1' : '0' },
+    { label: '아크그리드 치명타 적중률', value: build.arkGrid.criticalRate },
+    { label: direction.label, value: direction.criticalRate }
+  ];
   const criticalRate = Decimal.min(1, Decimal.max(0,
     dec(build.profile.criticalRateFromStat)
       .plus(build.equipment.criticalRate)
@@ -299,6 +312,16 @@ export function calculateSkillDamage(
       .plus(build.arkGrid.criticalRate)
       .plus(direction.criticalRate)
   ));
+  const arkPassiveCriticalDamageEntries = Object.entries(build.arkPassive.criticalDamageByName)
+    .filter(([, value]) => !dec(value).isZero());
+  appliedArkPassiveEffects.push(...arkPassiveCriticalDamageEntries.map(([name, value]) => ({ name, category: 'criticalDamage', value })));
+  const criticalDamageAdditiveComponents: CalculationCheckpoints['criticalMultiplier']['additiveComponents'] = [
+    { label: '기본 치명타 피해', value: decimalString(FIXED.baseCriticalDamage) },
+    { label: '장비 치명타 피해', value: build.equipment.criticalDamage },
+    ...arkPassiveCriticalDamageEntries.map(([name, value]) => ({ label: `아크패시브 ${name}`, value })),
+    { label: '아크그리드 치명타 피해', value: build.arkGrid.criticalDamage },
+    { label: '트라이포드 치명타 피해', value: decimalString(tripodCriticalDamage) }
+  ];
   const criticalDamageMultiplier = FIXED.baseCriticalDamage
     .plus(build.equipment.criticalDamage)
     .plus(sum(Object.values(build.arkPassive.criticalDamageByName)))
@@ -312,6 +335,16 @@ export function calculateSkillDamage(
     .times(dec(1).plus(build.equipment.braceletCriticalHitDamage))
     .times(coreCriticalMultiplier);
   const fullCriticalMultiplier = criticalDamageMultiplier.times(criticalHitDamageMultiplier);
+  const arkPassiveCriticalHitEntries = Object.entries(build.arkPassive.criticalHitDamageByName)
+    .filter(([, value]) => !dec(value).isZero());
+  appliedArkPassiveEffects.push(...arkPassiveCriticalHitEntries.map(([name, value]) => ({ name, category: 'criticalHitDamage', value })));
+  const criticalDamageMultiplicativeComponents: CalculationCheckpoints['criticalMultiplier']['multiplicativeComponents'] = [
+    ...arkPassiveCriticalHitEntries.map(([name, value]) => ({ label: `아크패시브 ${name}`, value: decimalString(dec(1).plus(value)) })),
+    { label: '팔찌 입는 치명타 피해', value: decimalString(dec(1).plus(build.equipment.braceletCriticalHitDamage)) },
+    ...appliedCoreFactors
+      .filter((factor) => factor.category === 'criticalHitDamagePercent')
+      .map((factor) => ({ label: factor.coreName, value: decimalString(dec(1).plus(factor.value)) }))
+  ];
 
   const internalHits = skill.hits.map((hit, index) => {
     const coefficient = motionCoefficients[index]!;
@@ -341,16 +374,26 @@ export function calculateSkillDamage(
       ...snapshot.warnings.map((item) => `${item.path}: ${item.message}`)
     ],
     checkpoints: {
-      calculatedAttackPower: attackPower.final,
+      attackPower,
       motionCoefficients: motionCoefficients.map(decimalString),
-      regularGemDamagePercent: decimalString(gem.damage),
-      regularGemCooldownReductionPercent: decimalString(gem.cooldown),
-      appliedSkillDamageEffects: appliedSkillDamageEffects.map(([name]) => name),
+      criticalRate: { components: criticalRateComponents, result: decimalString(criticalRate) },
+      criticalMultiplier: {
+        additiveComponents: criticalDamageAdditiveComponents,
+        additiveResult: decimalString(criticalDamageMultiplier),
+        multiplicativeComponents: criticalDamageMultiplicativeComponents,
+        result: decimalString(fullCriticalMultiplier)
+      },
+      selectedTripods,
+      regularGem: { damagePercent: decimalString(gem.damage), cooldownReductionPercent: decimalString(gem.cooldown) },
+      directional: direction,
+      arkPassive: { appliedEffects: appliedArkPassiveEffects },
+      arkGrid: {
+        appliedFactors: appliedCoreFactors,
+        repeatedPointMultiplier: decimalString(product(repeatedUmbrellaFactors.map((factor) => dec(1).plus(factor.value)))),
+        commonDamageMultiplier: decimalString(commonDamageMultiplier)
+      },
       tripodDamageMultiplier: decimalString(tripodDamageMultiplier),
-      embeddedTripodEffects,
-      appliedArkGridFactors: appliedCoreFactors,
-      repeatedUmbrellaPointMultiplier: decimalString(product(repeatedUmbrellaFactors.map((factor) => dec(1).plus(factor.value)))),
-      commonDamageMultiplier: decimalString(commonDamageMultiplier)
+      embeddedTripodEffects
     }
   };
   return result;

@@ -287,6 +287,14 @@ function validateSupportedSnapshot(snapshot: BuildSnapshot): void {
   }
 }
 
+function isCurrentSnapshot(snapshot: BuildSnapshot): boolean {
+  return snapshot.schemaVersion === '1'
+    && snapshot.calculatorVersion === calculatorVersion
+    && snapshot.parserVersion === PARSER_VERSION
+    && snapshot.catalogVersion === WEATHER_ARTIST_CATALOG_VERSION
+    && buildSnapshotSchema.safeParse(snapshot).success;
+}
+
 async function loadFresh(
   name: { display: string; key: string },
   dependencies: FreshLoadDependencies
@@ -332,7 +340,7 @@ function createLoader(dependencies: WorkerDependencies) {
       const cachedId = await dependencies.storage.getCharacterSnapshotId(name.key);
       if (cachedId) {
         const cached = await dependencies.storage.getSnapshot(cachedId);
-        if (cached && cached.expiresAt > now) {
+        if (cached && cached.expiresAt > now && isCurrentSnapshot(cached.snapshot)) {
           return { snapshot: cached.snapshot, baseline: calculateAllSkillDamage(cached.snapshot), cacheHit: true };
         }
       }
@@ -640,7 +648,7 @@ export class UpstreamBudget extends DurableObject<Env> {
       if (!forceRefresh) {
         const cachedId = await storage.getCharacterSnapshotId(name.key);
         const cached = cachedId ? await storage.getSnapshot(cachedId) : null;
-        if (cached && cached.expiresAt > Date.now()) {
+        if (cached && cached.expiresAt > Date.now() && isCurrentSnapshot(cached.snapshot)) {
           return Response.json({ snapshot: cached.snapshot, baseline: calculateAllSkillDamage(cached.snapshot), cacheHit: true });
         }
       }

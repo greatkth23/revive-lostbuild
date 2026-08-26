@@ -4,7 +4,7 @@ import { describe, expect, test } from 'vitest';
 const fixturePath = new URL('../../../scripts/fixtures/weather-artist-e2e.json', import.meta.url);
 const fixture = JSON.parse(readFileSync(fixturePath, 'utf8')) as {
   catalog: { skills: Array<{ id: string }> };
-  load: { snapshot: { snapshotId: string }; baseline: DamageResult[] };
+  load: { snapshot: { snapshotId: string; calculatedAttackPower: string }; baseline: DamageResult[] };
   simulation: { snapshotId: string; baseline: DamageResult[]; candidate: DamageResult[] };
 };
 type DamageResult = {
@@ -12,6 +12,7 @@ type DamageResult = {
   criticalDamage: string;
   expectedDamage: string;
   hits: Array<{ nonCriticalDamage: string; criticalDamage: string; expectedDamage: string }>;
+  checkpoints: { attackPower: { usedForDamage: string }; criticalRate: { components: unknown[] }; arkGrid: { appliedFactors: unknown[] } };
 };
 
 describe('browser release fixture', () => {
@@ -39,6 +40,9 @@ describe('browser release fixture', () => {
         && result.hits.every((hit) => hit.nonCriticalDamage === expected
           && hit.criticalDamage === expected
           && hit.expectedDamage === expected))).toBe(true);
+      expect(results.every((result) => result.checkpoints.attackPower.usedForDamage === fixture.load.snapshot.calculatedAttackPower
+        && result.checkpoints.criticalRate.components.length > 0
+        && result.checkpoints.arkGrid.appliedFactors.length > 0)).toBe(true);
     }
   });
 });

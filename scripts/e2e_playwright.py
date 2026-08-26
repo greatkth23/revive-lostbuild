@@ -145,7 +145,7 @@ with sync_playwright() as playwright:
                 ]
                 page.get_by_role('tab', name='스킬 피해 결과').click()
                 page.get_by_text(candidate_text, exact=True).first.wait_for()
-                page.get_by_text('기대 피해 차이 -200,000,000.00', exact=True).first.wait_for()
+                page.get_by_text('기대 피해 차이 -200,000,000.00 (-20.00%)', exact=True).first.wait_for()
 
                 page.get_by_role('tab', name='세팅 조정').click()
                 simulation_before = len(simulations)
@@ -155,7 +155,7 @@ with sync_playwright() as playwright:
                 assert page.get_by_role('checkbox', name='보석 사용').is_checked()
                 page.get_by_role('tab', name='스킬 피해 결과').click()
                 page.get_by_text(baseline_text, exact=True).first.wait_for()
-                page.get_by_text('기대 피해 차이 +0.00', exact=True).first.wait_for()
+                page.get_by_text('기대 피해 차이 +0.00 (+0.00%)', exact=True).first.wait_for()
 
                 page.get_by_role('tab', name='세팅 조정').click()
                 simulation_before = len(simulations)
@@ -170,7 +170,7 @@ with sync_playwright() as playwright:
                     assert page.get_by_role('checkbox', name=f"{section['label']} 사용").is_checked()
                 page.get_by_role('tab', name='스킬 피해 결과').click()
                 page.get_by_text(baseline_text, exact=True).first.wait_for()
-                page.get_by_text('기대 피해 차이 +0.00', exact=True).first.wait_for()
+                page.get_by_text('기대 피해 차이 +0.00 (+0.00%)', exact=True).first.wait_for()
 
                 page.get_by_role('tab', name='세팅 조정').click()
                 simulation_before = len(simulations)
@@ -207,8 +207,18 @@ with sync_playwright() as playwright:
                 page.get_by_role('button', name='우레바람 상세').click()
                 detail = page.get_by_role('region', name='우레바람 상세 결과')
                 detail.wait_for()
-                detail.get_by_role('table').get_by_text(baseline_text, exact=True).wait_for()
-                detail.get_by_role('table').get_by_text(candidate_text, exact=True).wait_for()
+                detail.get_by_role('table').get_by_text(baseline_text, exact=True).first.wait_for()
+                detail.get_by_role('table').get_by_text(candidate_text, exact=True).first.wait_for()
+                for heading in [
+                    '계산 공격력 과정', '치명타율 계산', '치명타 피해 배율 계산',
+                    '적용 트라이포드', '일반 보석', '방향성', '아크패시브', '아크그리드',
+                ]:
+                    detail.get_by_text(heading, exact=True).wait_for()
+                for column in [
+                    '기준 비치명', '변경 비치명', '기준 치명', '변경 치명',
+                    '기준 기대', '변경 기대',
+                ]:
+                    detail.get_by_role('columnheader', name=column).wait_for()
                 assert page.evaluate('document.documentElement.scrollWidth <= innerWidth + 1')
                 assert not errors, errors
                 print(f'{name}: mocked full flow passed')

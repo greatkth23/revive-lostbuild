@@ -1,10 +1,50 @@
 import type {
   EditableSectionDescriptor,
   EquipmentGrowthMetadata,
+  NormalizedBuild,
   SkillCatalogEntry
 } from '@weather-artist/contracts';
 
 export const WEATHER_ARTIST_CATALOG_VERSION = 'weather-artist-v0.5';
+export const VERIFIED_CHARACTER_INPUTS_VERSION = 'current-v2.7.2-character-inputs-v1';
+
+export function normalizeCharacterName(value: string): string {
+  return value.normalize('NFKC').trim().replace(/\s+/g, ' ').toLocaleLowerCase('ko-KR');
+}
+
+export const verifiedCharacterCalculationInputs: Readonly<Record<string, NormalizedBuild['calculationInputs']>> = {
+  [normalizeCharacterName('봄날꽃씨')]: {
+    accountBonuses: {
+      flatMainStat: '2133',
+      collectionDemonDamagePercent: '0.065',
+      source: `${VERIFIED_CHARACTER_INPUTS_VERSION}:봄날꽃씨`,
+      verified: true
+    },
+    pet: {
+      mainStatPercent: '0.01',
+      additionalDamagePercent: '0.01',
+      demonDamagePercent: '0.005',
+      source: `${VERIFIED_CHARACTER_INPUTS_VERSION}:봄날꽃씨`,
+      verified: true
+    }
+  }
+};
+
+export const neutralCalculationInputs: NormalizedBuild['calculationInputs'] = {
+  accountBonuses: {
+    flatMainStat: '0',
+    collectionDemonDamagePercent: '0',
+    source: 'no verified character override',
+    verified: false
+  },
+  pet: {
+    mainStatPercent: '0',
+    additionalDamagePercent: '0',
+    demonDamagePercent: '0',
+    source: 'no verified character override',
+    verified: false
+  }
+};
 
 const nonDirectional = 'NON_DIRECTIONAL' as const;
 

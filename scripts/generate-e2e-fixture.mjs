@@ -1,6 +1,6 @@
 import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
-import { parseBuildSnapshot } from '../packages/calculator/dist/index.js';
+import { calculateAllSkillDamage, parseBuildSnapshot } from '../packages/calculator/dist/index.js';
 import { weatherArtistCatalog } from '../packages/catalog/dist/index.js';
 import { characterLoadDataSchema, simulationDataSchema, weatherArtistCatalogSchema } from '../packages/contracts/dist/index.js';
 
@@ -10,9 +10,18 @@ const snapshotId = '00000000-0000-4000-8000-000000000001';
 const workerSnapshotId = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 if (!workerSnapshotId.test(snapshotId)) throw new Error('E2E snapshot ID must be a Worker-compatible UUID');
 snapshot.snapshotId = snapshotId;
-const result = (skillId, value) => ({ schemaVersion: '1', skillId, nonCriticalDamage: value, criticalDamage: value, expectedDamage: value, criticalRate: '0.5', criticalMultiplier: '2', hits: [{ schemaVersion: '1', hitName: '1타', nonCriticalDamage: value, criticalDamage: value, expectedDamage: value }], rationale: ['E2E mocked calculation'] });
-const baseline = weatherArtistCatalog.skills.map((skill) => result(skill.id, '1000000000.125'));
-const candidate = weatherArtistCatalog.skills.map((skill) => result(skill.id, '800000000.125'));
+const withDisplayDamage = (result, value) => ({
+  ...result,
+  nonCriticalDamage: value,
+  criticalDamage: value,
+  expectedDamage: value,
+  hits: result.hits.map((hit) => ({ ...hit, nonCriticalDamage: value, criticalDamage: value, expectedDamage: value }))
+});
+const calculated = calculateAllSkillDamage(snapshot, {
+  directionalSuccessBySkill: Object.fromEntries(weatherArtistCatalog.skills.map((skill) => [skill.id, false]))
+});
+const baseline = calculated.map((result) => withDisplayDamage(result, '1000000000.125'));
+const candidate = calculated.map((result) => withDisplayDamage(result, '800000000.125'));
 const load = { snapshot, baseline, cacheHit: false };
 const simulation = { schemaVersion: '1', snapshotId, patches: [], baseline, candidate };
 weatherArtistCatalogSchema.parse(weatherArtistCatalog);

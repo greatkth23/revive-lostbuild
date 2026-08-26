@@ -29,7 +29,7 @@ function restoreSection(candidate: NormalizedBuild, baseline: NormalizedBuild, s
     case 'cards-avatar-pet':
       candidate.cards = structuredClone(baseline.cards);
       candidate.avatars = structuredClone(baseline.avatars);
-      candidate.pet = structuredClone(baseline.pet);
+      candidate.calculationInputs.pet = structuredClone(baseline.calculationInputs.pet);
       return;
     case 'skills-tripods':
       candidate.combatSkills = structuredClone(baseline.combatSkills);
@@ -91,16 +91,18 @@ function disableSection(build: NormalizedBuild, sectionId: string): void {
     case 'cards-avatar-pet':
       build.cards = { damagePercent: ZERO };
       build.avatars = { mainStatPercent: ZERO, items: [] };
-      build.pet = {
+      build.calculationInputs.pet = {
         mainStatPercent: ZERO,
         additionalDamagePercent: ZERO,
         demonDamagePercent: ZERO,
-        source: 'disabled by validated section patch'
+        source: 'disabled by validated section patch',
+        verified: build.calculationInputs.pet.verified
       };
       return;
     case 'skills-tripods':
       build.combatSkills = {
         skillNames: [...build.combatSkills.skillNames],
+        levelsByName: { ...build.combatSkills.levelsByName },
         hasExposedWeakness: false,
         selectedTripods: []
       };

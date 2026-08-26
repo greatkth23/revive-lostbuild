@@ -9,7 +9,8 @@ export const warningSchema = z.object({
   code: z.string().min(1),
   severity: z.enum(['info', 'warning', 'incomplete']),
   path: z.string().min(1),
-  message: z.string().min(1)
+  message: z.string().min(1),
+  rawValue: z.string().optional()
 });
 export type Warning = z.infer<typeof warningSchema>;
 
@@ -82,7 +83,7 @@ const skillGemEffectSchema = z.object({
   sourceGemIndex: z.number().int().nonnegative()
 });
 
-const tripodDamageEffectSchema = z.object({
+export const tripodDamageEffectSchema = z.object({
   type: z.enum(['DAMAGE_INCREASE', 'ADDITIONAL_ATTACK', 'INCREASED_TOTAL_DAMAGE']),
   label: z.string(),
   percent: decimalStringSchema,
@@ -90,7 +91,7 @@ const tripodDamageEffectSchema = z.object({
   applicationMode: z.enum(['MULTIPLIER', 'EMBEDDED_MOTION_HIT'])
 });
 
-const arkGridFactorSchema = z.object({
+export const arkGridFactorSchema = z.object({
   factorId: z.string(),
   corePath: z.string(),
   coreName: z.string(),
@@ -141,11 +142,20 @@ export const normalizedBuildSchema = z.object({
       mainStatPercent: decimalStringSchema
     }))
   }),
-  pet: z.object({
-    mainStatPercent: decimalStringSchema,
-    additionalDamagePercent: decimalStringSchema,
-    demonDamagePercent: decimalStringSchema,
-    source: z.string()
+  calculationInputs: z.object({
+    accountBonuses: z.object({
+      flatMainStat: decimalStringSchema,
+      collectionDemonDamagePercent: decimalStringSchema,
+      source: z.string().min(1),
+      verified: z.boolean()
+    }),
+    pet: z.object({
+      mainStatPercent: decimalStringSchema,
+      additionalDamagePercent: decimalStringSchema,
+      demonDamagePercent: decimalStringSchema,
+      source: z.string().min(1),
+      verified: z.boolean()
+    })
   }),
   engravings: z.object({
     names: z.array(z.string()),
@@ -197,6 +207,7 @@ export const normalizedBuildSchema = z.object({
   }),
   combatSkills: z.object({
     skillNames: z.array(z.string()),
+    levelsByName: z.record(z.string(), z.number().int().nonnegative()),
     hasExposedWeakness: z.boolean(),
     selectedTripods: z.array(z.object({
       skillName: z.string(),
@@ -309,26 +320,6 @@ export interface Scenario {
   directionalSuccessBySkill: Record<string, boolean>;
 }
 
-export interface HitDamageResult {
-  schemaVersion: '1';
-  hitName: string;
-  nonCriticalDamage: DecimalString;
-  criticalDamage: DecimalString;
-  expectedDamage: DecimalString;
-}
-
-export interface SkillDamageResult {
-  schemaVersion: '1';
-  skillId: string;
-  nonCriticalDamage: DecimalString;
-  criticalDamage: DecimalString;
-  expectedDamage: DecimalString;
-  criticalRate: DecimalString;
-  criticalMultiplier: DecimalString;
-  hits: HitDamageResult[];
-  rationale: string[];
-}
-
 export interface ApiSuccess<T> {
   schemaVersion: '1';
   ok: true;
@@ -355,7 +346,92 @@ export const hitDamageResultSchema = z.object({
   criticalDamage: decimalStringSchema,
   expectedDamage: decimalStringSchema
 });
-export type HitDamageResultContract = z.infer<typeof hitDamageResultSchema>;
+export type HitDamageResult = z.infer<typeof hitDamageResultSchema>;
+
+export const directionTagSchema = z.enum(['NON_DIRECTIONAL', 'FRONTAL_ATTACK', 'BACK_ATTACK']);
+const namedDecimalComponentSchema = z.object({ label: z.string().min(1), value: decimalStringSchema });
+export const attackPowerCheckpointsSchema = z.object({
+  equipmentMainStat: decimalStringSchema,
+  accountMainStatFlat: decimalStringSchema,
+  baseMainStat: decimalStringSchema,
+  avatarMainStatPercent: decimalStringSchema,
+  petMainStatPercent: decimalStringSchema,
+  finalMainStat: decimalStringSchema,
+  baseWeaponAttack: decimalStringSchema,
+  equipmentWeaponAttackFlat: decimalStringSchema,
+  arkGridWeaponAttackFlat: decimalStringSchema,
+  weaponAttackSubtotal: decimalStringSchema,
+  equipmentWeaponAttackPercent: decimalStringSchema,
+  karmaWeaponAttackPercent: decimalStringSchema,
+  arkGridWeaponAttackPercent: decimalStringSchema,
+  weaponAttackPercent: decimalStringSchema,
+  finalWeaponAttack: decimalStringSchema,
+  rootAttackPower: decimalStringSchema,
+  armletBaseAttackFlat: decimalStringSchema,
+  gemsBaseAttackPercent: decimalStringSchema,
+  stoneBaseAttackPercent: decimalStringSchema,
+  equipmentBaseAttackPercent: decimalStringSchema,
+  baseAttackPercent: decimalStringSchema,
+  afterBaseAttackPercent: decimalStringSchema,
+  equipmentAttackPowerFlat: decimalStringSchema,
+  arkGridAttackPowerFlat: decimalStringSchema,
+  attackPowerFlat: decimalStringSchema,
+  equipmentAttackPowerPercent: decimalStringSchema,
+  adrenalineAttackPowerPercent: decimalStringSchema,
+  arkGridAttackPowerPercent: decimalStringSchema,
+  attackPowerPercent: decimalStringSchema,
+  profileAttackPower: decimalStringSchema,
+  final: decimalStringSchema,
+  usedForDamage: decimalStringSchema,
+  usedForDamageSource: z.enum(['CALCULATED', 'CALCULATED_OFFICIAL'])
+});
+export type AttackPowerCheckpointsContract = z.infer<typeof attackPowerCheckpointsSchema>;
+
+export const calculationCheckpointsSchema = z.object({
+  attackPower: attackPowerCheckpointsSchema,
+  motionCoefficients: z.array(decimalStringSchema),
+  criticalRate: z.object({ components: z.array(namedDecimalComponentSchema), result: decimalStringSchema }),
+  criticalMultiplier: z.object({
+    additiveComponents: z.array(namedDecimalComponentSchema),
+    additiveResult: decimalStringSchema,
+    multiplicativeComponents: z.array(namedDecimalComponentSchema),
+    result: decimalStringSchema
+  }),
+  selectedTripods: z.array(z.object({
+    skillName: z.string(),
+    name: z.string(),
+    tooltipText: z.string(),
+    damagePercent: decimalStringSchema,
+    criticalDamagePercent: decimalStringSchema,
+    damageEffects: z.array(tripodDamageEffectSchema)
+  })),
+  regularGem: z.object({ damagePercent: decimalStringSchema, cooldownReductionPercent: decimalStringSchema }),
+  directional: z.object({
+    tag: directionTagSchema,
+    label: z.string().min(1),
+    success: z.boolean(),
+    applied: z.boolean(),
+    damagePercent: decimalStringSchema,
+    criticalRate: decimalStringSchema
+  }),
+  arkPassive: z.object({
+    appliedEffects: z.array(z.object({ name: z.string().min(1), category: z.string().min(1), value: decimalStringSchema }))
+  }),
+  arkGrid: z.object({
+    appliedFactors: z.array(arkGridFactorSchema),
+    repeatedPointMultiplier: decimalStringSchema,
+    commonDamageMultiplier: decimalStringSchema
+  }),
+  tripodDamageMultiplier: decimalStringSchema,
+  embeddedTripodEffects: z.array(z.object({
+    tripodName: z.string(),
+    type: z.string(),
+    label: z.string(),
+    percent: decimalStringSchema,
+    applicationMode: z.literal('EMBEDDED_MOTION_HIT')
+  }))
+});
+export type CalculationCheckpointsContract = z.infer<typeof calculationCheckpointsSchema>;
 
 export const skillDamageResultSchema = z.object({
   schemaVersion: contractSchemaVersion,
@@ -366,10 +442,11 @@ export const skillDamageResultSchema = z.object({
   criticalRate: decimalStringSchema,
   criticalMultiplier: decimalStringSchema,
   hits: z.array(hitDamageResultSchema),
-  rationale: z.array(z.string())
+  rationale: z.array(z.string()),
+  checkpoints: calculationCheckpointsSchema
 });
+export type SkillDamageResult = z.infer<typeof skillDamageResultSchema>;
 
-export const directionTagSchema = z.enum(['NON_DIRECTIONAL', 'FRONTAL_ATTACK', 'BACK_ATTACK']);
 export const skillCatalogEntrySchema = z.object({
   id: z.string().min(1),
   displayName: z.string().min(1),

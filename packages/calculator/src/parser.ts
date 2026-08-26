@@ -4,11 +4,16 @@ import type {
   Provenance,
   Warning
 } from '@weather-artist/contracts';
-import { WEATHER_ARTIST_CATALOG_VERSION } from '@weather-artist/catalog';
+import {
+  WEATHER_ARTIST_CATALOG_VERSION,
+  neutralCalculationInputs,
+  normalizeCharacterName,
+  verifiedCharacterCalculationInputs
+} from '@weather-artist/catalog';
 import { reconstructAttackPower } from './attack-power.js';
 import { Decimal, dec, decimalString, percent, sum } from './decimal.js';
 
-export const PARSER_VERSION = 'lostark-api-ts-v1';
+export const PARSER_VERSION = 'lostark-api-ts-v2';
 export const ENDPOINT_SOURCES = [
   'profiles',
   'equipment',
@@ -209,10 +214,11 @@ function warning(
   code: string,
   severity: Warning['severity'],
   path: string,
-  message: string
+  message: string,
+  rawValue?: string
 ): void {
   if (context.warnings.some((item) => item.code === code && item.path === path && item.message === message)) return;
-  context.warnings.push({ schemaVersion: '1', code, severity, path, message });
+  context.warnings.push({ schemaVersion: '1', code, severity, path, message, ...(rawValue === undefined ? {} : { rawValue }) });
 }
 
 function provenance(
@@ -564,6 +570,10 @@ function parseGems(bodyValue: unknown, context: ParseContext): NormalizedBuild['
       tooltipText,
       skillEffects: itemEffects
     });
+    const hasDamageBearingValue = /(?:피해량?|피해를|피해가)[^%\n]{0,50}?[0-9]+(?:\.[0-9]+)?\s*%|[0-9]+(?:\.[0-9]+)?\s*%[^\n]{0,50}?(?:피해량?|피해를|피해가)/.test(tooltipText);
+    if (hasDamageBearingValue && !itemEffects.some((effect) => effect.effectType === 'damage')) {
+      warning(context, 'UNPARSED_DAMAGE_TOOLTIP', 'incomplete', `gems.Gems[${index}].Tooltip`, '일반 보석의 스킬 피해 문구를 분류하지 못했습니다.', tooltipText);
+    }
     if (!baseValue.isZero()) provenance(context, `gems.Gems[${index}].Tooltip`, `${text(gem.Name)} 기본 공격력`, baseValue, { sourceType: 'OFFICIAL_TOOLTIP' });
   }
   return { baseAttackPercent: decimalString(baseAttackPercent), items, skillEffects };
@@ -639,6 +649,17 @@ function parseArkPassive(bodyValue: unknown, context: ParseContext): NormalizedB
       || !criticalHitDamage.isZero()
       || !combinedSpeed.isZero()
       || name === '음속 돌파';
+    const hasDamageBearingValue = /(?:주는\s*피해|피해량?|치명타\s*피해)[^%\n]{0,50}?[0-9]+(?:\.[0-9]+)?\s*%|[0-9]+(?:\.[0-9]+)?\s*%[^\n]{0,50}?(?:주는\s*피해|피해량?|치명타\s*피해)/.test(description);
+    if (hasDamageBearingValue && !hasCalculatorComponent) {
+      warning(
+        context,
+        'UNPARSED_DAMAGE_TOOLTIP',
+        'incomplete',
+        `arkPassive.Effects[${index}].${detail ? 'ToolTip' : 'Description'}`,
+        `'${name}' 아크패시브 효과의 피해 수치를 분류하지 못했습니다.`,
+        detail || description
+      );
+    }
     provenance(context, `arkPassive.Effects[${index}]`, name, level ?? 0, {
       sourceType: name === '음속 돌파' ? 'OFFICIAL_API+VERIFIED_RULE' : 'OFFICIAL_API',
       eligible: hasCalculatorComponent,
@@ -740,12 +761,33 @@ function parseTripodDamageEffects(tooltipText: string): Array<{
 
 function parseCombatSkills(bodyValue: unknown, context: ParseContext): NormalizedBuild['combatSkills'] {
   const skillNames: string[] = [];
+  const levelsByName: Record<string, number> = {};
   const selectedTripods: NormalizedBuild['combatSkills']['selectedTripods'] = [];
   let hasExposedWeakness = false;
+  const verifiedCoefficientLevels: Record<string, number> = {
+    '우레바람': 1,
+    '회오리 걸음': 14,
+    '몰아치기': 14,
+    '바람송곳': 14,
+    '칼바람': 14
+  };
   for (const [skillIndex, rawSkill] of array(bodyValue).entries()) {
     const skill = object(rawSkill);
     const skillName = canonicalSkill(text(skill.Name));
     skillNames.push(skillName);
+    const skillLevel = integer(skill.Level);
+    levelsByName[skillName] = skillLevel;
+    const verifiedLevel = verifiedCoefficientLevels[skillName];
+    if (verifiedLevel !== undefined && skillLevel !== verifiedLevel) {
+      warning(
+        context,
+        'SKILL_LEVEL_COEFFICIENT_MISMATCH',
+        'incomplete',
+        `combatSkills[${skillIndex}].Level`,
+        `'${skillName}' 계수는 스킬 레벨 ${verifiedLevel}에서 검증되었지만 API 레벨은 ${skillLevel}입니다.`,
+        String(skill.Level ?? '')
+      );
+    }
     for (const [tripodIndex, rawTripod] of array(skill.Tripods).entries()) {
       const tripod = object(rawTripod);
       if (tripod.IsSelected !== true) continue;
@@ -762,6 +804,18 @@ function parseCombatSkills(bodyValue: unknown, context: ParseContext): Normalize
         ? sum(damageEffects.filter((effect) => effect.type === 'DAMAGE_INCREASE').map((effect) => effect.percent))
         : ZERO;
       const criticalDamage = sumUnique(percentMatches(tooltipText, new RegExp(`치명타\\s*피해(?:가|량이)?\\s*\\+?${PERCENT_NUMBER}\\s*(?:증가|증가시킨다)`, 'g')));
+      const hasUnparsedDamageClause = /(?:총\s*)?피해량의\s*[0-9]+(?:\.[0-9]+)?\s*%\s*에\s*해당하는[^.\n]*피해/.test(tooltipText)
+        || /[0-9]+(?:\.[0-9]+)?\s*%[^.\n]{0,50}(?:추가\s*)?피해(?:를|가|량)/.test(tooltipText);
+      if (hasUnparsedDamageClause && damageEffects.length === 0 && criticalDamage.isZero()) {
+        warning(
+          context,
+          'UNPARSED_DAMAGE_TOOLTIP',
+          'incomplete',
+          `combatSkills[${skillIndex}].Tripods[${tripodIndex}].Tooltip`,
+          `'${name}' 선택 트라이포드의 피해 문구를 분류하지 못했습니다.`,
+          tooltipText
+        );
+      }
       selectedTripods.push({
         skillName,
         name,
@@ -777,7 +831,7 @@ function parseCombatSkills(bodyValue: unknown, context: ParseContext): Normalize
       }
     }
   }
-  return { skillNames, selectedTripods, hasExposedWeakness };
+  return { skillNames, levelsByName, selectedTripods, hasExposedWeakness };
 }
 
 export function resolveArkGridGradeValues(value: string, coreGrade: string): string {
@@ -1176,17 +1230,31 @@ export function parseBuildSnapshot(rawBundle: unknown): ParsedBuildSnapshot {
   if (!characterName.trim()) {
     throw new Error('Malformed Lost Ark endpoint payload: responses.profiles.CharacterName must be a non-empty string');
   }
+  const calculationInputs = structuredClone(
+    verifiedCharacterCalculationInputs[normalizeCharacterName(characterName)] ?? neutralCalculationInputs
+  );
+  if (!calculationInputs.accountBonuses.verified) {
+    warning(context, 'UNVERIFIED_ACCOUNT_BONUSES', 'incomplete', 'calculationInputs.accountBonuses', '이 캐릭터의 원정대·수집 계정 보너스 검증 자료가 없어 중립값 0을 사용했습니다.');
+  }
+  if (!calculationInputs.pet.verified) {
+    warning(context, 'UNVERIFIED_PET_INPUTS', 'incomplete', 'calculationInputs.pet', '이 캐릭터의 펫 효과 검증 자료가 없어 중립값 0을 사용했습니다.');
+  }
+  provenance(context, 'calculationInputs.accountBonuses', '계정 주스탯·악마 피해 보너스', `${calculationInputs.accountBonuses.flatMainStat}|${calculationInputs.accountBonuses.collectionDemonDamagePercent}`, {
+    sourceType: calculationInputs.accountBonuses.verified ? 'VERIFIED_CHARACTER_RULE' : 'NEUTRAL_UNVERIFIED_INPUT',
+    parsed: false,
+    note: calculationInputs.accountBonuses.source
+  });
+  provenance(context, 'calculationInputs.pet', '펫 효과', `${calculationInputs.pet.mainStatPercent}|${calculationInputs.pet.additionalDamagePercent}|${calculationInputs.pet.demonDamagePercent}`, {
+    sourceType: calculationInputs.pet.verified ? 'VERIFIED_CHARACTER_RULE' : 'NEUTRAL_UNVERIFIED_INPUT',
+    parsed: false,
+    note: calculationInputs.pet.source
+  });
   const build: NormalizedBuild = {
     endpointSources: [...ENDPOINT_SOURCES],
     profile: parseProfile(responses.profiles, context),
     equipment: parseEquipment(responses.equipment, context),
     avatars: parseAvatars(responses.avatars, context),
-    pet: {
-      mainStatPercent: '0.01',
-      additionalDamagePercent: '0.01',
-      demonDamagePercent: '0.005',
-      source: 'current-v2.7.2 verified fixed scenario'
-    },
+    calculationInputs,
     engravings: parseEngravings(responses.engravings, context),
     cards: parseCards(responses.cards, context),
     gems: parseGems(responses.gems, context),
@@ -1199,15 +1267,6 @@ export function parseBuildSnapshot(rawBundle: unknown): ParsedBuildSnapshot {
     warning(context, 'UNSUPPORTED_CLASS', 'incomplete', 'profiles.CharacterClassName', `지원 대상은 기상술사이며 현재 클래스는 '${build.profile.className}'입니다.`);
   }
   const calculatedAttackPower = reconstructAttackPower(build).final;
-  if (build.profile.expeditionLevel !== 272) {
-    warning(
-      context,
-      'FIXED_EXPEDITION_STAT_MISMATCH',
-      'warning',
-      'profiles.ExpeditionLevel',
-      `현재 원정대 레벨은 ${build.profile.expeditionLevel}이지만 current-v2.7.2 고정 주스탯 +680을 사용했습니다.`
-    );
-  }
   if (!dec(calculatedAttackPower).eq(build.profile.profileAttackPower)) {
     warning(
       context,
