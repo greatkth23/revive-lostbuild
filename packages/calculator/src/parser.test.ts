@@ -317,6 +317,22 @@ describe('Weather Artist raw endpoint parser', () => {
     }));
   });
 
+  test('warns when a recognized regular gem is followed by an unclassified named damage percentage', () => {
+    // Break caught: the residual scanner only recognizes generic 피해량 and misses "폭풍 피해가 77%".
+    const raw = structuredClone(loadRawFixture()) as {
+      responses: { gems: { Gems: Array<Record<string, unknown>> } };
+    };
+    const tooltip = '바람송곳 피해량이 40.0% 증가한다. 폭풍 피해가 77.0% 증가한다.';
+    raw.responses.gems.Gems[0]!.Tooltip = tooltip;
+
+    expect(parseBuildSnapshot(raw).warnings).toContainEqual(expect.objectContaining({
+      code: 'UNPARSED_DAMAGE_TOOLTIP',
+      severity: 'incomplete',
+      path: 'gems.Gems[0].Tooltip',
+      rawValue: tooltip
+    }));
+  });
+
   test('warns when an Ark Passive effect has an unclassified damage value', () => {
     // Break caught: an unknown active Ark Passive damage node is labelled ineligible instead of incomplete.
     const raw = structuredClone(loadRawFixture()) as {
@@ -351,6 +367,27 @@ describe('Weather Artist raw endpoint parser', () => {
       code: 'UNPARSED_DAMAGE_TOOLTIP',
       severity: 'incomplete',
       path: `arkPassive.Effects[${index}].Tooltip`,
+      rawValue: tooltip
+    }));
+  });
+
+  test('warns when a recognized Ark Passive effect is followed by an unclassified named damage percentage', () => {
+    // Break caught: a known 바람의 길 percentage suppresses an adjacent "폭풍 피해가 77%" clause.
+    const raw = structuredClone(loadRawFixture()) as {
+      responses: { arkPassive: { Effects: Array<Record<string, unknown>> } };
+    };
+    const tooltip = '피해량이 2.4% 증가한다. 폭풍 피해가 77.0% 증가한다.';
+    raw.responses.arkPassive.Effects.push({
+      Name: '바람의 길',
+      Description: '깨달음 3티어 바람의 길 Lv.2',
+      ToolTip: tooltip
+    });
+    const index = raw.responses.arkPassive.Effects.length - 1;
+
+    expect(parseBuildSnapshot(raw).warnings).toContainEqual(expect.objectContaining({
+      code: 'UNPARSED_DAMAGE_TOOLTIP',
+      severity: 'incomplete',
+      path: `arkPassive.Effects[${index}].ToolTip`,
       rawValue: tooltip
     }));
   });
@@ -528,6 +565,57 @@ describe('Weather Artist raw endpoint parser', () => {
     });
 
     expect(parseBuildSnapshot(raw).warnings).toContainEqual(expect.objectContaining({
+      code: 'UNPARSED_DAMAGE_TOOLTIP',
+      severity: 'incomplete',
+      path: `combatSkills[${skillIndex}].Tripods[${tripodIndex}].ToolTip`,
+      rawValue: tooltip
+    }));
+  });
+
+  test('warns when a recognized tripod multiplier is followed by an unclassified named damage percentage', () => {
+    // Break caught: the selected-tripod residual scanner misses "폭풍 피해가 77%" after a known multiplier.
+    const raw = structuredClone(loadRawFixture()) as {
+      responses: { combatSkills: Array<{ Tripods: Array<Record<string, unknown>> }> };
+    };
+    const skillIndex = 0;
+    const tripodIndex = raw.responses.combatSkills[skillIndex]!.Tripods.length;
+    const tooltip = '적에게 주는 피해가 60.0% 증가한다. 폭풍 피해가 77.0% 증가한다.';
+    raw.responses.combatSkills[skillIndex]!.Tripods.push({
+      Name: '명명된 부분 파싱 폭풍',
+      Tier: 3,
+      IsSelected: true,
+      Tooltip: tooltip
+    });
+
+    expect(parseBuildSnapshot(raw).warnings).toContainEqual(expect.objectContaining({
+      code: 'UNPARSED_DAMAGE_TOOLTIP',
+      severity: 'incomplete',
+      path: `combatSkills[${skillIndex}].Tripods[${tripodIndex}].Tooltip`,
+      rawValue: tooltip
+    }));
+  });
+
+  test('does not let a recognized tripod prefix consume an earlier unclassified damage percentage', () => {
+    // Break caught: the known multiplier prefix crosses 77%, masking the unknown leading clause in the same sentence.
+    const raw = structuredClone(loadRawFixture()) as {
+      responses: { combatSkills: Array<{ Tripods: Array<Record<string, unknown>> }> };
+    };
+    const skillIndex = 0;
+    const tripodIndex = raw.responses.combatSkills[skillIndex]!.Tripods.length;
+    const tooltip = '총 피해량의 77.0%에 해당하는 공격 후 적에게 주는 피해가 60.0% 증가한다.';
+    raw.responses.combatSkills[skillIndex]!.Tripods.push({
+      Name: '동일 문장 부분 파싱',
+      Tier: 3,
+      IsSelected: true,
+      ToolTip: tooltip
+    });
+
+    const parsed = parseBuildSnapshot(raw);
+    expect(parsed.build.combatSkills.selectedTripods).toContainEqual(expect.objectContaining({
+      name: '동일 문장 부분 파싱',
+      damageEffects: [expect.objectContaining({ percent: '0.6' })]
+    }));
+    expect(parsed.warnings).toContainEqual(expect.objectContaining({
       code: 'UNPARSED_DAMAGE_TOOLTIP',
       severity: 'incomplete',
       path: `combatSkills[${skillIndex}].Tripods[${tripodIndex}].ToolTip`,

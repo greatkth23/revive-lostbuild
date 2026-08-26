@@ -243,7 +243,7 @@ function hasUnconsumedDamageValue(textValue: string, consumedSpans: TextSpan[]):
     }
   }
   const remaining = residual.join('');
-  return new RegExp(`(?:주는\\s*피해|피해량|치명타\\s*피해|진화형\\s*피해)[^.!?\\n%]{0,80}${PERCENT_NUMBER}`, 'g').test(remaining)
+  return new RegExp(`(?:주는\\s*피해|피해량|치명타\\s*피해|진화형\\s*피해|(?<!받는\\s)(?<!입는\\s)피해(?:가|를|(?=\\s)))[^.!?\\n%]{0,80}${PERCENT_NUMBER}`, 'g').test(remaining)
     || new RegExp(`${PERCENT_NUMBER}[^.!?\\n%]{0,80}(?:추가\\s*)?피해(?:량|를|가)?`, 'g').test(remaining);
 }
 
@@ -565,7 +565,11 @@ function parseCards(bodyValue: unknown, context: ParseContext): NormalizedBuild[
   return { damagePercent: decimalString(total) };
 }
 
-function parseGems(bodyValue: unknown, context: ParseContext): NormalizedBuild['gems'] {
+function parseGems(
+  bodyValue: unknown,
+  knownCombatSkillNames: ReadonlySet<string>,
+  context: ParseContext
+): NormalizedBuild['gems'] {
   const body = object(bodyValue);
   const items: NormalizedBuild['gems']['items'] = [];
   const skillEffects: NormalizedBuild['gems']['skillEffects'] = [];
@@ -587,6 +591,7 @@ function parseGems(bodyValue: unknown, context: ParseContext): NormalizedBuild['
     for (const match of tooltipText.matchAll(damagePattern)) {
       const skillName = canonicalSkill(match[1] ?? '');
       if (['추가', '기본 공격력'].includes(skillName)) continue;
+      if (!knownCombatSkillNames.has(skillName)) continue;
       if (match.index !== undefined) consumedDamageSpans.push({ start: match.index, end: match.index + match[0].length });
       const effect = { skillName, effectType: 'damage' as const, value: decimalString(percent(match[2] ?? 0)), sourceGemIndex: index };
       itemEffects.push(effect);
@@ -809,7 +814,7 @@ function parseTripodDamageEffects(tooltipText: string): { effects: Array<{
   }> = [];
   const consumedSpans: TextSpan[] = [];
   const patterns: Array<[typeof output[number]['type'], string, RegExp]> = [
-    ['DAMAGE_INCREASE', '피해 증가', new RegExp(`(?:적에게\\s*)?(?:[^.!?\\n]{0,80}?\\s)?주는\\s*피해(?:가|를|량이)?\\s*\\+?${PERCENT_NUMBER}\\s*(?:증가|증가시킨다)`, 'g')],
+    ['DAMAGE_INCREASE', '피해 증가', new RegExp(`(?:적에게\\s*)?(?:[^.!?\\n%]{0,80}?\\s)?주는\\s*피해(?:가|를|량이)?\\s*\\+?${PERCENT_NUMBER}\\s*(?:증가|증가시킨다)`, 'g')],
     ['ADDITIONAL_ATTACK', '추가 공격 피해', new RegExp(`(?:적에게\\s*)?(?:총\\s*)?\\+?${PERCENT_NUMBER}\\s*추가\\s*피해`, 'g')],
     ['INCREASED_TOTAL_DAMAGE', '총 증가 피해', new RegExp(`총\\s*\\+?${PERCENT_NUMBER}\\s*(?:의\\s*)?증가된\\s*피해`, 'g')]
   ];
@@ -1319,6 +1324,9 @@ export function parseBuildSnapshot(rawBundle: unknown): ParsedBuildSnapshot {
     parsed: false,
     note: calculationInputs.pet.source
   });
+  const knownCombatSkillNames = new Set(
+    array(responses.combatSkills).map((rawSkill) => canonicalSkill(text(object(rawSkill).Name)))
+  );
   const build: NormalizedBuild = {
     endpointSources: [...ENDPOINT_SOURCES],
     profile: parseProfile(responses.profiles, context),
@@ -1327,7 +1335,7 @@ export function parseBuildSnapshot(rawBundle: unknown): ParsedBuildSnapshot {
     calculationInputs,
     engravings: parseEngravings(responses.engravings, context),
     cards: parseCards(responses.cards, context),
-    gems: parseGems(responses.gems, context),
+    gems: parseGems(responses.gems, knownCombatSkillNames, context),
     arkPassive: parseArkPassive(responses.arkPassive, context),
     combatSkills: parseCombatSkills(responses.combatSkills, context),
     arkGrid: parseArkGrid(responses.arkGrid, context),
