@@ -243,8 +243,9 @@ function hasUnconsumedDamageValue(textValue: string, consumedSpans: TextSpan[]):
     }
   }
   const remaining = residual.join('');
-  return new RegExp(`(?:주는\\s*피해|피해량|치명타\\s*피해|진화형\\s*피해|(?<!받는\\s)(?<!입는\\s)피해(?:가|를|(?=\\s)))[^.!?\\n%]{0,80}${PERCENT_NUMBER}`, 'g').test(remaining)
-    || new RegExp(`${PERCENT_NUMBER}[^.!?\\n%]{0,80}(?:추가\\s*)?피해(?:량|를|가)?`, 'g').test(remaining);
+  const damageMarker = `(?:주는\\s*피해|진화형\\s*피해|(?<!받는\\s)(?<!입는\\s)치명타\\s*피해|(?<!받는\\s)(?<!입는\\s)(?<!치명타\\s)피해(?:량|가|를|(?=\\s)))`;
+  return new RegExp(`${damageMarker}[^.!?\\n%]{0,80}${PERCENT_NUMBER}`, 'g').test(remaining)
+    || new RegExp(`${PERCENT_NUMBER}[^.!?\\n%]{0,80}(?:추가\\s*)?${damageMarker}`, 'g').test(remaining);
 }
 
 function warning(

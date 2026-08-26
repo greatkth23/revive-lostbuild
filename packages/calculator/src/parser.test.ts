@@ -392,6 +392,29 @@ describe('Weather Artist raw endpoint parser', () => {
     }));
   });
 
+  test.each([
+    '받는 피해량이 77.0% 감소한다.',
+    '입는 피해량이 77.0% 감소한다.',
+    '받는 치명타 피해가 77.0% 감소한다.',
+    '입는 치명타 피해가 77.0% 감소한다.'
+  ])('does not classify a defensive damage reduction as unparsed outgoing damage: %s', (tooltip) => {
+    // Break caught: a generic 피해량/치명타 피해 branch ignores its defensive 받는/입는 context.
+    const raw = structuredClone(loadRawFixture()) as {
+      responses: { arkPassive: { Effects: Array<Record<string, unknown>> } };
+    };
+    raw.responses.arkPassive.Effects.push({
+      Name: '방어형 노드',
+      Description: '진화 2티어 방어형 노드 Lv.1',
+      ToolTip: tooltip
+    });
+    const index = raw.responses.arkPassive.Effects.length - 1;
+    const path = `arkPassive.Effects[${index}].ToolTip`;
+
+    expect(parseBuildSnapshot(raw).warnings.filter(
+      (item) => item.code === 'UNPARSED_DAMAGE_TOOLTIP' && item.path === path
+    )).toEqual([]);
+  });
+
   test('uses ArkGrid Effects aggregate values instead of adding the same active-gem effects twice', () => {
     // Break caught: gem + Effects[] double counting raises all three base categories.
     const { arkGrid } = parseBuildSnapshot(loadRawFixture()).build;
