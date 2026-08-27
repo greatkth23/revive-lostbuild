@@ -1,11 +1,12 @@
-const fs = require('node:fs');
-const http = require('node:http');
-const path = require('node:path');
-const { URL } = require('node:url');
+import fs from 'node:fs';
+import http from 'node:http';
+import path from 'node:path';
+import { fileURLToPath, URL } from 'node:url';
 
-const root = path.resolve(__dirname, '..');
+const here = path.dirname(fileURLToPath(import.meta.url));
+const root = path.resolve(here, '..');
 const staticRoot = root;
-const data = JSON.parse(fs.readFileSync(path.join(__dirname, 'data.json'), 'utf8'));
+const data = JSON.parse(fs.readFileSync(path.join(here, 'data.json'), 'utf8'));
 const contentTypes = {
   '.css': 'text/css; charset=utf-8',
   '.html': 'text/html; charset=utf-8',
