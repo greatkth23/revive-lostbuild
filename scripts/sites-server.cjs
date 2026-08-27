@@ -1,10 +1,11 @@
 import fs from 'node:fs';
 import http from 'node:http';
 import path from 'node:path';
-import { fileURLToPath, URL } from 'node:url';
+import { URL } from 'node:url';
 
-const here = path.dirname(fileURLToPath(import.meta.url));
-const root = path.resolve(here, '..');
+const cwd = process.cwd();
+const root = fs.existsSync(path.join(cwd, 'server', 'data.json')) ? cwd : path.join(cwd, 'dist');
+const here = path.join(root, 'server');
 const staticRoot = root;
 const data = JSON.parse(fs.readFileSync(path.join(here, 'data.json'), 'utf8'));
 const contentTypes = {
