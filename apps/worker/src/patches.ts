@@ -104,6 +104,7 @@ function disableSection(build: NormalizedBuild, sectionId: string): void {
         skillNames: [...build.combatSkills.skillNames],
         levelsByName: { ...build.combatSkills.levelsByName },
         hasExposedWeakness: false,
+        skills: build.combatSkills.skills.map((skill) => ({ ...skill, rune: skill.rune ? { ...skill.rune } : null })),
         selectedTripods: []
       };
       return;

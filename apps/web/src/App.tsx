@@ -114,10 +114,10 @@ async function request<T extends ZodTypeAny>(path: string, init: RequestInit | u
   return envelope.data;
 }
 
-function ApiIcon({ url, label }: { url: string | undefined; label: string }) {
+function ApiIcon({ url, label, alt = '' }: { url: string | undefined; label: string; alt?: string }) {
   const [failed, setFailed] = useState(false);
   if (!url || !/^https:\/\//.test(url) || failed) return <span className="icon-fallback" aria-label={`${label} 아이콘 없음`}>?</span>;
-  return <img className="api-icon" src={url} alt="" onError={() => setFailed(true)} />;
+  return <img className="api-icon" src={url} alt={alt} onError={() => setFailed(true)} />;
 }
 
 function cleanApiName(value: string): string {
@@ -166,12 +166,29 @@ function CurrentSettings({ loaded }: { loaded: LoadData }) {
   const accessories = build.equipment.items.filter((item) => accessoryTypes.has(item.type));
   const supportItems = build.equipment.items.filter((item) => !equipmentTypes.has(item.type) && !accessoryTypes.has(item.type));
   const incomplete = loaded.snapshot.warnings.some((warning) => warning.severity === 'incomplete');
+  const passivePaths = [
+    { name: '진화', tone: 'evolution' },
+    { name: '깨달음', tone: 'enlightenment' },
+    { name: '도약', tone: 'leap' }
+  ] as const;
+  const runeSkills = build.combatSkills.skills.filter((skill) => skill.rune !== null);
   return <section id="panel-setup" role="tabpanel" aria-labelledby="tab-setup" className="setup-panel">
-    <div className="setup-layout">
-      <aside className="setup-sidebar">
-        <SettingCard title="전투 특성">
-          <dl className="compact-stats">
-            <div><dt>계산 공격력</dt><dd>{display(loaded.snapshot.calculatedAttackPower)}</dd></div>
+    <div className="build-dashboard">
+      <div className="build-primary-grid">
+        <SettingCard title="장비" className="equipment-card"><ItemRows items={equipment} /></SettingCard>
+        <SettingCard title="액세서리" className="accessory-card"><ItemRows items={accessories} /></SettingCard>
+      </div>
+      <SettingCard title="보석" className="wide-card">
+        <div className="gem-strip">{build.gems.items.map((item, index) => <article className="gem-item" key={`${item.slot ?? index}-${item.name}`}>
+          <div className="gem-icon"><ApiIcon url={item.iconUrl} label={cleanApiName(item.name)} /><b>{item.level}</b></div>
+          <strong>{item.level}레벨 {item.grade} 보석</strong>
+          <span>{item.skillEffects.map((effect) => `${effect.skillName} ${effect.effectType === 'damage' ? '피해' : '재사용'} ${percentDisplay(effect.value)}`).join(' · ') || `기본 공격력 ${percentDisplay(item.baseAttackPercent)}`}</span>
+        </article>)}</div>
+      </SettingCard>
+      <div className="build-summary-grid">
+        <SettingCard title="기본·전투 특성">
+          <dl className="profile-stat-list">
+            <div className="primary-stat"><dt>계산 공격력</dt><dd>{display(loaded.snapshot.calculatedAttackPower)}</dd></div>
             <div><dt>프로필 공격력</dt><dd>{display(build.profile.profileAttackPower)}</dd></div>
             <div><dt>치명</dt><dd>{display(build.profile.criticalStat)}</dd></div>
             <div><dt>특화</dt><dd>{display(build.profile.specializationStat)}</dd></div>
@@ -179,50 +196,78 @@ function CurrentSettings({ loaded }: { loaded: LoadData }) {
           </dl>
         </SettingCard>
         <SettingCard title="각인">
-          <ul className="chip-list">{build.engravings.names.map((name) => <li key={name}>{name}</li>)}</ul>
+          <ul className="engraving-list">{build.engravings.names.map((name, index) => <li key={name}><span>{index + 1}</span><strong>{name}</strong></li>)}</ul>
           <p className="muted">어빌리티 스톤 합계 Lv.{build.engravings.stoneLevelTotal}</p>
         </SettingCard>
+      </div>
+      <SettingCard title="아크패시브" className="wide-card">
+        <div className="passive-columns">{passivePaths.map((path) => {
+          const point = build.arkPassive.points.find((item) => item.name.includes(path.name));
+          const effects = build.arkPassive.effects.filter((effect) => effect.rawName.includes(path.name));
+          return <section className={`passive-path passive-${path.tone}`} key={path.name} aria-label={`${path.name} 아크패시브`}>
+            <header><strong>{path.name}</strong><span>{point ? `${point.value} 포인트` : '포인트 정보 없음'}</span></header>
+            {point?.karmaLevel ? <p>카르마 {point.karmaLevel}레벨</p> : null}
+            <ul>{effects.map((effect, index) => <li key={`${effect.name}-${index}`}>
+              <ApiIcon url={effect.iconUrl} label={effect.name} alt={`${effect.name} 아크패시브`} />
+              <span><strong>{effect.name}</strong>{effect.level !== null && <small>Lv.{effect.level}</small>}</span>
+            </li>)}</ul>
+          </section>;
+        })}</div>
+      </SettingCard>
+      <div className="build-summary-grid">
+        <SettingCard title="아크그리드">
+          <div className="ark-grid-cores">{build.arkGrid.cores.map((core, index) => {
+            const gems = build.arkGrid.activeGems.filter((gem) => gem.path.startsWith(core.path));
+            return <article className="ark-core" key={`${core.name}-${index}`}>
+              <ApiIcon url={core.iconUrl} label={core.name} alt={`${core.name} 코어`} />
+              <div className="ark-core-copy"><strong>{core.name}</strong><span>{core.grade} · {core.point}P</span></div>
+              <div className="ark-gems" aria-label={`${core.name} 활성 젬`}>{gems.map((gem) => <ApiIcon key={gem.path} url={gem.iconUrl} label={`${core.name} 젬`} />)}</div>
+            </article>;
+          })}</div>
+        </SettingCard>
+        <SettingCard title="점 효과">
+          <dl className="grid-effect-list">
+            <div><dt>공격력</dt><dd>{percentDisplay(build.arkGrid.attackPowerPercent)}</dd></div>
+            <div><dt>추가 피해</dt><dd>{percentDisplay(build.arkGrid.additionalDamagePercent)}</dd></div>
+            <div><dt>보스 피해</dt><dd>{percentDisplay(build.arkGrid.bossDamagePercent)}</dd></div>
+            <div><dt>치명타 적중률</dt><dd>{percentDisplay(build.arkGrid.criticalRate)}</dd></div>
+            <div><dt>치명타 피해</dt><dd>{percentDisplay(build.arkGrid.criticalDamage)}</dd></div>
+            <div><dt>공격 속도</dt><dd>{percentDisplay(build.arkGrid.attackSpeed)}</dd></div>
+          </dl>
+        </SettingCard>
+      </div>
+      <div className="build-summary-grid support-grid">
         <SettingCard title="카드·보조 장비">
           <dl className="single-stat"><div><dt>카드 피해 보너스</dt><dd>{percentDisplay(build.cards.damagePercent)}</dd></div></dl>
           <ItemRows items={supportItems} />
         </SettingCard>
-        <SettingCard title="데이터 상태">
-          {incomplete && <strong className="incomplete-badge">검증 불완전</strong>}
-          <p className="muted">스키마 {loaded.snapshot.schemaVersion} · 카탈로그 {loaded.snapshot.catalogVersion}</p>
-          {loaded.snapshot.warnings.length ? <ul className="warning-list">{loaded.snapshot.warnings.map((warning) => <li className={warning.severity === 'incomplete' ? 'warning-incomplete' : ''} key={`${warning.code}${warning.path}`}>{warning.message}</li>)}</ul> : <p>현재 경고가 없습니다.</p>}
+        <SettingCard title="아바타·펫">
+          <div className="item-rows">{build.avatars.items.filter((item) => item.applied).map((item, index) => <article className="item-row" key={`${item.type}-${item.name}-${index}`}><ApiIcon url={item.iconUrl} label={item.name} /><div><strong>{item.name}</strong><span>{item.type} · 주스탯 {percentDisplay(item.mainStatPercent)}</span></div></article>)}</div>
+          <dl className="pet-stats"><div><dt>펫 주스탯</dt><dd>{percentDisplay(build.calculationInputs.pet.mainStatPercent)}</dd></div><div><dt>펫 추가 피해</dt><dd>{percentDisplay(build.calculationInputs.pet.additionalDamagePercent)}</dd></div></dl>
         </SettingCard>
-      </aside>
-      <div className="setup-main">
-        <SettingCard title="보석" className="wide-card">
-          <div className="gem-strip">{build.gems.items.map((item, index) => <article className="gem-item" key={`${item.slot ?? index}-${item.name}`}>
-            <div className="gem-icon"><ApiIcon url={item.iconUrl} label={cleanApiName(item.name)} /><b>{item.level}</b></div>
-            <strong>{item.level}레벨 {item.grade} 보석</strong>
-            <span>{item.skillEffects.map((effect) => `${effect.skillName} ${effect.effectType === 'damage' ? '피해' : '재사용'} ${percentDisplay(effect.value)}`).join(' · ') || `기본 공격력 ${percentDisplay(item.baseAttackPercent)}`}</span>
-          </article>)}</div>
-        </SettingCard>
-        <div className="two-column-cards">
-          <SettingCard title="장비"><ItemRows items={equipment} /></SettingCard>
-          <SettingCard title="액세서리"><ItemRows items={accessories} /></SettingCard>
-        </div>
-        <div className="two-column-cards">
-          <SettingCard title="아크패시브">
-            <div className="passive-points">{build.arkPassive.points.map((point) => <div key={point.path}><strong>{point.name}</strong><span>{point.value}P{point.karmaLevel ? ` · 카르마 Lv.${point.karmaLevel}` : ''}</span></div>)}</div>
-            <ul className="effect-list">{build.arkPassive.effects.map((effect, index) => <li key={`${effect.name}-${index}`}><strong>{effect.name}{effect.level ? ` Lv.${effect.level}` : ''}</strong><span>{effect.description}</span></li>)}</ul>
-          </SettingCard>
-          <SettingCard title="아크그리드">
-            <div className="core-grid">{build.arkGrid.cores.map((core, index) => <article key={`${core.name}-${index}`}><span className="core-symbol">{core.name.includes('해') ? '해' : core.name.includes('달') ? '달' : '별'}</span><div><strong>{core.name.replace(/^질서의 |^혼돈의 /, '')}</strong><span>{core.grade} · {core.point}P</span></div></article>)}</div>
-          </SettingCard>
-        </div>
-        <div className="two-column-cards">
-          <SettingCard title="아바타·펫">
-            <div className="item-rows">{build.avatars.items.filter((item) => item.applied).map((item, index) => <article className="item-row" key={`${item.type}-${item.name}-${index}`}><ApiIcon url={item.iconUrl} label={item.name} /><div><strong>{item.name}</strong><span>{item.type} · 주스탯 {percentDisplay(item.mainStatPercent)}</span></div></article>)}</div>
-            <dl className="pet-stats"><div><dt>펫 주스탯</dt><dd>{percentDisplay(build.calculationInputs.pet.mainStatPercent)}</dd></div><div><dt>펫 추가 피해</dt><dd>{percentDisplay(build.calculationInputs.pet.additionalDamagePercent)}</dd></div></dl>
-          </SettingCard>
-          <SettingCard title="스킬·트라이포드">
-            <ul className="skill-list">{Object.entries(build.combatSkills.levelsByName).map(([name, level]) => <li key={name}><div><strong>{name}</strong><span>스킬 Lv.{level}</span></div><span>{build.combatSkills.selectedTripods.filter((tripod) => tripod.skillName === name).map((tripod) => `${tripod.name}${tripod.tier ? ` ${tripod.tier}티어` : ''}`).join(' · ') || '선택 트라이포드 없음'}</span></li>)}</ul>
-          </SettingCard>
-        </div>
       </div>
+      <SettingCard title="스킬·트라이포드" className="wide-card skill-build-section">
+        <p className="section-note">룬이 장착된 스킬만 표시합니다.</p>
+        <div className="skill-build-grid">{runeSkills.map((skill) => {
+          const tripods = build.combatSkills.selectedTripods.filter((tripod) => tripod.skillName === skill.name);
+          return <article className="skill-build-card" aria-label={`${skill.name} 스킬 구성`} key={skill.name}>
+            <header>
+              <ApiIcon url={skill.iconUrl} label={skill.name} alt={skill.name} />
+              <div><strong>{skill.name}</strong><span>스킬 Lv.{skill.level}</span></div>
+              {skill.rune && <div className="rune-badge"><ApiIcon url={skill.rune.iconUrl} label={`${skill.rune.name} 룬`} alt={`${skill.rune.name} 룬`} /><span><b>{skill.rune.name}</b><small>{skill.rune.grade}</small></span></div>}
+            </header>
+            <div className="tripod-row">{tripods.map((tripod) => <div className="tripod-item" key={`${tripod.name}-${tripod.tier}`}>
+              <ApiIcon url={tripod.iconUrl} label={tripod.name} alt={tripod.name} />
+              <span><strong>{tripod.name}</strong><small>{tripod.tier === null ? '티어 정보 없음' : `${tripod.tier + 1}티어`}</small></span>
+            </div>)}</div>
+          </article>;
+        })}</div>
+      </SettingCard>
+      <SettingCard title="데이터 상태" className="wide-card data-status-card">
+        {incomplete && <strong className="incomplete-badge">검증 불완전</strong>}
+        <p className="muted">스키마 {loaded.snapshot.schemaVersion} · 카탈로그 {loaded.snapshot.catalogVersion}</p>
+        {loaded.snapshot.warnings.length ? <ul className="warning-list">{loaded.snapshot.warnings.map((warning) => <li className={warning.severity === 'incomplete' ? 'warning-incomplete' : ''} key={`${warning.code}${warning.path}`}>{warning.message}</li>)}</ul> : <p>현재 경고가 없습니다.</p>}
+      </SettingCard>
     </div>
   </section>;
 }
@@ -399,7 +444,7 @@ export default function App() {
     {error && <aside role="alert" className="message error">{error}<button type="button" onClick={() => void load()}>다시 시도</button></aside>}
     {notice && <p role="status" className="message">{notice}</p>}
     {!loaded && !error && <section className="empty"><h2>캐릭터를 불러오세요</h2><p>첫 버전은 질풍노도 기상술사를 지원합니다.</p></section>}
-    {loaded && <><CharacterHero loaded={loaded} /><section className="character-content"><div role="tablist" aria-label="캐릭터 정보 보기" className="tabs character-tabs"><button ref={(node) => { tabRefs.current[0] = node; }} id="tab-setup" role="tab" tabIndex={tab === 'editor' ? 0 : -1} aria-controls="panel-setup" aria-selected={tab === 'editor'} onKeyDown={(event) => tabKeyDown(event, 0)} onClick={() => selectTab('editor')}>현재 세팅</button><button ref={(node) => { tabRefs.current[1] = node; }} id="tab-damage" role="tab" tabIndex={tab === 'results' ? 0 : -1} aria-controls="panel-damage" aria-selected={tab === 'results'} onKeyDown={(event) => tabKeyDown(event, 1)} onClick={() => selectTab('results')}>스킬 피해</button></div>
+    {loaded && <><CharacterHero loaded={loaded} /><section className="character-content"><div role="tablist" aria-label="캐릭터 정보 보기" className="tabs character-tabs"><button ref={(node) => { tabRefs.current[0] = node; }} id="tab-setup" role="tab" tabIndex={tab === 'editor' ? 0 : -1} aria-controls="panel-setup" aria-selected={tab === 'editor'} onKeyDown={(event) => tabKeyDown(event, 0)} onClick={() => selectTab('editor')}>능력치</button><button ref={(node) => { tabRefs.current[1] = node; }} id="tab-damage" role="tab" tabIndex={tab === 'results' ? 0 : -1} aria-controls="panel-damage" aria-selected={tab === 'results'} onKeyDown={(event) => tabKeyDown(event, 1)} onClick={() => selectTab('results')}>스킬 피해</button></div>
       {tab === 'editor' ? <CurrentSettings loaded={loaded} /> : <section id="panel-damage" role="tabpanel" aria-labelledby="tab-damage" className="damage-panel"><div className="panel-heading"><div><h2>스킬 피해</h2><p>현재 API 세팅 기준 1회 피해입니다. 화면 수치만 소수점 둘째 자리로 반올림합니다.</p></div></div><div className="result-grid">{(catalog?.skills ?? []).map((skill) => <CurrentResultCard key={skill.id} skill={skill} result={loaded.baseline.find((item) => item.skillId === skill.id)} />)}</div></section>}
     </section></>}
   </main>;

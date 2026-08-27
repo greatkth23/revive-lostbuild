@@ -104,7 +104,7 @@ describe('Weather Artist simulator editor', () => {
     const fetcher = installFetch();
     await loadCharacter();
 
-    expect(screen.getByRole('tab', { name: '현재 세팅' }).getAttribute('aria-selected')).toBe('true');
+    expect(screen.getByRole('tab', { name: '능력치' }).getAttribute('aria-selected')).toBe('true');
     expect(screen.getByRole('tab', { name: '스킬 피해' })).toBeTruthy();
     expect(screen.queryByRole('tab', { name: '세팅 조정' })).toBeNull();
     expect(screen.queryByRole('checkbox', { name: '보석 사용' })).toBeNull();
@@ -123,6 +123,20 @@ describe('Weather Artist simulator editor', () => {
     for (const text of ['카제로스', '기부천사', '1,785.83', '보석', '장비', '액세서리', '각인', '아크패시브', '아크그리드', '아바타·펫', '스킬·트라이포드', '데이터 상태']) {
       expect(screen.getAllByText(text).length, text).toBeGreaterThan(0);
     }
+  });
+
+  test('shows official skill, tripod, rune, passive, and ark-grid icons while hiding skills without a rune', async () => {
+    // Break caught: the build tab rendered every skill as text and discarded official API icons.
+    installFetch();
+    await loadCharacter();
+
+    const piercingWind = screen.getByRole('article', { name: '바람송곳 스킬 구성' });
+    expect(within(piercingWind).getByRole('img', { name: '바람송곳' }).getAttribute('src')).toContain('wa_skill_01_11.png');
+    expect(within(piercingWind).getByRole('img', { name: '역류' }).getAttribute('src')).toContain('tripod_tier_1_155.png');
+    expect(within(piercingWind).getByRole('img', { name: '질풍 룬' }).getAttribute('src')).toContain('use_7_194.png');
+    expect(screen.queryByRole('article', { name: '내려찍기 스킬 구성' })).toBeNull();
+    expect(screen.getAllByRole('img', { name: /아크패시브/ }).length).toBeGreaterThan(0);
+    expect(screen.getByRole('img', { name: '질서의 해 코어 : 비연참 코어' }).getAttribute('src')).toContain('use_13_96.png');
   });
 
   test('renders one API-baseline damage result instead of a comparison', async () => {
@@ -319,7 +333,7 @@ describe('Weather Artist simulator editor', () => {
     // Break caught: tab buttons look selectable but cannot be discovered or operated as tabs by keyboard users.
     installFetch();
     await loadCharacter();
-    const editor = screen.getByRole('tab', { name: '현재 세팅' });
+    const editor = screen.getByRole('tab', { name: '능력치' });
     const results = screen.getByRole('tab', { name: '스킬 피해' });
     expect(editor.getAttribute('aria-controls')).toBe('panel-setup');
     fireEvent.keyDown(editor, { key: 'ArrowRight' });

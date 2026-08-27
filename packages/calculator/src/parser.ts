@@ -713,7 +713,8 @@ function parseArkPassive(bodyValue: unknown, context: ParseContext): NormalizedB
     if (!criticalDamage.isZero()) criticalDamageByName[name] = decimalString(criticalDamage);
     if (!criticalHitDamage.isZero()) criticalHitDamageByName[name] = decimalString(criticalHitDamage);
     if (!combinedSpeed.isZero()) speedByName[name] = { attackSpeed: decimalString(combinedSpeed), moveSpeed: decimalString(combinedSpeed) };
-    effects.push({ name, rawName, level, description });
+    const iconUrl = safeHttpsIcon(effect.Icon);
+    effects.push({ name, rawName, level, ...(iconUrl ? { iconUrl } : {}), description });
     const hasCalculatorComponent = !evolution.isZero()
       || !skillDamage.isZero()
       || !criticalRate.isZero()
@@ -842,6 +843,7 @@ function parseTripodDamageEffects(tooltipText: string): { effects: Array<{
 function parseCombatSkills(bodyValue: unknown, context: ParseContext): NormalizedBuild['combatSkills'] {
   const skillNames: string[] = [];
   const levelsByName: Record<string, number> = {};
+  const skills: NormalizedBuild['combatSkills']['skills'] = [];
   const selectedTripods: NormalizedBuild['combatSkills']['selectedTripods'] = [];
   let hasExposedWeakness = false;
   const verifiedCoefficientLevels: Record<string, number> = {
@@ -857,6 +859,22 @@ function parseCombatSkills(bodyValue: unknown, context: ParseContext): Normalize
     skillNames.push(skillName);
     const skillLevel = integer(skill.Level);
     levelsByName[skillName] = skillLevel;
+    const skillIconUrl = safeHttpsIcon(skill.Icon);
+    const rawRune = object(skill.Rune);
+    const runeName = text(rawRune.Name);
+    const runeIconUrl = safeHttpsIcon(rawRune.Icon);
+    skills.push({
+      name: skillName,
+      ...(skillIconUrl ? { iconUrl: skillIconUrl } : {}),
+      level: skillLevel,
+      type: text(skill.Type),
+      rune: runeName ? {
+        name: runeName,
+        ...(runeIconUrl ? { iconUrl: runeIconUrl } : {}),
+        grade: text(rawRune.Grade),
+        tooltipText: tooltipToText(rawRune.Tooltip)
+      } : null
+    });
     const verifiedLevel = verifiedCoefficientLevels[skillName];
     if (verifiedLevel !== undefined && skillLevel !== verifiedLevel) {
       warning(
@@ -903,6 +921,7 @@ function parseCombatSkills(bodyValue: unknown, context: ParseContext): Normalize
         skillName,
         name,
         tier: tripod.Tier === undefined || tripod.Tier === null ? null : integer(tripod.Tier),
+        ...(safeHttpsIcon(tripod.Icon) ? { iconUrl: safeHttpsIcon(tripod.Icon) } : {}),
         tooltipText,
         damagePercent: decimalString(damagePercent),
         criticalDamagePercent: decimalString(criticalDamage),
@@ -914,7 +933,7 @@ function parseCombatSkills(bodyValue: unknown, context: ParseContext): Normalize
       }
     }
   }
-  return { skillNames, levelsByName, selectedTripods, hasExposedWeakness };
+  return { skillNames, levelsByName, skills, selectedTripods, hasExposedWeakness };
 }
 
 export function resolveArkGridGradeValues(value: string, coreGrade: string): string {
@@ -1105,7 +1124,8 @@ function parseArkGrid(bodyValue: unknown, context: ParseContext): NormalizedBuil
       return { requiredPoints: option.requiredPoints, text: option.text, resolvedText: resolveArkGridGradeValues(option.text, coreGrade), activated, path };
     });
     if (tooltipText && options.length === 0) warning(context, 'UNPARSED_ARKGRID_CORE', 'incomplete', `${corePath}.Tooltip`, `'${coreName}' 툴팁에서 [nP] 코어 옵션을 찾지 못했습니다.`);
-    cores.push({ path: corePath, name: coreName, grade: coreGrade, point, options });
+    const coreIconUrl = safeHttpsIcon(slot.Icon);
+    cores.push({ path: corePath, name: coreName, grade: coreGrade, point, ...(coreIconUrl ? { iconUrl: coreIconUrl } : {}), options });
 
     for (const [gemIndex, rawGem] of array(slot.Gems).entries()) {
       const gem = object(rawGem);
@@ -1120,6 +1140,7 @@ function parseArkGrid(bodyValue: unknown, context: ParseContext): NormalizedBuil
         slotIndex: integer(slot.Index),
         gemIndex: integer(gem.Index),
         grade: text(gem.Grade),
+        ...(safeHttpsIcon(gem.Icon) ? { iconUrl: safeHttpsIcon(gem.Icon) } : {}),
         tooltipText: tooltip,
         values: {
           attackPowerPercent: decimalString(values.attackPowerPercent),
@@ -1153,6 +1174,7 @@ function parseArkGrid(bodyValue: unknown, context: ParseContext): NormalizedBuil
       path,
       name,
       level: integer(effect.Level),
+      ...(safeHttpsIcon(effect.Icon) ? { iconUrl: safeHttpsIcon(effect.Icon) } : {}),
       tooltipText: tooltip,
       values: {
         attackPowerPercent: decimalString(values.attackPowerPercent),

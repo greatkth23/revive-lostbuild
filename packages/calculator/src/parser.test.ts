@@ -107,6 +107,40 @@ describe('Weather Artist raw endpoint parser', () => {
     expect(mismatch.warnings.some((item) => item.message.includes('공간 가르기'))).toBe(false);
   });
 
+  test('preserves official icons and rune metadata used by the character build UI', () => {
+    // Break caught: the parser discarded official API assets and could not distinguish rune-equipped skills.
+    const parsed = parseBuildSnapshot(loadRawFixture());
+    const piercingWind = parsed.build.combatSkills.skills.find((skill) => skill.name === '바람송곳');
+
+    expect(piercingWind).toMatchObject({
+      name: '바람송곳',
+      level: 14,
+      iconUrl: 'https://cdn-lostark.game.onstove.com/efui_iconatlas/wa_skill/wa_skill_01_11.png',
+      rune: {
+        name: '질풍',
+        grade: '전설',
+        iconUrl: 'https://cdn-lostark.game.onstove.com/efui_iconatlas/use/use_7_194.png'
+      }
+    });
+    expect(parsed.build.combatSkills.selectedTripods).toEqual(expect.arrayContaining([
+      expect.objectContaining({
+        skillName: '바람송곳',
+        name: '역류',
+        iconUrl: 'https://cdn-lostark.game.onstove.com/efui_iconatlas/tripod_tier/tripod_tier_1_155.png'
+      })
+    ]));
+    expect(parsed.build.arkPassive.effects[0]).toMatchObject({
+      iconUrl: expect.stringMatching(/^https:\/\/cdn-lostark\.game\.onstove\.com\//)
+    });
+    expect(parsed.build.arkGrid.cores[0]).toMatchObject({
+      name: '질서의 해 코어 : 비연참',
+      iconUrl: 'https://cdn-lostark.game.onstove.com/efui_iconatlas/use/use_13_96.png'
+    });
+    expect(parsed.build.arkGrid.activeGems[0]).toMatchObject({
+      iconUrl: expect.stringMatching(/^https:\/\/cdn-lostark\.game\.onstove\.com\//)
+    });
+  });
+
   test('rejects present-but-null or wrong-shaped endpoint payloads and an empty character name', () => {
     // Break caught: object()/array() coercion silently turning malformed endpoint responses into zero stats.
     const malformed: Array<[string, unknown]> = [

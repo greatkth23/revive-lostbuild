@@ -201,6 +201,7 @@ export const normalizedBuildSchema = z.object({
       name: z.string(),
       rawName: z.string(),
       level: z.number().int().nullable(),
+      iconUrl: z.string().url().regex(/^https:\/\//, 'Expected an HTTPS icon URL').optional(),
       description: z.string()
     })),
     points: z.array(z.object({
@@ -215,10 +216,23 @@ export const normalizedBuildSchema = z.object({
     skillNames: z.array(z.string()),
     levelsByName: z.record(z.string(), z.number().int().nonnegative()),
     hasExposedWeakness: z.boolean(),
+    skills: z.array(z.object({
+      name: z.string(),
+      iconUrl: z.string().url().regex(/^https:\/\//, 'Expected an HTTPS icon URL').optional(),
+      level: z.number().int().nonnegative(),
+      type: z.string(),
+      rune: z.object({
+        name: z.string(),
+        iconUrl: z.string().url().regex(/^https:\/\//, 'Expected an HTTPS icon URL').optional(),
+        grade: z.string(),
+        tooltipText: z.string()
+      }).nullable()
+    })),
     selectedTripods: z.array(z.object({
       skillName: z.string(),
       name: z.string(),
       tier: z.number().int().nullable(),
+      iconUrl: z.string().url().regex(/^https:\/\//, 'Expected an HTTPS icon URL').optional(),
       tooltipText: z.string(),
       damagePercent: decimalStringSchema,
       criticalDamagePercent: decimalStringSchema,
@@ -262,6 +276,7 @@ export const normalizedBuildSchema = z.object({
       slotIndex: z.number().int(),
       gemIndex: z.number().int(),
       grade: z.string(),
+      iconUrl: z.string().url().regex(/^https:\/\//, 'Expected an HTTPS icon URL').optional(),
       tooltipText: z.string(),
       values: z.object({
         attackPowerPercent: decimalStringSchema,
@@ -273,6 +288,7 @@ export const normalizedBuildSchema = z.object({
       path: z.string(),
       name: z.string(),
       level: z.number().int().nonnegative(),
+      iconUrl: z.string().url().regex(/^https:\/\//, 'Expected an HTTPS icon URL').optional(),
       tooltipText: z.string(),
       values: z.object({
         attackPowerPercent: decimalStringSchema,
@@ -284,7 +300,8 @@ export const normalizedBuildSchema = z.object({
       path: z.string(),
       name: z.string(),
       grade: z.string(),
-      point: z.number().int().nonnegative()
+      point: z.number().int().nonnegative(),
+      iconUrl: z.string().url().regex(/^https:\/\//, 'Expected an HTTPS icon URL').optional()
     }).passthrough())
   }),
   provenance: z.array(provenanceSchema)

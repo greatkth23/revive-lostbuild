@@ -1154,108 +1154,126 @@
               "name": "질풍노도",
               "rawName": "깨달음",
               "level": 1,
+              "iconUrl": "https://cdn-lostark.game.onstove.com/efui_iconatlas/ark_passive_wa/ark_passive_wa_1.png",
               "description": "깨달음 1티어 질풍노도 Lv.1\n질풍노도\n아크 패시브 레벨 1\n깨달음\n여우비가 강화되어 우산 스킬로 적용된다. 여우비 상태 진입 시 30.0초 동안 지속되는 '질풍노도' 버프와 4.0초 동안 지속되는 기류 보호막이 생성된다. 대신, 여우비의 범위가 감소하고, 빗방울 게이지 소모량이 50.0% 증가한다. 또한, 적의 공격력 감소 효과가 사라지는 대신, 자신을 제외한 파티원에게 '질풍노도' 버프를 부여하며, 이 버프는 범위를 벗어나면 사라진다.\n\n질풍노도 : 공격 및 이동 속도가 12.0% 증가한다.||"
             },
             {
               "name": "환기",
               "rawName": "깨달음",
               "level": 3,
+              "iconUrl": "https://cdn-lostark.game.onstove.com/efui_iconatlas/ark_passive_01/ark_passive_01_54.png",
               "description": "깨달음 2티어 환기 Lv.3\n환기\n아크 패시브 레벨 3\n깨달음\n우산 스킬을 사용하고 4초 이내에 우산 스킬을 사용하면 최대 빗방울 게이지의 12.0%를 회복한다.||"
             },
             {
               "name": "기민함",
               "rawName": "깨달음",
               "level": 3,
+              "iconUrl": "https://cdn-lostark.game.onstove.com/efui_iconatlas/ark_passive_wa/ark_passive_wa_2.png",
               "description": "깨달음 3티어 기민함 Lv.3\n기민함\n아크 패시브 레벨 3\n깨달음\n기본 공격 속도 증가량 %의 120.0% 만큼 치명타 피해량이 증가하고 기본 이동 속도 증가량 %의 30.0% 만큼 치명타 적중률이 증가한다.||"
             },
             {
               "name": "바람의 길",
               "rawName": "깨달음",
               "level": 2,
+              "iconUrl": "https://cdn-lostark.game.onstove.com/efui_iconatlas/ark_passive_wa/ark_passive_wa_3.png",
               "description": "깨달음 4티어 바람의 길 Lv.2\n바람의 길\n아크 패시브 레벨 2\n깨달음\n여우비 사용 시 30.0초간 바람의 길 효과를 획득한다.\n\n바람의 길 : 우산 스킬의 피해량이 2.4% 증가한다.||"
             },
             {
               "name": "공간 가르기",
               "rawName": "깨달음",
               "level": 3,
+              "iconUrl": "https://cdn-lostark.game.onstove.com/efui_iconatlas/ark_passive_wa/ark_passive_wa_4.png",
               "description": "깨달음 4티어 공간 가르기 Lv.3\n공간 가르기\n아크 패시브 레벨 3\n깨달음\nX키를 눌러 공간 가르기를 사용할 수 있게 되고 기본 및 여우비 상태에서 사용할 수 있다. 공간 가르기가 주는 피해가 200.0% 증가한다.||"
             },
             {
               "name": "치명",
               "rawName": "진화",
               "level": 14,
+              "iconUrl": "https://cdn-lostark.game.onstove.com/efui_iconatlas/ark_passive_evolution/ark_passive_evolution_1.png",
               "description": "진화 1티어 치명 Lv.14\n치명\n아크 패시브 레벨 14\n진화\n치명이 700 증가합니다.||"
             },
             {
               "name": "신속",
               "rawName": "진화",
               "level": 26,
+              "iconUrl": "https://cdn-lostark.game.onstove.com/efui_iconatlas/ark_passive_evolution/ark_passive_evolution_4.png",
               "description": "진화 1티어 신속 Lv.26\n신속\n아크 패시브 레벨 26\n진화\n신속이 1300 증가합니다.||"
             },
             {
               "name": "예리한 감각",
               "rawName": "진화",
               "level": 1,
+              "iconUrl": "https://cdn-lostark.game.onstove.com/efui_iconatlas/ark_passive_evolution/ark_passive_evolution_29.png",
               "description": "진화 2티어 예리한 감각 Lv.1\n예리한 감각\n아크 패시브 레벨 1\n진화\n치명타 적중률이 4.0% 증가하고, 진화형 피해가 5.0% 증가합니다.||"
             },
             {
               "name": "한계 돌파",
               "rawName": "진화",
               "level": 2,
+              "iconUrl": "https://cdn-lostark.game.onstove.com/efui_iconatlas/ark_passive_evolution/ark_passive_evolution_34.png",
               "description": "진화 2티어 한계 돌파 Lv.2\n한계 돌파\n아크 패시브 레벨 2\n진화\n진화형 피해가 20.0% 증가합니다.||"
             },
             {
               "name": "무한한 마력",
               "rawName": "진화",
               "level": 1,
+              "iconUrl": "https://cdn-lostark.game.onstove.com/efui_iconatlas/ark_passive_evolution/ark_passive_evolution_14.png",
               "description": "진화 3티어 무한한 마력 Lv.1\n무한한 마력\n아크 패시브 레벨 1\n진화\n진화형 피해가 8.0% 증가하고, 마나 스킬의 재사용 대기시간이 7.0% 감소, 마나 소모량이 8.0% 감소합니다.||"
             },
             {
               "name": "혼신의 강타",
               "rawName": "진화",
               "level": 1,
+              "iconUrl": "https://cdn-lostark.game.onstove.com/efui_iconatlas/ark_passive_evolution/ark_passive_evolution_27.png",
               "description": "진화 3티어 혼신의 강타 Lv.1\n혼신의 강타\n아크 패시브 레벨 1\n진화\n치명타 적중률이 12.0% 증가하고, 진화형 피해가 2.0% 증가합니다.||"
             },
             {
               "name": "회심",
               "rawName": "진화",
               "level": 1,
+              "iconUrl": "https://cdn-lostark.game.onstove.com/efui_iconatlas/ark_passive_evolution/ark_passive_evolution_40.png",
               "description": "진화 4티어 회심 Lv.1\n회심\n아크 패시브 레벨 1\n진화\n공격이 치명타로 적중 시 적에게 주는 피해가 12.0% 증가하며, 받는 피해가 4.0% 감소합니다.||"
             },
             {
               "name": "분쇄",
               "rawName": "진화",
               "level": 1,
+              "iconUrl": "https://cdn-lostark.game.onstove.com/efui_iconatlas/ark_passive_evolution/ark_passive_evolution_44.png",
               "description": "진화 4티어 분쇄 Lv.1\n분쇄\n아크 패시브 레벨 1\n진화\n진화형 피해가 20.0% 증가하며, 받는 피해가 4.0% 감소합니다.||"
             },
             {
               "name": "음속 돌파",
               "rawName": "진화",
               "level": 2,
+              "iconUrl": "https://cdn-lostark.game.onstove.com/efui_iconatlas/ark_passive_evolution/ark_passive_evolution_21.png",
               "description": "진화 5티어 음속 돌파 Lv.2\n음속 돌파\n아크 패시브 레벨 2\n진화\n공격 적중 시, 공격 속도 및 이동 속도 증가량의 10.0% 만큼 진화형 피해가 증가합니다. 공격 및 이동 속도가 모두 상한을 초과했다면, 진화형 피해가 추가로 8.0% 증가하며, 상한을 초과한 속도 증가량의 30.0%만큼 적중 시 진화형 피해가 증가합니다. 이 노드에 의한 진화형 피해는 최대 24.0%까지 적용됩니다.||"
             },
             {
               "name": "풀려난 힘",
               "rawName": "도약",
               "level": 5,
+              "iconUrl": "https://cdn-lostark.game.onstove.com/efui_iconatlas/ark_passive_02/ark_passive_02_2.png",
               "description": "도약 1티어 풀려난 힘 Lv.5\n풀려난 힘\n아크 패시브 레벨 5\n도약\n초각성 스킬이 적에게 주는 피해가 15.0% 증가한다.||"
             },
             {
               "name": "잠재력 해방",
               "rawName": "도약",
               "level": 4,
+              "iconUrl": "https://cdn-lostark.game.onstove.com/efui_iconatlas/ark_passive_01/ark_passive_01_10.png",
               "description": "도약 1티어 잠재력 해방 Lv.4\n잠재력 해방\n아크 패시브 레벨 4\n도약\n초각성 스킬의 재사용 대기 시간이 8.0% 감소한다.||"
             },
             {
               "name": "즉각적인 주문",
               "rawName": "도약",
               "level": 2,
+              "iconUrl": "https://cdn-lostark.game.onstove.com/efui_iconatlas/ark_passive_02/ark_passive_02_5.png",
               "description": "도약 1티어 즉각적인 주문 Lv.2\n즉각적인 주문\n아크 패시브 레벨 2\n도약\n초각성 스킬의 시전 속도가 8.0% 증가하고, 마나 소모량이 60.0% 감소한다.||"
             },
             {
               "name": "단련된 가르기",
               "rawName": "도약",
               "level": 3,
+              "iconUrl": "https://cdn-lostark.game.onstove.com/efui_iconatlas/ark_passive_wa/ark_passive_wa_8.png",
               "description": "도약 2티어 단련된 가르기 Lv.3\n단련된 가르기\n아크 패시브 레벨 3\n도약\n우레바람이 일반 조작으로 변경되고, 피해량이 75.0% 증가한다.||"
             }
           ],
@@ -1332,11 +1350,208 @@
             "나르가의 칼날": 1,
             "칸의 영역": 1
           },
+          "skills": [
+            {
+              "name": "펼치기",
+              "iconUrl": "https://cdn-lostark.game.onstove.com/efui_iconatlas/wa_skill/wa_skill_01_4.png",
+              "level": 1,
+              "type": "일반",
+              "rune": {
+                "name": "속행",
+                "iconUrl": "https://cdn-lostark.game.onstove.com/efui_iconatlas/use/use_7_196.png",
+                "grade": "전설",
+                "tooltipText": "속행\n전설 스킬 룬\n스킬 룬 효과\n스킬 사용 시 일정 확률로 전체 재사용 대기 시간이 16% 감소\n스킬에 강력한 힘을 부여할 수 있는 특별한 룬이다.\n[퀘스트] 플레체 - 플레체의 장미"
+              }
+            },
+            {
+              "name": "내려찍기",
+              "iconUrl": "https://cdn-lostark.game.onstove.com/efui_iconatlas/wa_skill/wa_skill_01_5.png",
+              "level": 1,
+              "type": "일반",
+              "rune": null
+            },
+            {
+              "name": "회오리 걸음",
+              "iconUrl": "https://cdn-lostark.game.onstove.com/efui_iconatlas/wa_skill/wa_skill_01_8.png",
+              "level": 14,
+              "type": "일반",
+              "rune": {
+                "name": "집중",
+                "iconUrl": "https://cdn-lostark.game.onstove.com/efui_iconatlas/use/use_7_200.png",
+                "grade": "전설",
+                "tooltipText": "집중\n전설 스킬 룬\n스킬 룬 효과\n스킬 사용 시 마나 소모 40% 감소\n스킬에 강력한 힘을 부여할 수 있는 특별한 룬이다.\n[물물교환] 베른 남부 - 떠돌이 상인"
+              }
+            },
+            {
+              "name": "몰아치기",
+              "iconUrl": "https://cdn-lostark.game.onstove.com/efui_iconatlas/wa_skill/wa_skill_01_10.png",
+              "level": 14,
+              "type": "콤보",
+              "rune": {
+                "name": "질풍",
+                "iconUrl": "https://cdn-lostark.game.onstove.com/efui_iconatlas/use/use_7_194.png",
+                "grade": "영웅",
+                "tooltipText": "질풍\n영웅 스킬 룬\n스킬 룬 효과\n스킬 시전 속도가 12% 증가\n스킬에 강력한 힘을 부여할 수 있는 특별한 룬이다.\n[가디언 토벌] 시험 5단계\n[가디언 토벌] 시험 6단계\n[가디언 토벌] 시험 7단계\n그 외에 획득처가 더 존재합니다."
+              }
+            },
+            {
+              "name": "돌개바람",
+              "iconUrl": "https://cdn-lostark.game.onstove.com/efui_iconatlas/wa_skill/wa_skill_01_6.png",
+              "level": 10,
+              "type": "일반",
+              "rune": {
+                "name": "단죄",
+                "iconUrl": "https://cdn-lostark.game.onstove.com/efui_iconatlas/use/use_7_198.png",
+                "grade": "전설",
+                "tooltipText": "단죄\n전설 스킬 룬\n스킬 룬 효과\n스킬 적중 시 40% 확률로 자신에게 3초간 지속되는 '단죄' 상태 부여하며 해당 상태 일 때 '심판' 을 통해 추가 효과를 발동\n스킬에 강력한 힘을 부여할 수 있는 특별한 룬이다.\n[물물교환] 원정대 영지 - 상인 요한나"
+              }
+            },
+            {
+              "name": "바람송곳",
+              "iconUrl": "https://cdn-lostark.game.onstove.com/efui_iconatlas/wa_skill/wa_skill_01_11.png",
+              "level": 14,
+              "type": "일반",
+              "rune": {
+                "name": "질풍",
+                "iconUrl": "https://cdn-lostark.game.onstove.com/efui_iconatlas/use/use_7_194.png",
+                "grade": "전설",
+                "tooltipText": "질풍\n전설 스킬 룬\n스킬 룬 효과\n스킬 시전 속도가 14% 증가\n스킬에 강력한 힘을 부여할 수 있는 특별한 룬이다.\n[가디언 토벌] 시험 7단계\n[가디언 토벌] 시험 8단계"
+              }
+            },
+            {
+              "name": "마주바람",
+              "iconUrl": "https://cdn-lostark.game.onstove.com/efui_iconatlas/wa_skill/wa_skill_01_7.png",
+              "level": 14,
+              "type": "일반",
+              "rune": {
+                "name": "중독",
+                "iconUrl": "https://cdn-lostark.game.onstove.com/efui_iconatlas/use/use_7_213.png",
+                "grade": "전설",
+                "tooltipText": "중독\n전설 스킬 룬\n스킬 룬 효과\n스킬 적중 시 적을 6초간 '중독' 상태로 만듦\n스킬에 강력한 힘을 부여할 수 있는 특별한 룬이다.\n[필드 보스] 쿠르잔 북부 - 세베크 아툰"
+              }
+            },
+            {
+              "name": "칼바람",
+              "iconUrl": "https://cdn-lostark.game.onstove.com/efui_iconatlas/wa_skill/wa_skill_01_12.png",
+              "level": 14,
+              "type": "일반",
+              "rune": {
+                "name": "질풍",
+                "iconUrl": "https://cdn-lostark.game.onstove.com/efui_iconatlas/use/use_7_194.png",
+                "grade": "전설",
+                "tooltipText": "질풍\n전설 스킬 룬\n스킬 룬 효과\n스킬 시전 속도가 14% 증가\n스킬에 강력한 힘을 부여할 수 있는 특별한 룬이다.\n[가디언 토벌] 시험 6단계\n[가디언 토벌] 시험 7단계\n[가디언 토벌] 시험 8단계"
+              }
+            },
+            {
+              "name": "소용돌이",
+              "iconUrl": "https://cdn-lostark.game.onstove.com/efui_iconatlas/wa_skill/wa_skill_01_17.png",
+              "level": 1,
+              "type": "일반",
+              "rune": null
+            },
+            {
+              "name": "소나기",
+              "iconUrl": "https://cdn-lostark.game.onstove.com/efui_iconatlas/wa_skill/wa_skill_01_13.png",
+              "level": 1,
+              "type": "캐스팅",
+              "rune": null
+            },
+            {
+              "name": "센바람",
+              "iconUrl": "https://cdn-lostark.game.onstove.com/efui_iconatlas/wa_skill/wa_skill_01_14.png",
+              "level": 1,
+              "type": "일반",
+              "rune": null
+            },
+            {
+              "name": "짙은 안개",
+              "iconUrl": "https://cdn-lostark.game.onstove.com/efui_iconatlas/wa_skill/wa_skill_01_16.png",
+              "level": 1,
+              "type": "일반",
+              "rune": null
+            },
+            {
+              "name": "봄바람",
+              "iconUrl": "https://cdn-lostark.game.onstove.com/efui_iconatlas/wa_skill/wa_skill_01_15.png",
+              "level": 1,
+              "type": "일반",
+              "rune": null
+            },
+            {
+              "name": "날아가기",
+              "iconUrl": "https://cdn-lostark.game.onstove.com/efui_iconatlas/wa_skill/wa_skill_01_9.png",
+              "level": 1,
+              "type": "일반",
+              "rune": null
+            },
+            {
+              "name": "싹쓸바람",
+              "iconUrl": "https://cdn-lostark.game.onstove.com/efui_iconatlas/wa_skill/wa_skill_01_18.png",
+              "level": 14,
+              "type": "지점",
+              "rune": {
+                "name": "심판",
+                "iconUrl": "https://cdn-lostark.game.onstove.com/efui_iconatlas/use/use_7_201.png",
+                "grade": "전설",
+                "tooltipText": "심판\n전설 스킬 룬\n스킬 룬 효과\n스킬 적중 시 40% 확률로 자신의 '단죄' 상태를 제거하여 6초간 전투자원 회복량 증가 및 스킬 재사용 대기시간 감소\n스킬에 강력한 힘을 부여할 수 있는 특별한 룬이다.\n[수집품] 위대한 미술품"
+              }
+            },
+            {
+              "name": "뙤약볕",
+              "iconUrl": "https://cdn-lostark.game.onstove.com/efui_iconatlas/wa_skill/wa_skill_01_19.png",
+              "level": 1,
+              "type": "지점",
+              "rune": null
+            },
+            {
+              "name": "우레바람",
+              "iconUrl": "https://cdn-lostark.game.onstove.com/efui_iconatlas/wa_skill/wa_skill_01_24.png",
+              "level": 1,
+              "type": "홀딩",
+              "rune": null
+            },
+            {
+              "name": "여름 햇살",
+              "iconUrl": "https://cdn-lostark.game.onstove.com/efui_iconatlas/wa_skill/wa_skill_01_25.png",
+              "level": 1,
+              "type": "차지",
+              "rune": null
+            },
+            {
+              "name": "풍랑주의보",
+              "iconUrl": "https://cdn-lostark.game.onstove.com/efui_iconatlas/wa_skill/wa_skill_01_20.png",
+              "level": 1,
+              "type": "지점",
+              "rune": null
+            },
+            {
+              "name": "아카샤의 너울",
+              "iconUrl": "https://cdn-lostark.game.onstove.com/efui_iconatlas/wa_skill/wa_skill_01_26.png",
+              "level": 1,
+              "type": "일반",
+              "rune": null
+            },
+            {
+              "name": "나르가의 칼날",
+              "iconUrl": "https://cdn-lostark.game.onstove.com/efui_iconatlas/wa_skill/wa_skill_01_21.png",
+              "level": 1,
+              "type": "일반",
+              "rune": null
+            },
+            {
+              "name": "칸의 영역",
+              "iconUrl": "https://cdn-lostark.game.onstove.com/efui_iconatlas/wa_skill/wa_skill_01_27.png",
+              "level": 1,
+              "type": "일반",
+              "rune": null
+            }
+          ],
           "selectedTripods": [
             {
               "skillName": "회오리 걸음",
               "name": "재빠른 손놀림",
               "tier": 0,
+              "iconUrl": "https://cdn-lostark.game.onstove.com/efui_iconatlas/tripod_tier/tripod_tier_1_6.png",
               "tooltipText": "공격속도가 18.0% 증가한다.",
               "damagePercent": "0",
               "criticalDamagePercent": "0",
@@ -1346,6 +1561,7 @@
               "skillName": "회오리 걸음",
               "name": "역류",
               "tier": 1,
+              "iconUrl": "https://cdn-lostark.game.onstove.com/efui_iconatlas/tripod_tier/tripod_tier_2_156.png",
               "tooltipText": "기류 보호막을 가지고 있을 경우 기류를 역류시켜 적에게 주는 피해를 95.0% 증가시킨다. 단, 기류 보호막은 사라진다.",
               "damagePercent": "0.95",
               "criticalDamagePercent": "0",
@@ -1363,6 +1579,7 @@
               "skillName": "회오리 걸음",
               "name": "초고속 회전",
               "tier": 2,
+              "iconUrl": "https://cdn-lostark.game.onstove.com/efui_iconatlas/tripod_tier/tripod_tier_3_40.png",
               "tooltipText": "지점 조작으로 변경되며 모험가 및 일반 몬스터와 충돌이 무시된다. 우산을 세로로 세워 회전하며 적을 공격하고, 마지막에 내려찍으며 총 105.0%의 증가된 피해를 준다. 적이 공중에 뜬 상태일 때 공격 적중 시 다시 공중에 띄운다.",
               "damagePercent": "0",
               "criticalDamagePercent": "0",
@@ -1380,6 +1597,7 @@
               "skillName": "몰아치기",
               "name": "역류",
               "tier": 0,
+              "iconUrl": "https://cdn-lostark.game.onstove.com/efui_iconatlas/tripod_tier/tripod_tier_1_155.png",
               "tooltipText": "기류 보호막을 가지고 있을 경우 기류를 역류시켜 적에게 주는 피해를 60.0% 증가시킨다. 단, 기류 보호막은 사라진다.",
               "damagePercent": "0.6",
               "criticalDamagePercent": "0",
@@ -1397,6 +1615,7 @@
               "skillName": "몰아치기",
               "name": "우레",
               "tier": 1,
+              "iconUrl": "https://cdn-lostark.game.onstove.com/efui_iconatlas/tripod_tier/tripod_tier_2_17.png",
               "tooltipText": "발도 공격이 [뇌] 속성으로 변경되고 치명타 피해가 180.0% 증가한다. 공간 베기와 상승 기류 적용 시 발생하는 추가 공격에도 피해 증가 효과가 적용된다.",
               "damagePercent": "0",
               "criticalDamagePercent": "1.8",
@@ -1406,6 +1625,7 @@
               "skillName": "몰아치기",
               "name": "공간베기",
               "tier": 2,
+              "iconUrl": "https://cdn-lostark.game.onstove.com/efui_iconatlas/tripod_tier/tripod_tier_3_39.png",
               "tooltipText": "발도 이후 검풍을 발생시켜 94.8% 추가 피해를 준다.",
               "damagePercent": "0",
               "criticalDamagePercent": "0",
@@ -1423,6 +1643,7 @@
               "skillName": "돌개바람",
               "name": "급소 노출",
               "tier": 0,
+              "iconUrl": "https://cdn-lostark.game.onstove.com/efui_iconatlas/tripod_tier/tripod_tier_1_99.png",
               "tooltipText": "공격 적중 시 대상이 자신 및 파티원에게 받는 치명타 저항률이 12.0초간 10.0% 감소한다.",
               "damagePercent": "0",
               "criticalDamagePercent": "0",
@@ -1432,6 +1653,7 @@
               "skillName": "돌개바람",
               "name": "약점 포착",
               "tier": 1,
+              "iconUrl": "https://cdn-lostark.game.onstove.com/efui_iconatlas/tripod_tier/tripod_tier_2_33.png",
               "tooltipText": "피격이상 면역인 적에게 공격 적중 시 주는 피해가 60.0% 증가한다.",
               "damagePercent": "0",
               "criticalDamagePercent": "0",
@@ -1449,6 +1671,7 @@
               "skillName": "돌개바람",
               "name": "부메랑 우산",
               "tier": 2,
+              "iconUrl": "https://cdn-lostark.game.onstove.com/efui_iconatlas/tripod_tier/tripod_tier_3_81.png",
               "tooltipText": "우산의 최대 이동거리가 길어지고, 우산이 자신에게 돌아오게 되며 우산의 회전 공격 적중 시 주는 피해가 105.0% 증가한다.\n회전력 강화를 적용할 경우 회오리 바람 공격 횟수가 2배 증가한다.",
               "damagePercent": "0",
               "criticalDamagePercent": "0",
@@ -1466,6 +1689,7 @@
               "skillName": "바람송곳",
               "name": "역류",
               "tier": 0,
+              "iconUrl": "https://cdn-lostark.game.onstove.com/efui_iconatlas/tripod_tier/tripod_tier_1_155.png",
               "tooltipText": "기류 보호막을 가지고 있을 경우 기류를 역류시켜 적에게 주는 피해를 60.0% 증가시킨다. 단, 기류 보호막은 사라진다.",
               "damagePercent": "0.6",
               "criticalDamagePercent": "0",
@@ -1483,6 +1707,7 @@
               "skillName": "바람송곳",
               "name": "큰 센바람",
               "tier": 1,
+              "iconUrl": "https://cdn-lostark.game.onstove.com/efui_iconatlas/tripod_tier/tripod_tier_2_40.png",
               "tooltipText": "공격 거리가 60.0% 증가하고, 마지막에 우산에서 바람 충격파를 발사하며 적에게 60.0% 추가 피해를 입히며 날려버린다.",
               "damagePercent": "0",
               "criticalDamagePercent": "0",
@@ -1500,6 +1725,7 @@
               "skillName": "바람송곳",
               "name": "집중 공격",
               "tier": 2,
+              "iconUrl": "https://cdn-lostark.game.onstove.com/efui_iconatlas/tripod_tier/tripod_tier_3_50.png",
               "tooltipText": "적에게 주는 피해가 95.0% 증가한다.",
               "damagePercent": "0",
               "criticalDamagePercent": "0",
@@ -1517,6 +1743,7 @@
               "skillName": "마주바람",
               "name": "빠른 준비",
               "tier": 0,
+              "iconUrl": "https://cdn-lostark.game.onstove.com/efui_iconatlas/tripod_tier/tripod_tier_1_56.png",
               "tooltipText": "재사용 대기시간이 6.0초 감소한다.",
               "damagePercent": "0",
               "criticalDamagePercent": "0",
@@ -1526,6 +1753,7 @@
               "skillName": "마주바람",
               "name": "마주바람 강화",
               "tier": 1,
+              "iconUrl": "https://cdn-lostark.game.onstove.com/efui_iconatlas/tripod_tier/tripod_tier_2_42.png",
               "tooltipText": "홀딩 조작으로 변경되고 반격 가능 시간이 0.7초 증가한다. 입력 종료 시 즉시 반격을 가할 수 있으며 적에게 주는 피해가 45.0% 증가한다.",
               "damagePercent": "0",
               "criticalDamagePercent": "0",
@@ -1543,6 +1771,7 @@
               "skillName": "마주바람",
               "name": "조화의 의지",
               "tier": 2,
+              "iconUrl": "https://cdn-lostark.game.onstove.com/efui_iconatlas/tripod_tier/tripod_tier_3_75.png",
               "tooltipText": "스킬 시전 중 상태이상 면역 상태가 된다.",
               "damagePercent": "0",
               "criticalDamagePercent": "0",
@@ -1552,6 +1781,7 @@
               "skillName": "칼바람",
               "name": "거대 돌풍",
               "tier": 0,
+              "iconUrl": "https://cdn-lostark.game.onstove.com/efui_iconatlas/tripod_tier/tripod_tier_1_39.png",
               "tooltipText": "발도 준비 시간이 증가하고, 기를 모은 후 전방에 거대한 검기를 발사하여 적에게 주는 피해가 45.0% 증가한다.",
               "damagePercent": "0",
               "criticalDamagePercent": "0",
@@ -1569,6 +1799,7 @@
               "skillName": "칼바람",
               "name": "역류",
               "tier": 1,
+              "iconUrl": "https://cdn-lostark.game.onstove.com/efui_iconatlas/tripod_tier/tripod_tier_2_156.png",
               "tooltipText": "기류 보호막을 가지고 있을 경우 기류를 역류시켜 적에게 주는 피해를 95.0% 증가시킨다. 단, 기류 보호막은 사라진다.",
               "damagePercent": "0.95",
               "criticalDamagePercent": "0",
@@ -1586,6 +1817,7 @@
               "skillName": "칼바람",
               "name": "벼락",
               "tier": 2,
+              "iconUrl": "https://cdn-lostark.game.onstove.com/efui_iconatlas/tripod_tier/tripod_tier_3_17.png",
               "tooltipText": "[뇌] 속성으로 변경되고, 번개의 힘을 담아 발도 기술을 펼치며 적에게 주는 치명타 피해량이 210.0% 증가한다.",
               "damagePercent": "0",
               "criticalDamagePercent": "2.1",
@@ -1595,6 +1827,7 @@
               "skillName": "싹쓸바람",
               "name": "빠른 준비",
               "tier": 0,
+              "iconUrl": "https://cdn-lostark.game.onstove.com/efui_iconatlas/tripod_tier/tripod_tier_1_56.png",
               "tooltipText": "재사용 대기시간이 11.0초 감소한다.",
               "damagePercent": "0",
               "criticalDamagePercent": "0",
@@ -1604,6 +1837,7 @@
               "skillName": "싹쓸바람",
               "name": "소멸",
               "tier": 1,
+              "iconUrl": "https://cdn-lostark.game.onstove.com/efui_iconatlas/tripod_tier/tripod_tier_2_81.png",
               "tooltipText": "마우스 위치에 즉시 풍압이 강해진 회오리가 발생하며 공격 횟수가 4회 증가하고 마지막에 충격파를 발생시켜 적을 날려버리며 적에게 주는 피해가 70.8% 증가한다.",
               "damagePercent": "0",
               "criticalDamagePercent": "0",
@@ -1621,6 +1855,7 @@
               "skillName": "싹쓸바람",
               "name": "증기 조절",
               "tier": 2,
+              "iconUrl": "https://cdn-lostark.game.onstove.com/efui_iconatlas/tripod_tier/tripod_tier_3_157.png",
               "tooltipText": "공격 적중 시 적에게 주는 피해가 80.0% 증가하고, 여우비 상태일 경우 적에게 주는 피해가 추가로 20.0% 증가한다.",
               "damagePercent": "0",
               "criticalDamagePercent": "0",
@@ -2045,6 +2280,7 @@
               "slotIndex": 0,
               "gemIndex": 0,
               "grade": "고대",
+              "iconUrl": "https://cdn-lostark.game.onstove.com/efui_iconatlas/use/use_13_202.png",
               "tooltipText": "질서의 젬 : 안정\n고대 아크 그리드 젬\n가공 완료\n|거래 불가\n젬 기본 정보\n젬 타입 : 질서\n젬 포인트 : 19\n젬 효과\n필요 의지력 : 3 (기본 값 8 – 의지력 효율 5)\n질서 포인트 : 4\n[추가 피해] Lv.5\n추가 피해 +0.40%\n[아군 피해 강화] Lv.5\n아군 피해량 강화 효과 +0.26%\n[젬 가공] 아크 그리드 젬\n[젬 융합] 가공 완료 젬",
               "values": {
                 "attackPowerPercent": "0",
@@ -2057,6 +2293,7 @@
               "slotIndex": 0,
               "gemIndex": 1,
               "grade": "전설",
+              "iconUrl": "https://cdn-lostark.game.onstove.com/efui_iconatlas/use/use_13_202.png",
               "tooltipText": "질서의 젬 : 안정\n전설 아크 그리드 젬\n가공 완료\n|거래 불가\n젬 기본 정보\n젬 타입 : 질서\n젬 포인트 : 14\n젬 효과\n필요 의지력 : 3 (기본 값 8 – 의지력 효율 5)\n질서 포인트 : 5\n[추가 피해] Lv.3\n추가 피해 +0.24%\n[낙인력] Lv.1\n낙인력 +0.16%\n[젬 가공] 아크 그리드 젬\n[젬 융합] 가공 완료 젬",
               "values": {
                 "attackPowerPercent": "0",
@@ -2069,6 +2306,7 @@
               "slotIndex": 0,
               "gemIndex": 2,
               "grade": "유물",
+              "iconUrl": "https://cdn-lostark.game.onstove.com/efui_iconatlas/use/use_13_203.png",
               "tooltipText": "질서의 젬 : 견고\n유물 아크 그리드 젬\n가공 완료\n|거래 불가\n젬 기본 정보\n젬 타입 : 질서\n젬 포인트 : 16\n젬 효과\n필요 의지력 : 6 (기본 값 9 – 의지력 효율 3)\n질서 포인트 : 4\n[공격력] Lv.5\n공격력 +0.18%\n[보스 피해] Lv.4\n보스 등급 이상 몬스터에게 주는 피해 +0.33%\n[젬 가공] 아크 그리드 젬\n[젬 융합] 가공 완료 젬",
               "values": {
                 "attackPowerPercent": "0.0018",
@@ -2081,6 +2319,7 @@
               "slotIndex": 0,
               "gemIndex": 3,
               "grade": "유물",
+              "iconUrl": "https://cdn-lostark.game.onstove.com/efui_iconatlas/use/use_13_204.png",
               "tooltipText": "질서의 젬 : 불변\n유물 아크 그리드 젬\n가공 완료\n|거래 불가\n젬 기본 정보\n젬 타입 : 질서\n젬 포인트 : 16\n젬 효과\n필요 의지력 : 5 (기본 값 10 – 의지력 효율 5)\n질서 포인트 : 4\n[추가 피해] Lv.3\n추가 피해 +0.24%\n[보스 피해] Lv.4\n보스 등급 이상 몬스터에게 주는 피해 +0.33%\n[젬 가공] 아크 그리드 젬\n[젬 융합] 가공 완료 젬",
               "values": {
                 "attackPowerPercent": "0",
@@ -2093,6 +2332,7 @@
               "slotIndex": 1,
               "gemIndex": 0,
               "grade": "유물",
+              "iconUrl": "https://cdn-lostark.game.onstove.com/efui_iconatlas/use/use_13_202.png",
               "tooltipText": "질서의 젬 : 안정\n유물 아크 그리드 젬\n가공 완료\n|거래 불가\n젬 기본 정보\n젬 타입 : 질서\n젬 포인트 : 16\n젬 효과\n필요 의지력 : 3 (기본 값 8 – 의지력 효율 5)\n질서 포인트 : 5\n[추가 피해] Lv.1\n추가 피해 +0.08%\n[공격력] Lv.5\n공격력 +0.18%\n[젬 가공] 아크 그리드 젬\n[젬 융합] 가공 완료 젬",
               "values": {
                 "attackPowerPercent": "0.0018",
@@ -2105,6 +2345,7 @@
               "slotIndex": 1,
               "gemIndex": 1,
               "grade": "전설",
+              "iconUrl": "https://cdn-lostark.game.onstove.com/efui_iconatlas/use/use_13_202.png",
               "tooltipText": "질서의 젬 : 안정\n전설 아크 그리드 젬\n가공 완료\n|거래 불가\n젬 기본 정보\n젬 타입 : 질서\n젬 포인트 : 13\n젬 효과\n필요 의지력 : 3 (기본 값 8 – 의지력 효율 5)\n질서 포인트 : 5\n[추가 피해] Lv.2\n추가 피해 +0.16%\n[공격력] Lv.1\n공격력 +0.03%\n[젬 가공] 아크 그리드 젬\n[젬 융합] 가공 완료 젬",
               "values": {
                 "attackPowerPercent": "0.0003",
@@ -2117,6 +2358,7 @@
               "slotIndex": 1,
               "gemIndex": 2,
               "grade": "전설",
+              "iconUrl": "https://cdn-lostark.game.onstove.com/efui_iconatlas/use/use_13_202.png",
               "tooltipText": "질서의 젬 : 안정\n전설 아크 그리드 젬\n가공 완료\n|거래 불가\n젬 기본 정보\n젬 타입 : 질서\n젬 포인트 : 14\n젬 효과\n필요 의지력 : 4 (기본 값 8 – 의지력 효율 4)\n질서 포인트 : 5\n[추가 피해] Lv.2\n추가 피해 +0.16%\n[공격력] Lv.3\n공격력 +0.11%\n[젬 가공] 아크 그리드 젬\n[젬 융합] 가공 완료 젬",
               "values": {
                 "attackPowerPercent": "0.0011",
@@ -2129,6 +2371,7 @@
               "slotIndex": 1,
               "gemIndex": 3,
               "grade": "유물",
+              "iconUrl": "https://cdn-lostark.game.onstove.com/efui_iconatlas/use/use_13_203.png",
               "tooltipText": "질서의 젬 : 견고\n유물 아크 그리드 젬\n가공 완료\n|거래 불가\n젬 기본 정보\n젬 타입 : 질서\n젬 포인트 : 17\n젬 효과\n필요 의지력 : 5 (기본 값 9 – 의지력 효율 4)\n질서 포인트 : 5\n[보스 피해] Lv.5\n보스 등급 이상 몬스터에게 주는 피해 +0.41%\n[아군 공격 강화] Lv.3\n아군 공격력 강화 효과 +0.39%\n[젬 가공] 아크 그리드 젬\n[젬 융합] 가공 완료 젬",
               "values": {
                 "attackPowerPercent": "0",
@@ -2141,6 +2384,7 @@
               "slotIndex": 2,
               "gemIndex": 0,
               "grade": "유물",
+              "iconUrl": "https://cdn-lostark.game.onstove.com/efui_iconatlas/use/use_13_202.png",
               "tooltipText": "질서의 젬 : 안정\n유물 아크 그리드 젬\n가공 완료\n|거래 불가\n젬 기본 정보\n젬 타입 : 질서\n젬 포인트 : 18\n젬 효과\n필요 의지력 : 3 (기본 값 8 – 의지력 효율 5)\n질서 포인트 : 5\n[공격력] Lv.4\n공격력 +0.14%\n[추가 피해] Lv.4\n추가 피해 +0.32%\n[젬 가공] 아크 그리드 젬\n[젬 융합] 가공 완료 젬",
               "values": {
                 "attackPowerPercent": "0.0014",
@@ -2153,6 +2397,7 @@
               "slotIndex": 2,
               "gemIndex": 1,
               "grade": "전설",
+              "iconUrl": "https://cdn-lostark.game.onstove.com/efui_iconatlas/use/use_13_203.png",
               "tooltipText": "질서의 젬 : 견고\n전설 아크 그리드 젬\n가공 완료\n|거래 불가\n젬 기본 정보\n젬 타입 : 질서\n젬 포인트 : 14\n젬 효과\n필요 의지력 : 4 (기본 값 9 – 의지력 효율 5)\n질서 포인트 : 5\n[아군 피해 강화] Lv.1\n아군 피해량 강화 효과 +0.05%\n[보스 피해] Lv.3\n보스 등급 이상 몬스터에게 주는 피해 +0.25%\n[젬 가공] 아크 그리드 젬\n[젬 융합] 가공 완료 젬",
               "values": {
                 "attackPowerPercent": "0",
@@ -2165,6 +2410,7 @@
               "slotIndex": 2,
               "gemIndex": 2,
               "grade": "유물",
+              "iconUrl": "https://cdn-lostark.game.onstove.com/efui_iconatlas/use/use_13_203.png",
               "tooltipText": "질서의 젬 : 견고\n유물 아크 그리드 젬\n가공 완료\n|거래 불가\n젬 기본 정보\n젬 타입 : 질서\n젬 포인트 : 16\n젬 효과\n필요 의지력 : 5 (기본 값 9 – 의지력 효율 4)\n질서 포인트 : 5\n[보스 피해] Lv.4\n보스 등급 이상 몬스터에게 주는 피해 +0.33%\n[공격력] Lv.3\n공격력 +0.11%\n[젬 가공] 아크 그리드 젬\n[젬 융합] 가공 완료 젬",
               "values": {
                 "attackPowerPercent": "0.0011",
@@ -2177,6 +2423,7 @@
               "slotIndex": 2,
               "gemIndex": 3,
               "grade": "전설",
+              "iconUrl": "https://cdn-lostark.game.onstove.com/efui_iconatlas/use/use_13_203.png",
               "tooltipText": "질서의 젬 : 견고\n전설 아크 그리드 젬\n가공 완료\n|거래 불가\n젬 기본 정보\n젬 타입 : 질서\n젬 포인트 : 14\n젬 효과\n필요 의지력 : 5 (기본 값 9 – 의지력 효율 4)\n질서 포인트 : 5\n[공격력] Lv.1\n공격력 +0.03%\n[보스 피해] Lv.4\n보스 등급 이상 몬스터에게 주는 피해 +0.33%\n[젬 가공] 아크 그리드 젬\n[젬 융합] 가공 완료 젬",
               "values": {
                 "attackPowerPercent": "0.0003",
@@ -2189,6 +2436,7 @@
               "slotIndex": 3,
               "gemIndex": 0,
               "grade": "유물",
+              "iconUrl": "https://cdn-lostark.game.onstove.com/efui_iconatlas/use/use_13_205.png",
               "tooltipText": "혼돈의 젬 : 침식\n유물 아크 그리드 젬\n가공 완료\n|거래 불가\n젬 기본 정보\n젬 타입 : 혼돈\n젬 포인트 : 18\n젬 효과\n필요 의지력 : 3 (기본 값 8 – 의지력 효율 5)\n혼돈 포인트 : 5\n[낙인력] Lv.3\n낙인력 +0.50%\n[추가 피해] Lv.5\n추가 피해 +0.40%\n[젬 가공] 아크 그리드 젬\n[젬 융합] 가공 완료 젬",
               "values": {
                 "attackPowerPercent": "0",
@@ -2201,6 +2449,7 @@
               "slotIndex": 3,
               "gemIndex": 1,
               "grade": "고대",
+              "iconUrl": "https://cdn-lostark.game.onstove.com/efui_iconatlas/use/use_13_205.png",
               "tooltipText": "혼돈의 젬 : 침식\n고대 아크 그리드 젬\n가공 완료\n|거래 불가\n젬 기본 정보\n젬 타입 : 혼돈\n젬 포인트 : 19\n젬 효과\n필요 의지력 : 3 (기본 값 8 – 의지력 효율 5)\n혼돈 포인트 : 5\n[추가 피해] Lv.5\n추가 피해 +0.40%\n[공격력] Lv.4\n공격력 +0.14%\n[젬 가공] 아크 그리드 젬\n[젬 융합] 가공 완료 젬",
               "values": {
                 "attackPowerPercent": "0.0014",
@@ -2213,6 +2462,7 @@
               "slotIndex": 3,
               "gemIndex": 2,
               "grade": "고대",
+              "iconUrl": "https://cdn-lostark.game.onstove.com/efui_iconatlas/use/use_13_206.png",
               "tooltipText": "혼돈의 젬 : 왜곡\n고대 아크 그리드 젬\n가공 완료\n|거래 불가\n젬 기본 정보\n젬 타입 : 혼돈\n젬 포인트 : 19\n젬 효과\n필요 의지력 : 4 (기본 값 9 – 의지력 효율 5)\n혼돈 포인트 : 5\n[아군 공격 강화] Lv.4\n아군 공격력 강화 효과 +0.52%\n[보스 피해] Lv.5\n보스 등급 이상 몬스터에게 주는 피해 +0.41%\n[젬 가공] 아크 그리드 젬\n[젬 융합] 가공 완료 젬",
               "values": {
                 "attackPowerPercent": "0",
@@ -2225,6 +2475,7 @@
               "slotIndex": 3,
               "gemIndex": 3,
               "grade": "유물",
+              "iconUrl": "https://cdn-lostark.game.onstove.com/efui_iconatlas/use/use_13_206.png",
               "tooltipText": "혼돈의 젬 : 왜곡\n유물 아크 그리드 젬\n가공 완료\n|거래 불가\n젬 기본 정보\n젬 타입 : 혼돈\n젬 포인트 : 16\n젬 효과\n필요 의지력 : 7 (기본 값 9 – 의지력 효율 2)\n혼돈 포인트 : 5\n[아군 피해 강화] Lv.4\n아군 피해량 강화 효과 +0.21%\n[보스 피해] Lv.5\n보스 등급 이상 몬스터에게 주는 피해 +0.41%\n[젬 가공] 아크 그리드 젬\n[젬 융합] 가공 완료 젬",
               "values": {
                 "attackPowerPercent": "0",
@@ -2237,6 +2488,7 @@
               "slotIndex": 4,
               "gemIndex": 0,
               "grade": "전설",
+              "iconUrl": "https://cdn-lostark.game.onstove.com/efui_iconatlas/use/use_13_205.png",
               "tooltipText": "혼돈의 젬 : 침식\n전설 아크 그리드 젬\n가공 완료\n|거래 불가\n젬 기본 정보\n젬 타입 : 혼돈\n젬 포인트 : 15\n젬 효과\n필요 의지력 : 3 (기본 값 8 – 의지력 효율 5)\n혼돈 포인트 : 5\n[아군 피해 강화] Lv.1\n아군 피해량 강화 효과 +0.05%\n[추가 피해] Lv.4\n추가 피해 +0.32%\n[젬 가공] 아크 그리드 젬\n[젬 융합] 가공 완료 젬",
               "values": {
                 "attackPowerPercent": "0",
@@ -2249,6 +2501,7 @@
               "slotIndex": 4,
               "gemIndex": 1,
               "grade": "고대",
+              "iconUrl": "https://cdn-lostark.game.onstove.com/efui_iconatlas/use/use_13_205.png",
               "tooltipText": "혼돈의 젬 : 침식\n고대 아크 그리드 젬\n가공 완료\n|거래 불가\n젬 기본 정보\n젬 타입 : 혼돈\n젬 포인트 : 20\n젬 효과\n필요 의지력 : 3 (기본 값 8 – 의지력 효율 5)\n혼돈 포인트 : 5\n[공격력] Lv.5\n공격력 +0.18%\n[추가 피해] Lv.5\n추가 피해 +0.40%",
               "values": {
                 "attackPowerPercent": "0.0018",
@@ -2261,6 +2514,7 @@
               "slotIndex": 4,
               "gemIndex": 2,
               "grade": "유물",
+              "iconUrl": "https://cdn-lostark.game.onstove.com/efui_iconatlas/use/use_13_207.png",
               "tooltipText": "혼돈의 젬 : 붕괴\n유물 아크 그리드 젬\n가공 완료\n|거래 불가\n젬 기본 정보\n젬 타입 : 혼돈\n젬 포인트 : 17\n젬 효과\n필요 의지력 : 5 (기본 값 10 – 의지력 효율 5)\n혼돈 포인트 : 5\n[보스 피해] Lv.4\n보스 등급 이상 몬스터에게 주는 피해 +0.33%\n[추가 피해] Lv.3\n추가 피해 +0.24%\n[젬 가공] 아크 그리드 젬\n[젬 융합] 가공 완료 젬",
               "values": {
                 "attackPowerPercent": "0",
@@ -2273,6 +2527,7 @@
               "slotIndex": 4,
               "gemIndex": 3,
               "grade": "유물",
+              "iconUrl": "https://cdn-lostark.game.onstove.com/efui_iconatlas/use/use_13_206.png",
               "tooltipText": "혼돈의 젬 : 왜곡\n유물 아크 그리드 젬\n가공 완료\n|거래 불가\n젬 기본 정보\n젬 타입 : 혼돈\n젬 포인트 : 17\n젬 효과\n필요 의지력 : 6 (기본 값 9 – 의지력 효율 3)\n혼돈 포인트 : 5\n[아군 공격 강화] Lv.4\n아군 공격력 강화 효과 +0.52%\n[보스 피해] Lv.5\n보스 등급 이상 몬스터에게 주는 피해 +0.41%\n[젬 가공] 아크 그리드 젬\n[젬 융합] 가공 완료 젬",
               "values": {
                 "attackPowerPercent": "0",
@@ -2285,6 +2540,7 @@
               "slotIndex": 5,
               "gemIndex": 0,
               "grade": "유물",
+              "iconUrl": "https://cdn-lostark.game.onstove.com/efui_iconatlas/use/use_13_205.png",
               "tooltipText": "혼돈의 젬 : 침식\n유물 아크 그리드 젬\n가공 완료\n|거래 불가\n젬 기본 정보\n젬 타입 : 혼돈\n젬 포인트 : 16\n젬 효과\n필요 의지력 : 3 (기본 값 8 – 의지력 효율 5)\n혼돈 포인트 : 5\n[추가 피해] Lv.4\n추가 피해 +0.32%\n[아군 피해 강화] Lv.2\n아군 피해량 강화 효과 +0.10%\n[젬 가공] 아크 그리드 젬\n[젬 융합] 가공 완료 젬",
               "values": {
                 "attackPowerPercent": "0",
@@ -2297,6 +2553,7 @@
               "slotIndex": 5,
               "gemIndex": 1,
               "grade": "유물",
+              "iconUrl": "https://cdn-lostark.game.onstove.com/efui_iconatlas/use/use_13_206.png",
               "tooltipText": "혼돈의 젬 : 왜곡\n유물 아크 그리드 젬\n가공 완료\n|거래 불가\n젬 기본 정보\n젬 타입 : 혼돈\n젬 포인트 : 18\n젬 효과\n필요 의지력 : 4 (기본 값 9 – 의지력 효율 5)\n혼돈 포인트 : 5\n[공격력] Lv.5\n공격력 +0.18%\n[보스 피해] Lv.3\n보스 등급 이상 몬스터에게 주는 피해 +0.25%\n[젬 가공] 아크 그리드 젬\n[젬 융합] 가공 완료 젬",
               "values": {
                 "attackPowerPercent": "0.0018",
@@ -2309,6 +2566,7 @@
               "slotIndex": 5,
               "gemIndex": 2,
               "grade": "전설",
+              "iconUrl": "https://cdn-lostark.game.onstove.com/efui_iconatlas/use/use_13_205.png",
               "tooltipText": "혼돈의 젬 : 침식\n전설 아크 그리드 젬\n가공 완료\n|거래 불가\n젬 기본 정보\n젬 타입 : 혼돈\n젬 포인트 : 14\n젬 효과\n필요 의지력 : 4 (기본 값 8 – 의지력 효율 4)\n혼돈 포인트 : 5\n[공격력] Lv.3\n공격력 +0.11%\n[추가 피해] Lv.2\n추가 피해 +0.16%\n[젬 가공] 아크 그리드 젬\n[젬 융합] 가공 완료 젬",
               "values": {
                 "attackPowerPercent": "0.0011",
@@ -2321,6 +2579,7 @@
               "slotIndex": 5,
               "gemIndex": 3,
               "grade": "유물",
+              "iconUrl": "https://cdn-lostark.game.onstove.com/efui_iconatlas/use/use_13_207.png",
               "tooltipText": "혼돈의 젬 : 붕괴\n유물 아크 그리드 젬\n가공 완료\n|거래 불가\n젬 기본 정보\n젬 타입 : 혼돈\n젬 포인트 : 18\n젬 효과\n필요 의지력 : 6 (기본 값 10 – 의지력 효율 4)\n혼돈 포인트 : 5\n[추가 피해] Lv.4\n추가 피해 +0.32%\n[보스 피해] Lv.5\n보스 등급 이상 몬스터에게 주는 피해 +0.41%\n[젬 가공] 아크 그리드 젬\n[젬 융합] 가공 완료 젬",
               "values": {
                 "attackPowerPercent": "0",
@@ -2370,6 +2629,7 @@
               "name": "질서의 해 코어 : 비연참",
               "grade": "고대",
               "point": 17,
+              "iconUrl": "https://cdn-lostark.game.onstove.com/efui_iconatlas/use/use_13_96.png",
               "options": [
                 {
                   "requiredPoints": 10,
@@ -2420,6 +2680,7 @@
               "name": "질서의 달 코어 : 우산의 춤",
               "grade": "유물",
               "point": 20,
+              "iconUrl": "https://cdn-lostark.game.onstove.com/efui_iconatlas/use/use_13_97.png",
               "options": [
                 {
                   "requiredPoints": 10,
@@ -2470,6 +2731,7 @@
               "name": "질서의 별 코어 : 휘몰아치기",
               "grade": "고대",
               "point": 20,
+              "iconUrl": "https://cdn-lostark.game.onstove.com/efui_iconatlas/use/use_13_98.png",
               "options": [
                 {
                   "requiredPoints": 10,
@@ -2520,6 +2782,7 @@
               "name": "혼돈의 해 코어 : 현란한 공격",
               "grade": "고대",
               "point": 20,
+              "iconUrl": "https://cdn-lostark.game.onstove.com/efui_iconatlas/use/use_13_99.png",
               "options": [
                 {
                   "requiredPoints": 10,
@@ -2570,6 +2833,7 @@
               "name": "혼돈의 달 코어 : 불타는 일격",
               "grade": "고대",
               "point": 20,
+              "iconUrl": "https://cdn-lostark.game.onstove.com/efui_iconatlas/use/use_13_100.png",
               "options": [
                 {
                   "requiredPoints": 10,
@@ -2620,6 +2884,7 @@
               "name": "혼돈의 별 코어 : 공격",
               "grade": "고대",
               "point": 20,
+              "iconUrl": "https://cdn-lostark.game.onstove.com/efui_iconatlas/use/use_13_101.png",
               "options": [
                 {
                   "requiredPoints": 10,
@@ -5821,6 +6086,7 @@
               "skillName": "바람송곳",
               "name": "역류",
               "tier": 0,
+              "iconUrl": "https://cdn-lostark.game.onstove.com/efui_iconatlas/tripod_tier/tripod_tier_1_155.png",
               "tooltipText": "기류 보호막을 가지고 있을 경우 기류를 역류시켜 적에게 주는 피해를 60.0% 증가시킨다. 단, 기류 보호막은 사라진다.",
               "damagePercent": "0.6",
               "criticalDamagePercent": "0",
@@ -5838,6 +6104,7 @@
               "skillName": "바람송곳",
               "name": "큰 센바람",
               "tier": 1,
+              "iconUrl": "https://cdn-lostark.game.onstove.com/efui_iconatlas/tripod_tier/tripod_tier_2_40.png",
               "tooltipText": "공격 거리가 60.0% 증가하고, 마지막에 우산에서 바람 충격파를 발사하며 적에게 60.0% 추가 피해를 입히며 날려버린다.",
               "damagePercent": "0",
               "criticalDamagePercent": "0",
@@ -5855,6 +6122,7 @@
               "skillName": "바람송곳",
               "name": "집중 공격",
               "tier": 2,
+              "iconUrl": "https://cdn-lostark.game.onstove.com/efui_iconatlas/tripod_tier/tripod_tier_3_50.png",
               "tooltipText": "적에게 주는 피해가 95.0% 증가한다.",
               "damagePercent": "0",
               "criticalDamagePercent": "0",
@@ -6360,6 +6628,7 @@
               "skillName": "칼바람",
               "name": "거대 돌풍",
               "tier": 0,
+              "iconUrl": "https://cdn-lostark.game.onstove.com/efui_iconatlas/tripod_tier/tripod_tier_1_39.png",
               "tooltipText": "발도 준비 시간이 증가하고, 기를 모은 후 전방에 거대한 검기를 발사하여 적에게 주는 피해가 45.0% 증가한다.",
               "damagePercent": "0",
               "criticalDamagePercent": "0",
@@ -6377,6 +6646,7 @@
               "skillName": "칼바람",
               "name": "역류",
               "tier": 1,
+              "iconUrl": "https://cdn-lostark.game.onstove.com/efui_iconatlas/tripod_tier/tripod_tier_2_156.png",
               "tooltipText": "기류 보호막을 가지고 있을 경우 기류를 역류시켜 적에게 주는 피해를 95.0% 증가시킨다. 단, 기류 보호막은 사라진다.",
               "damagePercent": "0.95",
               "criticalDamagePercent": "0",
@@ -6394,6 +6664,7 @@
               "skillName": "칼바람",
               "name": "벼락",
               "tier": 2,
+              "iconUrl": "https://cdn-lostark.game.onstove.com/efui_iconatlas/tripod_tier/tripod_tier_3_17.png",
               "tooltipText": "[뇌] 속성으로 변경되고, 번개의 힘을 담아 발도 기술을 펼치며 적에게 주는 치명타 피해량이 210.0% 증가한다.",
               "damagePercent": "0",
               "criticalDamagePercent": "2.1",
@@ -6907,6 +7178,7 @@
               "skillName": "몰아치기",
               "name": "역류",
               "tier": 0,
+              "iconUrl": "https://cdn-lostark.game.onstove.com/efui_iconatlas/tripod_tier/tripod_tier_1_155.png",
               "tooltipText": "기류 보호막을 가지고 있을 경우 기류를 역류시켜 적에게 주는 피해를 60.0% 증가시킨다. 단, 기류 보호막은 사라진다.",
               "damagePercent": "0.6",
               "criticalDamagePercent": "0",
@@ -6924,6 +7196,7 @@
               "skillName": "몰아치기",
               "name": "우레",
               "tier": 1,
+              "iconUrl": "https://cdn-lostark.game.onstove.com/efui_iconatlas/tripod_tier/tripod_tier_2_17.png",
               "tooltipText": "발도 공격이 [뇌] 속성으로 변경되고 치명타 피해가 180.0% 증가한다. 공간 베기와 상승 기류 적용 시 발생하는 추가 공격에도 피해 증가 효과가 적용된다.",
               "damagePercent": "0",
               "criticalDamagePercent": "1.8",
@@ -6933,6 +7206,7 @@
               "skillName": "몰아치기",
               "name": "공간베기",
               "tier": 2,
+              "iconUrl": "https://cdn-lostark.game.onstove.com/efui_iconatlas/tripod_tier/tripod_tier_3_39.png",
               "tooltipText": "발도 이후 검풍을 발생시켜 94.8% 추가 피해를 준다.",
               "damagePercent": "0",
               "criticalDamagePercent": "0",
@@ -7543,6 +7817,7 @@
               "skillName": "회오리 걸음",
               "name": "재빠른 손놀림",
               "tier": 0,
+              "iconUrl": "https://cdn-lostark.game.onstove.com/efui_iconatlas/tripod_tier/tripod_tier_1_6.png",
               "tooltipText": "공격속도가 18.0% 증가한다.",
               "damagePercent": "0",
               "criticalDamagePercent": "0",
@@ -7552,6 +7827,7 @@
               "skillName": "회오리 걸음",
               "name": "역류",
               "tier": 1,
+              "iconUrl": "https://cdn-lostark.game.onstove.com/efui_iconatlas/tripod_tier/tripod_tier_2_156.png",
               "tooltipText": "기류 보호막을 가지고 있을 경우 기류를 역류시켜 적에게 주는 피해를 95.0% 증가시킨다. 단, 기류 보호막은 사라진다.",
               "damagePercent": "0.95",
               "criticalDamagePercent": "0",
@@ -7569,6 +7845,7 @@
               "skillName": "회오리 걸음",
               "name": "초고속 회전",
               "tier": 2,
+              "iconUrl": "https://cdn-lostark.game.onstove.com/efui_iconatlas/tripod_tier/tripod_tier_3_40.png",
               "tooltipText": "지점 조작으로 변경되며 모험가 및 일반 몬스터와 충돌이 무시된다. 우산을 세로로 세워 회전하며 적을 공격하고, 마지막에 내려찍으며 총 105.0%의 증가된 피해를 준다. 적이 공중에 뜬 상태일 때 공격 적중 시 다시 공중에 띄운다.",
               "damagePercent": "0",
               "criticalDamagePercent": "0",
@@ -9128,6 +9405,7 @@
               "skillName": "바람송곳",
               "name": "역류",
               "tier": 0,
+              "iconUrl": "https://cdn-lostark.game.onstove.com/efui_iconatlas/tripod_tier/tripod_tier_1_155.png",
               "tooltipText": "기류 보호막을 가지고 있을 경우 기류를 역류시켜 적에게 주는 피해를 60.0% 증가시킨다. 단, 기류 보호막은 사라진다.",
               "damagePercent": "0.6",
               "criticalDamagePercent": "0",
@@ -9145,6 +9423,7 @@
               "skillName": "바람송곳",
               "name": "큰 센바람",
               "tier": 1,
+              "iconUrl": "https://cdn-lostark.game.onstove.com/efui_iconatlas/tripod_tier/tripod_tier_2_40.png",
               "tooltipText": "공격 거리가 60.0% 증가하고, 마지막에 우산에서 바람 충격파를 발사하며 적에게 60.0% 추가 피해를 입히며 날려버린다.",
               "damagePercent": "0",
               "criticalDamagePercent": "0",
@@ -9162,6 +9441,7 @@
               "skillName": "바람송곳",
               "name": "집중 공격",
               "tier": 2,
+              "iconUrl": "https://cdn-lostark.game.onstove.com/efui_iconatlas/tripod_tier/tripod_tier_3_50.png",
               "tooltipText": "적에게 주는 피해가 95.0% 증가한다.",
               "damagePercent": "0",
               "criticalDamagePercent": "0",
@@ -9667,6 +9947,7 @@
               "skillName": "칼바람",
               "name": "거대 돌풍",
               "tier": 0,
+              "iconUrl": "https://cdn-lostark.game.onstove.com/efui_iconatlas/tripod_tier/tripod_tier_1_39.png",
               "tooltipText": "발도 준비 시간이 증가하고, 기를 모은 후 전방에 거대한 검기를 발사하여 적에게 주는 피해가 45.0% 증가한다.",
               "damagePercent": "0",
               "criticalDamagePercent": "0",
@@ -9684,6 +9965,7 @@
               "skillName": "칼바람",
               "name": "역류",
               "tier": 1,
+              "iconUrl": "https://cdn-lostark.game.onstove.com/efui_iconatlas/tripod_tier/tripod_tier_2_156.png",
               "tooltipText": "기류 보호막을 가지고 있을 경우 기류를 역류시켜 적에게 주는 피해를 95.0% 증가시킨다. 단, 기류 보호막은 사라진다.",
               "damagePercent": "0.95",
               "criticalDamagePercent": "0",
@@ -9701,6 +9983,7 @@
               "skillName": "칼바람",
               "name": "벼락",
               "tier": 2,
+              "iconUrl": "https://cdn-lostark.game.onstove.com/efui_iconatlas/tripod_tier/tripod_tier_3_17.png",
               "tooltipText": "[뇌] 속성으로 변경되고, 번개의 힘을 담아 발도 기술을 펼치며 적에게 주는 치명타 피해량이 210.0% 증가한다.",
               "damagePercent": "0",
               "criticalDamagePercent": "2.1",
@@ -10214,6 +10497,7 @@
               "skillName": "몰아치기",
               "name": "역류",
               "tier": 0,
+              "iconUrl": "https://cdn-lostark.game.onstove.com/efui_iconatlas/tripod_tier/tripod_tier_1_155.png",
               "tooltipText": "기류 보호막을 가지고 있을 경우 기류를 역류시켜 적에게 주는 피해를 60.0% 증가시킨다. 단, 기류 보호막은 사라진다.",
               "damagePercent": "0.6",
               "criticalDamagePercent": "0",
@@ -10231,6 +10515,7 @@
               "skillName": "몰아치기",
               "name": "우레",
               "tier": 1,
+              "iconUrl": "https://cdn-lostark.game.onstove.com/efui_iconatlas/tripod_tier/tripod_tier_2_17.png",
               "tooltipText": "발도 공격이 [뇌] 속성으로 변경되고 치명타 피해가 180.0% 증가한다. 공간 베기와 상승 기류 적용 시 발생하는 추가 공격에도 피해 증가 효과가 적용된다.",
               "damagePercent": "0",
               "criticalDamagePercent": "1.8",
@@ -10240,6 +10525,7 @@
               "skillName": "몰아치기",
               "name": "공간베기",
               "tier": 2,
+              "iconUrl": "https://cdn-lostark.game.onstove.com/efui_iconatlas/tripod_tier/tripod_tier_3_39.png",
               "tooltipText": "발도 이후 검풍을 발생시켜 94.8% 추가 피해를 준다.",
               "damagePercent": "0",
               "criticalDamagePercent": "0",
@@ -10850,6 +11136,7 @@
               "skillName": "회오리 걸음",
               "name": "재빠른 손놀림",
               "tier": 0,
+              "iconUrl": "https://cdn-lostark.game.onstove.com/efui_iconatlas/tripod_tier/tripod_tier_1_6.png",
               "tooltipText": "공격속도가 18.0% 증가한다.",
               "damagePercent": "0",
               "criticalDamagePercent": "0",
@@ -10859,6 +11146,7 @@
               "skillName": "회오리 걸음",
               "name": "역류",
               "tier": 1,
+              "iconUrl": "https://cdn-lostark.game.onstove.com/efui_iconatlas/tripod_tier/tripod_tier_2_156.png",
               "tooltipText": "기류 보호막을 가지고 있을 경우 기류를 역류시켜 적에게 주는 피해를 95.0% 증가시킨다. 단, 기류 보호막은 사라진다.",
               "damagePercent": "0.95",
               "criticalDamagePercent": "0",
@@ -10876,6 +11164,7 @@
               "skillName": "회오리 걸음",
               "name": "초고속 회전",
               "tier": 2,
+              "iconUrl": "https://cdn-lostark.game.onstove.com/efui_iconatlas/tripod_tier/tripod_tier_3_40.png",
               "tooltipText": "지점 조작으로 변경되며 모험가 및 일반 몬스터와 충돌이 무시된다. 우산을 세로로 세워 회전하며 적을 공격하고, 마지막에 내려찍으며 총 105.0%의 증가된 피해를 준다. 적이 공중에 뜬 상태일 때 공격 적중 시 다시 공중에 띄운다.",
               "damagePercent": "0",
               "criticalDamagePercent": "0",
@@ -12429,6 +12718,7 @@
               "skillName": "바람송곳",
               "name": "역류",
               "tier": 0,
+              "iconUrl": "https://cdn-lostark.game.onstove.com/efui_iconatlas/tripod_tier/tripod_tier_1_155.png",
               "tooltipText": "기류 보호막을 가지고 있을 경우 기류를 역류시켜 적에게 주는 피해를 60.0% 증가시킨다. 단, 기류 보호막은 사라진다.",
               "damagePercent": "0.6",
               "criticalDamagePercent": "0",
@@ -12446,6 +12736,7 @@
               "skillName": "바람송곳",
               "name": "큰 센바람",
               "tier": 1,
+              "iconUrl": "https://cdn-lostark.game.onstove.com/efui_iconatlas/tripod_tier/tripod_tier_2_40.png",
               "tooltipText": "공격 거리가 60.0% 증가하고, 마지막에 우산에서 바람 충격파를 발사하며 적에게 60.0% 추가 피해를 입히며 날려버린다.",
               "damagePercent": "0",
               "criticalDamagePercent": "0",
@@ -12463,6 +12754,7 @@
               "skillName": "바람송곳",
               "name": "집중 공격",
               "tier": 2,
+              "iconUrl": "https://cdn-lostark.game.onstove.com/efui_iconatlas/tripod_tier/tripod_tier_3_50.png",
               "tooltipText": "적에게 주는 피해가 95.0% 증가한다.",
               "damagePercent": "0",
               "criticalDamagePercent": "0",
@@ -12968,6 +13260,7 @@
               "skillName": "칼바람",
               "name": "거대 돌풍",
               "tier": 0,
+              "iconUrl": "https://cdn-lostark.game.onstove.com/efui_iconatlas/tripod_tier/tripod_tier_1_39.png",
               "tooltipText": "발도 준비 시간이 증가하고, 기를 모은 후 전방에 거대한 검기를 발사하여 적에게 주는 피해가 45.0% 증가한다.",
               "damagePercent": "0",
               "criticalDamagePercent": "0",
@@ -12985,6 +13278,7 @@
               "skillName": "칼바람",
               "name": "역류",
               "tier": 1,
+              "iconUrl": "https://cdn-lostark.game.onstove.com/efui_iconatlas/tripod_tier/tripod_tier_2_156.png",
               "tooltipText": "기류 보호막을 가지고 있을 경우 기류를 역류시켜 적에게 주는 피해를 95.0% 증가시킨다. 단, 기류 보호막은 사라진다.",
               "damagePercent": "0.95",
               "criticalDamagePercent": "0",
@@ -13002,6 +13296,7 @@
               "skillName": "칼바람",
               "name": "벼락",
               "tier": 2,
+              "iconUrl": "https://cdn-lostark.game.onstove.com/efui_iconatlas/tripod_tier/tripod_tier_3_17.png",
               "tooltipText": "[뇌] 속성으로 변경되고, 번개의 힘을 담아 발도 기술을 펼치며 적에게 주는 치명타 피해량이 210.0% 증가한다.",
               "damagePercent": "0",
               "criticalDamagePercent": "2.1",
@@ -13515,6 +13810,7 @@
               "skillName": "몰아치기",
               "name": "역류",
               "tier": 0,
+              "iconUrl": "https://cdn-lostark.game.onstove.com/efui_iconatlas/tripod_tier/tripod_tier_1_155.png",
               "tooltipText": "기류 보호막을 가지고 있을 경우 기류를 역류시켜 적에게 주는 피해를 60.0% 증가시킨다. 단, 기류 보호막은 사라진다.",
               "damagePercent": "0.6",
               "criticalDamagePercent": "0",
@@ -13532,6 +13828,7 @@
               "skillName": "몰아치기",
               "name": "우레",
               "tier": 1,
+              "iconUrl": "https://cdn-lostark.game.onstove.com/efui_iconatlas/tripod_tier/tripod_tier_2_17.png",
               "tooltipText": "발도 공격이 [뇌] 속성으로 변경되고 치명타 피해가 180.0% 증가한다. 공간 베기와 상승 기류 적용 시 발생하는 추가 공격에도 피해 증가 효과가 적용된다.",
               "damagePercent": "0",
               "criticalDamagePercent": "1.8",
@@ -13541,6 +13838,7 @@
               "skillName": "몰아치기",
               "name": "공간베기",
               "tier": 2,
+              "iconUrl": "https://cdn-lostark.game.onstove.com/efui_iconatlas/tripod_tier/tripod_tier_3_39.png",
               "tooltipText": "발도 이후 검풍을 발생시켜 94.8% 추가 피해를 준다.",
               "damagePercent": "0",
               "criticalDamagePercent": "0",
@@ -14151,6 +14449,7 @@
               "skillName": "회오리 걸음",
               "name": "재빠른 손놀림",
               "tier": 0,
+              "iconUrl": "https://cdn-lostark.game.onstove.com/efui_iconatlas/tripod_tier/tripod_tier_1_6.png",
               "tooltipText": "공격속도가 18.0% 증가한다.",
               "damagePercent": "0",
               "criticalDamagePercent": "0",
@@ -14160,6 +14459,7 @@
               "skillName": "회오리 걸음",
               "name": "역류",
               "tier": 1,
+              "iconUrl": "https://cdn-lostark.game.onstove.com/efui_iconatlas/tripod_tier/tripod_tier_2_156.png",
               "tooltipText": "기류 보호막을 가지고 있을 경우 기류를 역류시켜 적에게 주는 피해를 95.0% 증가시킨다. 단, 기류 보호막은 사라진다.",
               "damagePercent": "0.95",
               "criticalDamagePercent": "0",
@@ -14177,6 +14477,7 @@
               "skillName": "회오리 걸음",
               "name": "초고속 회전",
               "tier": 2,
+              "iconUrl": "https://cdn-lostark.game.onstove.com/efui_iconatlas/tripod_tier/tripod_tier_3_40.png",
               "tooltipText": "지점 조작으로 변경되며 모험가 및 일반 몬스터와 충돌이 무시된다. 우산을 세로로 세워 회전하며 적을 공격하고, 마지막에 내려찍으며 총 105.0%의 증가된 피해를 준다. 적이 공중에 뜬 상태일 때 공격 적중 시 다시 공중에 띄운다.",
               "damagePercent": "0",
               "criticalDamagePercent": "0",
