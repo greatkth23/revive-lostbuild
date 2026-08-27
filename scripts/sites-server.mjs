@@ -9,7 +9,7 @@ async function readBody(request) {
 }
 
 export default {
-  async fetch(request, env) {
+  async fetch(request) {
     const url = new URL(request.url);
     if (request.method === 'GET' && url.pathname === '/api/v1/catalog/weather-artist') {
       return Response.json(envelope(data.catalog), { headers: { 'cache-control': 'no-store' } });
@@ -28,7 +28,10 @@ export default {
         candidate: data.load.baseline
       }), { headers: { 'cache-control': 'no-store' } });
     }
-    if (request.method === 'GET' && env?.ASSETS?.fetch) return env.ASSETS.fetch(request);
+    if (request.method === 'GET') {
+      const asset = data.assets[url.pathname] || data.assets['/index.html'];
+      if (asset) return new Response(asset.body, { headers: { 'cache-control': 'no-store', 'content-type': asset.contentType } });
+    }
     return new Response('Not found', { status: 404 });
   }
 };
