@@ -192,7 +192,7 @@ describe('Weather Artist simulator editor', () => {
 
   simulatorTest('rebases only supported saved patches and announces discarded stale patches', async () => {
     // Break caught: a catalog change replays an unknown local patch and produces an opaque server error.
-    localStorage.setItem('weather-artist:patches:봄날꽃씨:1:current-v2.7.2:lostark-api-ts-v3:weather-artist-v0.5', stored([
+    localStorage.setItem('weather-artist:patches:봄날꽃씨:1:current-v2.7.2:lostark-api-ts-v4:weather-artist-v0.5', stored([
       { schemaVersion: '1', kind: 'set-section-enabled', sectionId: 'gems', enabled: false },
       { schemaVersion: '1', kind: 'set-section-enabled', sectionId: 'obsolete', enabled: false }
     ]));
@@ -204,7 +204,7 @@ describe('Weather Artist simulator editor', () => {
 
   simulatorTest('rebases patches from an older catalog key when a new catalog baseline arrives', async () => {
     // Break caught: versioned storage makes every catalog update silently abandon otherwise supported saved section choices.
-    localStorage.setItem('weather-artist:patches:봄날꽃씨:1:current-v2.7.2:lostark-api-ts-v3:weather-artist-v0.5', stored([
+    localStorage.setItem('weather-artist:patches:봄날꽃씨:1:current-v2.7.2:lostark-api-ts-v4:weather-artist-v0.5', stored([
       { schemaVersion: '1', kind: 'set-section-enabled', sectionId: 'gems', enabled: false }
     ]));
     const newerCatalog = { ...catalog, version: 'weather-artist-v0.6' };
@@ -219,9 +219,9 @@ describe('Weather Artist simulator editor', () => {
 
   simulatorTest('uses the most recent compatible predecessor envelope and announces the catalog rebase', async () => {
     // Break caught: old histories are concatenated or an incompatible ruleset is accidentally replayed.
-    localStorage.setItem('weather-artist:patches:봄날꽃씨:1:old-rules:lostark-api-ts-v3:weather-artist-v0.4', stored([{ schemaVersion: '1', kind: 'set-section-enabled', sectionId: 'gems', enabled: false }], '2026-08-25T12:00:00.000Z'));
-    localStorage.setItem('weather-artist:patches:봄날꽃씨:1:current-v2.7.2:lostark-api-ts-v3:weather-artist-v0.4', stored([{ schemaVersion: '1', kind: 'set-section-enabled', sectionId: 'gems', enabled: false }], '2026-08-25T13:00:00.000Z'));
-    localStorage.setItem('weather-artist:patches:봄날꽃씨:1:current-v2.7.2:lostark-api-ts-v3:weather-artist-v0.5', stored([{ schemaVersion: '1', kind: 'set-section-enabled', sectionId: 'gems', enabled: true }], '2026-08-25T14:00:00.000Z'));
+    localStorage.setItem('weather-artist:patches:봄날꽃씨:1:old-rules:lostark-api-ts-v4:weather-artist-v0.4', stored([{ schemaVersion: '1', kind: 'set-section-enabled', sectionId: 'gems', enabled: false }], '2026-08-25T12:00:00.000Z'));
+    localStorage.setItem('weather-artist:patches:봄날꽃씨:1:current-v2.7.2:lostark-api-ts-v4:weather-artist-v0.4', stored([{ schemaVersion: '1', kind: 'set-section-enabled', sectionId: 'gems', enabled: false }], '2026-08-25T13:00:00.000Z'));
+    localStorage.setItem('weather-artist:patches:봄날꽃씨:1:current-v2.7.2:lostark-api-ts-v4:weather-artist-v0.5', stored([{ schemaVersion: '1', kind: 'set-section-enabled', sectionId: 'gems', enabled: true }], '2026-08-25T14:00:00.000Z'));
     const newerCatalog = { ...catalog, version: 'weather-artist-v0.6' };
     const newerSnapshot = { ...snapshot, catalogVersion: 'weather-artist-v0.6' };
     vi.stubGlobal('fetch', vi.fn(async (url: string) => url.endsWith('/catalog/weather-artist') ? response(newerCatalog) : response({ snapshot: newerSnapshot, baseline, cacheHit: false })));
@@ -232,7 +232,7 @@ describe('Weather Artist simulator editor', () => {
 
   simulatorTest('discards malformed saved patch envelopes before they reach the simulation API', async () => {
     // Break caught: a malformed persisted boolean becomes an invalid Worker payload instead of a safely discarded local entry.
-    localStorage.setItem('weather-artist:patches:봄날꽃씨:1:current-v2.7.2:lostark-api-ts-v3:weather-artist-v0.5', stored([
+    localStorage.setItem('weather-artist:patches:봄날꽃씨:1:current-v2.7.2:lostark-api-ts-v4:weather-artist-v0.5', stored([
       { schemaVersion: '1', kind: 'set-section-enabled', sectionId: 'gems', enabled: false },
       { schemaVersion: 'wrong', kind: 'set-section-enabled', sectionId: 'gems', enabled: 'false' }
     ]));

@@ -158,7 +158,7 @@ function simulationRequest(snapshotId: string, overrides: Record<string, unknown
       schemaVersion: '1',
       snapshotId,
       calculatorVersion: 'current-v2.7.2',
-      parserVersion: 'lostark-api-ts-v3',
+      parserVersion: 'lostark-api-ts-v4',
       catalogVersion: 'weather-artist-v0.5',
       patches: [],
       scenario: { schemaVersion: '1', id: 'best', bossConditionId: 'boss', directionalSuccessBySkill: {} },
@@ -302,7 +302,7 @@ describe('Weather Artist Worker routes', () => {
       versions: {
         schema: '1',
         calculator: 'current-v2.7.2',
-        parser: 'lostark-api-ts-v3',
+        parser: 'lostark-api-ts-v4',
         catalog: 'weather-artist-v0.5'
       }
     });
@@ -350,7 +350,7 @@ describe('Weather Artist Worker routes', () => {
     const body = await second.json() as any;
     expect(second.status).toBe(200);
     expect(body.data.cacheHit).toBe(false);
-    expect(body.data.snapshot.parserVersion).toBe('lostark-api-ts-v3');
+    expect(body.data.snapshot.parserVersion).toBe('lostark-api-ts-v4');
     expect(harness.calls).toHaveLength(18);
   });
 

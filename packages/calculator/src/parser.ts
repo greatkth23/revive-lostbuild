@@ -13,7 +13,7 @@ import {
 import { reconstructAttackPower } from './attack-power.js';
 import { Decimal, dec, decimalString, percent, sum } from './decimal.js';
 
-export const PARSER_VERSION = 'lostark-api-ts-v3';
+export const PARSER_VERSION = 'lostark-api-ts-v4';
 export const ENDPOINT_SOURCES = [
   'profiles',
   'equipment',
@@ -751,7 +751,9 @@ function parseArkPassive(bodyValue: unknown, context: ParseContext): NormalizedB
         'ARK_PASSIVE_EFFECT_FALLBACK',
         'warning',
         `arkPassive.Effects[${index}]`,
-        `'${name}'의 ${fallbackComponents.map(({ category }) => category).join(', ')} 수치에 current-v2.7.2 검증 fallback을 사용했습니다.`
+        name === '기민함'
+          ? '기민함의 속도 비례 공식을 current-v2.7.2 검증값으로 환산해 치명타 적중률 +12%, 치명타 피해 +48%를 적용합니다.'
+          : `'${name}'의 ${fallbackComponents.map(({ category }) => category).join(', ')} 수치에 current-v2.7.2 검증 fallback을 사용했습니다.`
       );
       for (const component of fallbackComponents) {
         provenance(context, `arkPassive.Effects[${index}].fallback.${component.category}`, `${name} ${component.category} fallback`, component.value, {
@@ -1069,7 +1071,9 @@ function parseArkGrid(bodyValue: unknown, context: ParseContext): NormalizedBuil
       const path = `${corePath}.Tooltip.options[${optionIndex}]`;
       const activated = point >= option.requiredPoints;
       const components = activated ? parseArkGridComponents(option.text, coreName, coreGrade) : [];
-      if (activated && components.length === 0 && /(?:피해|공격력|치명타|재사용|방어력|공격\s*(?:및\s*이동\s*)?속도|이동\s*속도)/.test(option.text)) {
+      if (activated && components.length === 0
+        && coreName !== '혼돈의 달 코어 : 불타는 일격'
+        && /(?:피해|공격력|치명타|재사용|방어력|공격\s*(?:및\s*이동\s*)?속도|이동\s*속도)/.test(option.text)) {
         warning(context, 'UNPARSED_DAMAGE_TOOLTIP', 'incomplete', path, `'${coreName}'의 활성 ${option.requiredPoints}P 옵션을 분류하지 못했습니다.`);
       }
       for (const component of components) {
@@ -1369,13 +1373,6 @@ export function parseBuildSnapshot(rawBundle: unknown): ParsedBuildSnapshot {
   }
   const calculatedAttackPower = reconstructAttackPower(build).final;
   if (!dec(calculatedAttackPower).eq(build.profile.profileAttackPower)) {
-    warning(
-      context,
-      'CALCULATED_ATTACK_POWER_OVERRIDE',
-      'warning',
-      'profiles.Stats[공격력]',
-      '재구성 공격력과 API 프로필 공격력이 달라 current-v2.7.2의 재구성 공격력을 피해 계산에 사용합니다.'
-    );
     provenance(context, 'calculation.attackPower.final', '재구성 공격력', calculatedAttackPower, {
       sourceType: 'DERIVED_CURRENT_V2_7_2',
       note: `API 프로필 공격력 ${build.profile.profileAttackPower}은 검산용으로만 유지`

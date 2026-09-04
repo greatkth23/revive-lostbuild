@@ -685,13 +685,24 @@ describe('Weather Artist raw endpoint parser', () => {
     const parsed = parseBuildSnapshot(loadRawFixture());
     expect(parsed.warnings.map(({ code, path }) => ({ code, path }))).toEqual([
       { code: 'ARK_PASSIVE_EFFECT_FALLBACK', path: 'arkPassive.Effects[2]' },
-      { code: 'UNPARSED_DAMAGE_TOOLTIP', path: 'combatSkills[14].Tripods[6].Tooltip' },
-      { code: 'UNPARSED_DAMAGE_TOOLTIP', path: 'arkGrid.Slots[4].Tooltip.options[0]' },
-      { code: 'CALCULATED_ATTACK_POWER_OVERRIDE', path: 'profiles.Stats[공격력]' }
+      { code: 'UNPARSED_DAMAGE_TOOLTIP', path: 'combatSkills[14].Tripods[6].Tooltip' }
     ]);
     expect(parsed.build.provenance).toContainEqual(expect.objectContaining({
       path: 'arkPassive.Points[1].Description',
       value: '0.028',
+      applied: true
+    }));
+  });
+
+  test('keeps calculation provenance while hiding two approved non-actionable warnings', () => {
+    const parsed = parseBuildSnapshot(loadRawFixture());
+    expect(parsed.warnings).not.toEqual(expect.arrayContaining([
+      expect.objectContaining({ code: 'CALCULATED_ATTACK_POWER_OVERRIDE', path: 'profiles.Stats[공격력]' }),
+      expect.objectContaining({ code: 'UNPARSED_DAMAGE_TOOLTIP', path: 'arkGrid.Slots[4].Tooltip.options[0]' })
+    ]));
+    expect(parsed.build.provenance).toContainEqual(expect.objectContaining({
+      path: 'calculation.attackPower.final',
+      label: '재구성 공격력',
       applied: true
     }));
   });

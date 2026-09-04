@@ -186,7 +186,7 @@
       "characterName": "봄날꽃씨",
       "classId": "weather-artist",
       "calculatorVersion": "current-v2.7.2",
-      "parserVersion": "lostark-api-ts-v3",
+      "parserVersion": "lostark-api-ts-v4",
       "catalogVersion": "weather-artist-v0.5",
       "calculatedAttackPower": "258720.5038308918678085116909739914291229",
       "warnings": [
@@ -195,7 +195,7 @@
           "code": "ARK_PASSIVE_EFFECT_FALLBACK",
           "severity": "warning",
           "path": "arkPassive.Effects[2]",
-          "message": "'기민함'의 criticalRate, criticalDamage 수치에 current-v2.7.2 검증 fallback을 사용했습니다."
+          "message": "기민함의 속도 비례 공식을 current-v2.7.2 검증값으로 환산해 치명타 적중률 +12%, 치명타 피해 +48%를 적용합니다."
         },
         {
           "schemaVersion": "1",
@@ -204,20 +204,6 @@
           "path": "combatSkills[14].Tripods[6].Tooltip",
           "message": "'증기 조절' 선택 트라이포드의 피해 문구를 분류하지 못했습니다.",
           "rawValue": "공격 적중 시 적에게 주는 피해가 80.0% 증가하고, 여우비 상태일 경우 적에게 주는 피해가 추가로 20.0% 증가한다."
-        },
-        {
-          "schemaVersion": "1",
-          "code": "UNPARSED_DAMAGE_TOOLTIP",
-          "severity": "incomplete",
-          "path": "arkGrid.Slots[4].Tooltip.options[0]",
-          "message": "'혼돈의 달 코어 : 불타는 일격'의 활성 10P 옵션을 분류하지 못했습니다."
-        },
-        {
-          "schemaVersion": "1",
-          "code": "CALCULATED_ATTACK_POWER_OVERRIDE",
-          "severity": "warning",
-          "path": "profiles.Stats[공격력]",
-          "message": "재구성 공격력과 API 프로필 공격력이 달라 current-v2.7.2의 재구성 공격력을 피해 계산에 사용합니다."
         }
       ],
       "build": {
@@ -4738,10 +4724,8 @@
           "current-v2.7.2 calculated attack power 258720.5038308918678085116909739914291229",
           "Ark Grid aggregate/gem provenance retained; effective attack/additional categories deduplicated",
           "direction=NON_DIRECTIONAL; applied=false",
-          "arkPassive.Effects[2]: '기민함'의 criticalRate, criticalDamage 수치에 current-v2.7.2 검증 fallback을 사용했습니다.",
-          "combatSkills[14].Tripods[6].Tooltip: '증기 조절' 선택 트라이포드의 피해 문구를 분류하지 못했습니다.",
-          "arkGrid.Slots[4].Tooltip.options[0]: '혼돈의 달 코어 : 불타는 일격'의 활성 10P 옵션을 분류하지 못했습니다.",
-          "profiles.Stats[공격력]: 재구성 공격력과 API 프로필 공격력이 달라 current-v2.7.2의 재구성 공격력을 피해 계산에 사용합니다."
+          "arkPassive.Effects[2]: 기민함의 속도 비례 공식을 current-v2.7.2 검증값으로 환산해 치명타 적중률 +12%, 치명타 피해 +48%를 적용합니다.",
+          "combatSkills[14].Tripods[6].Tooltip: '증기 조절' 선택 트라이포드의 피해 문구를 분류하지 못했습니다."
         ],
         "checkpoints": {
           "attackPower": {
@@ -5221,10 +5205,8 @@
           "current-v2.7.2 calculated attack power 258720.5038308918678085116909739914291229",
           "Ark Grid aggregate/gem provenance retained; effective attack/additional categories deduplicated",
           "direction=NON_DIRECTIONAL; applied=false",
-          "arkPassive.Effects[2]: '기민함'의 criticalRate, criticalDamage 수치에 current-v2.7.2 검증 fallback을 사용했습니다.",
-          "combatSkills[14].Tripods[6].Tooltip: '증기 조절' 선택 트라이포드의 피해 문구를 분류하지 못했습니다.",
-          "arkGrid.Slots[4].Tooltip.options[0]: '혼돈의 달 코어 : 불타는 일격'의 활성 10P 옵션을 분류하지 못했습니다.",
-          "profiles.Stats[공격력]: 재구성 공격력과 API 프로필 공격력이 달라 current-v2.7.2의 재구성 공격력을 피해 계산에 사용합니다."
+          "arkPassive.Effects[2]: 기민함의 속도 비례 공식을 current-v2.7.2 검증값으로 환산해 치명타 적중률 +12%, 치명타 피해 +48%를 적용합니다.",
+          "combatSkills[14].Tripods[6].Tooltip: '증기 조절' 선택 트라이포드의 피해 문구를 분류하지 못했습니다."
         ],
         "checkpoints": {
           "attackPower": {
@@ -5693,10 +5675,8 @@
           "current-v2.7.2 calculated attack power 258720.5038308918678085116909739914291229",
           "Ark Grid aggregate/gem provenance retained; effective attack/additional categories deduplicated",
           "direction=NON_DIRECTIONAL; applied=false",
-          "arkPassive.Effects[2]: '기민함'의 criticalRate, criticalDamage 수치에 current-v2.7.2 검증 fallback을 사용했습니다.",
-          "combatSkills[14].Tripods[6].Tooltip: '증기 조절' 선택 트라이포드의 피해 문구를 분류하지 못했습니다.",
-          "arkGrid.Slots[4].Tooltip.options[0]: '혼돈의 달 코어 : 불타는 일격'의 활성 10P 옵션을 분류하지 못했습니다.",
-          "profiles.Stats[공격력]: 재구성 공격력과 API 프로필 공격력이 달라 current-v2.7.2의 재구성 공격력을 피해 계산에 사용합니다."
+          "arkPassive.Effects[2]: 기민함의 속도 비례 공식을 current-v2.7.2 검증값으로 환산해 치명타 적중률 +12%, 치명타 피해 +48%를 적용합니다.",
+          "combatSkills[14].Tripods[6].Tooltip: '증기 조절' 선택 트라이포드의 피해 문구를 분류하지 못했습니다."
         ],
         "checkpoints": {
           "attackPower": {
@@ -6231,10 +6211,8 @@
           "current-v2.7.2 calculated attack power 258720.5038308918678085116909739914291229",
           "Ark Grid aggregate/gem provenance retained; effective attack/additional categories deduplicated",
           "direction=NON_DIRECTIONAL; applied=false",
-          "arkPassive.Effects[2]: '기민함'의 criticalRate, criticalDamage 수치에 current-v2.7.2 검증 fallback을 사용했습니다.",
-          "combatSkills[14].Tripods[6].Tooltip: '증기 조절' 선택 트라이포드의 피해 문구를 분류하지 못했습니다.",
-          "arkGrid.Slots[4].Tooltip.options[0]: '혼돈의 달 코어 : 불타는 일격'의 활성 10P 옵션을 분류하지 못했습니다.",
-          "profiles.Stats[공격력]: 재구성 공격력과 API 프로필 공격력이 달라 current-v2.7.2의 재구성 공격력을 피해 계산에 사용합니다."
+          "arkPassive.Effects[2]: 기민함의 속도 비례 공식을 current-v2.7.2 검증값으로 환산해 치명타 적중률 +12%, 치명타 피해 +48%를 적용합니다.",
+          "combatSkills[14].Tripods[6].Tooltip: '증기 조절' 선택 트라이포드의 피해 문구를 분류하지 못했습니다."
         ],
         "checkpoints": {
           "attackPower": {
@@ -6775,10 +6753,8 @@
           "current-v2.7.2 calculated attack power 258720.5038308918678085116909739914291229",
           "Ark Grid aggregate/gem provenance retained; effective attack/additional categories deduplicated",
           "direction=NON_DIRECTIONAL; applied=false",
-          "arkPassive.Effects[2]: '기민함'의 criticalRate, criticalDamage 수치에 current-v2.7.2 검증 fallback을 사용했습니다.",
-          "combatSkills[14].Tripods[6].Tooltip: '증기 조절' 선택 트라이포드의 피해 문구를 분류하지 못했습니다.",
-          "arkGrid.Slots[4].Tooltip.options[0]: '혼돈의 달 코어 : 불타는 일격'의 활성 10P 옵션을 분류하지 못했습니다.",
-          "profiles.Stats[공격력]: 재구성 공격력과 API 프로필 공격력이 달라 current-v2.7.2의 재구성 공격력을 피해 계산에 사용합니다."
+          "arkPassive.Effects[2]: 기민함의 속도 비례 공식을 current-v2.7.2 검증값으로 환산해 치명타 적중률 +12%, 치명타 피해 +48%를 적용합니다.",
+          "combatSkills[14].Tripods[6].Tooltip: '증기 조절' 선택 트라이포드의 피해 문구를 분류하지 못했습니다."
         ],
         "checkpoints": {
           "attackPower": {
@@ -7411,10 +7387,8 @@
           "current-v2.7.2 calculated attack power 258720.5038308918678085116909739914291229",
           "Ark Grid aggregate/gem provenance retained; effective attack/additional categories deduplicated",
           "direction=NON_DIRECTIONAL; applied=false",
-          "arkPassive.Effects[2]: '기민함'의 criticalRate, criticalDamage 수치에 current-v2.7.2 검증 fallback을 사용했습니다.",
-          "combatSkills[14].Tripods[6].Tooltip: '증기 조절' 선택 트라이포드의 피해 문구를 분류하지 못했습니다.",
-          "arkGrid.Slots[4].Tooltip.options[0]: '혼돈의 달 코어 : 불타는 일격'의 활성 10P 옵션을 분류하지 못했습니다.",
-          "profiles.Stats[공격력]: 재구성 공격력과 API 프로필 공격력이 달라 current-v2.7.2의 재구성 공격력을 피해 계산에 사용합니다."
+          "arkPassive.Effects[2]: 기민함의 속도 비례 공식을 current-v2.7.2 검증값으로 환산해 치명타 적중률 +12%, 치명타 피해 +48%를 적용합니다.",
+          "combatSkills[14].Tripods[6].Tooltip: '증기 조절' 선택 트라이포드의 피해 문구를 분류하지 못했습니다."
         ],
         "checkpoints": {
           "attackPower": {
@@ -8039,10 +8013,8 @@
           "current-v2.7.2 calculated attack power 258720.5038308918678085116909739914291229",
           "Ark Grid aggregate/gem provenance retained; effective attack/additional categories deduplicated",
           "direction=NON_DIRECTIONAL; applied=false",
-          "arkPassive.Effects[2]: '기민함'의 criticalRate, criticalDamage 수치에 current-v2.7.2 검증 fallback을 사용했습니다.",
-          "combatSkills[14].Tripods[6].Tooltip: '증기 조절' 선택 트라이포드의 피해 문구를 분류하지 못했습니다.",
-          "arkGrid.Slots[4].Tooltip.options[0]: '혼돈의 달 코어 : 불타는 일격'의 활성 10P 옵션을 분류하지 못했습니다.",
-          "profiles.Stats[공격력]: 재구성 공격력과 API 프로필 공격력이 달라 current-v2.7.2의 재구성 공격력을 피해 계산에 사용합니다."
+          "arkPassive.Effects[2]: 기민함의 속도 비례 공식을 current-v2.7.2 검증값으로 환산해 치명타 적중률 +12%, 치명타 피해 +48%를 적용합니다.",
+          "combatSkills[14].Tripods[6].Tooltip: '증기 조절' 선택 트라이포드의 피해 문구를 분류하지 못했습니다."
         ],
         "checkpoints": {
           "attackPower": {
@@ -8522,10 +8494,8 @@
           "current-v2.7.2 calculated attack power 258720.5038308918678085116909739914291229",
           "Ark Grid aggregate/gem provenance retained; effective attack/additional categories deduplicated",
           "direction=NON_DIRECTIONAL; applied=false",
-          "arkPassive.Effects[2]: '기민함'의 criticalRate, criticalDamage 수치에 current-v2.7.2 검증 fallback을 사용했습니다.",
-          "combatSkills[14].Tripods[6].Tooltip: '증기 조절' 선택 트라이포드의 피해 문구를 분류하지 못했습니다.",
-          "arkGrid.Slots[4].Tooltip.options[0]: '혼돈의 달 코어 : 불타는 일격'의 활성 10P 옵션을 분류하지 못했습니다.",
-          "profiles.Stats[공격력]: 재구성 공격력과 API 프로필 공격력이 달라 current-v2.7.2의 재구성 공격력을 피해 계산에 사용합니다."
+          "arkPassive.Effects[2]: 기민함의 속도 비례 공식을 current-v2.7.2 검증값으로 환산해 치명타 적중률 +12%, 치명타 피해 +48%를 적용합니다.",
+          "combatSkills[14].Tripods[6].Tooltip: '증기 조절' 선택 트라이포드의 피해 문구를 분류하지 못했습니다."
         ],
         "checkpoints": {
           "attackPower": {
@@ -8994,10 +8964,8 @@
           "current-v2.7.2 calculated attack power 258720.5038308918678085116909739914291229",
           "Ark Grid aggregate/gem provenance retained; effective attack/additional categories deduplicated",
           "direction=NON_DIRECTIONAL; applied=false",
-          "arkPassive.Effects[2]: '기민함'의 criticalRate, criticalDamage 수치에 current-v2.7.2 검증 fallback을 사용했습니다.",
-          "combatSkills[14].Tripods[6].Tooltip: '증기 조절' 선택 트라이포드의 피해 문구를 분류하지 못했습니다.",
-          "arkGrid.Slots[4].Tooltip.options[0]: '혼돈의 달 코어 : 불타는 일격'의 활성 10P 옵션을 분류하지 못했습니다.",
-          "profiles.Stats[공격력]: 재구성 공격력과 API 프로필 공격력이 달라 current-v2.7.2의 재구성 공격력을 피해 계산에 사용합니다."
+          "arkPassive.Effects[2]: 기민함의 속도 비례 공식을 current-v2.7.2 검증값으로 환산해 치명타 적중률 +12%, 치명타 피해 +48%를 적용합니다.",
+          "combatSkills[14].Tripods[6].Tooltip: '증기 조절' 선택 트라이포드의 피해 문구를 분류하지 못했습니다."
         ],
         "checkpoints": {
           "attackPower": {
@@ -9532,10 +9500,8 @@
           "current-v2.7.2 calculated attack power 258720.5038308918678085116909739914291229",
           "Ark Grid aggregate/gem provenance retained; effective attack/additional categories deduplicated",
           "direction=NON_DIRECTIONAL; applied=false",
-          "arkPassive.Effects[2]: '기민함'의 criticalRate, criticalDamage 수치에 current-v2.7.2 검증 fallback을 사용했습니다.",
-          "combatSkills[14].Tripods[6].Tooltip: '증기 조절' 선택 트라이포드의 피해 문구를 분류하지 못했습니다.",
-          "arkGrid.Slots[4].Tooltip.options[0]: '혼돈의 달 코어 : 불타는 일격'의 활성 10P 옵션을 분류하지 못했습니다.",
-          "profiles.Stats[공격력]: 재구성 공격력과 API 프로필 공격력이 달라 current-v2.7.2의 재구성 공격력을 피해 계산에 사용합니다."
+          "arkPassive.Effects[2]: 기민함의 속도 비례 공식을 current-v2.7.2 검증값으로 환산해 치명타 적중률 +12%, 치명타 피해 +48%를 적용합니다.",
+          "combatSkills[14].Tripods[6].Tooltip: '증기 조절' 선택 트라이포드의 피해 문구를 분류하지 못했습니다."
         ],
         "checkpoints": {
           "attackPower": {
@@ -10076,10 +10042,8 @@
           "current-v2.7.2 calculated attack power 258720.5038308918678085116909739914291229",
           "Ark Grid aggregate/gem provenance retained; effective attack/additional categories deduplicated",
           "direction=NON_DIRECTIONAL; applied=false",
-          "arkPassive.Effects[2]: '기민함'의 criticalRate, criticalDamage 수치에 current-v2.7.2 검증 fallback을 사용했습니다.",
-          "combatSkills[14].Tripods[6].Tooltip: '증기 조절' 선택 트라이포드의 피해 문구를 분류하지 못했습니다.",
-          "arkGrid.Slots[4].Tooltip.options[0]: '혼돈의 달 코어 : 불타는 일격'의 활성 10P 옵션을 분류하지 못했습니다.",
-          "profiles.Stats[공격력]: 재구성 공격력과 API 프로필 공격력이 달라 current-v2.7.2의 재구성 공격력을 피해 계산에 사용합니다."
+          "arkPassive.Effects[2]: 기민함의 속도 비례 공식을 current-v2.7.2 검증값으로 환산해 치명타 적중률 +12%, 치명타 피해 +48%를 적용합니다.",
+          "combatSkills[14].Tripods[6].Tooltip: '증기 조절' 선택 트라이포드의 피해 문구를 분류하지 못했습니다."
         ],
         "checkpoints": {
           "attackPower": {
@@ -10712,10 +10676,8 @@
           "current-v2.7.2 calculated attack power 258720.5038308918678085116909739914291229",
           "Ark Grid aggregate/gem provenance retained; effective attack/additional categories deduplicated",
           "direction=NON_DIRECTIONAL; applied=false",
-          "arkPassive.Effects[2]: '기민함'의 criticalRate, criticalDamage 수치에 current-v2.7.2 검증 fallback을 사용했습니다.",
-          "combatSkills[14].Tripods[6].Tooltip: '증기 조절' 선택 트라이포드의 피해 문구를 분류하지 못했습니다.",
-          "arkGrid.Slots[4].Tooltip.options[0]: '혼돈의 달 코어 : 불타는 일격'의 활성 10P 옵션을 분류하지 못했습니다.",
-          "profiles.Stats[공격력]: 재구성 공격력과 API 프로필 공격력이 달라 current-v2.7.2의 재구성 공격력을 피해 계산에 사용합니다."
+          "arkPassive.Effects[2]: 기민함의 속도 비례 공식을 current-v2.7.2 검증값으로 환산해 치명타 적중률 +12%, 치명타 피해 +48%를 적용합니다.",
+          "combatSkills[14].Tripods[6].Tooltip: '증기 조절' 선택 트라이포드의 피해 문구를 분류하지 못했습니다."
         ],
         "checkpoints": {
           "attackPower": {
@@ -11334,10 +11296,8 @@
           "current-v2.7.2 calculated attack power 258720.5038308918678085116909739914291229",
           "Ark Grid aggregate/gem provenance retained; effective attack/additional categories deduplicated",
           "direction=NON_DIRECTIONAL; applied=false",
-          "arkPassive.Effects[2]: '기민함'의 criticalRate, criticalDamage 수치에 current-v2.7.2 검증 fallback을 사용했습니다.",
-          "combatSkills[14].Tripods[6].Tooltip: '증기 조절' 선택 트라이포드의 피해 문구를 분류하지 못했습니다.",
-          "arkGrid.Slots[4].Tooltip.options[0]: '혼돈의 달 코어 : 불타는 일격'의 활성 10P 옵션을 분류하지 못했습니다.",
-          "profiles.Stats[공격력]: 재구성 공격력과 API 프로필 공격력이 달라 current-v2.7.2의 재구성 공격력을 피해 계산에 사용합니다."
+          "arkPassive.Effects[2]: 기민함의 속도 비례 공식을 current-v2.7.2 검증값으로 환산해 치명타 적중률 +12%, 치명타 피해 +48%를 적용합니다.",
+          "combatSkills[14].Tripods[6].Tooltip: '증기 조절' 선택 트라이포드의 피해 문구를 분류하지 못했습니다."
         ],
         "checkpoints": {
           "attackPower": {
@@ -11817,10 +11777,8 @@
           "current-v2.7.2 calculated attack power 258720.5038308918678085116909739914291229",
           "Ark Grid aggregate/gem provenance retained; effective attack/additional categories deduplicated",
           "direction=NON_DIRECTIONAL; applied=false",
-          "arkPassive.Effects[2]: '기민함'의 criticalRate, criticalDamage 수치에 current-v2.7.2 검증 fallback을 사용했습니다.",
-          "combatSkills[14].Tripods[6].Tooltip: '증기 조절' 선택 트라이포드의 피해 문구를 분류하지 못했습니다.",
-          "arkGrid.Slots[4].Tooltip.options[0]: '혼돈의 달 코어 : 불타는 일격'의 활성 10P 옵션을 분류하지 못했습니다.",
-          "profiles.Stats[공격력]: 재구성 공격력과 API 프로필 공격력이 달라 current-v2.7.2의 재구성 공격력을 피해 계산에 사용합니다."
+          "arkPassive.Effects[2]: 기민함의 속도 비례 공식을 current-v2.7.2 검증값으로 환산해 치명타 적중률 +12%, 치명타 피해 +48%를 적용합니다.",
+          "combatSkills[14].Tripods[6].Tooltip: '증기 조절' 선택 트라이포드의 피해 문구를 분류하지 못했습니다."
         ],
         "checkpoints": {
           "attackPower": {
@@ -12289,10 +12247,8 @@
           "current-v2.7.2 calculated attack power 258720.5038308918678085116909739914291229",
           "Ark Grid aggregate/gem provenance retained; effective attack/additional categories deduplicated",
           "direction=NON_DIRECTIONAL; applied=false",
-          "arkPassive.Effects[2]: '기민함'의 criticalRate, criticalDamage 수치에 current-v2.7.2 검증 fallback을 사용했습니다.",
-          "combatSkills[14].Tripods[6].Tooltip: '증기 조절' 선택 트라이포드의 피해 문구를 분류하지 못했습니다.",
-          "arkGrid.Slots[4].Tooltip.options[0]: '혼돈의 달 코어 : 불타는 일격'의 활성 10P 옵션을 분류하지 못했습니다.",
-          "profiles.Stats[공격력]: 재구성 공격력과 API 프로필 공격력이 달라 current-v2.7.2의 재구성 공격력을 피해 계산에 사용합니다."
+          "arkPassive.Effects[2]: 기민함의 속도 비례 공식을 current-v2.7.2 검증값으로 환산해 치명타 적중률 +12%, 치명타 피해 +48%를 적용합니다.",
+          "combatSkills[14].Tripods[6].Tooltip: '증기 조절' 선택 트라이포드의 피해 문구를 분류하지 못했습니다."
         ],
         "checkpoints": {
           "attackPower": {
@@ -12827,10 +12783,8 @@
           "current-v2.7.2 calculated attack power 258720.5038308918678085116909739914291229",
           "Ark Grid aggregate/gem provenance retained; effective attack/additional categories deduplicated",
           "direction=NON_DIRECTIONAL; applied=false",
-          "arkPassive.Effects[2]: '기민함'의 criticalRate, criticalDamage 수치에 current-v2.7.2 검증 fallback을 사용했습니다.",
-          "combatSkills[14].Tripods[6].Tooltip: '증기 조절' 선택 트라이포드의 피해 문구를 분류하지 못했습니다.",
-          "arkGrid.Slots[4].Tooltip.options[0]: '혼돈의 달 코어 : 불타는 일격'의 활성 10P 옵션을 분류하지 못했습니다.",
-          "profiles.Stats[공격력]: 재구성 공격력과 API 프로필 공격력이 달라 current-v2.7.2의 재구성 공격력을 피해 계산에 사용합니다."
+          "arkPassive.Effects[2]: 기민함의 속도 비례 공식을 current-v2.7.2 검증값으로 환산해 치명타 적중률 +12%, 치명타 피해 +48%를 적용합니다.",
+          "combatSkills[14].Tripods[6].Tooltip: '증기 조절' 선택 트라이포드의 피해 문구를 분류하지 못했습니다."
         ],
         "checkpoints": {
           "attackPower": {
@@ -13371,10 +13325,8 @@
           "current-v2.7.2 calculated attack power 258720.5038308918678085116909739914291229",
           "Ark Grid aggregate/gem provenance retained; effective attack/additional categories deduplicated",
           "direction=NON_DIRECTIONAL; applied=false",
-          "arkPassive.Effects[2]: '기민함'의 criticalRate, criticalDamage 수치에 current-v2.7.2 검증 fallback을 사용했습니다.",
-          "combatSkills[14].Tripods[6].Tooltip: '증기 조절' 선택 트라이포드의 피해 문구를 분류하지 못했습니다.",
-          "arkGrid.Slots[4].Tooltip.options[0]: '혼돈의 달 코어 : 불타는 일격'의 활성 10P 옵션을 분류하지 못했습니다.",
-          "profiles.Stats[공격력]: 재구성 공격력과 API 프로필 공격력이 달라 current-v2.7.2의 재구성 공격력을 피해 계산에 사용합니다."
+          "arkPassive.Effects[2]: 기민함의 속도 비례 공식을 current-v2.7.2 검증값으로 환산해 치명타 적중률 +12%, 치명타 피해 +48%를 적용합니다.",
+          "combatSkills[14].Tripods[6].Tooltip: '증기 조절' 선택 트라이포드의 피해 문구를 분류하지 못했습니다."
         ],
         "checkpoints": {
           "attackPower": {
@@ -14007,10 +13959,8 @@
           "current-v2.7.2 calculated attack power 258720.5038308918678085116909739914291229",
           "Ark Grid aggregate/gem provenance retained; effective attack/additional categories deduplicated",
           "direction=NON_DIRECTIONAL; applied=false",
-          "arkPassive.Effects[2]: '기민함'의 criticalRate, criticalDamage 수치에 current-v2.7.2 검증 fallback을 사용했습니다.",
-          "combatSkills[14].Tripods[6].Tooltip: '증기 조절' 선택 트라이포드의 피해 문구를 분류하지 못했습니다.",
-          "arkGrid.Slots[4].Tooltip.options[0]: '혼돈의 달 코어 : 불타는 일격'의 활성 10P 옵션을 분류하지 못했습니다.",
-          "profiles.Stats[공격력]: 재구성 공격력과 API 프로필 공격력이 달라 current-v2.7.2의 재구성 공격력을 피해 계산에 사용합니다."
+          "arkPassive.Effects[2]: 기민함의 속도 비례 공식을 current-v2.7.2 검증값으로 환산해 치명타 적중률 +12%, 치명타 피해 +48%를 적용합니다.",
+          "combatSkills[14].Tripods[6].Tooltip: '증기 조절' 선택 트라이포드의 피해 문구를 분류하지 못했습니다."
         ],
         "checkpoints": {
           "attackPower": {
