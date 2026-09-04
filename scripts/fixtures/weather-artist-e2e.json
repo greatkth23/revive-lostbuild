@@ -186,7 +186,7 @@
       "characterName": "봄날꽃씨",
       "classId": "weather-artist",
       "calculatorVersion": "current-v2.7.2",
-      "parserVersion": "lostark-api-ts-v2",
+      "parserVersion": "lostark-api-ts-v3",
       "catalogVersion": "weather-artist-v0.5",
       "calculatedAttackPower": "258720.5038308918678085116909739914291229",
       "warnings": [
@@ -196,13 +196,6 @@
           "severity": "warning",
           "path": "arkPassive.Effects[2]",
           "message": "'기민함'의 criticalRate, criticalDamage 수치에 current-v2.7.2 검증 fallback을 사용했습니다."
-        },
-        {
-          "schemaVersion": "1",
-          "code": "KARMA_EVOLUTION_FALLBACK",
-          "severity": "warning",
-          "path": "arkPassive.Points[0]",
-          "message": "진화 카르마 수치를 파싱하지 못해 검증된 예시값 +6.0%를 사용했습니다."
         },
         {
           "schemaVersion": "1",
@@ -3798,6 +3791,18 @@
           },
           {
             "schemaVersion": "1",
+            "sourceType": "OFFICIAL_API+USER_VERIFIED_RULE",
+            "path": "arkPassive.Points[0].Description",
+            "label": "진화 카르마 진화형 피해",
+            "value": "0.06",
+            "parsed": true,
+            "eligible": true,
+            "applied": true,
+            "excludedReason": "",
+            "note": "사용자 제공 진화 카르마 표(2026-09-04): 6랭크 × 1%; 기존 진화형 피해에 합산"
+          },
+          {
+            "schemaVersion": "1",
             "sourceType": "OFFICIAL_API+VERIFIED_RULE",
             "path": "arkPassive.Points[1].Description",
             "label": "깨달음 카르마 무기 공격력",
@@ -4734,7 +4739,6 @@
           "Ark Grid aggregate/gem provenance retained; effective attack/additional categories deduplicated",
           "direction=NON_DIRECTIONAL; applied=false",
           "arkPassive.Effects[2]: '기민함'의 criticalRate, criticalDamage 수치에 current-v2.7.2 검증 fallback을 사용했습니다.",
-          "arkPassive.Points[0]: 진화 카르마 수치를 파싱하지 못해 검증된 예시값 +6.0%를 사용했습니다.",
           "combatSkills[14].Tripods[6].Tooltip: '증기 조절' 선택 트라이포드의 피해 문구를 분류하지 못했습니다.",
           "arkGrid.Slots[4].Tooltip.options[0]: '혼돈의 달 코어 : 불타는 일격'의 활성 10P 옵션을 분류하지 못했습니다.",
           "profiles.Stats[공격력]: 재구성 공격력과 API 프로필 공격력이 달라 current-v2.7.2의 재구성 공격력을 피해 계산에 사용합니다."
@@ -5218,7 +5222,6 @@
           "Ark Grid aggregate/gem provenance retained; effective attack/additional categories deduplicated",
           "direction=NON_DIRECTIONAL; applied=false",
           "arkPassive.Effects[2]: '기민함'의 criticalRate, criticalDamage 수치에 current-v2.7.2 검증 fallback을 사용했습니다.",
-          "arkPassive.Points[0]: 진화 카르마 수치를 파싱하지 못해 검증된 예시값 +6.0%를 사용했습니다.",
           "combatSkills[14].Tripods[6].Tooltip: '증기 조절' 선택 트라이포드의 피해 문구를 분류하지 못했습니다.",
           "arkGrid.Slots[4].Tooltip.options[0]: '혼돈의 달 코어 : 불타는 일격'의 활성 10P 옵션을 분류하지 못했습니다.",
           "profiles.Stats[공격력]: 재구성 공격력과 API 프로필 공격력이 달라 current-v2.7.2의 재구성 공격력을 피해 계산에 사용합니다."
@@ -5691,7 +5694,6 @@
           "Ark Grid aggregate/gem provenance retained; effective attack/additional categories deduplicated",
           "direction=NON_DIRECTIONAL; applied=false",
           "arkPassive.Effects[2]: '기민함'의 criticalRate, criticalDamage 수치에 current-v2.7.2 검증 fallback을 사용했습니다.",
-          "arkPassive.Points[0]: 진화 카르마 수치를 파싱하지 못해 검증된 예시값 +6.0%를 사용했습니다.",
           "combatSkills[14].Tripods[6].Tooltip: '증기 조절' 선택 트라이포드의 피해 문구를 분류하지 못했습니다.",
           "arkGrid.Slots[4].Tooltip.options[0]: '혼돈의 달 코어 : 불타는 일격'의 활성 10P 옵션을 분류하지 못했습니다.",
           "profiles.Stats[공격력]: 재구성 공격력과 API 프로필 공격력이 달라 current-v2.7.2의 재구성 공격력을 피해 계산에 사용합니다."
@@ -6230,7 +6232,6 @@
           "Ark Grid aggregate/gem provenance retained; effective attack/additional categories deduplicated",
           "direction=NON_DIRECTIONAL; applied=false",
           "arkPassive.Effects[2]: '기민함'의 criticalRate, criticalDamage 수치에 current-v2.7.2 검증 fallback을 사용했습니다.",
-          "arkPassive.Points[0]: 진화 카르마 수치를 파싱하지 못해 검증된 예시값 +6.0%를 사용했습니다.",
           "combatSkills[14].Tripods[6].Tooltip: '증기 조절' 선택 트라이포드의 피해 문구를 분류하지 못했습니다.",
           "arkGrid.Slots[4].Tooltip.options[0]: '혼돈의 달 코어 : 불타는 일격'의 활성 10P 옵션을 분류하지 못했습니다.",
           "profiles.Stats[공격력]: 재구성 공격력과 API 프로필 공격력이 달라 current-v2.7.2의 재구성 공격력을 피해 계산에 사용합니다."
@@ -6775,7 +6776,6 @@
           "Ark Grid aggregate/gem provenance retained; effective attack/additional categories deduplicated",
           "direction=NON_DIRECTIONAL; applied=false",
           "arkPassive.Effects[2]: '기민함'의 criticalRate, criticalDamage 수치에 current-v2.7.2 검증 fallback을 사용했습니다.",
-          "arkPassive.Points[0]: 진화 카르마 수치를 파싱하지 못해 검증된 예시값 +6.0%를 사용했습니다.",
           "combatSkills[14].Tripods[6].Tooltip: '증기 조절' 선택 트라이포드의 피해 문구를 분류하지 못했습니다.",
           "arkGrid.Slots[4].Tooltip.options[0]: '혼돈의 달 코어 : 불타는 일격'의 활성 10P 옵션을 분류하지 못했습니다.",
           "profiles.Stats[공격력]: 재구성 공격력과 API 프로필 공격력이 달라 current-v2.7.2의 재구성 공격력을 피해 계산에 사용합니다."
@@ -7412,7 +7412,6 @@
           "Ark Grid aggregate/gem provenance retained; effective attack/additional categories deduplicated",
           "direction=NON_DIRECTIONAL; applied=false",
           "arkPassive.Effects[2]: '기민함'의 criticalRate, criticalDamage 수치에 current-v2.7.2 검증 fallback을 사용했습니다.",
-          "arkPassive.Points[0]: 진화 카르마 수치를 파싱하지 못해 검증된 예시값 +6.0%를 사용했습니다.",
           "combatSkills[14].Tripods[6].Tooltip: '증기 조절' 선택 트라이포드의 피해 문구를 분류하지 못했습니다.",
           "arkGrid.Slots[4].Tooltip.options[0]: '혼돈의 달 코어 : 불타는 일격'의 활성 10P 옵션을 분류하지 못했습니다.",
           "profiles.Stats[공격력]: 재구성 공격력과 API 프로필 공격력이 달라 current-v2.7.2의 재구성 공격력을 피해 계산에 사용합니다."
@@ -8041,7 +8040,6 @@
           "Ark Grid aggregate/gem provenance retained; effective attack/additional categories deduplicated",
           "direction=NON_DIRECTIONAL; applied=false",
           "arkPassive.Effects[2]: '기민함'의 criticalRate, criticalDamage 수치에 current-v2.7.2 검증 fallback을 사용했습니다.",
-          "arkPassive.Points[0]: 진화 카르마 수치를 파싱하지 못해 검증된 예시값 +6.0%를 사용했습니다.",
           "combatSkills[14].Tripods[6].Tooltip: '증기 조절' 선택 트라이포드의 피해 문구를 분류하지 못했습니다.",
           "arkGrid.Slots[4].Tooltip.options[0]: '혼돈의 달 코어 : 불타는 일격'의 활성 10P 옵션을 분류하지 못했습니다.",
           "profiles.Stats[공격력]: 재구성 공격력과 API 프로필 공격력이 달라 current-v2.7.2의 재구성 공격력을 피해 계산에 사용합니다."
@@ -8525,7 +8523,6 @@
           "Ark Grid aggregate/gem provenance retained; effective attack/additional categories deduplicated",
           "direction=NON_DIRECTIONAL; applied=false",
           "arkPassive.Effects[2]: '기민함'의 criticalRate, criticalDamage 수치에 current-v2.7.2 검증 fallback을 사용했습니다.",
-          "arkPassive.Points[0]: 진화 카르마 수치를 파싱하지 못해 검증된 예시값 +6.0%를 사용했습니다.",
           "combatSkills[14].Tripods[6].Tooltip: '증기 조절' 선택 트라이포드의 피해 문구를 분류하지 못했습니다.",
           "arkGrid.Slots[4].Tooltip.options[0]: '혼돈의 달 코어 : 불타는 일격'의 활성 10P 옵션을 분류하지 못했습니다.",
           "profiles.Stats[공격력]: 재구성 공격력과 API 프로필 공격력이 달라 current-v2.7.2의 재구성 공격력을 피해 계산에 사용합니다."
@@ -8998,7 +8995,6 @@
           "Ark Grid aggregate/gem provenance retained; effective attack/additional categories deduplicated",
           "direction=NON_DIRECTIONAL; applied=false",
           "arkPassive.Effects[2]: '기민함'의 criticalRate, criticalDamage 수치에 current-v2.7.2 검증 fallback을 사용했습니다.",
-          "arkPassive.Points[0]: 진화 카르마 수치를 파싱하지 못해 검증된 예시값 +6.0%를 사용했습니다.",
           "combatSkills[14].Tripods[6].Tooltip: '증기 조절' 선택 트라이포드의 피해 문구를 분류하지 못했습니다.",
           "arkGrid.Slots[4].Tooltip.options[0]: '혼돈의 달 코어 : 불타는 일격'의 활성 10P 옵션을 분류하지 못했습니다.",
           "profiles.Stats[공격력]: 재구성 공격력과 API 프로필 공격력이 달라 current-v2.7.2의 재구성 공격력을 피해 계산에 사용합니다."
@@ -9537,7 +9533,6 @@
           "Ark Grid aggregate/gem provenance retained; effective attack/additional categories deduplicated",
           "direction=NON_DIRECTIONAL; applied=false",
           "arkPassive.Effects[2]: '기민함'의 criticalRate, criticalDamage 수치에 current-v2.7.2 검증 fallback을 사용했습니다.",
-          "arkPassive.Points[0]: 진화 카르마 수치를 파싱하지 못해 검증된 예시값 +6.0%를 사용했습니다.",
           "combatSkills[14].Tripods[6].Tooltip: '증기 조절' 선택 트라이포드의 피해 문구를 분류하지 못했습니다.",
           "arkGrid.Slots[4].Tooltip.options[0]: '혼돈의 달 코어 : 불타는 일격'의 활성 10P 옵션을 분류하지 못했습니다.",
           "profiles.Stats[공격력]: 재구성 공격력과 API 프로필 공격력이 달라 current-v2.7.2의 재구성 공격력을 피해 계산에 사용합니다."
@@ -10082,7 +10077,6 @@
           "Ark Grid aggregate/gem provenance retained; effective attack/additional categories deduplicated",
           "direction=NON_DIRECTIONAL; applied=false",
           "arkPassive.Effects[2]: '기민함'의 criticalRate, criticalDamage 수치에 current-v2.7.2 검증 fallback을 사용했습니다.",
-          "arkPassive.Points[0]: 진화 카르마 수치를 파싱하지 못해 검증된 예시값 +6.0%를 사용했습니다.",
           "combatSkills[14].Tripods[6].Tooltip: '증기 조절' 선택 트라이포드의 피해 문구를 분류하지 못했습니다.",
           "arkGrid.Slots[4].Tooltip.options[0]: '혼돈의 달 코어 : 불타는 일격'의 활성 10P 옵션을 분류하지 못했습니다.",
           "profiles.Stats[공격력]: 재구성 공격력과 API 프로필 공격력이 달라 current-v2.7.2의 재구성 공격력을 피해 계산에 사용합니다."
@@ -10719,7 +10713,6 @@
           "Ark Grid aggregate/gem provenance retained; effective attack/additional categories deduplicated",
           "direction=NON_DIRECTIONAL; applied=false",
           "arkPassive.Effects[2]: '기민함'의 criticalRate, criticalDamage 수치에 current-v2.7.2 검증 fallback을 사용했습니다.",
-          "arkPassive.Points[0]: 진화 카르마 수치를 파싱하지 못해 검증된 예시값 +6.0%를 사용했습니다.",
           "combatSkills[14].Tripods[6].Tooltip: '증기 조절' 선택 트라이포드의 피해 문구를 분류하지 못했습니다.",
           "arkGrid.Slots[4].Tooltip.options[0]: '혼돈의 달 코어 : 불타는 일격'의 활성 10P 옵션을 분류하지 못했습니다.",
           "profiles.Stats[공격력]: 재구성 공격력과 API 프로필 공격력이 달라 current-v2.7.2의 재구성 공격력을 피해 계산에 사용합니다."
@@ -11342,7 +11335,6 @@
           "Ark Grid aggregate/gem provenance retained; effective attack/additional categories deduplicated",
           "direction=NON_DIRECTIONAL; applied=false",
           "arkPassive.Effects[2]: '기민함'의 criticalRate, criticalDamage 수치에 current-v2.7.2 검증 fallback을 사용했습니다.",
-          "arkPassive.Points[0]: 진화 카르마 수치를 파싱하지 못해 검증된 예시값 +6.0%를 사용했습니다.",
           "combatSkills[14].Tripods[6].Tooltip: '증기 조절' 선택 트라이포드의 피해 문구를 분류하지 못했습니다.",
           "arkGrid.Slots[4].Tooltip.options[0]: '혼돈의 달 코어 : 불타는 일격'의 활성 10P 옵션을 분류하지 못했습니다.",
           "profiles.Stats[공격력]: 재구성 공격력과 API 프로필 공격력이 달라 current-v2.7.2의 재구성 공격력을 피해 계산에 사용합니다."
@@ -11826,7 +11818,6 @@
           "Ark Grid aggregate/gem provenance retained; effective attack/additional categories deduplicated",
           "direction=NON_DIRECTIONAL; applied=false",
           "arkPassive.Effects[2]: '기민함'의 criticalRate, criticalDamage 수치에 current-v2.7.2 검증 fallback을 사용했습니다.",
-          "arkPassive.Points[0]: 진화 카르마 수치를 파싱하지 못해 검증된 예시값 +6.0%를 사용했습니다.",
           "combatSkills[14].Tripods[6].Tooltip: '증기 조절' 선택 트라이포드의 피해 문구를 분류하지 못했습니다.",
           "arkGrid.Slots[4].Tooltip.options[0]: '혼돈의 달 코어 : 불타는 일격'의 활성 10P 옵션을 분류하지 못했습니다.",
           "profiles.Stats[공격력]: 재구성 공격력과 API 프로필 공격력이 달라 current-v2.7.2의 재구성 공격력을 피해 계산에 사용합니다."
@@ -12299,7 +12290,6 @@
           "Ark Grid aggregate/gem provenance retained; effective attack/additional categories deduplicated",
           "direction=NON_DIRECTIONAL; applied=false",
           "arkPassive.Effects[2]: '기민함'의 criticalRate, criticalDamage 수치에 current-v2.7.2 검증 fallback을 사용했습니다.",
-          "arkPassive.Points[0]: 진화 카르마 수치를 파싱하지 못해 검증된 예시값 +6.0%를 사용했습니다.",
           "combatSkills[14].Tripods[6].Tooltip: '증기 조절' 선택 트라이포드의 피해 문구를 분류하지 못했습니다.",
           "arkGrid.Slots[4].Tooltip.options[0]: '혼돈의 달 코어 : 불타는 일격'의 활성 10P 옵션을 분류하지 못했습니다.",
           "profiles.Stats[공격력]: 재구성 공격력과 API 프로필 공격력이 달라 current-v2.7.2의 재구성 공격력을 피해 계산에 사용합니다."
@@ -12838,7 +12828,6 @@
           "Ark Grid aggregate/gem provenance retained; effective attack/additional categories deduplicated",
           "direction=NON_DIRECTIONAL; applied=false",
           "arkPassive.Effects[2]: '기민함'의 criticalRate, criticalDamage 수치에 current-v2.7.2 검증 fallback을 사용했습니다.",
-          "arkPassive.Points[0]: 진화 카르마 수치를 파싱하지 못해 검증된 예시값 +6.0%를 사용했습니다.",
           "combatSkills[14].Tripods[6].Tooltip: '증기 조절' 선택 트라이포드의 피해 문구를 분류하지 못했습니다.",
           "arkGrid.Slots[4].Tooltip.options[0]: '혼돈의 달 코어 : 불타는 일격'의 활성 10P 옵션을 분류하지 못했습니다.",
           "profiles.Stats[공격력]: 재구성 공격력과 API 프로필 공격력이 달라 current-v2.7.2의 재구성 공격력을 피해 계산에 사용합니다."
@@ -13383,7 +13372,6 @@
           "Ark Grid aggregate/gem provenance retained; effective attack/additional categories deduplicated",
           "direction=NON_DIRECTIONAL; applied=false",
           "arkPassive.Effects[2]: '기민함'의 criticalRate, criticalDamage 수치에 current-v2.7.2 검증 fallback을 사용했습니다.",
-          "arkPassive.Points[0]: 진화 카르마 수치를 파싱하지 못해 검증된 예시값 +6.0%를 사용했습니다.",
           "combatSkills[14].Tripods[6].Tooltip: '증기 조절' 선택 트라이포드의 피해 문구를 분류하지 못했습니다.",
           "arkGrid.Slots[4].Tooltip.options[0]: '혼돈의 달 코어 : 불타는 일격'의 활성 10P 옵션을 분류하지 못했습니다.",
           "profiles.Stats[공격력]: 재구성 공격력과 API 프로필 공격력이 달라 current-v2.7.2의 재구성 공격력을 피해 계산에 사용합니다."
@@ -14020,7 +14008,6 @@
           "Ark Grid aggregate/gem provenance retained; effective attack/additional categories deduplicated",
           "direction=NON_DIRECTIONAL; applied=false",
           "arkPassive.Effects[2]: '기민함'의 criticalRate, criticalDamage 수치에 current-v2.7.2 검증 fallback을 사용했습니다.",
-          "arkPassive.Points[0]: 진화 카르마 수치를 파싱하지 못해 검증된 예시값 +6.0%를 사용했습니다.",
           "combatSkills[14].Tripods[6].Tooltip: '증기 조절' 선택 트라이포드의 피해 문구를 분류하지 못했습니다.",
           "arkGrid.Slots[4].Tooltip.options[0]: '혼돈의 달 코어 : 불타는 일격'의 활성 10P 옵션을 분류하지 못했습니다.",
           "profiles.Stats[공격력]: 재구성 공격력과 API 프로필 공격력이 달라 current-v2.7.2의 재구성 공격력을 피해 계산에 사용합니다."

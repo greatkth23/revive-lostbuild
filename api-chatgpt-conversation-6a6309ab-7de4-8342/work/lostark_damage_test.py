@@ -59,7 +59,7 @@ SKILL_ALIASES = {
     "4 스택 루인": FOUR_STACK_RUIN_SKILL,
 }
 CALCULATOR_VERSION = "2.8.1"
-PARSER_VERSION = "lostark-api-v2.7.1"
+PARSER_VERSION = "lostark-api-v2.7.2"
 PARSED_SCHEMA_VERSION = "3.6.0"
 DEFAULT_RULE_VERSION = "current-v2.7.2"
 DB_RELEASE = "weather-artist-v0.4"
@@ -1998,6 +1998,8 @@ def parse_ark_passive(
         text = tooltip_to_text(point.get("Description") or point.get("Tooltip"))
         level_values = find_numbers(text, r"([0-9]+)\s*레벨")
         karma_level = int(max(level_values)) if level_values else 0
+        rank_match = re.search(r"(?:([0-9]+)\s*랭크|랭크\s*[:：]?\s*([0-9]+))", text)
+        rank = int(rank_match.group(1) or rank_match.group(2)) if rank_match else None
         weapon_values = [
             pct(v)
             for v in find_numbers(
@@ -2037,20 +2039,24 @@ def parse_ark_passive(
                     "무기 공격력 증가를 적용하지 않았습니다.",
                 )
         if "진화" in name or "진화" in text:
-            if evolution_values:
-                karma_evolution = max(evolution_values)
-            elif text and ("카르마" in text or "랭크" in text):
-                karma_evolution = Decimal("0.06")
-                record_fallback(
+            if rank is not None and 0 <= rank <= 6:
+                karma_evolution = Decimal(rank) * Decimal("0.01")
+                sources.append(source(
+                    source_type="API_FIELD+USER_VERIFIED",
                     path=f"arkPassive.Points[{index}]",
                     label="진화 카르마 진화형 피해",
                     value=karma_evolution,
                     raw=text,
-                    note="랭크·레벨 전체 표가 없어 예시 DB 사용",
-                )
+                    note=f"사용자 제공 진화 카르마 표(2026-09-04): {rank}랭크 × 1%; 기존 진화형 피해에 합산",
+                ))
+                if any(value != karma_evolution for value in evolution_values):
+                    warn_once(warnings, "진화 카르마 랭크와 툴팁 피해 수치가 달라 랭크 × 1%를 적용했습니다.")
+            elif rank is None and evolution_values:
+                karma_evolution = max(evolution_values)
+            elif text:
                 warn_once(
                     warnings,
-                    "진화 카르마 수치를 파싱하지 못해 예시값 +6.0%를 사용했습니다.",
+                    "진화 카르마의 유효한 랭크 또는 진화형 피해 수치를 확인하지 못해 피해 증가를 적용하지 않았습니다. 레벨로 랭크를 추정하지 않습니다.",
                 )
         points.append(
             {
@@ -2060,7 +2066,7 @@ def parse_ark_passive(
                 "karmaLevel": karma_level,
             }
         )
-        if weapon_values or evolution_values:
+        if weapon_values or (evolution_values and rank is None):
             sources.append(
                 source(
                     source_type="API_TOOLTIP",

@@ -158,7 +158,7 @@ function simulationRequest(snapshotId: string, overrides: Record<string, unknown
       schemaVersion: '1',
       snapshotId,
       calculatorVersion: 'current-v2.7.2',
-      parserVersion: 'lostark-api-ts-v2',
+      parserVersion: 'lostark-api-ts-v3',
       catalogVersion: 'weather-artist-v0.5',
       patches: [],
       scenario: { schemaVersion: '1', id: 'best', bossConditionId: 'boss', directionalSuccessBySkill: {} },
@@ -302,7 +302,7 @@ describe('Weather Artist Worker routes', () => {
       versions: {
         schema: '1',
         calculator: 'current-v2.7.2',
-        parser: 'lostark-api-ts-v2',
+        parser: 'lostark-api-ts-v3',
         catalog: 'weather-artist-v0.5'
       }
     });
@@ -337,20 +337,20 @@ describe('Weather Artist Worker routes', () => {
     expect(harness.calls).toHaveLength(9);
   });
 
-  test('ignores a cached snapshot from an incompatible parser contract', async () => {
-    // Break caught: a deployment reads an old KV build without calculationInputs and crashes during damage calculation.
+  test.each(['lostark-api-ts-v1', 'lostark-api-ts-v2'])('ignores a cached snapshot from %s', async (parserVersion) => {
+    // Reject both missing calculationInputs and v2 snapshots containing the fixed 6% karma fallback.
     const harness = makeHarness();
     const first = await harness.app.fetch(loadRequest());
     const firstBody = await first.json() as any;
     const cached = harness.storage.snapshots.get(firstBody.data.snapshot.snapshotId)!;
-    cached.snapshot.parserVersion = 'lostark-api-ts-v1';
-    delete (cached.snapshot.build as any).calculationInputs;
+    cached.snapshot.parserVersion = parserVersion;
+    if (parserVersion === 'lostark-api-ts-v1') delete (cached.snapshot.build as any).calculationInputs;
 
     const second = await harness.app.fetch(loadRequest());
     const body = await second.json() as any;
     expect(second.status).toBe(200);
     expect(body.data.cacheHit).toBe(false);
-    expect(body.data.snapshot.parserVersion).toBe('lostark-api-ts-v2');
+    expect(body.data.snapshot.parserVersion).toBe('lostark-api-ts-v3');
     expect(harness.calls).toHaveLength(18);
   });
 

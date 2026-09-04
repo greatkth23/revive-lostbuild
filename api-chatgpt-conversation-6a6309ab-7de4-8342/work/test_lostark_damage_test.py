@@ -351,6 +351,44 @@ class ParserTests(unittest.TestCase):
         self.assertIn("낙인력", labels)
         self.assertIn("포인트 효과", labels)
 
+    def test_evolution_karma_uses_rank_for_all_supplied_levels(self):
+        for rank, first, last in ((1, 1, 5), (2, 5, 9), (3, 9, 13), (4, 13, 17), (5, 17, 21), (6, 21, 30)):
+            for level in range(first, last + 1):
+                with self.subTest(rank=rank, level=level):
+                    warnings = []
+                    parsed = dut.parse_ark_passive({"Points": [{
+                        "Name": "진화", "Value": 140,
+                        "Description": f"{rank}랭크 {level}레벨",
+                    }], "Effects": []}, warnings)
+                    self.assertEqual(parsed["karmaEvolutionDamage"], Decimal(rank) / 100)
+                    self.assertEqual(parsed["points"][0]["karmaLevel"], level)
+                    self.assertFalse(any("진화 카르마" in item for item in warnings))
+                    self.assertTrue(any(
+                        item["label"] == "진화 카르마 진화형 피해"
+                        and item["sourceType"] == "API_FIELD+USER_VERIFIED"
+                        for item in parsed["sources"]
+                    ))
+
+    def test_evolution_karma_unknown_and_explicit_values(self):
+        for description, expected, warns in (
+            ("카르마 5레벨", "0", True),
+            ("카르마 21레벨", "0", True),
+            ("카르마", "0", True),
+            ("7랭크 30레벨", "0", True),
+            ("0랭크 0레벨", "0", False),
+            ("카르마 진화형 피해가 2% 증가", "0.02", False),
+            ("카르마 진화형 피해가 0% 증가", "0", False),
+            ("2랭크 5레벨 진화형 피해가 6% 증가", "0.02", True),
+            ("<font>랭크: 2</font><br>5레벨 낙인력 2% 최대 생명력 2000", "0.02", False),
+        ):
+            with self.subTest(description=description):
+                warnings = []
+                parsed = dut.parse_ark_passive({"Points": [{
+                    "Name": "진화", "Value": 140, "Description": "", "Tooltip": description,
+                }], "Effects": []}, warnings)
+                self.assertEqual(parsed["karmaEvolutionDamage"], Decimal(expected))
+                self.assertEqual(any("진화 카르마" in item for item in warnings), warns)
+
     def test_enlightenment_karma_weapon_attack_uses_level(self):
         for level, expected in (
             (10, "0.010"),

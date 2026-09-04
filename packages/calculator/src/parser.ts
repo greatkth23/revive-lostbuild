@@ -13,7 +13,7 @@ import {
 import { reconstructAttackPower } from './attack-power.js';
 import { Decimal, dec, decimalString, percent, sum } from './decimal.js';
 
-export const PARSER_VERSION = 'lostark-api-ts-v2';
+export const PARSER_VERSION = 'lostark-api-ts-v3';
 export const ENDPOINT_SOURCES = [
   'profiles',
   'equipment',
@@ -769,7 +769,9 @@ function parseArkPassive(bodyValue: unknown, context: ParseContext): NormalizedB
   for (const [index, rawPoint] of array(body.Points).entries()) {
     const point = object(rawPoint);
     const name = text(point.Name);
-    const pointText = tooltipToText(point.Description ?? point.Tooltip);
+    const description = tooltipToText(point.Description);
+    const pointText = description || tooltipToText(point.Tooltip);
+    const pointPath = `arkPassive.Points[${index}].${description ? 'Description' : 'Tooltip'}`;
     const karmaLevel = Math.max(0, ...matches(pointText, /([0-9]+)\s*레벨/g).map((value) => value.toNumber()));
     points.push({
       path: `arkPassive.Points[${index}]`,
@@ -785,11 +787,24 @@ function parseArkPassive(bodyValue: unknown, context: ParseContext): NormalizedB
       }
     }
     if (name.includes('진화') || pointText.includes('진화')) {
-      const parsed = max(percentMatches(pointText, new RegExp(`진화형\\s*피해(?:가|량이)?[^%\\n]{0,25}?${PERCENT_NUMBER}`, 'g')));
-      if (!parsed.isZero()) karmaEvolution = parsed;
-      else if (pointText && (pointText.includes('랭크') || pointText.includes('카르마'))) {
-        karmaEvolution = new Decimal('0.06');
-        warning(context, 'KARMA_EVOLUTION_FALLBACK', 'warning', `arkPassive.Points[${index}]`, '진화 카르마 수치를 파싱하지 못해 검증된 예시값 +6.0%를 사용했습니다.');
+      const rankMatch = /(?:([0-9]+)\s*랭크|랭크\s*[:：]?\s*([0-9]+))/.exec(pointText);
+      const rank = rankMatch ? Number(rankMatch[1] ?? rankMatch[2]) : null;
+      const damageValues = percentMatches(pointText, new RegExp(`진화형\\s*피해(?:가|량이)?[^%\\n]{0,25}?${PERCENT_NUMBER}`, 'g'));
+      if (rank !== null && rank >= 0 && rank <= 6) {
+        // User-confirmed table: rank controls damage; levels 5/9/13/17/21 overlap ranks.
+        karmaEvolution = new Decimal(rank).times('0.01');
+        provenance(context, pointPath, '진화 카르마 진화형 피해', karmaEvolution, {
+          sourceType: 'OFFICIAL_API+USER_VERIFIED_RULE',
+          note: `사용자 제공 진화 카르마 표(2026-09-04): ${rank}랭크 × 1%; 기존 진화형 피해에 합산`
+        });
+        if (damageValues.some((value) => !value.eq(karmaEvolution))) {
+          warning(context, 'KARMA_EVOLUTION_CONFLICT', 'warning', pointPath, '진화 카르마 랭크와 툴팁 피해 수치가 달라 랭크 × 1%를 적용했습니다.', pointText);
+        }
+      } else if (rank === null && damageValues.length > 0) {
+        karmaEvolution = max(damageValues);
+        provenance(context, pointPath, '진화 카르마 진화형 피해', karmaEvolution);
+      } else if (pointText) {
+        warning(context, 'KARMA_EVOLUTION_UNKNOWN', 'incomplete', pointPath, '진화 카르마의 유효한 랭크 또는 진화형 피해 수치를 확인하지 못해 피해 증가를 적용하지 않았습니다. 레벨로 랭크를 추정하지 않습니다.', pointText);
       }
     }
   }

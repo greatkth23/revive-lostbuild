@@ -685,7 +685,6 @@ describe('Weather Artist raw endpoint parser', () => {
     const parsed = parseBuildSnapshot(loadRawFixture());
     expect(parsed.warnings.map(({ code, path }) => ({ code, path }))).toEqual([
       { code: 'ARK_PASSIVE_EFFECT_FALLBACK', path: 'arkPassive.Effects[2]' },
-      { code: 'KARMA_EVOLUTION_FALLBACK', path: 'arkPassive.Points[0]' },
       { code: 'UNPARSED_DAMAGE_TOOLTIP', path: 'combatSkills[14].Tripods[6].Tooltip' },
       { code: 'UNPARSED_DAMAGE_TOOLTIP', path: 'arkGrid.Slots[4].Tooltip.options[0]' },
       { code: 'CALCULATED_ATTACK_POWER_OVERRIDE', path: 'profiles.Stats[공격력]' }

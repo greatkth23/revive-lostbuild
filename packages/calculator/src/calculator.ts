@@ -203,6 +203,8 @@ export function calculateSkillDamage(
   const evolutionParts = Object.entries(build.arkPassive.evolutionDamageByName)
     .filter(([name, value]) => name !== '음속 돌파' && !dec(value).isZero())
     .map(([, value]) => dec(value));
+  // Karma contributes rank × 1% to the same additive evolution-damage category.
+  // Do not multiply total damage by a separate (1 + karma) factor.
   if (!dec(build.arkPassive.karmaEvolutionDamage).isZero()) evolutionParts.push(dec(build.arkPassive.karmaEvolutionDamage));
   const sonic = sonicBreakthrough(build);
   if (!sonic.isZero()) evolutionParts.push(sonic);
